@@ -1,8 +1,9 @@
+import chai, { expect } from 'chai';
 import { Contract } from 'ethers';
 import { deployContract, MockProvider, solidity } from 'ethereum-waffle';
 import BasicToken from '../build/BasicToken.json';
 
-use(solidity);
+chai.use(solidity);
 
 describe('BasicToken', () => {
   const [wallet, walletTo] = new MockProvider().getWallets();

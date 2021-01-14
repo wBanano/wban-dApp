@@ -168,10 +168,10 @@ contract wBANToken is Context, IBEP20, Ownable {
    */
   function mint(address recipient, uint256 amount) public onlyOwner returns (bool) {
 		// TODO: check if recipient has deposited enough BNB to cover for gas costs
-		//uint256 mem gasCost = gaslimit * tx.gasprice;
-		//require(_bnbBalances[recipient] > gasCost)
+		//uint256 _gasCost = tx.gaslimit * tx.gasprice;
+		//require(_bnbBalances[recipient] > _gasCost);
     _mint(recipient, amount);
-		//_bnbBalances[recipient].sub(gasCost);
+		//_bnbBalances[recipient].sub(_gasCost);
     return true;
   }
 
