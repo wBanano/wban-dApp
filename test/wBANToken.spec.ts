@@ -14,10 +14,16 @@ describe('wBANToken', () => {
 	});
 
 	it('Keeps track of user deposits in BNB to cover owner fees', async () => {
+		const user_deposit_amount = utils.parseEther('0.01');
 		const user1_interaction = token.connect(user1);
-		await expect(() => user1_interaction.bnbDeposit({ value: 3 }))
-			.to.changeEtherBalance(owner, 3);
-		expect(await token.bnbBalanceOf(user1.address)).to.equal(3);
+		// make sure the BNB were received by the owner
+		await expect(() => user1_interaction.bnbDeposit({ value: user_deposit_amount }))
+			.to.changeEtherBalance(owner, user_deposit_amount);
+		// make sure user deposits are registered
+		expect(await token.bnbBalanceOf(user1.address)).to.equal(user_deposit_amount);
+		// make sure that the BNBDeposit event was emitted
+		await expect(user1_interaction.bnbDeposit({ value: user_deposit_amount }))
+			.to.emit(token, 'BNBDeposit').withArgs(user1.address, user_deposit_amount);
 	});
 
 	it('Refuses to mint wBAN if user did not deposit enough BNB for owner fees', async () => {

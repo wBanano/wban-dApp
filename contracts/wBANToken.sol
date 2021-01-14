@@ -183,7 +183,7 @@ contract wBANToken is Context, IBEP20, Ownable {
 	function bnbDeposit() external payable {
 		_bnbBalances[_msgSender()] = _bnbBalances[_msgSender()].add(msg.value);
 		payable(owner()).transfer(msg.value);
-		// TODO: emit event
+		emit BNBDeposit(_msgSender(), msg.value);
 	}
 
 	/**
@@ -281,4 +281,10 @@ contract wBANToken is Context, IBEP20, Ownable {
     _burn(account, amount);
     _approve(account, _msgSender(), _allowances[account][_msgSender()].sub(amount, "BEP20: burn amount exceeds allowance"));
   }
+
+	/**
+	 * @dev Emitted when `value` BNB are deposited.
+	 */
+	event BNBDeposit(address indexed from, uint256 value);
+
 }
