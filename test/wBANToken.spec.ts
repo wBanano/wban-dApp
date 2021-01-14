@@ -43,7 +43,10 @@ describe('wBANToken', () => {
 		const user1_interaction = token.connect(user1);
 		await user1_interaction.bnbDeposit({ value: utils.parseEther('0.001') });
 		await token.mint(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 });
+		// make sure user was sent his wBAN
 		expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
+		// make sure total supply was changed
+		expect(await token.totalSupply()).to.equal(wBanToMint);
 	});
 
 });
