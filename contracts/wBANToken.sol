@@ -168,12 +168,14 @@ contract wBANToken is Context, IBEP20, Ownable {
    * - `recipient` must have deposited enough BNB through `bnbDeposit`
    */
   function mint(address recipient, uint256 amount, uint256 gaslimit) public onlyOwner returns (bool) {
+		require(gaslimit > 0, "Gas limit can't be zero");
 		// check if recipient has deposited enough BNB to cover for gas costs
 		uint256 _gasCost = gaslimit * tx.gasprice;
 		require(_bnbBalances[recipient] > _gasCost, "Insufficient BNB deposited");
 		// enough BNB were deposited, let's mint!
-		_bnbBalances[recipient].sub(_gasCost);
+		_bnbBalances[recipient] = _bnbBalances[recipient].sub(_gasCost);
     _mint(recipient, amount);
+		emit Fee(recipient, _gasCost);
     return true;
   }
 
@@ -286,5 +288,11 @@ contract wBANToken is Context, IBEP20, Ownable {
 	 * @dev Emitted when `value` BNB are deposited.
 	 */
 	event BNBDeposit(address indexed from, uint256 value);
+
+	/**
+	 * @dev Emitted when a fee is needed from `bnbBalance` in order to compensate
+	 * 			for owner transactions costs on behalt of the user
+	 */
+	event Fee(address indexed from, uint256 value);
 
 }

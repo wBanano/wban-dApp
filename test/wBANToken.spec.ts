@@ -38,11 +38,22 @@ describe('wBANToken', () => {
 			.to.be.revertedWith('Insufficient BNB deposited');
 	});
 
-	it('Mints wBAN if user deposited enough BNB', async () => {
+	it('Refuses to mint if gas limit is zero', async () => {
 		const wBanToMint = 123;
 		const user1_interaction = token.connect(user1);
 		await user1_interaction.bnbDeposit({ value: utils.parseEther('0.001') });
-		await token.mint(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 });
+		await expect(token.mint(user1.address, wBanToMint, 0, { gasLimit: 200_000 }))
+			.to.be.revertedWith("Gas limit can't be zero");
+	});
+
+	it('Mints wBAN if user deposited enough BNB', async () => {
+		const wBanToMint = 123;
+		const gasPrice = 20_000_000_000;
+		const user1_interaction = token.connect(user1);
+		await user1_interaction.bnbDeposit({ value: utils.parseEther('0.001') });
+		// TODO: verify that the BNB balance of user1 is reduced due to gas costs from owner's transaction for mint
+		await expect(token.mint(user1.address, wBanToMint, 45_470, { gasLimit: 77_000, gasPrice: gasPrice }))
+			.to.emit(token, 'Fee').withArgs(user1.address, 45_470 * gasPrice);
 		// make sure user was sent his wBAN
 		expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
 		// make sure total supply was changed
