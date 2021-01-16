@@ -42,16 +42,16 @@
       "mocha": "^6.2.2",
       "prettier": "^1.19.1",
       "rimraf": "^3.0.0",
-      "solc": "0.6.12",
       "solidity-coverage": "^0.7.14",
       "ts-generator": "^0.1.1",
       "ts-node": "^9.1.1",
       "typechain": "^4.0.1",
       "typescript": "^4.1.3"
-   },
+	 },
+	 "resolutions": {
+		"@nomiclabs/hardhat-solhint/solhint": "^3.3.2"
+	 },
    "scripts": {
-      "lint": "yarn prettier ./test/*.ts --check",
-      "lint:fix": "yarn prettier ./test/*.ts --write",
       "clean": "rimraf ./artifacts/ ./flatten/ ./coverage/ ./coverage.json ./cache/",
       "precompile": "yarn clean",
       "compile": "yarn hardhat compile",
