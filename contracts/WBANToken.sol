@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+
+pragma solidity ^0.7.0;
 
 import "./IBEP20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-contract wBANToken is Context, IBEP20, Ownable {
+contract WBANToken is Context, IBEP20, Ownable {
   using SafeMath for uint256;
 
 	mapping (address => uint256) private _bnbBalances;

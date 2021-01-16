@@ -1,3 +1,9 @@
 node_modules
 build
 flatten
+typechain
+artifacts
+cache
+coverage
+coverage.json
+secrets.json

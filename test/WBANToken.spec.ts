@@ -1,20 +1,32 @@
-import chai, { expect } from 'chai';
-import { Contract, utils } from 'ethers';
-import { deployContract, MockProvider, solidity } from 'ethereum-waffle';
-import wBANToken from '../build/wBANToken.json';
+import { ethers } from "hardhat";
+import chai from "chai";
+import { solidity } from "ethereum-waffle";
+import { WBANToken } from '../artifacts/typechain/WBANToken';
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 
 chai.use(solidity);
+const { expect } = chai;
 
-describe('wBANToken', () => {
-  const [owner, user1, user2] = new MockProvider().getWallets();
-  let token: Contract;
+describe('WBANToken', () => {
+	let token: WBANToken;
+	let owner: SignerWithAddress;
+	let user1: SignerWithAddress;
 
   beforeEach(async () => {
-    token = await deployContract(owner, wBANToken);
+		const signers = await ethers.getSigners();
+		[owner, user1] = signers;
+
+		const wBANTokenFactory = await ethers.getContractFactory(
+      "WBANToken",
+      signers[0]
+    );
+    token = (await wBANTokenFactory.deploy()) as WBANToken;
+    await token.deployed();
+    expect(token.address).to.properAddress;
 	});
 
 	it('Keeps track of user deposits in BNB to cover owner fees', async () => {
-		const user_deposit_amount = utils.parseEther('0.01');
+		const user_deposit_amount = ethers.utils.parseEther('0.01');
 		const user1_interaction = token.connect(user1);
 		// make sure the BNB were received by the owner
 		await expect(() => user1_interaction.bnbDeposit({ value: user_deposit_amount }))
@@ -33,7 +45,7 @@ describe('wBANToken', () => {
 			.to.be.revertedWith('Insufficient BNB deposited');
 		// user did not deposit enough BNB
 		const user1_interaction = token.connect(user1);
-		await user1_interaction.bnbDeposit({ value: utils.parseEther('0.0001') });
+		await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.0001') });
 		await expect(token.mint(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 }))
 			.to.be.revertedWith('Insufficient BNB deposited');
 	});
@@ -41,7 +53,7 @@ describe('wBANToken', () => {
 	it('Refuses to mint if gas limit is zero', async () => {
 		const wBanToMint = 123;
 		const user1_interaction = token.connect(user1);
-		await user1_interaction.bnbDeposit({ value: utils.parseEther('0.001') });
+		await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.001') });
 		await expect(token.mint(user1.address, wBanToMint, 0, { gasLimit: 200_000 }))
 			.to.be.revertedWith("Gas limit can't be zero");
 	});
@@ -50,7 +62,7 @@ describe('wBANToken', () => {
 		const wBanToMint = 123;
 		const gasPrice = 20_000_000_000;
 		const user1_interaction = token.connect(user1);
-		await user1_interaction.bnbDeposit({ value: utils.parseEther('0.001') });
+		await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.001') });
 		// TODO: verify that the BNB balance of user1 is reduced due to gas costs from owner's transaction for mint
 		await expect(token.mint(user1.address, wBanToMint, 45_470, { gasLimit: 77_000, gasPrice: gasPrice }))
 			.to.emit(token, 'Fee').withArgs(user1.address, 45_470 * gasPrice);
