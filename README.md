@@ -11,8 +11,7 @@ Create a `secrets.json` file at the root of this directory.
 Fill it with from this template:
 ```
 {
-	"mnemonic": "<your metamask mnemonic for example",
-	"etherscanApiKey": "YourApiKeyToken"
+	"mnemonic": "<your metamask mnemonic for example>"
 }
 ```
 

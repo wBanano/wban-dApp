@@ -9,7 +9,6 @@ import "hardhat-log-remover";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 import "hardhat-gas-reporter";
-import "@nomiclabs/hardhat-etherscan";
 
 const { mnemonic, etherscanApiKey } = require('./secrets.json');
 
@@ -57,9 +56,6 @@ const config: HardhatUserConfig = {
 		gasPrice: 20, // in gwei
 		// coinmarketcap: ,
   },
-	etherscan: {
-		apiKey: etherscanApiKey,
-	}
 };
 
 export default config;
