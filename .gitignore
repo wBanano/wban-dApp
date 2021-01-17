@@ -12,3 +12,6 @@ deployments
 
 # Waffle generated files
 flatten
+
+# Various files
+.DS_Store

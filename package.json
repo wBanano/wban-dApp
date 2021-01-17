@@ -63,7 +63,8 @@
       "preflatten": "yarn compile",
       "flatten": "yarn waffle flatten",
       "check": "yarn hardhat check",
-      "coverage": "yarn hardhat coverage",
+			"coverage": "yarn hardhat coverage",
+			"node:watch": "yarn hardhat node --watch",
       "deploy:testnet": "yarn hardhat deploy --network bsctestnet"
    }
 }
