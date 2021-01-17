@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
 import "@nomiclabs/hardhat-waffle";
@@ -9,8 +10,16 @@ import "hardhat-log-remover";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 import "hardhat-gas-reporter";
+import 'hardhat-deploy';
+import "hardhat-deploy-ethers";
 
-const { mnemonic, etherscanApiKey } = require('./secrets.json');
+let mnemonic = process.env.MNEMONIC;
+if (!mnemonic) {
+  // FOR DEV ONLY, SET IT IN .env files if you want to keep it private
+  // (IT IS IMPORTANT TO HAVE A NON RANDOM MNEMONIC SO THAT SCRIPTS CAN ACT ON THE SAME ACCOUNTS)
+  mnemonic = 'test test test test test test test test test test test junk';
+}
+const accounts = { mnemonic };
 
 task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -20,7 +29,6 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 });
 
 const config: HardhatUserConfig = {
-	defaultNetwork: "hardhat",
   solidity: {
     compilers: [{
 			version: "0.6.12",
@@ -31,12 +39,23 @@ const config: HardhatUserConfig = {
 				},
 			}
 		}],
+	},
+	namedAccounts: {
+    deployer: 0,
+    user1: 1,
+    user2: 2,
   },
   networks: {
-		hardhat: {},
+		hardhat: {
+			accounts
+		},
+    localhost: {
+      url: 'http://localhost:8545',
+      accounts,
+    },
 		bsctestnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-      accounts: { mnemonic: mnemonic },
+      accounts,
 			chainId: 97,
 		}
 	},

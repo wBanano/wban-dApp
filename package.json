@@ -30,9 +30,12 @@
       "@types/mocha": "^8.2.0",
       "@types/node": "^14.14.21",
       "chai": "^4.2.0",
+      "dotenv": "^8.2.0",
       "ethereum-waffle": "^3.2.1",
       "ethers": "^5.0.26",
       "hardhat": "^2.0.8",
+      "hardhat-deploy": "^0.7.0-beta.44",
+      "hardhat-deploy-ethers": "^0.3.0-beta.7",
       "hardhat-gas-reporter": "^1.0.4",
       "hardhat-log-remover": "^2.0.0",
       "hardhat-preprocessor": "^0.1.1",
@@ -61,6 +64,6 @@
       "flatten": "yarn waffle flatten",
       "check": "yarn hardhat check",
       "coverage": "yarn hardhat coverage",
-      "deploy:testnet": "yarn hardhat run --network bsctestnet scripts/deploy.ts"
+      "deploy:testnet": "yarn hardhat deploy --network bsctestnet"
    }
 }

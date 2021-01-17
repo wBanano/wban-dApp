@@ -1,9 +1,14 @@
 node_modules
-build
-flatten
-typechain
+
+# Secrets files
+secrets.json
+.env
+
+# Hardhat generated files
 artifacts
 cache
-coverage
-coverage.json
-secrets.json
+coverage*
+deployments
+
+# Waffle generated files
+flatten

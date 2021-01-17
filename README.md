@@ -7,14 +7,6 @@ and vice-versa.
 
 ## Build Instructions
 
-Create a `secrets.json` file at the root of this directory.
-Fill it with from this template:
-```
-{
-	"mnemonic": "<your metamask mnemonic for example>"
-}
-```
-
 * Tests: `yarn test`
 * Code Coverage: `yarn coverage`
 * SolHint: `npx hardhat check`
