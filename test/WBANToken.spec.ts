@@ -41,12 +41,12 @@ describe('WBANToken', () => {
 	it('Refuses to mint wBAN if user did not deposit enough BNB for owner fees', async () => {
 		const wBanToMint = 123;
 		// user did not deposit any BNB
-		await expect(token.mint(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 }))
+		await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 }))
 			.to.be.revertedWith('Insufficient BNB deposited');
 		// user did not deposit enough BNB
 		const user1_interaction = token.connect(user1);
 		await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.0001') });
-		await expect(token.mint(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 }))
+		await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000 }))
 			.to.be.revertedWith('Insufficient BNB deposited');
 	});
 
@@ -54,7 +54,7 @@ describe('WBANToken', () => {
 		const wBanToMint = 123;
 		const user1_interaction = token.connect(user1);
 		await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.001') });
-		await expect(token.mint(user1.address, wBanToMint, 0, { gasLimit: 200_000 }))
+		await expect(token.mintTo(user1.address, wBanToMint, 0, { gasLimit: 200_000 }))
 			.to.be.revertedWith("Gas limit can't be zero");
 	});
 
@@ -64,7 +64,7 @@ describe('WBANToken', () => {
 		const user1_interaction = token.connect(user1);
 		await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.001') });
 		// TODO: verify that the BNB balance of user1 is reduced due to gas costs from owner's transaction for mint
-		await expect(token.mint(user1.address, wBanToMint, 45_470, { gasLimit: 77_000, gasPrice: gasPrice }))
+		await expect(token.mintTo(user1.address, wBanToMint, 45_470, { gasLimit: 77_000, gasPrice: gasPrice }))
 			.to.emit(token, 'Fee').withArgs(user1.address, 45_470 * gasPrice);
 		// make sure user was sent his wBAN
 		expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
