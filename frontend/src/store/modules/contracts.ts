@@ -1,7 +1,7 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import store from '@/store'
 import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 @Module({
 	namespaced: true,
@@ -10,17 +10,22 @@ import { ethers } from 'ethers'
 	dynamic: true
 })
 class ContractsModule extends VuexModule {
-	private _wBanToken: WBANToken|null = null
-	private _owner: string = ''
-	private _wBanBalance: number = 0
-	private _bnbDeposits: number = 0
+	private _wBanToken: WBANToken | null = null
+	private _owner = ''
+	private _totalSupply: BigNumber = BigNumber.from(0)
+	private _wBanBalance = 0
+	private _bnbDeposits = 0
 
 	get wbanContract() {
 		return this._wBanToken
 	}
 
 	get owner() {
-		return this._owner;
+		return this._owner
+	}
+
+	get totalSupply() {
+		return this._totalSupply
 	}
 
 	get wBanBalance() {
@@ -42,6 +47,11 @@ class ContractsModule extends VuexModule {
 	}
 
 	@Mutation
+	setTotalSupply(supply: BigNumber) {
+		this._totalSupply = supply
+	}
+
+	@Mutation
 	setWBANBalance(balance: number) {
 		this._wBanBalance = balance
 	}
@@ -59,8 +69,10 @@ class ContractsModule extends VuexModule {
 		if (provider) {
 			const contract = WBANToken__factory.connect(address, provider.getSigner())
 			const owner = await contract.owner()
+			const totalSupply: BigNumber = await contract.totalSupply()
 			this.context.commit('setWBANToken', contract)
 			this.context.commit('setOwner', owner)
+			this.context.commit('setTotalSupply', totalSupply)
 		}
 	}
 
