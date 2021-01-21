@@ -56,8 +56,6 @@ export default class SwapCurrencyInput extends Vue {
 .bg-token-chooser
 	background-color: rgb(238, 234, 244) !important
 	//background-color: lighten($secondary, 70%)
-.currency-logo
-	width: 32px
 .max
 	font-size: 0.7em
 	text-decoration: underline

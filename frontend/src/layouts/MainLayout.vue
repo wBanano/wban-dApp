@@ -78,9 +78,6 @@ export default class MainLayout extends Vue {
 //.q-page-container
 //	background-color: white
 
-.currency-logo
-	width: 32px
-
 .btn-disconnect
 	text-transform: none
 

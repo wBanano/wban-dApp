@@ -5,18 +5,24 @@
 			<p>Let's mint some wBAN for your fellow monkeys...</p>
 			<q-btn label="Mint" v-if="isOwner" @click="mint" color="primary" text-color="text-black" />
 		</div>
-		<div v-if="!isOwner" class="q-pa-md q-gutter-sm">
-			<q-btn label="Deposit BAN" v-if="!isOwner" @click="depositBAN" color="primary" text-color="text-black" />
-			<q-btn label="Deposit BNB" v-if="!isOwner" @click="depositBNB" color="primary" text-color="text-black" />
-			<q-btn label="Refresh" v-if="!isOwner" @click="reloadBalances" color="primary" text-color="text-black" />
-			<p class="text-right">
-				<strong>Available balance for swap fees: </strong>
-				{{ bnbDeposits | bnToString }}
-				<img src="@/assets/binance-coin.png" class="currency-logo" />
-				BNB
-			</p>
+		<div class="row justify-center">
+			<div v-if="!isOwner" class="q-pa-md q-gutter-sm">
+				<q-btn label="Deposit BAN" v-if="!isOwner" @click="depositBAN" color="primary" text-color="text-black" />
+				<q-btn label="Deposit BNB" v-if="!isOwner" @click="depositBNB" color="primary" text-color="text-black" />
+				<q-btn label="Refresh" v-if="!isOwner" @click="reloadBalances" color="primary" text-color="text-black" />
+				<p class="text-center">
+					<strong>Available balance for swap fees: </strong>
+					{{ bnbDeposits | bnToString }}
+					<img src="@/assets/binance-coin.png" class="currency-logo" />
+					BNB
+				</p>
+			</div>
 		</div>
-		<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
+		<div class="row justify-center">
+			<div class="col-6">
+				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
+			</div>
+		</div>
 		<q-dialog v-model="promptForBanDeposit" persistent>
 			<q-card style="min-width: 600px">
 				<q-card-section>

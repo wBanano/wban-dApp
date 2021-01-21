@@ -1,8 +1,12 @@
 <template>
-	<q-page class="row items-center justify-evenly">
-		<div v-if="isUserConnected" class="q-pa-md row items-start q-gutter-md">
-			<Statistics />
-			<ChainInfo />
+	<q-page>
+		<div v-if="isUserConnected" class="q-pa-md row justify-center items-start q-gutter-md">
+			<div class="col-2">
+				<Statistics />
+			</div>
+			<div class="col-5">
+				<ChainInfo />
+			</div>
 		</div>
 		<div v-if="!isUserConnected">
 			Make a great page explaining here what wBAN is all about and to invite user to click on the connect button :)
