@@ -5,6 +5,9 @@
 				<img src="@/assets/wban-logo.png" class="currency-logo" />
 				<q-toolbar-title>wBAN - Wrap your BAN on Binance Smart Chain</q-toolbar-title>
 				<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
+				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning">
+					You're not on the mainnet but {{ chainName }}!
+				</q-chip>
 				<q-btn v-if="isUserConnected" @click="disconnectWalletProvider" flat dense class="btn-disconnect">
 					{{ activeAccount | bscAddressFilter }}
 				</q-btn>
@@ -36,6 +39,10 @@ export default class MainLayout extends Vue {
 
 	get isUserConnected() {
 		return accounts.isUserConnected
+	}
+
+	get isMainnet() {
+		return accounts.chainName === 'BSC Mainnet'
 	}
 
 	get activeAccount() {
@@ -76,4 +83,8 @@ export default class MainLayout extends Vue {
 
 .btn-disconnect
 	text-transform: none
+
+.danger
+	background-color: $negative
+	padding-bottom: 5px
 </style>
