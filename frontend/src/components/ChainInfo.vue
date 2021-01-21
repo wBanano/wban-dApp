@@ -3,7 +3,13 @@
 		<div v-if="isOwner" class="q-pa-md q-gutter-sm">
 			<p>Welcome <strong>Benis</strong>!</p>
 			<p>Let's mint some wBAN for your fellow monkeys...</p>
-			<q-btn label="Mint" v-if="isOwner" @click="mint" color="primary" text-color="text-black" />
+			<div>
+				<q-input rounded outlined v-model="mintToAddress" label="For (address)" />
+				<q-input rounded outlined v-model="mintAmount" label="Amount of wBAN to mint" />
+				<div class="text-right">
+					<q-btn label="Mint" v-if="isOwner" @click="mint" color="primary" text-color="text-black" />
+				</div>
+			</div>
 		</div>
 		<div class="row justify-center">
 			<div v-if="!isOwner" class="q-pa-md q-gutter-sm">
@@ -61,6 +67,8 @@ import { getAddress } from '@ethersproject/address'
 })
 export default class ChainInfo extends Vue {
 	public banAddress = ''
+	public mintToAddress = ''
+	public mintAmount = ''
 	public wBanBalance: BigNumber = BigNumber.from(0)
 	public bnbDeposits: BigNumber = BigNumber.from(0)
 	public promptForBanDeposit = false
@@ -100,8 +108,9 @@ export default class ChainInfo extends Vue {
 	async mint() {
 		console.debug('in mint')
 		const contract: WBANToken | null = contracts.wbanContract
-		if (contract) {
-			await contract.mintTo('0x69FD25B60Da76Afd10D8Fc7306f10f2934fC4829', '1000000000000000000', 200_000)
+		if (contract && this.mintToAddress) {
+			const rawAmount: string = ethers.utils.parseEther(this.mintAmount).toString()
+			await contract.mintTo(this.mintToAddress, rawAmount, 200_000)
 			contract.on('Transfer', () => {
 				console.info('wBAN were minted!')
 				this.reloadBalances()
