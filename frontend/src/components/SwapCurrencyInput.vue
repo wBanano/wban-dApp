@@ -9,9 +9,9 @@
 			</q-item-section>
 		</q-item>
 		<q-card-section>
-			<q-input rounded dense outlined v-model.number="amount">
+			<q-input rounded dense outlined v-model.number="syncedAmount">
 				<template v-slot:append>
-					<a v-if="maxable" @click="setToMax" class="max">Max</a>
+					<a v-if="editable" @click="setToMax" class="max">Max</a>
 					<img :src="require(`@/assets/${logoUrl}`)" class="currency-logo" />
 				</template>
 			</q-input>
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import { ethers, BigNumber } from 'ethers'
 import { bnToStringFilter } from '@/utils/filters.ts'
 
@@ -33,8 +33,8 @@ export default class SwapCurrencyInput extends Vue {
 	@Prop({ type: String, required: true }) readonly label!: string
 	@Prop({ type: String, required: true }) readonly currency!: string
 	@Prop({ type: Object, required: true }) balance!: BigNumber
-	@Prop({ type: Boolean, required: true }) maxable!: boolean
-	amount = ''
+	@Prop({ type: Boolean, required: false }) readonly editable!: boolean
+	@PropSync('amount', { type: String }) syncedAmount!: string
 
 	get logoUrl() {
 		if (this.currency === 'BAN') {
@@ -45,7 +45,7 @@ export default class SwapCurrencyInput extends Vue {
 	}
 
 	setToMax() {
-		this.amount = ethers.utils.formatUnits(this.balance, 18)
+		this.syncedAmount = ethers.utils.formatUnits(this.balance, 18)
 	}
 }
 </script>
