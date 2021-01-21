@@ -9,7 +9,12 @@
 			<q-btn label="Deposit BAN" v-if="!isOwner" @click="depositBAN" color="primary" text-color="text-black" />
 			<q-btn label="Deposit BNB" v-if="!isOwner" @click="depositBNB" color="primary" text-color="text-black" />
 			<q-btn label="Refresh" v-if="!isOwner" @click="reloadBalances" color="primary" text-color="text-black" />
-			<p class="text-right"><strong>Available balance for swap fees:</strong> {{ bnbDeposits | bnToString }} BNB</p>
+			<p class="text-right">
+				<strong>Available balance for swap fees: </strong>
+				{{ bnbDeposits | bnToString }}
+				<img src="@/assets/binance-coin.png" class="currency-logo" />
+				BNB
+			</p>
 		</div>
 		<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 		<q-dialog v-model="promptForBanDeposit" persistent>
@@ -128,3 +133,10 @@ export default class ChainInfo extends Vue {
 	}
 }
 </script>
+
+<style lang="sass" scoped>
+.currency-logo
+	width: 20px
+	heigh: 20px
+	vertical-align: top
+</style>
