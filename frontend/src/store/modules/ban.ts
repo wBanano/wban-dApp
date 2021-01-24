@@ -48,10 +48,14 @@ class BANModule extends VuexModule {
 	async loadBanDeposited(account: string) {
 		if (account) {
 			console.debug('in loadBanDeposited')
-			const r = await axios.request({ url: `http://localhost:3000/deposits/${account}` })
-			const banBalance = r.data.deposits
-			this.context.commit('setBanAddress', account)
-			this.context.commit('setBanDeposited', BigNumber.from(banBalance))
+			try {
+				const r = await axios.request({ url: `http://localhost:3000/deposits/${account}` })
+				const banBalance = r.data.deposits
+				this.context.commit('setBanAddress', account)
+				this.context.commit('setBanDeposited', BigNumber.from(banBalance))
+			} catch (err) {
+				console.error(err)
+			}
 		} else {
 			console.error("Can't load BAN deposited as address is empty")
 		}

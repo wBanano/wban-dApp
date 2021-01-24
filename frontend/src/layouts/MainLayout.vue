@@ -21,6 +21,9 @@
 			</q-toolbar>
 		</q-header>
 		<q-page-container>
+			<q-banner v-if="!backendOnline" inline-actions class="text-white text-center bg-error">
+				API is not reacheable. Please try again later.
+			</q-banner>
 			<router-view />
 		</q-page-container>
 	</q-layout>
@@ -30,6 +33,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
+import backend from '@/store/modules/backend'
 import { bscAddressFilter } from '@/utils/filters.ts'
 
 @Component({
@@ -66,10 +70,15 @@ export default class MainLayout extends Vue {
 		return ban.banAddressPicture
 	}
 
+	get backendOnline() {
+		return backend.online
+	}
+
 	async created() {
 		await accounts.initWalletProvider()
 		await accounts.ethereumListener()
 		await ban.init()
+		await backend.initBackend()
 	}
 
 	async connectWalletProvider() {

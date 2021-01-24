@@ -12,7 +12,7 @@
 		</div>
 		<swap-currency-input label="To" :amount.sync="amount" :balance="wBanBalance" currency="wBAN" />
 		<div class="text-right">
-			<q-btn label="Swap" @click="swap" :disable="amount === ''" color="primary" text-color="text-black" />
+			<q-btn label="Swap" @click="swap" :disable="!swapEnabled" color="primary" text-color="text-black" />
 		</div>
 	</div>
 </template>
@@ -36,6 +36,10 @@ export default class SwapInput extends Vue {
 	amount = ''
 	inError = false
 	errorMessage = ''
+
+	get swapEnabled() {
+		return this.amount !== '' && this.amount !== '0.0'
+	}
 
 	async swap() {
 		console.info(`Should swap ${this.amount} BAN to wBAN...`)
@@ -70,6 +74,4 @@ export default class SwapInput extends Vue {
 .arrow-down
 	font-size: 32px
 	text-align: center
-.bg-error
-	background-color: red
 </style>
