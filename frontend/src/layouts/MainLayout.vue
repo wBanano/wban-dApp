@@ -8,6 +8,10 @@
 				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning">
 					You're not on the mainnet but {{ chainName }}!
 				</q-chip>
+				<q-avatar v-if="banAddress">
+					<img :src="banAddressPicture" :alt="banAddress" />
+					<q-tooltip>{{ banAddress }}</q-tooltip>
+				</q-avatar>
 				<q-btn v-if="isUserConnected" @click="disconnectWalletProvider" flat dense class="btn-disconnect">
 					{{ activeAccount | bscAddressFilter }}
 				</q-btn>
@@ -25,6 +29,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import accounts from '@/store/modules/accounts'
+import ban from '@/store/modules/ban'
 import { bscAddressFilter } from '@/utils/filters.ts'
 
 @Component({
@@ -53,9 +58,18 @@ export default class MainLayout extends Vue {
 		return accounts.activeBalanceBnb
 	}
 
+	get banAddress() {
+		return ban.banAddress
+	}
+
+	get banAddressPicture() {
+		return ban.banAddressPicture
+	}
+
 	async created() {
 		await accounts.initWalletProvider()
 		await accounts.ethereumListener()
+		await ban.init()
 	}
 
 	async connectWalletProvider() {

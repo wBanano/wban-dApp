@@ -17,6 +17,10 @@ class BANModule extends VuexModule {
 		return this._banAddress
 	}
 
+	get banAddressPicture() {
+		return `https://monkey.banano.cc/api/v1/monkey/${this.banAddress}?format=png`
+	}
+
 	get banDeposited() {
 		return this._banDeposited
 	}
