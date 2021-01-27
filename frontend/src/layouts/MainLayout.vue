@@ -21,8 +21,8 @@
 			</q-toolbar>
 		</q-header>
 		<q-page-container>
-			<q-banner v-if="!backendOnline" inline-actions class="text-white text-center bg-error">
-				API is not reacheable. Please try again later.
+			<q-banner v-if="!backendOnline || inError" inline-actions class="text-white text-center bg-error">
+				{{ errorMessage }}
 			</q-banner>
 			<router-view />
 		</q-page-container>
@@ -31,10 +31,15 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import { bscAddressFilter } from '@/utils/filters.ts'
+
+const accountsStore = namespace('accounts')
+const banStore = namespace('ban')
+const backendStore = namespace('backend')
 
 @Component({
 	filters: {
@@ -42,36 +47,35 @@ import { bscAddressFilter } from '@/utils/filters.ts'
 	}
 })
 export default class MainLayout extends Vue {
-	get chainName() {
-		return accounts.chainName
-	}
+	@accountsStore.State('chainName')
+	chainName!: string
 
-	get isUserConnected() {
-		return accounts.isUserConnected
-	}
+	@accountsStore.Getter('isUserConnected')
+	isUserConnected!: boolean
+
+	@accountsStore.State('activeAccount')
+	activeAccount!: string
+
+	@accountsStore.State('activeBalanceBnb')
+	activeBalanceBnb!: number
+
+	@banStore.Getter('banAddress')
+	banAddress!: string
+
+	@banStore.Getter('banAddressPicture')
+	banAddressPicture!: string
+
+	@backendStore.Getter('online')
+	backendOnline!: boolean
+
+	@backendStore.Getter('inError')
+	inError!: boolean
+
+	@backendStore.Getter('errorMessage')
+	errorMessage!: string
 
 	get isMainnet() {
-		return accounts.chainName === 'BSC Mainnet'
-	}
-
-	get activeAccount() {
-		return accounts.activeAccount
-	}
-
-	get activeBalanceBnb() {
-		return accounts.activeBalanceBnb
-	}
-
-	get banAddress() {
-		return ban.banAddress
-	}
-
-	get banAddressPicture() {
-		return ban.banAddressPicture
-	}
-
-	get backendOnline() {
-		return backend.online
+		return this.chainName === 'BSC Mainnet'
 	}
 
 	async created() {

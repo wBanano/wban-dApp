@@ -12,9 +12,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
 import { bnToStringFilter } from '@/utils/filters.ts'
-import contracts from '@/store/modules/contracts'
-// import { BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
+
+const contractsStore = namespace('contracts')
 
 @Component({
 	filters: {
@@ -22,14 +24,8 @@ import contracts from '@/store/modules/contracts'
 	}
 })
 export default class Statistics extends Vue {
-	/*
-	@contracts.totalSupply
+	@contractsStore.Getter('totalSupply')
 	totalSupply!: BigNumber
-	*/
-
-	get totalSupply() {
-		return contracts.totalSupply
-	}
 }
 </script>
 

@@ -16,9 +16,11 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
 import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
-import accounts from '@/store/modules/accounts'
+
+const accountsStore = namespace('accounts')
 
 @Component({
 	components: {
@@ -27,8 +29,7 @@ import accounts from '@/store/modules/accounts'
 	}
 })
 export default class PageIndex extends Vue {
-	get isUserConnected() {
-		return accounts.isUserConnected
-	}
+	@accountsStore.Getter('isUserConnected')
+	isUserConnected!: boolean
 }
 </script>

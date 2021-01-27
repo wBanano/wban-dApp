@@ -48,14 +48,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
 import SwapInput from '@/components/SwapInput.vue'
 import { bnToStringFilter } from '@/utils/filters.ts'
 import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
 import contracts from '@/store/modules/contracts'
+import backend from '@/store/modules/backend'
 import { WBANToken } from '../../../artifacts/typechain/WBANToken'
 import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
+
+const accountsStore = namespace('accounts')
+const backendStore = namespace('backend')
 
 @Component({
 	components: {
@@ -73,9 +78,11 @@ export default class ChainInfo extends Vue {
 	public bnbDeposits: BigNumber = BigNumber.from(0)
 	public promptForBanDeposit = false
 
-	get isUserConnected() {
-		return accounts.isUserConnected
-	}
+	@accountsStore.Getter('isUserConnected')
+	isUserConnected!: boolean
+
+	@backendStore.Getter('banDeposited')
+	banBalance!: BigNumber
 
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
@@ -83,10 +90,6 @@ export default class ChainInfo extends Vue {
 		} else {
 			return false
 		}
-	}
-
-	get banBalance(): BigNumber {
-		return ban.banDeposited
 	}
 
 	async depositBAN() {
@@ -122,7 +125,7 @@ export default class ChainInfo extends Vue {
 		console.debug('in reloadBalances')
 
 		// reload data from the backend
-		await ban.loadBanDeposited(this.banAddress)
+		await backend.loadBanDeposited(this.banAddress)
 
 		// reload data from the smart-contract
 		const provider = accounts.providerEthers
@@ -142,9 +145,10 @@ export default class ChainInfo extends Vue {
 
 	async mounted() {
 		console.debug('in mounted')
-		ban.init()
+		await ban.init()
 		this.banAddress = ban.banAddress
-		this.reloadBalances()
+		await backend.initBackend()
+		await this.reloadBalances()
 	}
 }
 </script>
