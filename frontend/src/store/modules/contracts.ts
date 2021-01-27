@@ -1,7 +1,8 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import store from '@/store'
+// eslint-disable-next-line @typescript-eslint/camelcase
 import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 
 @Module({
 	namespaced: true,
@@ -67,6 +68,7 @@ class ContractsModule extends VuexModule {
 		console.debug('in initContract')
 		const address = '0x6E3BC96EfBA650E89D56e94189c922BA07bfAcDD'
 		if (provider) {
+			// eslint-disable-next-line @typescript-eslint/camelcase
 			const contract = WBANToken__factory.connect(address, provider.getSigner())
 			const owner = await contract.owner()
 			const totalSupply: BigNumber = await contract.totalSupply()
