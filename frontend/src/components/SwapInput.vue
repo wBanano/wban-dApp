@@ -35,9 +35,6 @@ export default class SwapInput extends Vue {
 
 	async swap() {
 		if (accounts.activeAccount) {
-			console.log(ban.banAddress)
-			console.log(accounts.activeAccount)
-			console.log(accounts.providerEthers)
 			console.info('before swap')
 			await backend.swap({
 				amount: this.amount,

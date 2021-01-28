@@ -25,7 +25,7 @@
 			</div>
 		</div>
 		<div class="row justify-center">
-			<div class="col-6">
+			<div class="col-8">
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 			</div>
 		</div>

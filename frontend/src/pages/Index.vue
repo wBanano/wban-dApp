@@ -1,6 +1,6 @@
 <template>
 	<q-page>
-		<div v-if="isUserConnected" class="q-pa-md row justify-center items-start q-gutter-md">
+		<div v-if="isUserConnected && banAddress" class="q-pa-md row justify-center items-start q-gutter-md">
 			<div class="col-2">
 				<Statistics />
 			</div>
@@ -15,12 +15,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import router from '@/router'
 import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
 
 const accountsStore = namespace('accounts')
+const banStore = namespace('ban')
 
 @Component({
 	components: {
@@ -31,5 +33,18 @@ const accountsStore = namespace('accounts')
 export default class PageIndex extends Vue {
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
+
+	@banStore.Getter('banAddress')
+	banAddress!: string
+
+	@Watch('isUserConnected')
+	redirect() {
+		console.log('in redirect')
+		if (this.isUserConnected && this.banAddress === '') {
+			router.push('/setup')
+		} else {
+			console.debug(`BAN address: ${this.banAddress}`)
+		}
+	}
 }
 </script>

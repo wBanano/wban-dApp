@@ -32,6 +32,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
@@ -91,6 +92,7 @@ export default class MainLayout extends Vue {
 
 	async disconnectWalletProvider() {
 		await accounts.disconnectWalletProvider()
+		router.push('/')
 	}
 }
 </script>
@@ -107,6 +109,8 @@ export default class MainLayout extends Vue {
 
 .btn-disconnect
 	text-transform: none
+	font-family: $monospaced-font
+	margin-bottom: -5px
 
 .danger
 	background-color: $negative
