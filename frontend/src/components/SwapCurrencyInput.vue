@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
-import { ethers, BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
 import { bnToStringFilter } from '@/utils/filters.ts'
 
 @Component({
@@ -34,7 +34,7 @@ export default class SwapCurrencyInput extends Vue {
 	@Prop({ type: String, required: true }) readonly currency!: string
 	@Prop({ type: Object, required: true }) balance!: BigNumber
 	@Prop({ type: Boolean, required: false }) readonly editable!: boolean
-	@PropSync('amount', { type: String }) syncedAmount!: string
+	@PropSync('amount', { type: Number }) syncedAmount!: number
 
 	get logoUrl() {
 		if (this.currency === 'BAN') {
@@ -45,7 +45,10 @@ export default class SwapCurrencyInput extends Vue {
 	}
 
 	setToMax() {
-		this.syncedAmount = ethers.utils.formatUnits(this.balance, 18)
+		this.syncedAmount = this.balance
+			.div(1_000_000_000_000_000)
+			.div(1_000)
+			.toNumber()
 	}
 }
 </script>

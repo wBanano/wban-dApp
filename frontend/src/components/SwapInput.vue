@@ -27,10 +27,10 @@ import backend from '@/store/modules/backend'
 export default class SwapInput extends Vue {
 	@Prop({ type: Object, required: true }) banBalance!: BigNumber
 	@Prop({ type: Object, required: true }) wBanBalance!: BigNumber
-	amount = ''
+	amount: number = 0
 
 	get swapEnabled() {
-		return this.amount !== '' && this.amount !== '0.0'
+		return this.amount > 0
 	}
 
 	async swap() {

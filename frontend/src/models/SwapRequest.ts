@@ -1,5 +1,5 @@
 type SwapRequest = {
-	amount: string,
+	amount: number,
 	banAddress: string,
 	bscAddress: string,
 	provider: any

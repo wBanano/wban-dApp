@@ -91,7 +91,10 @@ class BackendModule extends VuexModule {
 				'message',
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(e: any) => {
-					this.context.commit('setBanDeposited', BigNumber.from(e.data))
+					// commit the new value only if different from the actual one
+					if (!this.banDeposited.eq(e.data)) {
+						this.context.commit('setBanDeposited', BigNumber.from(e.data))
+					}
 				},
 				false
 			)
