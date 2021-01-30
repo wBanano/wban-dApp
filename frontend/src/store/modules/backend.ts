@@ -17,6 +17,8 @@ class BackendModule extends VuexModule {
 	private _banDeposited: BigNumber = BigNumber.from(0)
 	private _inError = false
 	private _errorMessage = ''
+	// private apiUrl = 'https://wban-api.kalixia.com'
+	private apiUrl = 'http://localhost:3000'
 
 	get online() {
 		return this._online
@@ -67,11 +69,11 @@ class BackendModule extends VuexModule {
 	async initBackend() {
 		console.log('in initBackend')
 		try {
-			const healthResponse = await axios.request({ url: 'http://localhost:3000/health' })
+			const healthResponse = await axios.request({ url: `${this.apiUrl}/health` })
 			const healthStatus = healthResponse.data.status
 			this.context.commit('setOnline', healthStatus === 'OK')
 
-			const depoositWalletResponse = await axios.request({ url: 'http://localhost:3000/deposits/ban/wallet' })
+			const depoositWalletResponse = await axios.request({ url: `${this.apiUrl}/deposits/ban/wallet` })
 			const depositWalletAddress = depoositWalletResponse.data.address
 			this.context.commit('setBanWalletForDeposits', depositWalletAddress)
 		} catch (err) {
@@ -86,7 +88,7 @@ class BackendModule extends VuexModule {
 		if (account) {
 			console.debug('in loadBanDeposited')
 
-			const eventSource = new EventSource(`http://localhost:3000/deposits/ban/${account}`)
+			const eventSource = new EventSource(`${this.apiUrl}/deposits/ban/${account}`)
 			eventSource.addEventListener(
 				'message',
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,7 +135,7 @@ class BackendModule extends VuexModule {
 			const sig = await provider.getSigner().signMessage(`I hereby claim that the BAN address "${banAddress}" is mine`)
 			// call the backend for the swap
 			try {
-				const r = await axios.post(`http://localhost:3000/claim`, {
+				const r = await axios.post(`${this.apiUrl}/claim`, {
 					banAddress: banAddress,
 					bscAddress: bscAddress,
 					sig: sig
@@ -174,7 +176,7 @@ class BackendModule extends VuexModule {
 				.signMessage(`Swap ${amount} BAN for wBAN with BAN I deposited from my wallet "${banAddress}"`)
 			// call the backend for the swap
 			try {
-				const r = await axios.post(`http://localhost:3000/swap`, {
+				const r = await axios.post(`${this.apiUrl}/swap`, {
 					ban: banAddress,
 					bsc: bscAddress,
 					amount: amount,

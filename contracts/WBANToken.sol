@@ -50,7 +50,7 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
 
     /**
      * @dev Emitted when a fee is needed from `bnbBalance` in order to compensate
-     * 			for owner transactions costs on behalt of the user
+     * 			for owner transactions costs on behalf of the user
      */
     event Fee(address indexed from, uint256 value);
 

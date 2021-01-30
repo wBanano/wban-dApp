@@ -1,7 +1,7 @@
 node_modules
+dist
 
 # Secrets files
-secrets.json
 .env
 
 # Hardhat generated files

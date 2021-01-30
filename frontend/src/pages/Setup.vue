@@ -91,7 +91,7 @@ export default class SetupPage extends Vue {
 		while (!this.banDeposited.gt(0)) {
 			console.log('Waiting for deposit...')
 			// eslint-disable-next-line no-await-in-loop
-			await new Promise(resolve => setTimeout(resolve, 1000))
+			await new Promise(resolve => setTimeout(resolve, 5000))
 		}
 		console.log(`Found a balance of ${this.banDeposited}`)
 		ban.setBanAccount(this.banAddress)

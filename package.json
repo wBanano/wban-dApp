@@ -1,12 +1,14 @@
 {
-   "name": "wban-dapp",
-   "version": "0.1.0",
+   "name": "wban-smart-contract",
+   "version": "0.1.8",
    "description": "dApp for swapping BAN to wBAN on Binance Smart Chain",
    "author": "Jérôme Bernard <jerome.bernard@gmail.com>",
    "license": "MIT",
+   "main": "dist/src/index.js",
+   "types": "dist/src/index.d.ts",
    "repository": {
       "type": "git",
-      "url": "https://github.com/Uniswap/uniswap-v2-core"
+      "url": "https://github.com/wBanano/wban-bep20"
    },
    "keywords": [
       "Banano",
@@ -15,7 +17,8 @@
       "bsc"
    ],
    "files": [
-      "contracts"
+      "contracts",
+      "dist"
    ],
    "engines": {
       "node": ">=10"
@@ -54,17 +57,17 @@
       "@nomiclabs/hardhat-solhint/solhint": "^3.3.2"
    },
    "scripts": {
-      "clean": "rimraf ./artifacts/ ./flatten/ ./coverage/ ./coverage.json ./cache/",
+      "clean": "rimraf ./artifacts/ ./flatten/ ./coverage/ ./coverage.json ./cache/ ./dist",
       "precompile": "yarn clean",
-      "compile": "yarn hardhat compile",
+      "compile": "yarn hardhat compile && yarn tsc",
       "pretest": "yarn compile",
       "test": "yarn hardhat test",
       "prepublishOnly": "yarn test",
       "preflatten": "yarn compile",
       "flatten": "yarn waffle flatten",
       "check": "yarn hardhat check",
-			"coverage": "yarn hardhat coverage",
-			"node:watch": "yarn hardhat node --watch",
+      "coverage": "yarn hardhat coverage",
+      "node:watch": "yarn hardhat node --watch",
       "deploy:testnet": "yarn hardhat deploy --network bsctestnet"
    }
 }
