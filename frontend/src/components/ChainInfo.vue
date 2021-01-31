@@ -30,16 +30,27 @@
 			</div>
 		</div>
 		<q-dialog v-model="promptForBanDeposit" persistent>
-			<q-card style="min-width: 600px">
+			<q-card style="min-width: 800px">
 				<q-card-section>
-					<div class="text-h6">Your BAN Address</div>
+					<div class="text-h6">BAN Deposits</div>
 				</q-card-section>
 				<q-card-section class="q-pt-none">
-					<q-input dense v-model="banAddress" autofocus @keyup.enter="promptForBanDeposit = false" />
+					<div class="row">
+						<div class="col-9">
+							<p>
+								If you want to swap more BAN, simply send some BAN from your
+								<span class="banano-address">{{ banAddress }}</span> wallet to this wallet:
+								<strong class="banano-address">{{ banWalletForDeposits }}</strong>
+							</p>
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2">
+							<q-icon :name="banWalletForDepositsQRCode" size="128px" />
+						</div>
+					</div>
 				</q-card-section>
 				<q-card-actions align="right">
-					<q-btn color="primary" text-color="black" label="Cancel" v-close-popup />
-					<q-btn color="primary" text-color="black" label="Save" v-close-popup />
+					<q-btn color="primary" text-color="secondary" label="OK" v-close-popup />
 				</q-card-actions>
 			</q-card>
 		</q-dialog>
@@ -58,6 +69,7 @@ import backend from '@/store/modules/backend'
 import { WBANToken } from '../../../artifacts/typechain/WBANToken'
 import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
+import QRCode from 'qrcode'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -76,12 +88,16 @@ export default class ChainInfo extends Vue {
 	public mintToAddress = ''
 	public mintAmount = ''
 	public promptForBanDeposit = false
+	public banWalletForDepositsQRCode = ''
 
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
 
 	@backendStore.Getter('banDeposited')
 	banBalance!: BigNumber
+
+	@backendStore.Getter('banWalletForDeposits')
+	banWalletForDeposits!: string
 
 	@contractsStore.Getter('wBanBalance')
 	wBanBalance!: BigNumber
@@ -151,6 +167,17 @@ export default class ChainInfo extends Vue {
 		this.banAddress = ban.banAddress
 		await backend.initBackend()
 		await this.reloadBalances()
+		try {
+			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
+				color: {
+					dark: '2A2A2E',
+					light: 'FBDD11'
+				}
+			})
+			this.banWalletForDepositsQRCode = `img:${qrcode}`
+		} catch (err) {
+			console.error(err)
+		}
 	}
 }
 </script>

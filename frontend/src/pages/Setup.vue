@@ -26,22 +26,29 @@
 				</p>
 				<p>This is important as we will <i>link</i> your Banano address with your Binance Smart Chain one.</p>
 				<q-stepper-navigation>
-					<q-btn @click="claimBananoWallet" color="primary" label="Continue" />
-					<q-btn flat @click="step = 1" color="primary" label="Back" class="q-ml-sm" />
+					<q-btn @click="claimBananoWallet" color="primary" text-color="secondary" label="Continue" />
+					<q-btn flat @click="step = 1" color="secondary" label="Back" class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 
 			<q-step :name="3" title="Make a Banano deposit" icon="add_comment">
-				<p>
-					<strong>Within the next 5 minutes</strong>, you need to confirm your claim by sending a BAN deposit from this
-					Banano wallet to this one <span class="banano-address">{{ banWalletForDeposits }}</span>
-				</p>
-				<p>
-					Although any amount would be fine, let's be safe and only transfer 1 BAN.
-				</p>
+				<div class="row">
+					<div class="col-8">
+						<p>
+							<strong>Within the next 5 minutes</strong>, you need to confirm your claim by sending a BAN deposit from
+							this Banano wallet to this one <span class="banano-address">{{ banWalletForDeposits }}</span>
+						</p>
+						<p>
+							Although any amount would be fine, let's be safe and only transfer 1 BAN.
+						</p>
+					</div>
+					<div class="col-4">
+						<q-icon :name="banWalletForDepositsQRCode" size="128px" />
+					</div>
+				</div>
 				<q-stepper-navigation>
-					<q-btn @click="checkBananoDeposit" color="primary" label="Check Deposit" />
-					<q-btn flat @click="step = 2" color="primary" label="Back" class="q-ml-sm" />
+					<q-btn @click="checkBananoDeposit" color="primary" text-color="secondary" label="Check Deposit" />
+					<q-btn flat @click="step = 2" color="secondary" label="Back" class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 		</q-stepper>
@@ -56,6 +63,7 @@ import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import { BigNumber } from 'ethers'
+import QRCode from 'qrcode'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -73,6 +81,8 @@ export default class SetupPage extends Vue {
 
 	@backendStore.Getter('banWalletForDeposits')
 	banWalletForDeposits!: string
+
+	banWalletForDepositsQRCode = ''
 
 	async claimBananoWallet() {
 		const result = await backend.claimAddresses({
@@ -106,6 +116,17 @@ export default class SetupPage extends Vue {
 			router.push('/')
 		}
 		this.banAddress = ban.banAddress
+		try {
+			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
+				color: {
+					dark: '2A2A2E',
+					light: 'FBDD11'
+				}
+			})
+			this.banWalletForDepositsQRCode = `img:${qrcode}`
+		} catch (err) {
+			console.error(err)
+		}
 	}
 }
 </script>
