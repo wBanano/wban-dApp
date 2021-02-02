@@ -17,6 +17,7 @@ class BackendModule extends VuexModule {
 	private _banDeposited: BigNumber = BigNumber.from(0)
 	private _inError = false
 	private _errorMessage = ''
+	private _errorLink = ''
 	// private apiUrl = 'https://wban-api.kalixia.com'
 	private apiUrl = 'http://localhost:3000'
 
@@ -38,6 +39,10 @@ class BackendModule extends VuexModule {
 
 	get errorMessage() {
 		return this._errorMessage
+	}
+
+	get errorLink() {
+		return this._errorLink
 	}
 
 	@Mutation
@@ -63,6 +68,11 @@ class BackendModule extends VuexModule {
 	@Mutation
 	setErrorMessage(errorMessage: string) {
 		this._errorMessage = errorMessage
+	}
+
+	@Mutation
+	setErrorLink(errorLink: string) {
+		this._errorLink = errorLink
 	}
 
 	@Action
@@ -176,30 +186,33 @@ class BackendModule extends VuexModule {
 				.signMessage(`Swap ${amount} BAN for wBAN with BAN I deposited from my wallet "${banAddress}"`)
 			// call the backend for the swap
 			try {
-				const r = await axios.post(`${this.apiUrl}/swap`, {
+				await axios.post(`${this.apiUrl}/swap`, {
 					ban: banAddress,
 					bsc: bscAddress,
 					amount: amount,
 					sig: sig
 				})
-				console.debug(r)
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
+				this.context.commit('setErrorLink', '')
 			} catch (err) {
-				console.log(err)
 				this.context.commit('setInError', true)
 				if (err.response) {
 					const response: AxiosResponse = err.response
+					const error = response.data
 					switch (response.status) {
 						case 409:
-							this.context.commit('setErrorMessage', response.data)
+							this.context.commit('setErrorMessage', error.error)
+							this.context.commit('setErrorLink', error.link)
 							break
 						default:
 							this.context.commit('setErrorMessage', err)
+							this.context.commit('setErrorLink', '')
 							break
 					}
 				} else {
 					this.context.commit('setErrorMessage', err)
+					this.context.commit('setErrorLink', '')
 				}
 			}
 		}

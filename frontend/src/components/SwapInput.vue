@@ -6,18 +6,23 @@
 		</div>
 		<swap-currency-input label="To" :amount.sync="amount" :balance="wBanBalance" currency="wBAN" />
 		<div class="text-right">
-			<q-btn label="Swap" @click="swap" :disable="!swapEnabled" color="primary" text-color="text-black" />
+			<q-btn ref="btnSwap" label="Swap" @click="swap" :disable="!swapEnabled" color="primary" text-color="text-black" />
 		</div>
+		<q-ajax-bar ref="bar" position="bottom" color="primary" size="10px" skip-hijack />
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Ref, Vue } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
+import { QBtn, QAjaxBar } from 'quasar'
 import SwapCurrencyInput from '@/components/SwapCurrencyInput.vue'
 import { BigNumber } from 'ethers'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
+
+const accountsStore = namespace('accounts')
 
 @Component({
 	components: {
@@ -27,21 +32,32 @@ import backend from '@/store/modules/backend'
 export default class SwapInput extends Vue {
 	@Prop({ type: Object, required: true }) banBalance!: BigNumber
 	@Prop({ type: Object, required: true }) wBanBalance!: BigNumber
+	@Ref('btnSwap') readonly btnSwap!: QBtn
+	@Ref('bar') readonly bar!: QAjaxBar
+
+	@accountsStore.Getter('activeBalanceBnb')
+	bnbDeposits!: number
+
 	amount = 0
+	swapInProgress = false
 
 	get swapEnabled() {
-		return this.amount > 0
+		return this.amount > 0 && this.bnbDeposits > 0.002 && !this.swapInProgress
 	}
 
 	async swap() {
 		if (accounts.activeAccount) {
-			console.info('before swap')
+			this.swapInProgress = true
+			this.bar.start()
 			await backend.swap({
 				amount: this.amount,
 				banAddress: ban.banAddress,
 				bscAddress: accounts.activeAccount,
 				provider: accounts.providerEthers
 			})
+			this.$emit('swap')
+			this.bar.stop()
+			this.swapInProgress = false
 		}
 	}
 }

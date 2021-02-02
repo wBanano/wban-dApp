@@ -13,9 +13,9 @@
 		</div>
 		<div class="row justify-center">
 			<div v-if="!isOwner" class="q-pa-md q-gutter-sm">
-				<q-btn label="Deposit BAN" v-if="!isOwner" @click="depositBAN" color="primary" text-color="text-black" />
-				<q-btn label="Deposit BNB" v-if="!isOwner" @click="depositBNB" color="primary" text-color="text-black" />
-				<q-btn label="Refresh" v-if="!isOwner" @click="reloadBalances" color="primary" text-color="text-black" />
+				<q-btn label="Deposit BAN" @click="depositBAN" color="primary" text-color="text-black" />
+				<q-btn label="Deposit BNB" @click="depositBNB" color="primary" text-color="text-black" />
+				<q-btn label="Refresh" @click="reloadBalances" color="primary" text-color="text-black" />
 				<p class="text-center">
 					<strong>Available balance for swap fees: </strong>
 					{{ bnbDeposits | bnToString }}
@@ -26,7 +26,7 @@
 		</div>
 		<div class="row justify-center">
 			<div class="col-8">
-				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
+				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" @swap="reloadBalancesInABit" />
 			</div>
 		</div>
 		<q-dialog v-model="promptForBanDeposit" persistent>
@@ -119,6 +119,10 @@ export default class ChainInfo extends Vue {
 				this.reloadBalances()
 			})
 		}
+	}
+
+	reloadBalancesInABit() {
+		setTimeout(this.reloadBalances, 10_000)
 	}
 
 	async reloadBalances() {

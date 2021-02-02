@@ -23,6 +23,8 @@
 		<q-page-container>
 			<q-banner v-if="!backendOnline || inError" inline-actions class="text-white text-center bg-error">
 				{{ errorMessage }}
+				<br />
+				<a v-if="errorLink !== ''" :href="errorLink">{{ errorLink }}</a>
 			</q-banner>
 			<router-view />
 		</q-page-container>
@@ -74,6 +76,9 @@ export default class MainLayout extends Vue {
 
 	@backendStore.Getter('errorMessage')
 	errorMessage!: string
+
+	@backendStore.Getter('errorLink')
+	errorLink!: string
 
 	get isMainnet() {
 		return this.chainName === 'BSC Mainnet'
