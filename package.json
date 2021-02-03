@@ -1,11 +1,11 @@
 {
    "name": "wban-smart-contract",
-   "version": "0.1.8",
+   "version": "0.2.0",
    "description": "dApp for swapping BAN to wBAN on Binance Smart Chain",
    "author": "Jérôme Bernard <jerome.bernard@gmail.com>",
    "license": "MIT",
-   "main": "dist/src/index.js",
-   "types": "dist/src/index.d.ts",
+   "main": "dist/index.js",
+   "types": "dist/index.d.ts",
    "repository": {
       "type": "git",
       "url": "https://github.com/wBanano/wban-bep20"
@@ -33,6 +33,7 @@
       "@types/mocha": "^8.2.0",
       "@types/node": "^14.14.21",
       "chai": "^4.2.0",
+      "copyfiles": "^2.4.1",
       "dotenv": "^8.2.0",
       "ethereum-waffle": "^3.2.1",
       "ethers": "^5.0.26",
@@ -60,6 +61,7 @@
       "clean": "rimraf ./artifacts/ ./flatten/ ./coverage/ ./coverage.json ./cache/ ./dist",
       "precompile": "yarn clean",
       "compile": "yarn hardhat compile && yarn tsc",
+      "postcompile": "copyfiles -u 2 \"artifacts/typechain/**/*.d.ts\" dist",
       "pretest": "yarn compile",
       "test": "yarn hardhat test",
       "prepublishOnly": "yarn test",

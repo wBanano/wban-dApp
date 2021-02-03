@@ -26,6 +26,13 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
         emit Fee(recipient, _gasCost);
     }
 
+    function swapToBan(string memory banano_address, uint256 amount) external {
+        require(balanceOf(_msgSender()) >= amount, "Insufficient wBAN");
+        require(bytes(banano_address).length == 64, "Not a Banano address");
+        _burn(_msgSender(), amount);
+        emit SwapToBan(_msgSender(), banano_address, amount);
+    }
+
     /**
      * @dev Keep track of users BNB deposits in order to pay for later owner initiated transactions.
      */
@@ -50,8 +57,14 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
 
     /**
      * @dev Emitted when a fee is needed from `bnbBalance` in order to compensate
-     * 			for owner transactions costs on behalf of the user
+     *      for owner transactions costs on behalf of the user
      */
     event Fee(address indexed from, uint256 value);
+
+    /**
+     * @dev Emitted when a swap is done for wBAN from `from` to Banano address
+     *      `ban_address`
+     */
+    event SwapToBan(address indexed from, string ban_address, uint256 amount);
 
 }

@@ -67,7 +67,7 @@ class ContractsModule extends VuexModule {
 	async initContract(provider: any) {
 		console.debug('in initContract')
 		// const address = '0x6E3BC96EfBA650E89D56e94189c922BA07bfAcDD' // hardhat
-		const address = '0x3aFFe955B6BbD40Cc51720Fae7151ED62A38550a' // BSC testnet
+		const address = '0x91Dc68645011eA28e2a7ca17bc998339853091e2' // BSC testnet
 		if (provider) {
 			// eslint-disable-next-line @typescript-eslint/camelcase
 			const contract = WBANToken__factory.connect(address, provider.getSigner())

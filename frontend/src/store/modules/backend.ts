@@ -18,8 +18,8 @@ class BackendModule extends VuexModule {
 	private _inError = false
 	private _errorMessage = ''
 	private _errorLink = ''
-	// private apiUrl = 'https://wban-api.kalixia.com'
-	private apiUrl = 'http://localhost:3000'
+	private apiUrl = 'https://wban-api.kalixia.com'
+	// private apiUrl = 'http://localhost:3000'
 
 	get online() {
 		return this._online

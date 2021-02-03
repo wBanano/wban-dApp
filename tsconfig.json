@@ -1,15 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"lib": ["es5", "es6"],
     "module": "commonjs",
+		"moduleResolution": "node",
+		"noImplicitAny": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true,
-		"declaration": true,
-		"outDir": "dist"
+    "target": "es5",
+		"declaration": true
 	},
-	"include": [ "./src/**/*.ts" ],
+	"include": [
+		"artifacts/typechain/*"
+	],
 	"exclude": [
 		"node_modules",
-	],
-	"files": ["./src/index.ts"]
+	]
 }
