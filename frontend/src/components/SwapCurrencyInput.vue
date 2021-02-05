@@ -4,7 +4,7 @@
 			<q-item-section>
 				<q-item-label>{{ label }}</q-item-label>
 			</q-item-section>
-			<q-item-section class="text-right">
+			<q-item-section class="col-8 text-right">
 				<q-item-label>Balance: {{ balance | bnToString }} {{ currency }}</q-item-label>
 			</q-item-section>
 		</q-item>

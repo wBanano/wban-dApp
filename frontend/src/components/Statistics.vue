@@ -5,7 +5,7 @@
 			<div class="text-subtitle2">by Benis</div>
 		</q-card-section>
 		<q-card-section>
-			<p><strong>Total Supply:</strong> {{ totalSupply | bnToString }} wBAN</p>
+			<p><strong>Total Supply:</strong> {{ totalSupply | bnToHumanString }} wBAN</p>
 		</q-card-section>
 	</q-card>
 </template>
