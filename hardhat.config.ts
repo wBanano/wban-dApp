@@ -12,6 +12,7 @@ import "@nomiclabs/hardhat-solhint";
 import "hardhat-gas-reporter";
 import 'hardhat-deploy';
 import "hardhat-deploy-ethers";
+import "@nomiclabs/hardhat-solpp";
 
 let mnemonic = process.env.MNEMONIC;
 if (!mnemonic) {
@@ -35,7 +36,7 @@ const config: HardhatUserConfig = {
 			settings: {
 				optimizer: {
 					enabled: true,
-					runs: 200,
+					runs: 5000,
 				},
 			}
 		}],
@@ -70,6 +71,12 @@ const config: HardhatUserConfig = {
 	preprocess: {
     eachLine: removeConsoleLog((bre) => bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'),
 	},
+	/*
+	solpp: {
+		noFlatten: false,
+		collapseEmptyLines: true,
+	},
+	*/
 	gasReporter: {
     currency: 'EUR',
 		gasPrice: 20, // in gwei

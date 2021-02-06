@@ -3,7 +3,7 @@
    "version": "0.2.0",
    "description": "dApp for swapping BAN to wBAN on Binance Smart Chain",
    "author": "Jérôme Bernard <jerome.bernard@gmail.com>",
-   "license": "MIT",
+   "license": "GPL-3.0-or-later",
    "main": "dist/index.js",
    "types": "dist/index.d.ts",
    "repository": {
@@ -26,6 +26,7 @@
    "devDependencies": {
       "@nomiclabs/hardhat-ethers": "^2.0.1",
       "@nomiclabs/hardhat-solhint": "^2.0.0",
+      "@nomiclabs/hardhat-solpp": "^2.0.0",
       "@nomiclabs/hardhat-waffle": "^2.0.1",
       "@pancakeswap/pancake-swap-lib": "^0.0.4",
       "@typechain/ethers-v5": "^5.0.0",
@@ -66,7 +67,7 @@
       "test": "yarn hardhat test",
       "prepublishOnly": "yarn test",
       "preflatten": "yarn compile",
-      "flatten": "yarn waffle flatten",
+      "flatten": "npx hardhat flatten > dist/WBANToken-flattened.sol",
       "check": "yarn hardhat check",
       "coverage": "yarn hardhat coverage",
       "node:watch": "yarn hardhat node --watch",

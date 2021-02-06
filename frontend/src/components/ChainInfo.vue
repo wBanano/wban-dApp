@@ -61,6 +61,7 @@ import { getAddress } from '@ethersproject/address'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
+const contractsStore = namespace('contracts')
 
 @Component({
 	components: {
@@ -74,8 +75,6 @@ export default class ChainInfo extends Vue {
 	public banAddress = ''
 	public mintToAddress = ''
 	public mintAmount = ''
-	public wBanBalance: BigNumber = BigNumber.from(0)
-	public bnbDeposits: BigNumber = BigNumber.from(0)
 	public promptForBanDeposit = false
 
 	@accountsStore.Getter('isUserConnected')
@@ -83,6 +82,12 @@ export default class ChainInfo extends Vue {
 
 	@backendStore.Getter('banDeposited')
 	banBalance!: BigNumber
+
+	@contractsStore.Getter('wBanBalance')
+	wBanBalance!: BigNumber
+
+	@contractsStore.Getter('bnbDeposits')
+	bnbDeposits!: BigNumber
 
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
@@ -136,15 +141,8 @@ export default class ChainInfo extends Vue {
 		await contracts.initContract(provider)
 		const contract: WBANToken | null = contracts.wbanContract
 		if (contract && accounts.activeAccount) {
-			this.wBanBalance = await contract.balanceOf(accounts.activeAccount)
-			this.bnbDeposits = await contract.bnbBalanceOf(accounts.activeAccount)
-			console.info(`BNB available balance for swaps for ${accounts.activeAccount}:  ${this.bnbDeposits} BNB`)
+			await contracts.loadBalances({ contract, account: accounts.activeAccount })
 		}
-		/*
-		if (accounts.activeAccount && contracts.wbanContract) {
-			await contracts.loadBalances(contracts.wbanContract, accounts.activeAccount)
-		}
-		*/
 	}
 
 	async mounted() {

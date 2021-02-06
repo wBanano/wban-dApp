@@ -105,9 +105,11 @@ class AccountsModule extends VuexModule {
 			web3_wallets: {
 				connect_text: 'Connect with Metamask or Brave'
 			},
+			/*
 			binance_chain_wallet: {
 				connect_text: 'Connect with Binance Chain Wallet'
 			},
+			*/
 		}
 		/* eslint-enable */
 
@@ -194,7 +196,7 @@ class AccountsModule extends VuexModule {
 		let balance: BigNumber = BigNumber.from(0)
 		if (this.providerEthers != null && this.activeAccount != null) {
 			balance = await this.providerEthers.getBalance(this.activeAccount)
-			console.info(`Balance is ${balance}`)
+			console.info(`Balance is ${ethers.utils.formatEther(balance)} BNB`)
 		} else {
 			console.error('Could not get balance')
 		}
