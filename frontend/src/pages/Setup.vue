@@ -22,7 +22,7 @@
 
 			<q-step :name="2" title="Claim your address" icon="create_new_folder" :done="step > 2">
 				<p>
-					Please verity that your Banano address is indeed <span class="banano-address">{{ banAddress }}</span>
+					Please verify that your Banano address is indeed <span class="banano-address">{{ banAddress }}</span>
 				</p>
 				<p>This is important as we will <i>link</i> your Banano address with your Binance Smart Chain one.</p>
 				<q-stepper-navigation>

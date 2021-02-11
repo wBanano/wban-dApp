@@ -24,6 +24,18 @@
 				</p>
 			</div>
 		</div>
+		<div class="row justify-center" v-if="warningCode !== ''">
+			<div class="col-8">
+				<q-banner inline-actions rounded class="bg-primary text-secondary">
+					<span v-if="warningCode == 'out-of-ban-and-wban'">You need to deposit more BAN!</span>
+					<span v-if="warningCode == 'out-of-bnb'">You're running low on BNB for fees!</span>
+					<template v-slot:action>
+						<q-btn flat label="Deposit BAN" @click="depositBAN" v-if="warningCode == 'out-of-ban-and-wban'" />
+						<q-btn flat label="Deposit BNB" @click="depositBNB" v-if="warningCode == 'out-of-bnb'" />
+					</template>
+				</q-banner>
+			</div>
+		</div>
 		<div class="row justify-center">
 			<div class="col-8">
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" @swap="reloadBalancesInABit" />
@@ -110,6 +122,16 @@ export default class ChainInfo extends Vue {
 			return getAddress(accounts.activeAccount as string) === getAddress(contracts.owner as string)
 		} else {
 			return false
+		}
+	}
+
+	get warningCode() {
+		if (this.banBalance.eq(BigNumber.from(0)) && this.wBanBalance.eq(BigNumber.from(0))) {
+			return 'out-of-ban-and-wban'
+		} else if (this.bnbDeposits.lt(ethers.utils.parseEther('0.002'))) {
+			return 'out-of-bnb'
+		} else {
+			return ''
 		}
 	}
 
