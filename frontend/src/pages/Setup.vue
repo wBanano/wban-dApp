@@ -64,6 +64,7 @@ import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import { BigNumber } from 'ethers'
 import QRCode from 'qrcode'
+import { ClaimResponse } from '@/models/ClaimResponse'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -85,13 +86,21 @@ export default class SetupPage extends Vue {
 	banWalletForDepositsQRCode = ''
 
 	async claimBananoWallet() {
-		const result = await backend.claimAddresses({
+		const result: ClaimResponse = await backend.claimAddresses({
 			banAddress: this.banAddress,
 			bscAddress: accounts.activeAccount as string,
 			provider: accounts.providerEthers
 		})
-		if (result) {
-			this.step = 3
+		switch (result) {
+			case ClaimResponse.Ok:
+				this.step = 3
+				break
+			case ClaimResponse.AlreadyDone:
+				// skip step 3 and redirect to home if claim was previously done
+				ban.setBanAccount(this.banAddress)
+				router.push('/')
+				break
+			default:
 		}
 	}
 

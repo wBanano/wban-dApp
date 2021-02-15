@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { BigNumber } from 'ethers'
 import ClaimRequest from '@/models/ClaimRequest'
 import SwapRequest from '@/models/SwapRequest'
+import { ClaimResponse } from '@/models/ClaimResponse'
 
 @Module({
 	namespaced: true,
@@ -138,22 +139,29 @@ class BackendModule extends VuexModule {
 	}
 
 	@Action
-	async claimAddresses(claimRequest: ClaimRequest): Promise<boolean> {
+	async claimAddresses(claimRequest: ClaimRequest): Promise<ClaimResponse> {
 		const { banAddress, bscAddress, provider } = claimRequest
 		console.info(`About to claim ${banAddress} with ${bscAddress}`)
 		if (provider && banAddress && bscAddress) {
 			const sig = await provider.getSigner().signMessage(`I hereby claim that the BAN address "${banAddress}" is mine`)
 			// call the backend for the swap
 			try {
-				const r = await axios.post(`${this.apiUrl}/claim`, {
+				const resp = await axios.post(`${this.apiUrl}/claim`, {
 					banAddress: banAddress,
 					bscAddress: bscAddress,
 					sig: sig
 				})
-				console.debug(r)
+				console.debug(resp)
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
-				return true
+				switch (resp.status) {
+					case 200:
+						return ClaimResponse.Ok
+					case 202:
+						return ClaimResponse.AlreadyDone
+					default:
+						return ClaimResponse.Error
+				}
 			} catch (err) {
 				console.log(err)
 				this.context.commit('setInError', true)
@@ -170,10 +178,10 @@ class BackendModule extends VuexModule {
 				} else {
 					this.context.commit('setErrorMessage', err)
 				}
-				return false
+				return ClaimResponse.Error
 			}
 		}
-		return false
+		return ClaimResponse.Error
 	}
 
 	@Action

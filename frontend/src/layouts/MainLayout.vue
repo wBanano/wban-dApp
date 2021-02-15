@@ -17,7 +17,7 @@
 				</q-btn>
 				<!--q-btn flat round dense icon="apps" class="q-mr-xs" /-->
 				<q-btn flat round dense icon="more_vert" />
-				<div>wBAN v0.1</div>
+				<div>wBAN v0.1.1</div>
 			</q-toolbar>
 		</q-header>
 		<q-page-container>
