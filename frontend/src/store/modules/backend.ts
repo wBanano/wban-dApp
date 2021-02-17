@@ -29,6 +29,10 @@ class BackendModule extends VuexModule {
 		return this._banWalletForDeposits
 	}
 
+	get banWalletForDepositsLink() {
+		return `ban:${this._banWalletForDeposits}`
+	}
+
 	get banDeposited() {
 		return this._banDeposited
 	}

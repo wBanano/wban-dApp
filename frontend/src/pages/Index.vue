@@ -1,10 +1,10 @@
 <template>
 	<q-page>
 		<div v-if="isUserConnected && banAddress" class="q-pa-md row justify-center items-start q-gutter-md">
-			<div class="col-2">
+			<div class="col-md-2 gt-xs">
 				<Statistics />
 			</div>
-			<div class="col-5">
+			<div class="col-md-5 col-xs-12">
 				<ChainInfo />
 			</div>
 		</div>

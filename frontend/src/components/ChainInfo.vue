@@ -13,11 +13,14 @@
 		</div>
 		<div class="row justify-center">
 			<div v-if="!isOwner" class="q-pa-md q-gutter-sm">
-				<q-btn label="Deposit BAN" @click="depositBAN" color="primary" text-color="text-black" />
-				<q-btn label="Deposit BNB" @click="depositBNB" color="primary" text-color="text-black" />
-				<q-btn label="Refresh" @click="reloadBalances" color="primary" text-color="text-black" />
-				<p class="text-center">
+				<div class="col-12 q-gutter-sm text-center">
+					<q-btn icon="arrow_circle_down" label="BAN" @click="depositBAN" color="primary" text-color="text-black" />
+					<q-btn icon="arrow_circle_down" label="BNB" @click="depositBNB" color="primary" text-color="text-black" />
+					<q-btn icon="refresh" @click="reloadBalances" color="primary" text-color="text-black" />
+				</div>
+				<p class="col-12 text-center">
 					<strong>Available balance for swap fees: </strong>
+					<br class="xs" />
 					{{ bnbDeposits | bnToString }}
 					<img src="@/assets/binance-coin.png" class="currency-logo" />
 					BNB
@@ -25,7 +28,7 @@
 			</div>
 		</div>
 		<div class="row justify-center" v-if="warningCode !== ''">
-			<div class="col-8">
+			<div class="col-md-8 col-xs-12">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
 					<span v-if="warningCode == 'out-of-ban-and-wban'">You need to deposit more BAN!</span>
 					<span v-if="warningCode == 'out-of-bnb'">You're running low on BNB for fees!</span>
@@ -37,31 +40,37 @@
 			</div>
 		</div>
 		<div class="row justify-center">
-			<div class="col-8">
+			<div class="col-md-8 col-xs-12">
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" @swap="reloadBalancesInABit" />
 			</div>
 		</div>
 		<q-dialog v-model="promptForBanDeposit" persistent>
-			<q-card style="min-width: 800px">
+			<q-card class="ban-deposits-dialog">
 				<q-card-section>
 					<div class="text-h6">BAN Deposits</div>
 				</q-card-section>
-				<q-card-section class="q-pt-none">
+				<q-card-section class="q-gutter-sm">
 					<div class="row">
-						<div class="col-9">
+						<div class="col-md-9 col-xs-12">
 							<p>
 								If you want to swap more BAN, simply send some BAN from your
-								<span class="banano-address">{{ banAddress }}</span> wallet to this wallet:
-								<strong class="banano-address">{{ banWalletForDeposits }}</strong>
+								<span class="banano-address gt-sm">{{ banAddress }}</span> wallet to this wallet:
+								<strong class="banano-address gt-sm">{{ banWalletForDeposits }}</strong>
+								<a class="lt-md banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
 							</p>
 						</div>
-						<div class="col-1"></div>
-						<div class="col-2">
+						<div class="gt-sm col-md-3 text-right">
 							<q-icon :name="banWalletForDepositsQRCode" size="128px" />
 						</div>
 					</div>
 				</q-card-section>
 				<q-card-actions align="right">
+					<q-btn
+						@click="copyBanAddressForDepositsToClipboard"
+						color="primary"
+						text-color="secondary"
+						label="Copy Address"
+					/>
 					<q-btn color="primary" text-color="secondary" label="OK" v-close-popup />
 				</q-card-actions>
 			</q-card>
@@ -82,6 +91,7 @@ import { WBANToken } from '../../../artifacts/typechain/WBANToken'
 import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import QRCode from 'qrcode'
+import { copyToClipboard } from 'quasar'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -110,6 +120,9 @@ export default class ChainInfo extends Vue {
 
 	@backendStore.Getter('banWalletForDeposits')
 	banWalletForDeposits!: string
+
+	@backendStore.Getter('banWalletForDepositsLink')
+	banWalletForDepositsLink!: string
 
 	@contractsStore.Getter('wBanBalance')
 	wBanBalance!: BigNumber
@@ -183,6 +196,21 @@ export default class ChainInfo extends Vue {
 		}
 	}
 
+	async copyBanAddressForDepositsToClipboard() {
+		try {
+			await copyToClipboard(this.banWalletForDeposits)
+			this.$q.notify({
+				type: 'positive',
+				message: 'Address copied'
+			})
+		} catch (err) {
+			this.$q.notify({
+				type: 'negative',
+				message: "Can't write to clipboard!"
+			})
+		}
+	}
+
 	async mounted() {
 		console.debug('in mounted')
 		await ban.init()
@@ -209,4 +237,8 @@ export default class ChainInfo extends Vue {
 	width: 20px
 	heigh: 20px
 	vertical-align: top
+
+@media (min-width: 900px)
+	.ban-deposits-dialog
+		min-width: 900px
 </style>

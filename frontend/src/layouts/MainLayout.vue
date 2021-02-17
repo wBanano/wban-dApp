@@ -5,18 +5,18 @@
 				<img src="@/assets/wban-logo.png" class="currency-logo" />
 				<q-toolbar-title>{{ appTitle }}</q-toolbar-title>
 				<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
-				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning">
+				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">
 					You're not on the mainnet but {{ chainName }}!
 				</q-chip>
 				<q-avatar v-if="banAddress">
 					<img :src="banAddressPicture" :alt="banAddress" />
 					<q-tooltip>{{ banAddress }}</q-tooltip>
 				</q-avatar>
-				<q-btn v-if="isUserConnected" @click="disconnectWalletProvider" flat dense class="btn-disconnect">
+				<q-btn v-if="isUserConnected" @click="disconnect" flat dense class="btn-disconnect gt-xs">
 					{{ activeAccount | bscAddressFilter }}
 				</q-btn>
 				<q-btn flat round dense icon="redeem" class="text-primary">
-					<q-menu max-width="1000px">
+					<q-menu id="donations">
 						<div class="row no-wrap q-pa-md">
 							<div class="column">
 								<div class="text-h6 q-mb-md">Donations</div>
@@ -27,17 +27,21 @@
 								</p>
 							</div>
 							<q-separator vertical inset class="q-mx-lg" />
-							<div class="column items-center">
+							<div class="column items-center" v-if="$q.platform.is.desktop">
 								<div class="text-subtitle1 q-mt-md q-mb-xs">Tip me at:</div>
 								<q-icon :name="banWalletForTipsQRCode" size="128px" />
 							</div>
+							<q-btn v-if="$q.platform.is.mobile" color="primary" text-color="secondary" label="OK" v-close-popup />
 						</div>
 					</q-menu>
 				</q-btn>
 				<q-btn flat round dense icon="more_vert">
 					<q-menu>
 						<q-list style="min-width: 100px">
-							<q-item @click="donations" clickable v-close-popup>
+							<q-item @click="disconnect" clickable v-close-popup class="xs">
+								<q-item-section>Disconnect</q-item-section>
+							</q-item>
+							<q-item @click="about" clickable v-close-popup>
 								<q-item-section>About</q-item-section>
 							</q-item>
 						</q-list>
@@ -62,7 +66,7 @@
 					</q-menu>
 					-->
 				</q-btn>
-				<div>wBAN {{ appVersion }}</div>
+				<div class="gt-xs">wBAN {{ appVersion }}</div>
 			</q-toolbar>
 		</q-header>
 		<q-page-container>
@@ -136,7 +140,7 @@ export default class MainLayout extends Vue {
 		return this.chainName === 'BSC Mainnet'
 	}
 
-	donations() {
+	about() {
 		router.push('/about')
 	}
 
@@ -162,8 +166,9 @@ export default class MainLayout extends Vue {
 		await accounts.connectWalletProvider()
 	}
 
-	async disconnectWalletProvider() {
+	async disconnect() {
 		await accounts.disconnectWalletProvider()
+		await ban.setBanAccount('')
 		router.push('/')
 	}
 }
@@ -173,11 +178,10 @@ export default class MainLayout extends Vue {
 @import '@/styles/quasar.sass'
 
 .bg-toolbar
-	background-color: rgb(38, 48, 72) !important
-	//background-color: $secondary !important
+	background-color: $positive !important
 
-//.q-page-container
-//	background-color: white
+//.q-page
+//	background-color: $positive
 
 .btn-disconnect
 	text-transform: none
@@ -187,4 +191,13 @@ export default class MainLayout extends Vue {
 .danger
 	background-color: $negative
 	padding-bottom: 5px
+
+@media (max-width: 900px)
+	#donations
+		max-width: 100% !important
+		.column, .row
+			display: block
+@media (min-width: 900px)
+	#donations
+		max-width: 1000px
 </style>

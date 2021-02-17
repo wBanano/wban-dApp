@@ -33,16 +33,17 @@
 
 			<q-step :name="3" title="Make a Banano deposit" icon="add_comment">
 				<div class="row">
-					<div class="col-8">
+					<div class="col-8 col-xs-12">
 						<p>
 							<strong>Within the next 5 minutes</strong>, you need to confirm your claim by sending a BAN deposit from
-							this Banano wallet to this one <span class="banano-address">{{ banWalletForDeposits }}</span>
+							this Banano wallet to this one
+							<a class="banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
 						</p>
 						<p>
 							Although any amount would be fine, let's be safe and only transfer 1 BAN.
 						</p>
 					</div>
-					<div class="col-4">
+					<div class="col-4" v-if="$q.platform.is.desktop">
 						<q-icon :name="banWalletForDepositsQRCode" size="128px" />
 					</div>
 				</div>
@@ -82,6 +83,9 @@ export default class SetupPage extends Vue {
 
 	@backendStore.Getter('banWalletForDeposits')
 	banWalletForDeposits!: string
+
+	@backendStore.Getter('banWalletForDepositsLink')
+	banWalletForDepositsLink!: string
 
 	banWalletForDepositsQRCode = ''
 
