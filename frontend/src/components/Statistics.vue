@@ -1,5 +1,5 @@
 <template>
-	<q-card class="my-card bg-primary text-black">
+	<q-card class="statistics-card bg-primary text-black">
 		<q-card-section>
 			<div class="text-h6">wBAN Statistics</div>
 			<div class="text-subtitle2">by Benis</div>
@@ -28,10 +28,3 @@ export default class Statistics extends Vue {
 	totalSupply!: BigNumber
 }
 </script>
-
-<style lang="sass" scoped>
-@import '@/styles/quasar.sass'
-
-.q-card-section
-	background-color: $primary
-</style>

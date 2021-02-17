@@ -139,10 +139,3 @@ export default class SetupPage extends Vue {
 	}
 }
 </script>
-
-<style lang="sass" scoped>
-@import '@/styles/quasar.sass'
-
-.banano-address
-	font-family: $monospaced-font
-</style>

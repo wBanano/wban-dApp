@@ -15,8 +15,53 @@
 				<q-btn v-if="isUserConnected" @click="disconnectWalletProvider" flat dense class="btn-disconnect">
 					{{ activeAccount | bscAddressFilter }}
 				</q-btn>
-				<!--q-btn flat round dense icon="apps" class="q-mr-xs" /-->
-				<q-btn flat round dense icon="more_vert" />
+				<q-btn flat round dense icon="redeem" class="text-primary">
+					<q-menu max-width="1000px">
+						<div class="row no-wrap q-pa-md">
+							<div class="column">
+								<div class="text-h6 q-mb-md">Donations</div>
+								<p>Working on this app has been quite a journey, and still going on!</p>
+								<p>
+									Tips are always appreciated and if you would like to support my efforts, you can always help me by
+									sending Banano tips at: <span class="banano-address">{{ banWalletForTips }}</span>
+								</p>
+							</div>
+							<q-separator vertical inset class="q-mx-lg" />
+							<div class="column items-center">
+								<div class="text-subtitle1 q-mt-md q-mb-xs">Tip me at:</div>
+								<q-icon :name="banWalletForTipsQRCode" size="128px" />
+							</div>
+						</div>
+					</q-menu>
+				</q-btn>
+				<q-btn flat round dense icon="more_vert">
+					<q-menu>
+						<q-list style="min-width: 100px">
+							<q-item @click="donations" clickable v-close-popup>
+								<q-item-section>About</q-item-section>
+							</q-item>
+						</q-list>
+					</q-menu>
+					<!--
+					<q-menu>
+						<div class="row no-wrap q-pa-md">
+							<div class="column">
+								<div class="text-h6 q-mb-md">Settings</div>
+								<q-toggle v-model="mobileData" label="Use Mobile Data" />
+								<q-toggle v-model="bluetooth" label="Bluetooth" />
+							</div>
+							<q-separator vertical inset class="q-mx-lg" />
+							<div class="column items-center">
+								<q-avatar size="72px">
+									<img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+								</q-avatar>
+								<div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+								<q-btn color="primary" label="Logout" push size="sm" v-close-popup />
+							</div>
+						</div>
+					</q-menu>
+					-->
+				</q-btn>
 				<div>wBAN {{ appVersion }}</div>
 			</q-toolbar>
 		</q-header>
@@ -39,6 +84,7 @@ import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import { bscAddressFilter } from '@/utils/filters.ts'
+import QRCode from 'qrcode'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -83,8 +129,15 @@ export default class MainLayout extends Vue {
 	appTitle: string = process.env.VUE_APP_TITLE || 'wBAN -- Broken Release!!!'
 	appVersion: string = process.env.VUE_APP_VERSION || '0'
 
+	banWalletForTips = 'ban_3ta69w7cg7jrqswtntxbwaurrhyy44eagtrfeitrzk1hs8ss3qhdwe9gqyiw'
+	banWalletForTipsQRCode = ''
+
 	get isMainnet() {
 		return this.chainName === 'BSC Mainnet'
+	}
+
+	donations() {
+		router.push('/about')
 	}
 
 	async created() {
@@ -92,6 +145,17 @@ export default class MainLayout extends Vue {
 		await accounts.ethereumListener()
 		await ban.init()
 		await backend.initBackend()
+		try {
+			const qrcode: string = await QRCode.toDataURL(this.banWalletForTips, {
+				color: {
+					dark: '2A2A2E',
+					light: 'FBDD11'
+				}
+			})
+			this.banWalletForTipsQRCode = `img:${qrcode}`
+		} catch (err) {
+			console.error(err)
+		}
 	}
 
 	async connectWalletProvider() {
