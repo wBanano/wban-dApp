@@ -153,9 +153,6 @@ class AccountsModule extends VuexModule {
 		const resultInfo: any = connectStatus.getData()
 		const provider = resultInfo.provider
 
-		// new ethers.providers.JsonRpcProvider()
-		// console.debug(test.getSigner())
-
 		this.context.commit('setIsConnected', true)
 		this.context.commit('setActiveAccount', resultInfo.account)
 		this.context.commit('setChainData', resultInfo.chainId)

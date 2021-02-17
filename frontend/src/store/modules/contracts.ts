@@ -19,6 +19,8 @@ class ContractsModule extends VuexModule {
 	private _wBanBalance: BigNumber = BigNumber.from(0)
 	private _bnbDeposits: BigNumber = BigNumber.from(0)
 
+	static WBAN_CONTRACT_ADDRESS: string = process.env.VUE_APP_WBAN_CONTRACT || ''
+
 	get wbanContract() {
 		return this._wBanToken
 	}
@@ -68,12 +70,11 @@ class ContractsModule extends VuexModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async initContract(provider: any) {
 		console.debug('in initContract')
-		// const address = '0x6E3BC96EfBA650E89D56e94189c922BA07bfAcDD' // hardhat
-		const address = '0x44033E98733398b8ADf9480f297A58de50e17dF7' // BSC testnet
 		if (provider) {
 			// eslint-disable-next-line @typescript-eslint/camelcase
-			const contract = WBANToken__factory.connect(address, provider.getSigner())
+			const contract = WBANToken__factory.connect(ContractsModule.WBAN_CONTRACT_ADDRESS, provider.getSigner())
 			const owner = await contract.owner()
+			console.log(`Owner is: ${owner}`)
 			const totalSupply: BigNumber = await contract.totalSupply()
 			this.context.commit('setWBANToken', contract)
 			this.context.commit('setOwner', owner)
