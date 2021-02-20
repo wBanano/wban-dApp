@@ -35,6 +35,9 @@
 						</div>
 					</q-menu>
 				</q-btn>
+				<q-btn flat round dense icon="settings">
+					<settings-menu />
+				</q-btn>
 				<q-btn flat round dense icon="more_vert">
 					<q-menu>
 						<q-list style="min-width: 100px">
@@ -46,25 +49,6 @@
 							</q-item>
 						</q-list>
 					</q-menu>
-					<!--
-					<q-menu>
-						<div class="row no-wrap q-pa-md">
-							<div class="column">
-								<div class="text-h6 q-mb-md">Settings</div>
-								<q-toggle v-model="mobileData" label="Use Mobile Data" />
-								<q-toggle v-model="bluetooth" label="Bluetooth" />
-							</div>
-							<q-separator vertical inset class="q-mx-lg" />
-							<div class="column items-center">
-								<q-avatar size="72px">
-									<img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-								</q-avatar>
-								<div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
-								<q-btn color="primary" label="Logout" push size="sm" v-close-popup />
-							</div>
-						</div>
-					</q-menu>
-					-->
 				</q-btn>
 				<div class="gt-xs">wBAN {{ appVersion }}</div>
 			</q-toolbar>
@@ -87,6 +71,7 @@ import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
+import SettingsMenu from '@/components/SettingsMenu.vue'
 import { bscAddressFilter } from '@/utils/filters.ts'
 import QRCode from 'qrcode'
 
@@ -95,6 +80,9 @@ const banStore = namespace('ban')
 const backendStore = namespace('backend')
 
 @Component({
+	components: {
+		SettingsMenu
+	},
 	filters: {
 		bscAddressFilter
 	}
@@ -201,7 +189,11 @@ export default class MainLayout extends Vue {
 		max-width: 100% !important
 		.column, .row
 			display: block
+	#settings
+		max-width: 50% !important
 @media (min-width: 900px)
 	#donations
 		max-width: 1000px
+	#settings
+		max-width: 400px !important
 </style>

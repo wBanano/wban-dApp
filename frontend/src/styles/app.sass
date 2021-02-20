@@ -26,3 +26,20 @@ body
 @font-face
 	font-family: OverpassMono
 	src: url(./styles/fonts/OverpassMono-Regular.ttf)
+
+/**
+	* Dark mode settings
+	*/
+body.body--dark
+	background-color: $secondary !important
+	.q-header .q-btn
+		color: white
+	.q-btn
+		color: $secondary
+.q-btn--dark, .q-item--dark, .q-field--dark input
+	color: $secondary !important
+.q-field--dark
+	.q-field__control::before
+		border-color: $secondary !important
+	.q-field__marginal
+		color: $secondary !important

@@ -57,8 +57,7 @@ export default class SwapCurrencyInput extends Vue {
 @import '@/styles/quasar.sass'
 
 .bg-token-chooser
-	background-color: rgb(238, 234, 244) !important
-	//background-color: lighten($secondary, 70%)
+	background-color: lighten($secondary, 75%) !important
 .max
 	font-size: 0.7em
 	text-decoration: underline

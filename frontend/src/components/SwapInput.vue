@@ -1,7 +1,7 @@
 <template>
 	<div class="q-pa-md q-gutter-sm">
 		<swap-currency-input label="From" :amount.sync="amount" :balance="fromBalance" :currency="fromCurrency" editable />
-		<div class="text-center">
+		<div id="swap-icon" class="text-center">
 			<q-icon @click="switchCurrencyInputs" name="swap_vert" class="cursor-pointer arrow-down text-center" />
 		</div>
 		<swap-currency-input label="To" :amount.sync="amount" :balance="toBalance" :currency="toCurrency" />
@@ -119,7 +119,12 @@ export default class SwapInput extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import '@/styles/quasar.sass'
+
 .arrow-down
 	font-size: 32px
 	text-align: center
+
+body.body--dark #swap-icon
+	color: $primary
 </style>
