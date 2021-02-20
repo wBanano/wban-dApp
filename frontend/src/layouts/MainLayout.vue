@@ -2,7 +2,7 @@
 	<q-layout view="lHh Lpr lFf">
 		<q-header elevated>
 			<q-toolbar class="bg-toolbar text-white">
-				<img src="@/assets/wban-logo.png" class="currency-logo" />
+				<a @click="home"><img src="@/assets/wban-logo.png" class="currency-logo"/></a>
 				<q-toolbar-title>{{ appTitle }}</q-toolbar-title>
 				<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
 				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">
@@ -138,6 +138,10 @@ export default class MainLayout extends Vue {
 
 	get isMainnet() {
 		return this.chainName === 'BSC Mainnet'
+	}
+
+	home() {
+		router.push('/')
 	}
 
 	about() {
