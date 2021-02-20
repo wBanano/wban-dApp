@@ -88,11 +88,16 @@ export default class SwapInput extends Vue {
 
 			if (this.fromCurrency === 'BAN') {
 				console.info('Swap from BAN to wBAN requested')
-				await backend.swap({
+				const txnLink = await backend.swap({
 					amount: this.amount,
 					banAddress: ban.banAddress,
 					bscAddress: accounts.activeAccount,
 					provider: accounts.providerEthers
+				})
+				this.$q.notify({
+					type: 'positive',
+					html: true,
+					message: `Transaction: <a href="${txnLink}">${txnLink}</a>`
 				})
 			} else {
 				const contract: WBANToken | null = contracts.wbanContract

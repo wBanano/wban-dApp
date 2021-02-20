@@ -154,7 +154,6 @@ class BackendModule extends VuexModule {
 					bscAddress: bscAddress,
 					sig: sig
 				})
-				console.debug(resp)
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
 				switch (resp.status) {
@@ -188,7 +187,7 @@ class BackendModule extends VuexModule {
 	}
 
 	@Action
-	async swap(swapRequest: SwapRequest) {
+	async swap(swapRequest: SwapRequest): Promise<string> {
 		const { amount, banAddress, bscAddress, provider } = swapRequest
 		console.info(`Should swap ${amount} BAN to wBAN...`)
 		if (provider && amount && bscAddress) {
@@ -197,15 +196,17 @@ class BackendModule extends VuexModule {
 				.signMessage(`Swap ${amount} BAN for wBAN with BAN I deposited from my wallet "${banAddress}"`)
 			// call the backend for the swap
 			try {
-				await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
+				const resp = await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
 					ban: banAddress,
 					bsc: bscAddress,
 					amount: amount,
 					sig: sig
 				})
+				const txnHash = resp.data.link
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
 				this.context.commit('setErrorLink', '')
+				return txnHash
 			} catch (err) {
 				this.context.commit('setInError', true)
 				if (err.response) {
@@ -225,8 +226,10 @@ class BackendModule extends VuexModule {
 					this.context.commit('setErrorMessage', err)
 					this.context.commit('setErrorLink', '')
 				}
+				throw err
 			}
 		}
+		return ''
 	}
 }
 
