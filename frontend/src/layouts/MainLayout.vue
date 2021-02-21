@@ -1,8 +1,9 @@
 <template>
-	<q-layout view="lHh Lpr lFf">
+	<q-layout view="hHh lpR fFf">
 		<q-header elevated>
 			<q-toolbar class="bg-toolbar text-white">
-				<a @click="home"><img src="@/assets/wban-logo.png" class="currency-logo"/></a>
+				<q-btn v-if="drawerEnabled" dense flat round icon="menu" @click="drawerOpened = !drawerOpened" />
+				<a @click="home" class="gt-xs"><img src="@/assets/wban-logo.png" class="currency-logo"/></a>
 				<q-toolbar-title>{{ appTitle }}</q-toolbar-title>
 				<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
 				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">
@@ -50,9 +51,50 @@
 						</q-list>
 					</q-menu>
 				</q-btn>
-				<div class="gt-xs">wBAN {{ appVersion }}</div>
+				<div class="gt-xs">v{{ appVersion }}</div>
 			</q-toolbar>
 		</q-header>
+		<q-drawer
+			v-if="drawerEnabled"
+			v-model="drawerOpened"
+			behavior="desktop"
+			side="left"
+			overlay
+			elevated
+			:width="230"
+			:breakpoint="500"
+		>
+			<q-list>
+				<q-item clickable v-ripple @click="depositBAN">
+					<q-item-section avatar>
+						<q-icon name="img:ban-deposit.svg" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>Deposit BAN</q-item-section>
+				</q-item>
+				<q-item clickable v-ripple>
+					<q-item-section avatar>
+						<q-icon name="img:ban-withdraw.svg" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>Withdraw BAN</q-item-section>
+				</q-item>
+				<q-item clickable v-ripple @click="depositBNB">
+					<q-item-section avatar>
+						<q-icon name="img:bnb-deposit.svg" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>BNB Swap Fees</q-item-section>
+				</q-item>
+				<q-item clickable v-ripple @click="reloadBalances">
+					<q-item-section avatar>
+						<q-icon name="img:ban-refresh.svg" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>Refresh Balances</q-item-section>
+				</q-item>
+			</q-list>
+		</q-drawer>
 		<q-page-container>
 			<q-banner v-if="!backendOnline || inError" inline-actions class="text-white text-center bg-error">
 				{{ errorMessage }}
@@ -61,12 +103,16 @@
 			</q-banner>
 			<router-view />
 		</q-page-container>
+		<q-footer class="bg-footer">
+			wBAN is wrapped potassium for your pleasure!
+		</q-footer>
 	</q-layout>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import { Screen } from 'quasar'
 import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
@@ -124,8 +170,14 @@ export default class MainLayout extends Vue {
 	banWalletForTips = 'ban_3ta69w7cg7jrqswtntxbwaurrhyy44eagtrfeitrzk1hs8ss3qhdwe9gqyiw'
 	banWalletForTipsQRCode = ''
 
+	drawerOpened = false
+
 	get isMainnet() {
 		return this.chainName === 'BSC Mainnet'
+	}
+
+	get drawerEnabled() {
+		return Screen.lt.sm && this.isUserConnected
 	}
 
 	home() {
@@ -134,6 +186,21 @@ export default class MainLayout extends Vue {
 
 	about() {
 		router.push('/about')
+	}
+
+	depositBAN() {
+		document.dispatchEvent(new CustomEvent('deposit-ban'))
+		this.drawerOpened = false
+	}
+
+	depositBNB() {
+		document.dispatchEvent(new CustomEvent('deposit-bnb'))
+		this.drawerOpened = false
+	}
+
+	reloadBalances() {
+		document.dispatchEvent(new CustomEvent('reload-balances'))
+		this.drawerOpened = false
 	}
 
 	async created() {
@@ -171,6 +238,22 @@ export default class MainLayout extends Vue {
 
 .bg-toolbar
 	background-color: $positive !important
+
+.q-drawer
+	background-color: $primary
+	.q-item
+		color: $secondary
+	.q-separator
+		background-color: darken($primary, 15%)
+		margin-left: -10px
+		margin-right: 10px
+
+.bg-footer
+	background-color: lighten($secondary, 20%)
+	text-align: center
+	font-size: 1em
+	padding-top: 5px
+	padding-bottom: 5px
 
 //.q-page
 //	background-color: $positive

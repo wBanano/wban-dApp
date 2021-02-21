@@ -1,10 +1,10 @@
 <template>
 	<q-page>
-		<div v-if="isUserConnected && banAddress" class="q-pa-md row justify-center items-start q-gutter-md">
-			<div class="col-md-2 gt-xs">
+		<div v-if="isUserConnected && banAddress" class="q-pa-md row items-start">
+			<div class="col-lg-3 col-md-3 col-sm-3 gt-xs">
 				<Statistics />
 			</div>
-			<div class="col-md-5 col-xs-12">
+			<div class="col-lg-7 col-md-7 col-sm-9 col-xs-12">
 				<ChainInfo />
 			</div>
 		</div>
@@ -48,3 +48,14 @@ export default class PageIndex extends Vue {
 	}
 }
 </script>
+
+<style lang="sass" scoped>
+@import '@/styles/quasar.sass'
+
+@media (min-width: $breakpoint-md-min)
+	.q-page
+		background-image: url('../../public/blocklettuce.png')
+		background-position: right
+		background-repeat: no-repeat
+		background-size: contain
+</style>

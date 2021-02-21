@@ -11,21 +11,46 @@
 				</div>
 			</div>
 		</div>
-		<div class="row justify-center">
-			<div v-if="!isOwner" class="q-pa-md q-gutter-sm">
-				<div class="col-12 q-gutter-sm text-center">
-					<q-btn icon="arrow_circle_down" label="BAN" @click="depositBAN" color="primary" text-color="text-black" />
-					<q-btn icon="arrow_circle_down" label="BNB" @click="depositBNB" color="primary" text-color="text-black" />
-					<q-btn icon="refresh" @click="reloadBalances" color="primary" text-color="text-black" />
+		<div v-if="!isOwner" class="row justify-center">
+			<div class="col-md-10 col-sm-12 col-xs-12">
+				<div class="row items-start buttons text-center gt-xs">
+					<div class="col-3">
+						<q-btn @click="depositBAN" color="primary" stack>
+							<q-icon name="img:ban-deposit.svg" size="3em" />
+							<div class="text-button">Deposit BAN</div>
+							<q-tooltip content-class="bg-positive">Deposit some BAN for swaps</q-tooltip>
+						</q-btn>
+					</div>
+					<div class="col-3">
+						<q-btn color="primary" stack>
+							<q-icon name="img:ban-withdraw.svg" size="3em" />
+							<div class="text-button">Withdraw BAN</div>
+							<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
+						</q-btn>
+					</div>
+					<div class="col-3">
+						<q-btn @click="depositBNB" color="primary" stack>
+							<q-icon name="img:bnb-deposit.svg" size="3em" color="secondary" />
+							<div class="text-button">BNB<br />Swap Fees</div>
+							<q-tooltip content-class="bg-positive">Deposit some BNB for swaps fees</q-tooltip>
+						</q-btn>
+					</div>
+					<div class="col-3">
+						<q-btn @click="reloadBalances" color="primary" stack>
+							<q-icon name="img:ban-refresh.svg" size="3em" color="secondary" />
+							<div class="text-button">Refresh Balances</div>
+							<q-tooltip content-class="bg-positive">Refresh balances</q-tooltip>
+						</q-btn>
+					</div>
 				</div>
-				<p class="col-12 text-center">
-					<strong>Available balance for swap fees: </strong>
-					<br class="xs" />
-					{{ bnbDeposits | bnToString }}
-					<img src="@/assets/binance-coin.png" class="currency-logo" />
-					BNB
-				</p>
 			</div>
+			<p id="balances" class="col-12 text-center">
+				<strong>Available balance for swap fees: </strong>
+				<br class="xs" />
+				{{ bnbDeposits | bnToString }}
+				<img src="@/assets/binance-coin.png" class="currency-logo" />
+				BNB
+			</p>
 		</div>
 		<div class="row justify-center" v-if="warningCode !== ''">
 			<div class="col-md-8 col-xs-12">
@@ -40,7 +65,7 @@
 			</div>
 		</div>
 		<div class="row justify-center">
-			<div class="col-md-8 col-xs-12">
+			<div class="col-md-7 col-sm-9 col-xs-12">
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" @swap="reloadBalancesInABit" />
 			</div>
 		</div>
@@ -228,15 +253,38 @@ export default class ChainInfo extends Vue {
 		} catch (err) {
 			console.error(err)
 		}
+		document.addEventListener('deposit-ban', this.depositBAN)
+		document.addEventListener('deposit-bnb', this.depositBNB)
+		document.addEventListener('reload-balances', this.reloadBalances)
 	}
 }
 </script>
 
 <style lang="sass" scoped>
+@import '@/styles/quasar.sass'
+
 .currency-logo
 	width: 20px
 	heigh: 20px
 	vertical-align: top
+
+.buttons
+	max-width: 500px
+	margin-left: auto
+	margin-right: auto
+	button
+		width: 90%
+//		margin-left: 5px
+//		width: 110px
+//	:first-child
+//		margin-left: 0 !important
+
+.text-button
+	color: $secondary
+	text-align: center
+
+#balances
+	margin-top: 10px
 
 @media (min-width: 900px)
 	.ban-deposits-dialog
