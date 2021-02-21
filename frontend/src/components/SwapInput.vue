@@ -15,13 +15,14 @@
 <script lang="ts">
 import { Component, Prop, Ref, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { QBtn, QAjaxBar } from 'quasar'
+import { QBtn, QAjaxBar, openURL } from 'quasar'
 import SwapCurrencyInput from '@/components/SwapCurrencyInput.vue'
 import { ethers, BigNumber } from 'ethers'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import contracts from '@/store/modules/contracts'
+import SwapResponse from '@/models/SwapResponse'
 import { WBANToken } from '../../../artifacts/typechain'
 
 const banStore = namespace('ban')
@@ -88,7 +89,7 @@ export default class SwapInput extends Vue {
 
 			if (this.fromCurrency === 'BAN') {
 				console.info('Swap from BAN to wBAN requested')
-				const txnLink = await backend.swap({
+				const resp: SwapResponse = await backend.swap({
 					amount: this.amount,
 					banAddress: ban.banAddress,
 					bscAddress: accounts.activeAccount,
@@ -97,7 +98,17 @@ export default class SwapInput extends Vue {
 				this.$q.notify({
 					type: 'positive',
 					html: true,
-					message: `Transaction: <a href="${txnLink}">${txnLink}</a>`
+					message: `View transaction on <a href="${resp.link}">BscScan</a>`,
+					caption: `Transaction ${resp.transaction}`,
+					actions: [
+						{
+							label: 'View',
+							color: 'white',
+							handler: () => {
+								openURL(resp.link)
+							}
+						}
+					]
 				})
 			} else {
 				const contract: WBANToken | null = contracts.wbanContract

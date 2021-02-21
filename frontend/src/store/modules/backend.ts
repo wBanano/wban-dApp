@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { BigNumber } from 'ethers'
 import ClaimRequest from '@/models/ClaimRequest'
 import SwapRequest from '@/models/SwapRequest'
+import SwapResponse from '@/models/SwapResponse'
 import { ClaimResponse } from '@/models/ClaimResponse'
 
 @Module({
@@ -187,7 +188,7 @@ class BackendModule extends VuexModule {
 	}
 
 	@Action
-	async swap(swapRequest: SwapRequest): Promise<string> {
+	async swap(swapRequest: SwapRequest): Promise<SwapResponse> {
 		const { amount, banAddress, bscAddress, provider } = swapRequest
 		console.info(`Should swap ${amount} BAN to wBAN...`)
 		if (provider && amount && bscAddress) {
@@ -202,11 +203,11 @@ class BackendModule extends VuexModule {
 					amount: amount,
 					sig: sig
 				})
-				const txnHash = resp.data.link
+				const result: SwapResponse = resp.data
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
 				this.context.commit('setErrorLink', '')
-				return txnHash
+				return result
 			} catch (err) {
 				this.context.commit('setInError', true)
 				if (err.response) {
@@ -229,7 +230,11 @@ class BackendModule extends VuexModule {
 				throw err
 			}
 		}
-		return ''
+		return {
+			message: '',
+			transaction: '',
+			link: ''
+		}
 	}
 }
 
