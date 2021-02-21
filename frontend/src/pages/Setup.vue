@@ -1,11 +1,18 @@
 <template>
 	<div class="q-pa-md">
-		<q-banner inline-actions rounded class="bg-primary text-black text-center">
+		<q-banner inline-actions rounded class="bg-primary text-secondary text-center">
 			<p>We need to verify your BAN address!</p>
 			<p>This step is important as it ensures that no one else than you can claim wBAN.</p>
 		</q-banner>
 
-		<q-stepper v-model="step" vertical active-color="secondary" done-color="positive" animated>
+		<q-stepper
+			v-model="step"
+			vertical
+			:active-color="activeColor"
+			:inactive-color="inactiveColor"
+			:done-color="positive"
+			animated
+		>
 			<q-step :name="1" title="Banano Address" icon="settings" :done="step > 1">
 				<q-input
 					dense
@@ -27,7 +34,7 @@
 				<p>This is important as we will <i>link</i> your Banano address with your Binance Smart Chain one.</p>
 				<q-stepper-navigation>
 					<q-btn @click="claimBananoWallet" color="primary" text-color="secondary" label="Continue" />
-					<q-btn flat @click="step = 1" color="secondary" label="Back" class="q-ml-sm" />
+					<q-btn @click="step = 1" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 
@@ -49,7 +56,7 @@
 				</div>
 				<q-stepper-navigation>
 					<q-btn @click="checkBananoDeposit" color="primary" text-color="secondary" label="Check Deposit" />
-					<q-btn flat @click="step = 2" color="secondary" label="Back" class="q-ml-sm" />
+					<q-btn @click="step = 2" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 		</q-stepper>
@@ -88,6 +95,18 @@ export default class SetupPage extends Vue {
 	banWalletForDepositsLink!: string
 
 	banWalletForDepositsQRCode = ''
+
+	get activeColor(): string {
+		if (this.$q.dark.isActive) {
+			return 'primary'
+		} else {
+			return 'secondary'
+		}
+	}
+
+	get inactiveColor(): string {
+		return '#9e9e9e'
+	}
 
 	async claimBananoWallet() {
 		const result: ClaimResponse = await backend.claimAddresses({
@@ -143,3 +162,18 @@ export default class SetupPage extends Vue {
 	}
 }
 </script>
+
+<style lang="sass">
+@import '@/styles/quasar.sass'
+
+.q-stepper--dark
+	background-color: lighten($secondary, 10%) !important
+body.body--dark
+	.q-field input
+		color: white !important
+	.q-field__label
+		color: $primary !important
+
+.q-field--dark:not(.q-field--highlighted) .q-field__label, .q-field--dark .q-field__marginal, .q-field--dark .q-field__bottom
+	color: $primary
+</style>

@@ -18,7 +18,8 @@ class SettingsModule extends VuexModule {
 			Dark.set(darkModeEnabled)
 			return darkModeEnabled
 		}
-		return false
+		Dark.set(true)
+		return true
 	}
 
 	@Mutation
