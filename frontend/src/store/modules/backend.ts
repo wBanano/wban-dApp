@@ -5,6 +5,8 @@ import { BigNumber } from 'ethers'
 import ClaimRequest from '@/models/ClaimRequest'
 import SwapRequest from '@/models/SwapRequest'
 import SwapResponse from '@/models/SwapResponse'
+import WithdrawRequest from '@/models/WithdrawRequest'
+import WithdrawResponse from '@/models/WithdrawResponse'
 import { ClaimResponse } from '@/models/ClaimResponse'
 
 @Module({
@@ -198,6 +200,54 @@ class BackendModule extends VuexModule {
 			// call the backend for the swap
 			try {
 				const resp = await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
+					ban: banAddress,
+					bsc: bscAddress,
+					amount: amount,
+					sig: sig
+				})
+				const result: SwapResponse = resp.data
+				this.context.commit('setInError', false)
+				this.context.commit('setErrorMessage', '')
+				this.context.commit('setErrorLink', '')
+				return result
+			} catch (err) {
+				this.context.commit('setInError', true)
+				if (err.response) {
+					const response: AxiosResponse = err.response
+					const error = response.data
+					switch (response.status) {
+						case 409:
+							this.context.commit('setErrorMessage', error.error)
+							this.context.commit('setErrorLink', error.link)
+							break
+						default:
+							this.context.commit('setErrorMessage', err)
+							this.context.commit('setErrorLink', '')
+							break
+					}
+				} else {
+					this.context.commit('setErrorMessage', err)
+					this.context.commit('setErrorLink', '')
+				}
+				throw err
+			}
+		}
+		return {
+			message: '',
+			transaction: '',
+			link: ''
+		}
+	}
+
+	@Action
+	async withdrawBAN(withdrawRequest: WithdrawRequest): Promise<WithdrawResponse> {
+		const { amount, banAddress, bscAddress, provider } = withdrawRequest
+		console.info(`Should withdraw ${amount} BAN to ${banAddress}...`)
+		if (provider && amount && bscAddress) {
+			const sig = await provider.getSigner().signMessage(`Withdraw ${amount} BAN to my wallet "${banAddress}"`)
+			// call the backend for the swap
+			try {
+				const resp = await axios.post(`${BackendModule.BACKEND_URL}/withdrawals/ban`, {
 					ban: banAddress,
 					bsc: bscAddress,
 					amount: amount,

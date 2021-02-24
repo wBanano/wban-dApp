@@ -72,7 +72,7 @@
 					<q-separator vertical inset />
 					<q-item-section>Deposit BAN</q-item-section>
 				</q-item>
-				<q-item clickable v-ripple>
+				<q-item clickable v-ripple @click="withdrawBAN">
 					<q-item-section avatar>
 						<q-icon name="img:ban-withdraw.svg" size="3em" />
 					</q-item-section>
@@ -190,6 +190,11 @@ export default class MainLayout extends Vue {
 
 	depositBAN() {
 		document.dispatchEvent(new CustomEvent('deposit-ban'))
+		this.drawerOpened = false
+	}
+
+	withdrawBAN() {
+		document.dispatchEvent(new CustomEvent('withdraw-ban'))
 		this.drawerOpened = false
 	}
 
