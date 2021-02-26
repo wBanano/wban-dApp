@@ -10,7 +10,7 @@
 			vertical
 			:active-color="activeColor"
 			:inactive-color="inactiveColor"
-			:done-color="positive"
+			done-color="positive"
 			animated
 		>
 			<q-step :name="1" title="Banano Address" icon="settings" :done="step > 1">
@@ -124,6 +124,7 @@ export default class SetupPage extends Vue {
 				router.push('/')
 				break
 			default:
+				console.log("Can't claim")
 		}
 	}
 

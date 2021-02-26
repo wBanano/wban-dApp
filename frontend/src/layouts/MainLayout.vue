@@ -254,7 +254,7 @@ export default class MainLayout extends Vue {
 		margin-right: 10px
 
 .bg-footer
-	background-color: lighten($secondary, 20%)
+	background-color: lighten($secondary, 20%) !important
 	text-align: center
 	font-size: 1em
 	padding-top: 5px
