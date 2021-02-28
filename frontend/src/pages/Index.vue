@@ -8,8 +8,63 @@
 				<ChainInfo />
 			</div>
 		</div>
-		<div v-if="!isUserConnected">
-			Make a great page explaining here what wBAN is all about and to invite user to click on the connect button :)
+		<div v-if="!isUserConnected" class="welcome-section q-pa-md row justify-center">
+			<div class="col-lg-5 col-md-6 col-sm-9 col-xs-12 text-center">
+				<div class="love row justify-center items-center q-col-gutter-lg">
+					<div class="col text-right">
+						<q-img src="banano-logo-vertical.svg" />
+					</div>
+					<div class="col-1">
+						<q-icon name="add_circle" color="positive" size="2em" />
+					</div>
+					<div class="col">
+						<q-img src="bsc-logo.svg" />
+					</div>
+					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold;">
+						=
+					</div>
+					<div class="col-3 text-left">
+						<img :src="require(`@/assets/wban-logo.svg`)" width="150px" />
+					</div>
+				</div>
+				<h3>
+					wBAN is wrapped <a href="https://banano.cc">Banano</a> on
+					<a href="https://www.binance.org/en/smartChain">Binance Smart Chain (BSC)</a>
+				</h3>
+				<h4>What can you do with wBAN?</h4>
+				<div class="use-cases row items-stretch q-col-gutter-md">
+					<div class="col">
+						<q-card>
+							<q-card-section>
+								<div class="text-h5">Swap with other crypto</div>
+							</q-card-section>
+							<q-card-section>
+								<p>Swap from BAN to wBAN to your preferred crypto or vice-versa</p>
+							</q-card-section>
+						</q-card>
+					</div>
+					<div class="col">
+						<q-card>
+							<q-card-section>
+								<div class="text-h5">Earn some wBAN</div>
+							</q-card-section>
+							<q-card-section>
+								<p>Earn extra wBAN by providing liquidity to pools</p>
+							</q-card-section>
+						</q-card>
+					</div>
+					<div class="col">
+						<q-card>
+							<q-card-section>
+								<div class="text-h5">Learn DeFi</div>
+							</q-card-section>
+							<q-card-section>
+								<p>Without risking much of your hard earned BAN</p>
+							</q-card-section>
+						</q-card>
+					</div>
+				</div>
+			</div>
 		</div>
 	</q-page>
 </template>
@@ -51,6 +106,34 @@ export default class PageIndex extends Vue {
 
 <style lang="sass" scoped>
 @import '@/styles/quasar.sass'
+
+body.body--dark
+	.welcome-section
+		a
+			color: $primary
+
+.welcome-section
+	h4
+		line-height: 1rem
+
+.love col
+	width: 100%
+
+body.body--light
+	.love
+		background-color: lighten($secondary, 15%)
+		margin-top: 5px
+		padding-bottom: 10px
+
+.use-cases
+	.q-card
+		background-color: $primary
+		color: $secondary
+		height: 100%
+		.q-card__section:nth-child(1)
+			background-image: url('../../public/bg-hero.svg') !important
+			background-size: cover !important
+			min-height: 100px
 
 @media (min-width: $breakpoint-md-min)
 	.q-page

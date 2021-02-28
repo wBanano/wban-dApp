@@ -1,7 +1,10 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
+import { Notify, openURL } from 'quasar'
 import store from '@/store'
+import Contracts from '@/store/modules/contracts'
+import Accounts from '@/store/modules/accounts'
 import axios, { AxiosResponse } from 'axios'
-import { BigNumber } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import ClaimRequest from '@/models/ClaimRequest'
 import SwapRequest from '@/models/SwapRequest'
 import SwapResponse from '@/models/SwapResponse'
@@ -22,6 +25,7 @@ class BackendModule extends VuexModule {
 	private _inError = false
 	private _errorMessage = ''
 	private _errorLink = ''
+	private _streamEventsSource: EventSource | null = null
 	static BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
 
 	get online() {
@@ -82,16 +86,110 @@ class BackendModule extends VuexModule {
 		this._errorLink = errorLink
 	}
 
+	@Mutation
+	setStreamEventsSource(eventSource: EventSource) {
+		this._streamEventsSource = eventSource
+	}
+
 	@Action
-	async initBackend() {
-		console.log('in initBackend')
+	async initBackend(banWallet: string) {
+		console.log(`in initBackend`)
 		try {
 			const healthResponse = await axios.request({ url: `${BackendModule.BACKEND_URL}/health` })
 			const healthStatus = healthResponse.data.status
 			this.context.commit('setOnline', healthStatus === 'OK')
 
-			const depoositWalletResponse = await axios.request({ url: `${BackendModule.BACKEND_URL}/deposits/ban/wallet` })
-			const depositWalletAddress = depoositWalletResponse.data.address
+			if (!this._streamEventsSource && banWallet) {
+				console.debug(`Initiating connection to streams endpoint for ${banWallet}`)
+				/* eslint-disable @typescript-eslint/no-explicit-any */
+				const eventSource: EventSource = new EventSource(`${BackendModule.BACKEND_URL}/events/${banWallet}`)
+				const withdrawalEvent = (e: any) => {
+					console.debug(e)
+					const { banWallet, withdrawal, balance, transaction } = JSON.parse(e.data)
+					console.log(
+						`Received banano withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN. Balance is: ${balance} BAN.`
+					)
+					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+					if (Contracts.wbanContract && Accounts.activeAccount) {
+						Contracts.reloadWBANBalance({
+							contract: Contracts.wbanContract,
+							account: Accounts.activeAccount
+						})
+					}
+					// notify user
+					Notify.create({
+						type: 'positive',
+						html: true,
+						message: `View transaction on <a href="https://creeper.banano.cc/explorer/block/${transaction}">Banano Explorer</a>`,
+						caption: `Transaction ${transaction}`,
+						actions: [
+							{
+								label: 'View',
+								color: 'white',
+								handler: () => {
+									openURL(`https://creeper.banano.cc/explorer/block/${transaction}`)
+								}
+							}
+						]
+					})
+				}
+
+				eventSource.addEventListener('banano-deposit', (e: any) => {
+					const { banWallet, deposit, balance } = JSON.parse(e.data)
+					console.log(
+						`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
+					)
+					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+				})
+				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
+				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
+				eventSource.addEventListener('swap-ban-to-wban', (e: any) => {
+					const { banWallet, swapped, balance, wbanBalance, transaction, transactionLink } = JSON.parse(e.data)
+					console.log(
+						`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`
+					)
+					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
+					if (Contracts.wbanContract && Accounts.activeAccount) {
+						Contracts.reloadBNBDeposits({
+							contract: Contracts.wbanContract,
+							account: Accounts.activeAccount
+						})
+					}
+					Notify.create({
+						type: 'positive',
+						html: true,
+						message: `View transaction on <a href="${transactionLink}">BscScan</a>`,
+						caption: `Transaction ${transaction}`,
+						actions: [
+							{
+								label: 'View',
+								color: 'white',
+								handler: () => {
+									openURL(transactionLink)
+								}
+							}
+						]
+					})
+				})
+				eventSource.addEventListener('message', (e: any) => {
+					console.warn('Got unexpected message')
+					console.log(e)
+				})
+				eventSource.addEventListener('open', (e: any) => {
+					console.debug('Connected to stream endpoint', e)
+				})
+				eventSource.addEventListener('error', (e: any) => {
+					console.error(`Streams error`, e)
+					if (e.readyState == EventSource.CLOSED) {
+						console.log('Connection to stream endpoint was closed.')
+					}
+				})
+				this.context.commit('setStreamEventsSource', eventSource)
+			}
+
+			const depositWalletResponse = await axios.request({ url: `${BackendModule.BACKEND_URL}/deposits/ban/wallet` })
+			const depositWalletAddress = depositWalletResponse.data.address
 			this.context.commit('setBanWalletForDeposits', depositWalletAddress)
 		} catch (err) {
 			console.error(err)
@@ -101,44 +199,21 @@ class BackendModule extends VuexModule {
 	}
 
 	@Action
+	async closeStreamConnection() {
+		if (this._streamEventsSource) {
+			this._streamEventsSource.close()
+			this.context.commit('setStreamEventsSource', null)
+			console.debug('Closed stream conneection')
+		}
+	}
+
+	@Action
 	async loadBanDeposited(account: string) {
 		if (account) {
 			console.debug('in loadBanDeposited')
-
-			const eventSource = new EventSource(`${BackendModule.BACKEND_URL}/deposits/ban/${account}`)
-			eventSource.addEventListener(
-				'message',
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(e: any) => {
-					// commit the new value only if different from the actual one
-					if (!this.banDeposited.eq(e.data)) {
-						this.context.commit('setBanDeposited', BigNumber.from(e.data))
-					}
-				},
-				false
-			)
-
-			eventSource.addEventListener(
-				'open',
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(e: any) => {
-					// Connection was opened.
-					console.debug('Connected to balances endpoint', e)
-				},
-				false
-			)
-
-			eventSource.addEventListener(
-				'error',
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(e: any) => {
-					console.debug(e)
-					if (e.readyState == EventSource.CLOSED) {
-						console.log('Connection to balances endpoint was closed.')
-					}
-				},
-				false
-			)
+			const resp = await axios.get(`${BackendModule.BACKEND_URL}/deposits/ban/${account}`)
+			const { balance } = resp.data
+			this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 		} else {
 			console.error("Can't load BAN deposited as address is empty")
 		}
@@ -192,24 +267,26 @@ class BackendModule extends VuexModule {
 	@Action
 	async swap(swapRequest: SwapRequest): Promise<SwapResponse> {
 		const { amount, banAddress, bscAddress, provider } = swapRequest
-		console.info(`Should swap ${amount} BAN to wBAN...`)
+		console.info(`Swap from BAN to wBAN requested for ${amount} BAN`)
 		if (provider && amount && bscAddress) {
 			const sig = await provider
 				.getSigner()
 				.signMessage(`Swap ${amount} BAN for wBAN with BAN I deposited from my wallet "${banAddress}"`)
 			// call the backend for the swap
 			try {
-				const resp = await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
+				await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
 					ban: banAddress,
 					bsc: bscAddress,
 					amount: amount,
 					sig: sig
 				})
+				/*
 				const result: SwapResponse = resp.data
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
 				this.context.commit('setErrorLink', '')
 				return result
+				*/
 			} catch (err) {
 				this.context.commit('setInError', true)
 				if (err.response) {

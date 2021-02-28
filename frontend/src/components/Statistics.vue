@@ -13,7 +13,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { bnToStringFilter } from '@/utils/filters.ts'
+import { bnToStringFilter } from '@/utils/filters'
 import { BigNumber } from 'ethers'
 
 const contractsStore = namespace('contracts')

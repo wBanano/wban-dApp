@@ -1,4 +1,6 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
+import { namespace } from 'vuex-class'
+import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 // eslint-disable-next-line @typescript-eslint/camelcase
 import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
@@ -95,6 +97,33 @@ class ContractsModule extends VuexModule {
 	}
 
 	@Action
+	updateWBanBalance(balance: BigNumber) {
+		this.context.commit('setWBANBalance', balance)
+	}
+
+	@Action
+	async reloadWBANBalance(request: LoadBalancesFromContractRequest) {
+		const { contract, account } = request
+		if (!contract || !account) {
+			throw new Error(`Bad request ${JSON.stringify(request)}`)
+		}
+		const wbanBalance = await contract.balanceOf(account)
+		console.info(`Balance ${ethers.utils.formatEther(wbanBalance)} wBAN`)
+		this.context.commit('setWBANBalance', wbanBalance)
+	}
+
+	@Action
+	async reloadBNBDeposits(request: LoadBalancesFromContractRequest) {
+		const { contract, account } = request
+		if (!contract || !account) {
+			throw new Error(`Bad request ${JSON.stringify(request)}`)
+		}
+		const bnbDeposits = await contract.bnbBalanceOf(account)
+		console.info(`BNB deposits ${ethers.utils.formatEther(bnbDeposits)} BNB`)
+		this.context.commit('setBNBDeposits', bnbDeposits)
+	}
+
+	@Action
 	async swap(swapRequest: SwapToBanRequest) {
 		const { amount, toBanAddress, contract } = swapRequest
 		console.log(`Should swap ${ethers.utils.formatEther(amount)} BAN to ${toBanAddress}`)
@@ -104,3 +133,4 @@ class ContractsModule extends VuexModule {
 }
 
 export default getModule(ContractsModule)
+export const Contracts: BindingHelpers = namespace('contracts')

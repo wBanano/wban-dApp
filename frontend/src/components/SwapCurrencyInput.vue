@@ -16,13 +16,21 @@
 				</template>
 			</q-input>
 		</q-card-section>
+		<q-card-actions vertical align="right" v-if="currency === 'wBAN'">
+			<a id="add-wban-to-metamask" @click="addWBANToMetaMask">
+				Add wBAN to MetaMask
+				<q-icon name="img:metamask.svg" size="24px" />
+			</a>
+		</q-card-actions>
 	</q-card>
 </template>
 
 <script lang="ts">
 import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import { BigNumber } from 'ethers'
-import { bnToStringFilter } from '@/utils/filters.ts'
+import { bnToStringFilter } from '@/utils/filters'
+
+import accounts from '@/store/modules/accounts'
 
 @Component({
 	filters: {
@@ -40,7 +48,7 @@ export default class SwapCurrencyInput extends Vue {
 		if (this.currency === 'BAN') {
 			return 'ban-logo.png'
 		} else {
-			return 'wban-logo.png'
+			return 'wban-logo.svg'
 		}
 	}
 
@@ -49,6 +57,10 @@ export default class SwapCurrencyInput extends Vue {
 			.div(1_000_000_000_000_000)
 			.div(1_000)
 			.toNumber()
+	}
+
+	addWBANToMetaMask() {
+		accounts.addWBANTokenToMetaMask()
 	}
 }
 </script>
@@ -60,6 +72,10 @@ body.body--light .bg-token-chooser
 	background-color: lighten($secondary, 75%) !important
 body.body--dark .bg-token-chooser
 	background-color: lighten($secondary, 10%) !important
+body.body--dark #add-wban-to-metamask
+	color: $primary
+	cursor: pointer
+	font-size: .8em
 .max
 	font-size: 0.7em
 	text-decoration: underline

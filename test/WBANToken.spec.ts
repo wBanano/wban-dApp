@@ -62,6 +62,16 @@ describe('WBANToken', () => {
 				.to.be.revertedWith("Gas limit can't be zero");
 		});
 
+		it('Refuses to mint if the smart-contract is paused', async () => {
+			const wBanToMint = 123;
+			const gasPrice = 20_000_000_000;
+			await token.pause();
+			const user1_interaction = token.connect(user1);
+			await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.01') });
+			await expect(token.mintTo(user1.address, wBanToMint, 81_000, { gasLimit: 81_000, gasPrice: gasPrice }))
+				.to.be.revertedWith("BEP20Pausable: token transfer while paused");
+		});
+
 		it('Mints wBAN if user deposited enough BNB', async () => {
 			const wBanToMint = 123;
 			const gasPrice = 20_000_000_000;

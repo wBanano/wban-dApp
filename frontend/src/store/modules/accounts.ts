@@ -1,8 +1,11 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
+import { namespace } from 'vuex-class'
+import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 import { BigNumber, ethers } from 'ethers'
 // @ts-ignore
 import WalletProvider from '@libertypie/wallet-provider'
+import MetaMask from '@/utils/MetaMask'
 
 @Module({
 	namespaced: true,
@@ -199,6 +202,12 @@ class AccountsModule extends VuexModule {
 		}
 		this.context.commit('setActiveBalance', balance)
 	}
+
+	@Action
+	async addWBANTokenToMetaMask() {
+		return MetaMask.addWBANToken()
+	}
 }
 
 export default getModule(AccountsModule)
+export const Contracts: BindingHelpers = namespace('accounts')

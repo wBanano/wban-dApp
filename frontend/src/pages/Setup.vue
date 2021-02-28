@@ -144,7 +144,7 @@ export default class SetupPage extends Vue {
 	async mounted() {
 		console.debug('in mounted')
 		await ban.init()
-		await backend.initBackend()
+		await backend.initBackend(this.banAddress)
 		if (!this.isUserConnected) {
 			router.push('/')
 		}
@@ -160,6 +160,10 @@ export default class SetupPage extends Vue {
 		} catch (err) {
 			console.error(err)
 		}
+	}
+
+	async unmounted() {
+		await backend.closeStreamConnection()
 	}
 }
 </script>

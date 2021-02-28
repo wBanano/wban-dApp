@@ -66,7 +66,7 @@
 		</div>
 		<div class="row justify-center">
 			<div class="col-md-7 col-sm-9 col-xs-12">
-				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" @swap="reloadBalancesInABit" />
+				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 			</div>
 		</div>
 		<q-dialog v-model="promptForBanDeposit" persistent>
@@ -106,15 +106,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { openURL } from 'quasar'
 import SwapInput from '@/components/SwapInput.vue'
-import { bnToStringFilter } from '@/utils/filters.ts'
+import { bnToStringFilter } from '@/utils/filters'
 import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
 import contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
 import WithdrawRequest from '@/models/WithdrawRequest'
-import WithdrawResponse from '@/models/WithdrawResponse'
 import { WBANToken } from '../../../artifacts/typechain/WBANToken'
 import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
@@ -187,32 +185,13 @@ export default class ChainInfo extends Vue {
 	async withdrawBAN() {
 		console.log('Should withdraw ban')
 		if (accounts.activeAccount) {
-			// this.bar.start()
-
-			const resp: WithdrawResponse = await backend.withdrawBAN({
+			await backend.withdrawBAN({
 				amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
 				banAddress: ban.banAddress,
 				bscAddress: accounts.activeAccount,
 				provider: accounts.providerEthers
 			} as WithdrawRequest)
-			this.$q.notify({
-				type: 'positive',
-				html: true,
-				message: `View transaction on <a href="https://creeper.banano.cc/explorer/block/${resp.transaction}">Banano Explorer</a>`,
-				caption: `Transaction ${resp.transaction}`,
-				actions: [
-					{
-						label: 'View',
-						color: 'white',
-						handler: () => {
-							openURL(`https://creeper.banano.cc/explorer/block/${resp.transaction}`)
-						}
-					}
-				]
-			})
-
 			this.$emit('withdrawal')
-			// this.bar.stop()
 		}
 	}
 
@@ -239,10 +218,6 @@ export default class ChainInfo extends Vue {
 				this.reloadBalances()
 			})
 		}
-	}
-
-	reloadBalancesInABit() {
-		setTimeout(this.reloadBalances, 10_000)
 	}
 
 	async reloadBalances() {
@@ -279,7 +254,7 @@ export default class ChainInfo extends Vue {
 		console.debug('in mounted')
 		await ban.init()
 		this.banAddress = ban.banAddress
-		await backend.initBackend()
+		await backend.initBackend(this.banAddress)
 		await this.reloadBalances()
 		try {
 			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
@@ -296,6 +271,10 @@ export default class ChainInfo extends Vue {
 		document.addEventListener('withdraw-ban', this.withdrawBAN)
 		document.addEventListener('deposit-bnb', this.depositBNB)
 		document.addEventListener('reload-balances', this.reloadBalances)
+	}
+
+	async unmounted() {
+		await backend.closeStreamConnection()
 	}
 }
 </script>

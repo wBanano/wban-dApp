@@ -2,9 +2,9 @@
 
 pragma solidity 0.6.12;
 
-import "@pancakeswap/pancake-swap-lib/contracts/token/BEP20/BEP20.sol";
+import "./bep20/BEP20Pausable.sol";
 
-contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
+contract WBANToken is BEP20("Wrapped Banano", "wBAN"), Pausable {
     mapping (address => uint256) private _bnbBalances;
 
     /**
@@ -16,6 +16,7 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
      * - `recipient` must have deposited enough BNB through `bnbDeposit`
      */
     function mintTo(address recipient, uint256 amount, uint256 gaslimit) public onlyOwner {
+        require(!paused(), "BEP20Pausable: token transfer while paused");
         require(gaslimit > 0, "Gas limit can't be zero");
         // check if recipient has deposited enough BNB to cover for gas costs
         uint256 _gasCost = gaslimit * tx.gasprice;
@@ -27,6 +28,7 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
     }
 
     function swapToBan(string memory banano_address, uint256 amount) external {
+        require(!paused(), "BEP20Pausable: token transfer while paused");
         require(balanceOf(_msgSender()) >= amount, "Insufficient wBAN");
         require(bytes(banano_address).length == 64, "Not a Banano address");
         _burn(_msgSender(), amount);
@@ -48,6 +50,14 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN") {
      */
     function bnbBalanceOf(address account) external view returns (uint256) {
         return _bnbBalances[account];
+    }
+
+    function pause() external whenNotPaused onlyOwner {
+        _pause();
+    }
+
+    function unpause() external whenPaused onlyOwner {
+        _unpause();
     }
 
     /**

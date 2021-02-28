@@ -54,6 +54,11 @@ const config: HardhatUserConfig = {
       url: 'http://localhost:8545',
       accounts,
     },
+		bscdevnet: {
+			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+      accounts,
+			chainId: 97,
+		},
 		bsctestnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
       accounts,
