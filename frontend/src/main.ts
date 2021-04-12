@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Quasar, Notify } from 'quasar'
+import { Quasar, Notify, Dialog } from 'quasar'
 import './styles/quasar.sass'
 import '@quasar/extras/material-icons/material-icons.css'
 
@@ -10,7 +10,8 @@ Vue.config.productionTip = false
 
 Vue.use(Quasar, {
 	plugins: {
-		Notify
+		Notify,
+		Dialog
 	}
 })
 

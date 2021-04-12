@@ -1,5 +1,5 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
-import { Notify, openURL } from 'quasar'
+import { Notify, Dialog, openURL } from 'quasar'
 import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
@@ -140,6 +140,13 @@ class BackendModule extends VuexModule {
 						`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
 					)
 					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+					Dialog.create({
+						dark: true,
+						title: 'Deposit Confirmed',
+						message: `Your deposit of ${deposit} BAN was received. You can swap it to wBAN.`,
+						cancel: false,
+						persistent: true
+					})
 				})
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
@@ -172,6 +179,7 @@ class BackendModule extends VuexModule {
 						]
 					})
 				})
+				eventSource.addEventListener('ping', () => console.debug('Ping received from the server'))
 				eventSource.addEventListener('message', (e: any) => {
 					console.warn('Got unexpected message')
 					console.log(e)
