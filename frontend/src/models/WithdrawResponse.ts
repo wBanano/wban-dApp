@@ -1,5 +1,5 @@
 type WithdrawResponse = {
-	message: string,
+	message: string
 	transaction: string
 	link: string
 }

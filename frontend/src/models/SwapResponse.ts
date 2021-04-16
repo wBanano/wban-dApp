@@ -1,5 +1,5 @@
 type SwapResponse = {
-	message: string,
+	message: string
 	transaction: string
 	link: string
 }

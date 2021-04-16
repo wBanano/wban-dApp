@@ -23,6 +23,8 @@ class AccountsModule extends VuexModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _walletProvider: any
 
+	static BSC_EXPECTED_CHAIN_ID: string = process.env.VUE_APP_BSC_EXPECTED_CHAIN_ID || ''
+
 	get isUserConnected() {
 		return this.isConnected
 	}
@@ -156,11 +158,26 @@ class AccountsModule extends VuexModule {
 		const resultInfo: any = connectStatus.getData()
 		const provider = resultInfo.provider
 
-		this.context.commit('setIsConnected', true)
-		this.context.commit('setActiveAccount', resultInfo.account)
-		this.context.commit('setChainData', resultInfo.chainId)
-		this.context.commit('setEthersProvider', provider)
-		this.context.dispatch('fetchActiveBalance')
+		if (resultInfo.chainId == AccountsModule.BSC_EXPECTED_CHAIN_ID) {
+			this.context.commit('setIsConnected', true)
+			this.context.commit('setActiveAccount', resultInfo.account)
+			this.context.commit('setChainData', resultInfo.chainId)
+			this.context.commit('setEthersProvider', provider)
+			this.context.dispatch('fetchActiveBalance')
+		} else {
+			this.context.commit('setIsConnected', false)
+			MetaMask.switchToBSC().onOk(async () => {
+				await MetaMask.addCustomNetwork(AccountsModule.BSC_EXPECTED_CHAIN_ID)
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const resultInfo: any = connectStatus.getData()
+				const provider = resultInfo.provider
+				this.context.commit('setIsConnected', true)
+				this.context.commit('setActiveAccount', resultInfo.account)
+				this.context.commit('setChainData', resultInfo.chainId)
+				this.context.commit('setEthersProvider', provider)
+				this.context.dispatch('fetchActiveBalance')
+			})
+		}
 	}
 
 	@Action

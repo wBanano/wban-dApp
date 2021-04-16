@@ -183,7 +183,6 @@ export default class ChainInfo extends Vue {
 	}
 
 	async withdrawBAN() {
-		console.log('Should withdraw ban')
 		if (accounts.activeAccount) {
 			await backend.withdrawBAN({
 				amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),

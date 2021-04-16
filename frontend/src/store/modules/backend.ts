@@ -1,5 +1,5 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
-import { Notify, Dialog, openURL } from 'quasar'
+import { Notify, openURL } from 'quasar'
 import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
@@ -11,6 +11,7 @@ import SwapResponse from '@/models/SwapResponse'
 import WithdrawRequest from '@/models/WithdrawRequest'
 import WithdrawResponse from '@/models/WithdrawResponse'
 import { ClaimResponse } from '@/models/ClaimResponse'
+import Dialogs from '@/utils/Dialogs'
 
 @Module({
 	namespaced: true,
@@ -106,32 +107,24 @@ class BackendModule extends VuexModule {
 				const withdrawalEvent = (e: any) => {
 					console.debug(e)
 					const { banWallet, withdrawal, balance, transaction } = JSON.parse(e.data)
-					console.log(
-						`Received banano withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN. Balance is: ${balance} BAN.`
-					)
-					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
-					if (Contracts.wbanContract && Accounts.activeAccount) {
-						Contracts.reloadWBANBalance({
-							contract: Contracts.wbanContract,
-							account: Accounts.activeAccount
-						})
+					if (transaction) {
+						console.log(
+							`Received banano withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN. Balance is: ${balance} BAN.`
+						)
+						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+						if (Contracts.wbanContract && Accounts.activeAccount) {
+							Contracts.reloadWBANBalance({
+								contract: Contracts.wbanContract,
+								account: Accounts.activeAccount
+							})
+						}
+						Dialogs.showWithdrawalSuccess(withdrawal, transaction)
+					} else {
+						console.log(
+							`Received banano pending withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN but this is put in a pending list`
+						)
+						Dialogs.showPendingWithdrawal(withdrawal)
 					}
-					// notify user
-					Notify.create({
-						type: 'positive',
-						html: true,
-						message: `View transaction on <a href="https://creeper.banano.cc/explorer/block/${transaction}">Banano Explorer</a>`,
-						caption: `Transaction ${transaction}`,
-						actions: [
-							{
-								label: 'View',
-								color: 'white',
-								handler: () => {
-									openURL(`https://creeper.banano.cc/explorer/block/${transaction}`)
-								}
-							}
-						]
-					})
 				}
 
 				eventSource.addEventListener('banano-deposit', (e: any) => {
@@ -140,13 +133,7 @@ class BackendModule extends VuexModule {
 						`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
 					)
 					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
-					Dialog.create({
-						dark: true,
-						title: 'Deposit Confirmed',
-						message: `Your deposit of ${deposit} BAN was received. You can swap it to wBAN.`,
-						cancel: false,
-						persistent: true
-					})
+					Dialogs.confirmUserDeposit(deposit)
 				})
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
@@ -330,6 +317,7 @@ class BackendModule extends VuexModule {
 		console.info(`Should withdraw ${amount} BAN to ${banAddress}...`)
 		if (provider && amount && bscAddress) {
 			const sig = await provider.getSigner().signMessage(`Withdraw ${amount} BAN to my wallet "${banAddress}"`)
+			Dialogs.startWithdrawal()
 			// call the backend for the swap
 			try {
 				const resp = await axios.post(`${BackendModule.BACKEND_URL}/withdrawals/ban`, {
@@ -338,10 +326,12 @@ class BackendModule extends VuexModule {
 					amount: amount,
 					sig: sig
 				})
-				const result: SwapResponse = resp.data
+				const result: any = resp.data
+				/*
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
 				this.context.commit('setErrorLink', '')
+				*/
 				return result
 			} catch (err) {
 				this.context.commit('setInError', true)

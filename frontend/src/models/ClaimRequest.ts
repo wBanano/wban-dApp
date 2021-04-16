@@ -1,6 +1,7 @@
 type ClaimRequest = {
-	banAddress: string,
-	bscAddress: string,
+	banAddress: string
+	bscAddress: string
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	provider: any
 }
 
