@@ -1,5 +1,4 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
-import { Notify, openURL } from 'quasar'
 import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
@@ -137,7 +136,7 @@ class BackendModule extends VuexModule {
 				})
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
-				eventSource.addEventListener('swap-ban-to-wban', (e: any) => {
+				eventSource.addEventListener('swap-ban-to-wban', async (e: any) => {
 					const { banWallet, swapped, balance, wbanBalance, transaction, transactionLink } = JSON.parse(e.data)
 					console.log(
 						`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`
@@ -150,21 +149,16 @@ class BackendModule extends VuexModule {
 							account: Accounts.activeAccount
 						})
 					}
-					Notify.create({
-						type: 'positive',
-						html: true,
-						message: `View transaction on <a href="${transactionLink}">BscScan</a>`,
-						caption: `Transaction ${transaction}`,
-						actions: [
-							{
-								label: 'View',
-								color: 'white',
-								handler: () => {
-									openURL(transactionLink)
-								}
-							}
-						]
-					})
+					Dialogs.confirmSwapToWBan(swapped, transaction, transactionLink)
+				})
+				eventSource.addEventListener('swap-wban-to-ban', async (e: any) => {
+					const { banWallet, swapped, balance, wbanBalance } = JSON.parse(e.data)
+					console.log(
+						`Received swap wBAN to BAN event. Wallet "${banWallet}" swapped ${swapped} wBAN to BAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`
+					)
+					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
+					Dialogs.confirmSwapToBan(swapped)
 				})
 				eventSource.addEventListener('ping', () => console.debug('Ping received from the server'))
 				eventSource.addEventListener('message', (e: any) => {
@@ -275,13 +269,7 @@ class BackendModule extends VuexModule {
 					amount: amount,
 					sig: sig
 				})
-				/*
-				const result: SwapResponse = resp.data
-				this.context.commit('setInError', false)
-				this.context.commit('setErrorMessage', '')
-				this.context.commit('setErrorLink', '')
-				return result
-				*/
+				Dialogs.startSwapToWBan(amount.toString())
 			} catch (err) {
 				this.context.commit('setInError', true)
 				if (err.response) {

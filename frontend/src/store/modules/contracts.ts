@@ -7,6 +7,7 @@ import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
 import { ethers, BigNumber } from 'ethers'
 import SwapToBanRequest from '@/models/SwapToBanRequest'
 import LoadBalancesFromContractRequest from '@/models/LoadBalancesFromContractRequest'
+import Dialogs from '@/utils/Dialogs'
 
 @Module({
 	namespaced: true,
@@ -73,14 +74,40 @@ class ContractsModule extends VuexModule {
 	async initContract(provider: any) {
 		console.debug('in initContract')
 		if (provider) {
-			// eslint-disable-next-line @typescript-eslint/camelcase
-			const contract = WBANToken__factory.connect(ContractsModule.WBAN_CONTRACT_ADDRESS, provider.getSigner())
+			// do not initialize contract if this was done earlier
+			if (!this._wBanToken) {
+				// eslint-disable-next-line @typescript-eslint/camelcase
+				const contract = WBANToken__factory.connect(ContractsModule.WBAN_CONTRACT_ADDRESS, provider.getSigner())
+				this.context.commit('setWBANToken', contract)
+
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const totalSupplyUpdateFn = async (_from: string, _to: string, _amount: BigNumber, _event: ethers.Event) => {
+					const totalSupply: BigNumber = await contract.totalSupply()
+					console.log(`Total Supply: ${ethers.utils.formatEther(totalSupply)} wBAN`)
+					this.setTotalSupply(totalSupply)
+				}
+				// update total supply on mints
+				contract.on(
+					contract.filters.Transfer('0x0000000000000000000000000000000000000000', null, null),
+					totalSupplyUpdateFn
+				)
+				// update total supply on burns
+				contract.on(
+					contract.filters.Transfer(null, '0x0000000000000000000000000000000000000000', null),
+					totalSupplyUpdateFn
+				)
+			}
+			// at this point the contract should be initialized
+			if (!this._wBanToken) {
+				console.error('Smart-contract client not initialized')
+				return
+			}
+			const contract = this._wBanToken
 			const owner = await contract.owner()
 			console.log(`Owner is: ${owner}`)
 			const totalSupply: BigNumber = await contract.totalSupply()
-			this.context.commit('setWBANToken', contract)
-			this.context.commit('setOwner', owner)
-			this.context.commit('setTotalSupply', totalSupply)
+			this.setOwner(owner)
+			this.setTotalSupply(totalSupply)
 		}
 	}
 
@@ -128,6 +155,7 @@ class ContractsModule extends VuexModule {
 		const { amount, toBanAddress, contract } = swapRequest
 		console.log(`Should swap ${ethers.utils.formatEther(amount)} BAN to ${toBanAddress}`)
 		const txn = await contract.swapToBan(toBanAddress, amount)
+		Dialogs.startSwapToBan(ethers.utils.formatEther(amount))
 		await txn.wait()
 	}
 }

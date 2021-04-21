@@ -16,7 +16,7 @@ const BSC_MAINNET: AddEthereumChainParameter = {
 
 const BSC_TESTNET: AddEthereumChainParameter = {
 	chainId: '0x61',
-	chainName: 'Binance Smart Chain',
+	chainName: 'BSC Testnet',
 	nativeCurrency: {
 		name: 'BNB',
 		symbol: 'BNB',
