@@ -22,7 +22,7 @@
 						</q-btn>
 					</div>
 					<div class="col-3">
-						<q-btn @click="withdrawBAN" :disable="withdrawalDisabled" color="primary" stack>
+						<q-btn @click="askWithdrawlAmount" :disable="withdrawalDisabled" color="primary" stack>
 							<q-icon name="img:ban-withdraw.svg" size="3em" />
 							<div class="text-button">Withdraw BAN</div>
 							<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
@@ -100,6 +100,20 @@
 				</q-card-actions>
 			</q-card>
 		</q-dialog>
+		<q-dialog v-model="promptForBanWithdrawal" persistent>
+			<q-card class="ban-withdrawal-dialog">
+				<q-card-section>
+					<div class="text-h6">BAN Withdrawals</div>
+				</q-card-section>
+				<q-card-section class="q-gutter-sm">
+					<swap-currency-input label="" :amount.sync="withdrawAmount" :balance="banBalance" currency="BAN" editable />
+				</q-card-section>
+				<q-card-actions align="right">
+					<q-btn flat label="Cancel" color="primary" v-close-popup />
+					<q-btn @click="withdrawBAN" color="primary" text-color="secondary" label="Withdraw" v-close-popup />
+				</q-card-actions>
+			</q-card>
+		</q-dialog>
 	</div>
 </template>
 
@@ -107,6 +121,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SwapInput from '@/components/SwapInput.vue'
+import SwapCurrencyInput from '@/components/SwapCurrencyInput.vue'
 import { bnToStringFilter } from '@/utils/filters'
 import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
@@ -125,7 +140,8 @@ const contractsStore = namespace('contracts')
 
 @Component({
 	components: {
-		SwapInput
+		SwapInput,
+		SwapCurrencyInput
 	},
 	filters: {
 		bnToStringFilter
@@ -135,7 +151,9 @@ export default class ChainInfo extends Vue {
 	public banAddress = ''
 	public mintToAddress = ''
 	public mintAmount = ''
+	public withdrawAmount = 0
 	public promptForBanDeposit = false
+	public promptForBanWithdrawal = false
 	public banWalletForDepositsQRCode = ''
 
 	@accountsStore.Getter('isUserConnected')
@@ -182,14 +200,20 @@ export default class ChainInfo extends Vue {
 		this.promptForBanDeposit = true
 	}
 
+	async askWithdrawlAmount() {
+		this.promptForBanWithdrawal = true
+	}
+
 	async withdrawBAN() {
 		if (accounts.activeAccount) {
 			await backend.withdrawBAN({
-				amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
+				amount: this.withdrawAmount,
+				// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
 				banAddress: ban.banAddress,
 				bscAddress: accounts.activeAccount,
 				provider: accounts.providerEthers
 			} as WithdrawRequest)
+			this.promptForBanDeposit = false
 			this.$emit('withdrawal')
 		}
 	}
