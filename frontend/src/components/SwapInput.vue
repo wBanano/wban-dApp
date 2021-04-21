@@ -104,6 +104,7 @@ export default class SwapInput extends Vue {
 			}
 			this.$emit('swap')
 			this.swapInProgress = false
+			this.amount = 0
 		}
 	}
 
