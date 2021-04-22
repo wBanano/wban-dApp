@@ -103,7 +103,7 @@ export default class SwapInput extends Vue {
 			this.swapInProgress = true
 			if (this.fromCurrency === 'BAN') {
 				await backend.swap({
-					amount: Number.parseInt(this.amount),
+					amount: Number.parseFloat(this.amount),
 					banAddress: ban.banAddress,
 					bscAddress: accounts.activeAccount,
 					provider: accounts.providerEthers

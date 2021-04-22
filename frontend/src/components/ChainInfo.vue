@@ -224,7 +224,7 @@ export default class ChainInfo extends Vue {
 					return
 				}
 				await backend.withdrawBAN({
-					amount: Number.parseInt(this.withdrawAmount),
+					amount: Number.parseFloat(this.withdrawAmount),
 					// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
 					banAddress: ban.banAddress,
 					bscAddress: accounts.activeAccount,
