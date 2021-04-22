@@ -1,21 +1,28 @@
 <template>
-	<div class="q-pa-md q-gutter-sm">
-		<swap-currency-input label="From" :amount.sync="amount" :balance="fromBalance" :currency="fromCurrency" editable />
-		<div id="swap-icon" class="text-center">
-			<q-icon @click="switchCurrencyInputs" name="swap_vert" class="cursor-pointer arrow-down text-center" />
+	<form @submit.prevent.stop="swap">
+		<div class="q-pa-md q-gutter-sm">
+			<swap-currency-input
+				ref="from"
+				label="From"
+				:amount.sync="amount"
+				:balance="fromBalance"
+				:currency="fromCurrency"
+				editable
+			/>
+			<div id="swap-icon" class="text-center">
+				<q-icon @click="switchCurrencyInputs" name="swap_vert" class="cursor-pointer arrow-down text-center" />
+			</div>
+			<swap-currency-input ref="to" label="To" :amount="amount" :balance="toBalance" :currency="toCurrency" />
+			<div class="text-right">
+				<q-btn label="Swap" type="submit" :disable="!swapEnabled" color="primary" text-color="text-black" />
+			</div>
 		</div>
-		<swap-currency-input label="To" :amount.sync="amount" :balance="toBalance" :currency="toCurrency" />
-		<div class="text-right">
-			<q-btn ref="btnSwap" label="Swap" @click="swap" :disable="!swapEnabled" color="primary" text-color="text-black" />
-		</div>
-		<q-ajax-bar ref="bar" position="bottom" color="primary" size="10px" skip-hijack />
-	</div>
+	</form>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Ref, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { QBtn, QAjaxBar } from 'quasar'
 import SwapCurrencyInput from '@/components/SwapCurrencyInput.vue'
 import { ethers, BigNumber } from 'ethers'
 import accounts from '@/store/modules/accounts'
@@ -35,8 +42,8 @@ const contractsStore = namespace('contracts')
 export default class SwapInput extends Vue {
 	@Prop({ type: Object, required: true }) banBalance!: BigNumber
 	@Prop({ type: Object, required: true }) wBanBalance!: BigNumber
-	@Ref('btnSwap') readonly btnSwap!: QBtn
-	@Ref('bar') readonly bar!: QAjaxBar
+	@Ref('from') readonly fromInput!: SwapCurrencyInput
+	@Ref('to') readonly toInput!: SwapCurrencyInput
 
 	fromCurrency = ''
 	toCurrency = ''
@@ -47,7 +54,7 @@ export default class SwapInput extends Vue {
 	@contractsStore.Getter('bnbDeposits')
 	bnbDeposits!: BigNumber
 
-	amount = 0
+	amount = ''
 	swapInProgress = false
 
 	get fromBalance() {
@@ -68,8 +75,9 @@ export default class SwapInput extends Vue {
 
 	get swapEnabled() {
 		return (
-			this.amount > 0 &&
-			this.fromBalance.gte(ethers.utils.parseEther(this.amount.toString())) &&
+			this.amount &&
+			Number.parseInt(this.amount) > 0 &&
+			this.fromBalance.gte(ethers.utils.parseEther(this.amount)) &&
 			this.bnbDeposits.gte(ethers.utils.parseEther('0.002')) &&
 			!this.swapInProgress
 		)
@@ -79,14 +87,23 @@ export default class SwapInput extends Vue {
 		const tempCurrency: string = this.toCurrency
 		this.toCurrency = this.fromCurrency
 		this.fromCurrency = tempCurrency
+		this.resetValidation()
+	}
+
+	resetValidation() {
+		this.fromInput.resetValidation()
+		this.toInput.resetValidation()
 	}
 
 	async swap() {
-		if (accounts.activeAccount) {
+		if (!this.fromInput.validate()) {
+			return
+		}
+		if (accounts.activeAccount && this.amount) {
 			this.swapInProgress = true
 			if (this.fromCurrency === 'BAN') {
 				await backend.swap({
-					amount: this.amount,
+					amount: Number.parseInt(this.amount),
 					banAddress: ban.banAddress,
 					bscAddress: accounts.activeAccount,
 					provider: accounts.providerEthers
@@ -96,15 +113,15 @@ export default class SwapInput extends Vue {
 				if (contract) {
 					console.info(`Swap from wBAN to BAN requested for ${this.amount} BAN to ${this.banAddress}`)
 					await contracts.swap({
-						amount: ethers.utils.parseEther(this.amount.toString()),
+						amount: ethers.utils.parseEther(this.amount),
 						toBanAddress: this.banAddress,
 						contract
 					})
 				}
 			}
 			this.$emit('swap')
+			this.amount = ''
 			this.swapInProgress = false
-			this.amount = 0
 		}
 	}
 

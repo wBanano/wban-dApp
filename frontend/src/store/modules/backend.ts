@@ -304,6 +304,9 @@ class BackendModule extends VuexModule {
 		const { amount, banAddress, bscAddress, provider } = withdrawRequest
 		console.info(`Should withdraw ${amount} BAN to ${banAddress}...`)
 		if (provider && amount && bscAddress) {
+			if (amount <= 0) {
+				throw new Error('Invalid withdrawal amount')
+			}
 			const sig = await provider.getSigner().signMessage(`Withdraw ${amount} BAN to my wallet "${banAddress}"`)
 			Dialogs.startWithdrawal()
 			// call the backend for the swap

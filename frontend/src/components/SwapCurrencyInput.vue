@@ -9,7 +9,16 @@
 			</q-item-section>
 		</q-item>
 		<q-card-section>
-			<q-input rounded dense outlined v-model.number="syncedAmount">
+			<q-input
+				ref="amount"
+				rounded
+				dense
+				outlined
+				:disable="!editable"
+				v-model="syncAmount"
+				@input="emitEvent"
+				:rules="validationRules"
+			>
 				<template v-slot:append>
 					<a v-if="editable" @click="setToMax" class="max">Max</a>
 					<img :src="require(`@/assets/${logoUrl}`)" class="currency-logo" />
@@ -26,10 +35,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
-import { BigNumber } from 'ethers'
+import { Component, Prop, PropSync, Ref, Vue } from 'vue-property-decorator'
+import { BigNumber, ethers } from 'ethers'
 import { bnToStringFilter } from '@/utils/filters'
-
 import accounts from '@/store/modules/accounts'
 
 @Component({
@@ -40,9 +48,17 @@ import accounts from '@/store/modules/accounts'
 export default class SwapCurrencyInput extends Vue {
 	@Prop({ type: String, required: true }) readonly label!: string
 	@Prop({ type: String, required: true }) readonly currency!: string
-	@Prop({ type: Object, required: true }) balance!: BigNumber
+	@Prop({ type: Object, required: true }) readonly balance!: BigNumber
 	@Prop({ type: Boolean, required: false }) readonly editable!: boolean
-	@PropSync('amount', { type: Number }) syncedAmount!: number
+	@PropSync('amount', { type: String, required: true }) syncAmount!: string
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	@Ref('amount') readonly amountField!: any
+
+	validationRules: Array<Function> = [
+		(val: string) => val == '' || Number.parseInt(val) > 0 || 'Amount should be more than zero',
+		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`
+	]
 
 	get logoUrl() {
 		if (this.currency === 'BAN') {
@@ -53,14 +69,38 @@ export default class SwapCurrencyInput extends Vue {
 	}
 
 	setToMax() {
-		this.syncedAmount = this.balance
-			.div(1_000_000_000_000_000)
-			.div(1_000)
-			.toNumber()
+		this.syncAmount = ethers.utils.formatEther(this.balance)
+	}
+
+	isLowerThanMax(val: string) {
+		if (val == '') {
+			return true
+		} else {
+			return !this.editable || ethers.utils.parseEther(val).lte(this.balance)
+		}
 	}
 
 	addWBANToMetaMask() {
 		accounts.addWBANTokenToMetaMask()
+	}
+
+	emitEvent(event: string) {
+		if (this.editable) {
+			this.$emit('update:amount', event)
+		}
+	}
+
+	public validate(): boolean {
+		if (this.editable) {
+			this.amountField.validate()
+			return !this.amountField.hasError
+		} else {
+			return true
+		}
+	}
+
+	public resetValidation() {
+		this.amountField.resetValidation()
 	}
 }
 </script>

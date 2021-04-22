@@ -22,7 +22,7 @@
 						</q-btn>
 					</div>
 					<div class="col-3">
-						<q-btn @click="askWithdrawlAmount" :disable="withdrawalDisabled" color="primary" stack>
+						<q-btn @click="askWithdrawalAmount" :disable="withdrawalDisabled" color="primary" stack>
 							<q-icon name="img:ban-withdraw.svg" size="3em" />
 							<div class="text-button">Withdraw BAN</div>
 							<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
@@ -102,23 +102,32 @@
 		</q-dialog>
 		<q-dialog v-model="promptForBanWithdrawal" persistent>
 			<q-card class="ban-withdrawal-dialog">
-				<q-card-section>
-					<div class="text-h6">BAN Withdrawals</div>
-				</q-card-section>
-				<q-card-section class="q-gutter-sm">
-					<swap-currency-input label="" :amount.sync="withdrawAmount" :balance="banBalance" currency="BAN" editable />
-				</q-card-section>
-				<q-card-actions align="right">
-					<q-btn flat label="Cancel" color="primary" v-close-popup />
-					<q-btn @click="withdrawBAN" color="primary" text-color="secondary" label="Withdraw" v-close-popup />
-				</q-card-actions>
+				<form @submit.prevent.stop="withdrawBAN">
+					<q-card-section>
+						<div class="text-h6">BAN Withdrawals</div>
+					</q-card-section>
+					<q-card-section class="q-gutter-sm">
+						<swap-currency-input
+							ref="currency-input"
+							label=""
+							:amount.sync="withdrawAmount"
+							:balance="banBalance"
+							currency="BAN"
+							editable
+						/>
+					</q-card-section>
+					<q-card-actions align="right">
+						<q-btn flat label="Cancel" color="primary" v-close-popup />
+						<q-btn type="submit" color="primary" text-color="secondary" label="Withdraw" />
+					</q-card-actions>
+				</form>
 			</q-card>
 		</q-dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SwapInput from '@/components/SwapInput.vue'
 import SwapCurrencyInput from '@/components/SwapCurrencyInput.vue'
@@ -151,10 +160,12 @@ export default class ChainInfo extends Vue {
 	public banAddress = ''
 	public mintToAddress = ''
 	public mintAmount = ''
-	public withdrawAmount = 0
+	public withdrawAmount = ''
 	public promptForBanDeposit = false
 	public promptForBanWithdrawal = false
 	public banWalletForDepositsQRCode = ''
+
+	@Ref('currency-input') readonly currencyInput!: SwapCurrencyInput
 
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
@@ -200,21 +211,28 @@ export default class ChainInfo extends Vue {
 		this.promptForBanDeposit = true
 	}
 
-	async askWithdrawlAmount() {
+	async askWithdrawalAmount() {
 		this.promptForBanWithdrawal = true
 	}
 
 	async withdrawBAN() {
 		if (accounts.activeAccount) {
-			await backend.withdrawBAN({
-				amount: this.withdrawAmount,
-				// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
-				banAddress: ban.banAddress,
-				bscAddress: accounts.activeAccount,
-				provider: accounts.providerEthers
-			} as WithdrawRequest)
-			this.promptForBanDeposit = false
-			this.$emit('withdrawal')
+			try {
+				if (!this.currencyInput.validate()) {
+					return
+				}
+				await backend.withdrawBAN({
+					amount: Number.parseInt(this.withdrawAmount),
+					// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
+					banAddress: ban.banAddress,
+					bscAddress: accounts.activeAccount,
+					provider: accounts.providerEthers
+				} as WithdrawRequest)
+				this.promptForBanWithdrawal = false
+				this.$emit('withdrawal')
+			} catch (err) {
+				console.error("Withdrawal can't be done", err)
+			}
 		}
 	}
 
