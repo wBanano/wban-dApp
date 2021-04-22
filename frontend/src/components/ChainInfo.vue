@@ -13,7 +13,7 @@
 		</div>
 		<div v-if="!isOwner" class="row justify-center">
 			<div class="col-md-10 col-sm-12 col-xs-12">
-				<div class="row items-start buttons text-center gt-xs">
+				<div class="row items-start justify-center buttons text-center gt-xs">
 					<div class="col-3">
 						<q-btn @click="depositBAN" color="primary" stack>
 							<q-icon name="img:ban-deposit.svg" size="3em" />
@@ -35,6 +35,7 @@
 							<q-tooltip content-class="bg-positive">Deposit some BNB for swaps fees</q-tooltip>
 						</q-btn>
 					</div>
+					<!--
 					<div class="col-3">
 						<q-btn @click="reloadBalances" color="primary" stack>
 							<q-icon name="img:ban-refresh.svg" size="3em" color="secondary" />
@@ -42,6 +43,7 @@
 							<q-tooltip content-class="bg-positive">Refresh balances</q-tooltip>
 						</q-btn>
 					</div>
+					-->
 				</div>
 			</div>
 			<p id="balances" class="col-12 text-center">
