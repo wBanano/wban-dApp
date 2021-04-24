@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.4.0;
+pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import '@openzeppelin/contracts/GSN/Context.sol';
+import '@openzeppelin/contracts/utils/Context.sol';
 import './IBEP20.sol';
-import '@openzeppelin/contracts/math/SafeMath.sol';
+import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 
 /**
@@ -55,9 +55,9 @@ contract BEP20 is Context, IBEP20, Ownable {
      * All three of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(string memory name, string memory symbol) public {
-        _name = name;
-        _symbol = symbol;
+    constructor(string memory name_, string memory symbol_) {
+        _name = name_;
+        _symbol = symbol_;
         _decimals = 18;
     }
 

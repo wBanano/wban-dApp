@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity 0.6.12;
+pragma solidity >=0.8.0;
 
 import "./bep20/BEP20Pausable.sol";
 
 contract WBANToken is BEP20("Wrapped Banano", "wBAN"), Pausable {
+    using SafeMath for uint256;
+
     mapping (address => uint256) private _bnbBalances;
 
     /**
