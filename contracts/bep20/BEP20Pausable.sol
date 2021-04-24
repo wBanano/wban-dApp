@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity 0.6.12;
+pragma solidity >=0.8.0;
 
 import "./BEP20.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 abstract contract BEP20Pausable is BEP20, Pausable {
     /**
