@@ -1,0 +1,57 @@
+# v0.4.2
+## Improvements
+- Decimal amounts in swaps and withdrawals
+- Swap amounts reset after a swap
+- Refresh balances button gone!
+## Bugs fixed
+- Scheduled jobs for missed BAN transactions from the WS API should work now
+- Scheduled jobs for missed BAN transactions will fail in case there is a problem sending BAN back
+- The backend should reconnect to the Banano WS API if there is a network failure/error
+- Checks for amounts bigger than 0
+
+# v0.4.1
+## New Features
+- withdrawal amount can be specified
+## Improvements
+- Swaps wBAN->BAN are not withdrawals anymore but increase in user deposits
+- Notifications & dialogs for swaps
+- Total supply is automatically updated when someone makes a swap
+## Bugs fixed
+- computation of hot/cold wallet splits
+
+# v0.4.0
+## New Features
+- Pending withdrawals if hot wallet is running out of BAN
+## Improvements
+- Notifications
+- Easy setup of BSC network
+
+# v0.2.3
+## Bugs fixed
+- Critical bug allowing two different BSC users to claim the same BAN wallet
+- Footer color on the setup process
+
+# v0.2.2
+## New Features
+- BAN withdrawal
+- New UI
+## Improvements
+- Notification display on successful transactions
+- Responsive layout
+- Dark mode enabled by default
+
+# v0.2.1
+## New Features
+- Dark mode
+## Improvements
+- Notification on successful transactions
+## Bugs fixed
+- Title of the app in the browser window
+
+# v0.2.0
+## New Features
+- Compatibility with MetaMask on Android
+## Improvements
+- setup process with responsive design
+- Kalium links on mobiles for an easier way to make deposits
+- changed color of the toolbar to the Banano green
