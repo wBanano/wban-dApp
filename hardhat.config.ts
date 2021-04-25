@@ -10,9 +10,8 @@ import "hardhat-log-remover";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 import "hardhat-gas-reporter";
-import 'hardhat-deploy';
-import "hardhat-deploy-ethers";
 import "@nomiclabs/hardhat-solpp";
+import "@openzeppelin/hardhat-upgrades";
 
 let mnemonic = process.env.MNEMONIC;
 if (!mnemonic) {
@@ -32,7 +31,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [{
-			version: "0.8.3",
+			version: "0.8.4",
 			settings: {
 				optimizer: {
 					enabled: true,
@@ -41,11 +40,6 @@ const config: HardhatUserConfig = {
 			}
 		}],
 	},
-	namedAccounts: {
-    deployer: 0,
-    user1: 1,
-    user2: 2,
-  },
   networks: {
 		hardhat: {
 			accounts

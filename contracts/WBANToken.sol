@@ -1,13 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity ^0.8.0;
 
-import "./bep20/BEP20Pausable.sol";
+import "./bep20/IBEP20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract WBANToken is BEP20("Wrapped Banano", "wBAN"), Pausable {
-    using SafeMath for uint256;
+contract WBANToken is ERC20PausableUpgradeable, OwnableUpgradeable, IBEP20 {
+    using SafeMathUpgradeable for uint256;
 
     mapping (address => uint256) private _bnbBalances;
+
+    function initialize() initializer public {
+        __Ownable_init();
+        __ERC20_init("Wrapped Banano", "wBAN");
+    }
 
     /**
      * @dev Creates `amount` tokens and assigns them to `recipient`, increasing
@@ -60,6 +68,10 @@ contract WBANToken is BEP20("Wrapped Banano", "wBAN"), Pausable {
 
     function unpause() external whenPaused onlyOwner {
         _unpause();
+    }
+
+    function getOwner() external view override returns (address) {
+        return owner();
     }
 
     /**

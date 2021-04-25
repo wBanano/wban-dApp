@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
 import { WBANToken } from '../artifacts/typechain/WBANToken';
@@ -20,9 +20,10 @@ describe('WBANToken', () => {
       "WBANToken",
       signers[0]
     );
-    token = (await wBANTokenFactory.deploy()) as WBANToken;
-    await token.deployed();
-    expect(token.address).to.properAddress;
+		token = (await upgrades.deployProxy(wBANTokenFactory)) as WBANToken;
+		await token.deployed();
+
+		expect(token.address).to.properAddress;
 	});
 
 	describe('BNB Deposits', () => {
@@ -62,13 +63,21 @@ describe('WBANToken', () => {
 				.to.be.revertedWith("Gas limit can't be zero");
 		});
 
+		it('Refuses to mint if the caller is not the owner', async () => {
+			const wBanToMint = 123;
+			const gasPrice = 20_000_000_000;
+			const user1_interaction = token.connect(user1);
+			await expect(user1_interaction.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000, gasPrice: gasPrice }))
+				.to.be.revertedWith("Ownable: caller is not the owner");
+		});
+
 		it('Refuses to mint if the smart-contract is paused', async () => {
 			const wBanToMint = 123;
 			const gasPrice = 20_000_000_000;
 			await token.pause();
 			const user1_interaction = token.connect(user1);
 			await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.01') });
-			await expect(token.mintTo(user1.address, wBanToMint, 81_000, { gasLimit: 81_000, gasPrice: gasPrice }))
+			await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000, gasPrice: gasPrice }))
 				.to.be.revertedWith("BEP20Pausable: token transfer while paused");
 		});
 
@@ -78,8 +87,8 @@ describe('WBANToken', () => {
 			const user1_interaction = token.connect(user1);
 			await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.01') });
 			// TODO: verify that the BNB balance of user1 is reduced due to gas costs from owner's transaction for mint
-			await expect(token.mintTo(user1.address, wBanToMint, 81_000, { gasLimit: 81_000, gasPrice: gasPrice }))
-				.to.emit(token, 'Fee').withArgs(user1.address, 81_000 * gasPrice);
+			await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000, gasPrice: gasPrice }))
+				.to.emit(token, 'Fee').withArgs(user1.address, 200_000 * gasPrice);
 			// make sure user was sent his wBAN
 			expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
 			// make sure total supply was changed
@@ -96,8 +105,8 @@ describe('WBANToken', () => {
 			const gasPrice = 20_000_000_000;
 			const user1_interaction = token.connect(user1);
 			await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.01') });
-			await expect(token.mintTo(user1.address, wBanToMint, 81_000, { gasLimit: 81_000, gasPrice: gasPrice }))
-				.to.emit(token, 'Fee').withArgs(user1.address, 81_000 * gasPrice);
+			await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000, gasPrice: gasPrice }))
+				.to.emit(token, 'Fee').withArgs(user1.address, 200_000 * gasPrice);
 			expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
 
 			// now ask to swap back to BAN
@@ -112,8 +121,8 @@ describe('WBANToken', () => {
 			const gasPrice = 20_000_000_000;
 			const user1_interaction = token.connect(user1);
 			await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.01') });
-			await expect(token.mintTo(user1.address, wBanToMint, 81_000, { gasLimit: 81_000, gasPrice: gasPrice }))
-				.to.emit(token, 'Fee').withArgs(user1.address, 81_000 * gasPrice);
+			await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000, gasPrice: gasPrice }))
+				.to.emit(token, 'Fee').withArgs(user1.address, 200_000 * gasPrice);
 			expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
 
 			// now ask to swap back to BAN
@@ -128,8 +137,8 @@ describe('WBANToken', () => {
 			const gasPrice = 20_000_000_000;
 			const user1_interaction = token.connect(user1);
 			await user1_interaction.bnbDeposit({ value: ethers.utils.parseEther('0.01') });
-			await expect(token.mintTo(user1.address, wBanToMint, 81_000, { gasLimit: 81_000, gasPrice: gasPrice }))
-				.to.emit(token, 'Fee').withArgs(user1.address, 81_000 * gasPrice);
+			await expect(token.mintTo(user1.address, wBanToMint, 200_000, { gasLimit: 200_000, gasPrice: gasPrice }))
+				.to.emit(token, 'Fee').withArgs(user1.address, 200_000 * gasPrice);
 			expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
 
 			// now ask to swap back to BAN
@@ -138,7 +147,6 @@ describe('WBANToken', () => {
 				.to.emit(token, 'SwapToBan').withArgs(user1.address, "ban_1o3k8868n6d1679iz6fcz1wwwaq9hek4ykd58wsj5bozb8gkf38pm7njrr1o", wBanToMint);
 			expect(await token.balanceOf(user1.address)).to.equal(0);
 		});
-
 	});
 
 });
