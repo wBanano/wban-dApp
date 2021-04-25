@@ -10,6 +10,9 @@ cache
 coverage*
 deployments
 
+# OpenZeppelin
+.openzeppelin/unknown-*.json
+
 # Waffle generated files
 flatten
 
