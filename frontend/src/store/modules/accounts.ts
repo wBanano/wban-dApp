@@ -6,6 +6,7 @@ import { BigNumber, ethers } from 'ethers'
 // @ts-ignore
 import WalletProvider from '@libertypie/wallet-provider'
 import MetaMask from '@/utils/MetaMask'
+import { Networks } from '@/utils/Networks'
 
 @Module({
 	namespaced: true,
@@ -18,6 +19,7 @@ class AccountsModule extends VuexModule {
 	public activeBalance = 0
 	public chainId: string | null = null
 	public chainName: string | null = null
+	public blockExplorerUrl: string | null = null
 	private _providerEthers: ethers.providers.Provider | null = null // this is "provider" for Ethers.js
 	public isConnected = false
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,20 +68,13 @@ class AccountsModule extends VuexModule {
 	@Mutation
 	setChainData(chainId: string) {
 		this.chainId = chainId
-		switch (chainId) {
-			case '0x38':
-				this.chainName = 'BSC Mainnet'
-				break
-			case '0x61':
-				this.chainName = 'BSC Testnet'
-				break
-			case '0x7a69':
-				this.chainName = 'Hardhat'
-				break
-			default:
-				this.chainName = 'Localhost'
-				break
+		const networks = new Networks()
+		const networkData = networks.getNetworkData(chainId)
+		if (!networkData) {
+			return
 		}
+		this.chainName = networkData.chainName
+		this.blockExplorerUrl = networkData.blockExplorerUrls[0]
 	}
 
 	@Mutation

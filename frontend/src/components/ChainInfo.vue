@@ -71,6 +71,30 @@
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 			</div>
 		</div>
+		<q-dialog v-model="promptForBnbDeposit" persistent>
+			<q-card class="ban-deposits-dialog">
+				<q-card-section>
+					<div class="text-h6">BNB Swap Fees</div>
+				</q-card-section>
+				<q-card-section class="q-gutter-sm">
+					<div class="row">
+						<div class="col-md-9 col-xs-12">
+							<p>
+								This action will prompt your wallet to deposit a small amount of BNB (0.01) used to cover gas for bridge
+								activity. This deposit cannot be refunded.
+							</p>
+						</div>
+						<div class="gt-sm col-md-3 text-right">
+							<q-icon name="img:bsc-logo-only.svg" size="128px" />
+						</div>
+					</div>
+				</q-card-section>
+				<q-card-actions align="right">
+					<q-btn flat label="Cancel" color="primary" v-close-popup />
+					<q-btn color="primary" @click="launchDepositBNB" text-color="secondary" label="Deposit" v-close-popup />
+				</q-card-actions>
+			</q-card>
+		</q-dialog>
 		<q-dialog v-model="promptForBanDeposit" persistent>
 			<q-card class="ban-deposits-dialog">
 				<q-card-section>
@@ -94,6 +118,7 @@
 				<q-card-actions align="right">
 					<q-btn
 						@click="copyBanAddressForDepositsToClipboard"
+						v-if="!$q.platform.is.mobile"
 						color="primary"
 						text-color="secondary"
 						label="Copy Address"
@@ -164,6 +189,7 @@ export default class ChainInfo extends Vue {
 	public mintAmount = ''
 	public withdrawAmount = ''
 	public promptForBanDeposit = false
+	public promptForBnbDeposit = false
 	public promptForBanWithdrawal = false
 	public banWalletForDepositsQRCode = ''
 
@@ -213,6 +239,10 @@ export default class ChainInfo extends Vue {
 		this.promptForBanDeposit = true
 	}
 
+	async depositBNB() {
+		this.promptForBnbDeposit = true
+	}
+
 	async askWithdrawalAmount() {
 		this.promptForBanWithdrawal = true
 	}
@@ -239,7 +269,7 @@ export default class ChainInfo extends Vue {
 		}
 	}
 
-	async depositBNB() {
+	async launchDepositBNB() {
 		console.log('in depositBNB')
 		const contract: WBANToken | null = contracts.wbanContract
 		if (contract) {
@@ -276,6 +306,11 @@ export default class ChainInfo extends Vue {
 		const contract: WBANToken | null = contracts.wbanContract
 		if (contract && accounts.activeAccount) {
 			await contracts.loadBalances({ contract, account: accounts.activeAccount })
+		} else {
+			this.$q.notify({
+				type: 'negative',
+				message: 'Unable to reload balances!'
+			})
 		}
 	}
 
@@ -312,7 +347,7 @@ export default class ChainInfo extends Vue {
 			console.error(err)
 		}
 		document.addEventListener('deposit-ban', this.depositBAN)
-		document.addEventListener('withdraw-ban', this.withdrawBAN)
+		document.addEventListener('withdraw-ban', this.askWithdrawalAmount)
 		document.addEventListener('deposit-bnb', this.depositBNB)
 		document.addEventListener('reload-balances', this.reloadBalances)
 	}

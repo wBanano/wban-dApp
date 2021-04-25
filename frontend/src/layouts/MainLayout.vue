@@ -4,17 +4,25 @@
 			<q-toolbar class="bg-toolbar text-white">
 				<q-btn v-if="drawerEnabled" dense flat round icon="menu" @click="drawerOpened = !drawerOpened" />
 				<a @click="home" class="gt-xs"><img src="@/assets/wban-logo.png" class="currency-logo"/></a>
-				<q-toolbar-title>{{ appTitle }}</q-toolbar-title>
+				<q-toolbar-title @click="home">{{ appTitle }}</q-toolbar-title>
 				<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
 				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">
 					You're not on the mainnet but {{ chainName }}!
 				</q-chip>
-				<q-avatar v-if="banAddress">
-					<img :src="banAddressPicture" :alt="banAddress" />
+				<q-avatar v-if="banAddress" class="gt-xs">
+					<img @click="openBan(banAddress)" :src="banAddressPicture" :alt="banAddress" />
 					<q-tooltip>{{ banAddress }}</q-tooltip>
 				</q-avatar>
-				<q-btn v-if="isUserConnected" @click="disconnect" flat dense class="btn-disconnect gt-xs">
-					{{ activeAccount | bscAddressFilter }}
+				<q-btn
+					v-if="isUserConnected"
+					@click="openBsc(activeAccount)"
+					flat
+					round
+					dense
+					class="gt-xs"
+					icon="img:bsc-logo-only.svg"
+				>
+					<q-tooltip>{{ activeAccount }}</q-tooltip>
 				</q-btn>
 				<q-btn flat round dense icon="redeem" class="text-primary">
 					<q-menu id="donations">
@@ -39,19 +47,6 @@
 				<q-btn flat round dense icon="settings">
 					<settings-menu />
 				</q-btn>
-				<q-btn flat round dense icon="more_vert">
-					<q-menu>
-						<q-list style="min-width: 100px">
-							<q-item @click="disconnect" clickable v-close-popup class="xs">
-								<q-item-section>Disconnect</q-item-section>
-							</q-item>
-							<q-item @click="about" clickable v-close-popup>
-								<q-item-section>About</q-item-section>
-							</q-item>
-						</q-list>
-					</q-menu>
-				</q-btn>
-				<div class="gt-xs">v{{ appVersion }}</div>
 			</q-toolbar>
 		</q-header>
 		<q-drawer
@@ -86,6 +81,7 @@
 					<q-separator vertical inset />
 					<q-item-section>BNB Swap Fees</q-item-section>
 				</q-item>
+				<!--
 				<q-item clickable v-ripple @click="reloadBalances">
 					<q-item-section avatar>
 						<q-icon name="img:ban-refresh.svg" size="3em" />
@@ -93,6 +89,7 @@
 					<q-separator vertical inset />
 					<q-item-section>Refresh Balances</q-item-section>
 				</q-item>
+				-->
 			</q-list>
 		</q-drawer>
 		<q-page-container>
@@ -103,8 +100,8 @@
 			</q-banner>
 			<router-view />
 		</q-page-container>
-		<q-footer class="bg-footer">
-			wBAN is wrapped potassium for your pleasure!
+		<q-footer @click="openGithub(appVersion)" class="bg-footer">
+			<q-icon name="img:github-logo.svg" size="20px" style="margin-top: -3px" /> wBAN v{{ appVersion }}
 		</q-footer>
 	</q-layout>
 </template>
@@ -120,6 +117,7 @@ import backend from '@/store/modules/backend'
 import SettingsMenu from '@/components/SettingsMenu.vue'
 import { bscAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
+import { openURL } from 'quasar'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -136,6 +134,9 @@ const backendStore = namespace('backend')
 export default class MainLayout extends Vue {
 	@accountsStore.State('chainName')
 	chainName!: string
+
+	@accountsStore.State('blockExplorerUrl')
+	blockExplorerUrl!: string
 
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
@@ -184,10 +185,6 @@ export default class MainLayout extends Vue {
 		router.push('/')
 	}
 
-	about() {
-		router.push('/about')
-	}
-
 	depositBAN() {
 		document.dispatchEvent(new CustomEvent('deposit-ban'))
 		this.drawerOpened = false
@@ -234,10 +231,16 @@ export default class MainLayout extends Vue {
 		await accounts.connectWalletProvider()
 	}
 
-	async disconnect() {
-		await accounts.disconnectWalletProvider()
-		await ban.setBanAccount('')
-		router.push('/')
+	openBsc(address: string) {
+		openURL(`${this.blockExplorerUrl}/address/${address}`)
+	}
+
+	openBan(address: string) {
+		openURL(`https://creeper.banano.cc/explorer/account/${address}`)
+	}
+
+	openGithub(version: string) {
+		openURL(`https://github.com/wBanano/wban-dApp/releases/tag/v${version}`)
 	}
 }
 </script>

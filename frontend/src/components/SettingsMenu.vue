@@ -16,12 +16,23 @@
 			</div>
 			-->
 		</div>
+		<q-list style="min-width: 100px">
+			<q-item @click="disconnect" clickable v-close-popup>
+				<q-item-section>Disconnect</q-item-section>
+			</q-item>
+			<q-item @click="about" clickable v-close-popup>
+				<q-item-section>About</q-item-section>
+			</q-item>
+		</q-list>
 	</q-menu>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import settings from '@/store/modules/settings'
+import router from '@/router'
+import accounts from '@/store/modules/accounts'
+import ban from '@/store/modules/ban'
 
 @Component
 export default class SettingsMenu extends Vue {
@@ -34,6 +45,16 @@ export default class SettingsMenu extends Vue {
 
 	mounted() {
 		this.darkMode = settings.isDarkModeEnabled
+	}
+
+	about() {
+		router.push('/about')
+	}
+
+	async disconnect() {
+		await accounts.disconnectWalletProvider()
+		await ban.setBanAccount('')
+		router.push('/')
 	}
 }
 </script>

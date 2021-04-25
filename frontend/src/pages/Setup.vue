@@ -51,7 +51,7 @@
 							this Banano wallet to this one
 							<a class="banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
 						</p>
-						<div class="row justify-start items-center q-gutter-md">
+						<div v-if="$q.platform.is.desktop" class="row justify-start items-center q-gutter-md">
 							<div class="col-2 text-right">
 								<q-btn
 									@click="copyBanAddressForDepositsToClipboard"
@@ -62,7 +62,7 @@
 								<br />
 								or scan QRCode:
 							</div>
-							<div class="col" v-if="$q.platform.is.desktop">
+							<div class="col">
 								<q-icon :name="banWalletForDepositsQRCode" size="128px" />
 								<br />
 							</div>
