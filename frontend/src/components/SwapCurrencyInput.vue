@@ -56,7 +56,7 @@ export default class SwapCurrencyInput extends Vue {
 	@Ref('amount') readonly amountField!: any
 
 	validationRules: Array<Function> = [
-		(val: string) => val == '' || Number.parseInt(val) > 0 || 'Amount should be more than zero',
+		(val: string) => val == '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
 		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`
 	]
 
