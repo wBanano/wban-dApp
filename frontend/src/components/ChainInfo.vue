@@ -231,6 +231,7 @@ export default class ChainInfo extends Vue {
 					provider: accounts.providerEthers
 				} as WithdrawRequest)
 				this.promptForBanWithdrawal = false
+				this.withdrawAmount = ''
 				this.$emit('withdrawal')
 			} catch (err) {
 				console.error("Withdrawal can't be done", err)
