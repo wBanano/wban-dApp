@@ -46,12 +46,25 @@
 							this Banano wallet to this one
 							<a class="banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
 						</p>
+						<div class="row justify-start items-center q-gutter-md">
+							<div class="col-2 text-right">
+								<q-btn
+									@click="copyBanAddressForDepositsToClipboard"
+									color="primary"
+									text-color="secondary"
+									label="Copy Deposit Address"
+								/>
+								<br />
+								or scan QRCode:
+							</div>
+							<div class="col" v-if="$q.platform.is.desktop">
+								<q-icon :name="banWalletForDepositsQRCode" size="128px" />
+								<br />
+							</div>
+						</div>
 						<p>
 							Although any amount would be fine, let's be safe and only transfer 1 BAN.
 						</p>
-					</div>
-					<div class="col-4" v-if="$q.platform.is.desktop">
-						<q-icon :name="banWalletForDepositsQRCode" size="128px" />
 					</div>
 				</div>
 				<q-stepper-navigation>
@@ -73,6 +86,7 @@ import backend from '@/store/modules/backend'
 import { BigNumber } from 'ethers'
 import QRCode from 'qrcode'
 import { ClaimResponse } from '@/models/ClaimResponse'
+import { copyToClipboard } from 'quasar'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -139,6 +153,21 @@ export default class SetupPage extends Vue {
 		console.log(`Found a balance of ${this.banDeposited}`)
 		ban.setBanAccount(this.banAddress)
 		router.push('/')
+	}
+
+	async copyBanAddressForDepositsToClipboard() {
+		try {
+			await copyToClipboard(this.banWalletForDeposits)
+			this.$q.notify({
+				type: 'positive',
+				message: 'Address copied'
+			})
+		} catch (err) {
+			this.$q.notify({
+				type: 'negative',
+				message: "Can't write to clipboard!"
+			})
+		}
 	}
 
 	async mounted() {
