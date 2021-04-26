@@ -14,17 +14,22 @@
 			animated
 		>
 			<q-step :name="1" title="Banano Address" icon="settings" :done="step > 1">
-				<q-input
-					dense
-					v-model="banAddress"
-					autofocus
-					@keyup.enter="promptForBanDeposit = false"
-					label="Banano Address"
-					class="banano-address"
-				/>
-				<q-stepper-navigation>
-					<q-btn @click="step = 2" color="primary" text-color="black" label="Continue" />
-				</q-stepper-navigation>
+				<q-form @submit="step = 2">
+					<q-input
+						v-model="banAddress"
+						label="Banano Address"
+						class="banano-address"
+						dense
+						autofocus
+						:rules="[
+							val => !!val || 'Banano address is required',
+							val => val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || 'Invalid Banano address'
+						]"
+					/>
+					<q-stepper-navigation>
+						<q-btn type="submit" color="primary" text-color="black" label="Continue" />
+					</q-stepper-navigation>
+				</q-form>
 			</q-step>
 
 			<q-step :name="2" title="Claim your address" icon="create_new_folder" :done="step > 2">
