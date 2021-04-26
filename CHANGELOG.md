@@ -1,3 +1,14 @@
+# v0.4.3
+## Improvements
+- Setup page (accounts linking) should have a "copy BAN address button" #7
+- BAN address in the setup page should be validated #8
+- Don't allow swaps and withdrawals with more than 2 decimals #10
+- Don't allow deposits with more than 2 decimals
+## Bugs fixed
+- Can't make withdrawals/swaps with decimals and less than 1 (w)BAN #1
+- After a successful withdrawals the amount should be reset #2
+- Small deposits of BAN don't work
+
 # v0.4.2
 ## Improvements
 - Decimal amounts in swaps and withdrawals
