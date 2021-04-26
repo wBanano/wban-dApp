@@ -57,6 +57,7 @@ export default class SwapCurrencyInput extends Vue {
 
 	validationRules: Array<Function> = [
 		(val: string) => val == '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
+		(val: string) => this.hasNoMoreThanTwoDecimals(val) || 'No more than 2 decimals',
 		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`
 	]
 
@@ -70,6 +71,15 @@ export default class SwapCurrencyInput extends Vue {
 
 	setToMax() {
 		this.syncAmount = ethers.utils.formatEther(this.balance)
+	}
+
+	hasNoMoreThanTwoDecimals(val: string) {
+		if (val === '' || !this.editable) {
+			return true
+		}
+		const number = Number.parseFloat(val)
+		const rounded = Math.round(number * 100) / 100
+		return number == rounded
 	}
 
 	isLowerThanMax(val: string) {
