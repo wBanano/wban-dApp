@@ -1,3 +1,12 @@
+# v0.5.0
+## New Features
+- Smart-contracts upgradeability #14
+- Mobile compatibility and design improvements #9
+## Improvements
+- Logo in the top left corner should redirect to the swap page #6
+- A big "connect" button should be added in the welcome page #5
+- Version displayed in the toolbar should be linked to the changelog #3
+
 # v0.4.3
 ## Improvements
 - Setup page (accounts linking) should have a "copy BAN address button" #7
