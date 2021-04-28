@@ -4,10 +4,11 @@ import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 // eslint-disable-next-line @typescript-eslint/camelcase
 import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
-import { ethers, BigNumber } from 'ethers'
+import { ethers, BigNumber, Signature } from 'ethers'
 import SwapToBanRequest from '@/models/SwapToBanRequest'
 import LoadBalancesFromContractRequest from '@/models/LoadBalancesFromContractRequest'
 import Dialogs from '@/utils/Dialogs'
+import SwapToWBanRequest from '@/models/SwapToWBanRequest'
 
 @Module({
 	namespaced: true,
@@ -20,7 +21,6 @@ class ContractsModule extends VuexModule {
 	private _owner = ''
 	private _totalSupply: BigNumber = BigNumber.from(0)
 	private _wBanBalance: BigNumber = BigNumber.from(0)
-	private _bnbDeposits: BigNumber = BigNumber.from(0)
 
 	static WBAN_CONTRACT_ADDRESS: string = process.env.VUE_APP_WBAN_CONTRACT || ''
 
@@ -38,10 +38,6 @@ class ContractsModule extends VuexModule {
 
 	get wBanBalance() {
 		return this._wBanBalance
-	}
-
-	get bnbDeposits() {
-		return this._bnbDeposits
 	}
 
 	@Mutation
@@ -62,11 +58,6 @@ class ContractsModule extends VuexModule {
 	@Mutation
 	setWBANBalance(balance: BigNumber) {
 		this._wBanBalance = balance
-	}
-
-	@Mutation
-	setBNBDeposits(deposits: BigNumber) {
-		this._bnbDeposits = deposits
 	}
 
 	@Action
@@ -118,9 +109,6 @@ class ContractsModule extends VuexModule {
 		const balance = await contract.balanceOf(account)
 		console.info(`Balance is ${balance} wBAN`)
 		this.context.commit('setWBANBalance', balance)
-		const bnbDeposits = await contract.bnbBalanceOf(account)
-		console.info(`BNB deposits ${ethers.utils.formatEther(bnbDeposits)} BNB`)
-		this.context.commit('setBNBDeposits', bnbDeposits)
 	}
 
 	@Action
@@ -140,20 +128,30 @@ class ContractsModule extends VuexModule {
 	}
 
 	@Action
-	async reloadBNBDeposits(request: LoadBalancesFromContractRequest) {
-		const { contract, account } = request
-		if (!contract || !account) {
-			throw new Error(`Bad request ${JSON.stringify(request)}`)
-		}
-		const bnbDeposits = await contract.bnbBalanceOf(account)
-		console.info(`BNB deposits ${ethers.utils.formatEther(bnbDeposits)} BNB`)
-		this.context.commit('setBNBDeposits', bnbDeposits)
+	async mint(swapRequest: SwapToWBanRequest): Promise<string> {
+		console.log('Should mint wBAN')
+		const { amount, bscWallet, receipt, uuid, contract } = swapRequest
+		const signature: Signature = ethers.utils.splitSignature(receipt)
+		const txn = await contract.mintWithReceipt(bscWallet, amount, uuid, signature.v, signature.r, signature.s)
+		await txn.wait()
+		return txn.hash
+	}
+
+	@Action
+	async claim(swapRequest: SwapToWBanRequest): Promise<string> {
+		console.log('Should claim wBAN')
+		const { amount, bscWallet, receipt, uuid, contract } = swapRequest
+		console.debug(`Amount: ${amount}, bscWallet: ${bscWallet}, receipt: ${receipt}, uuid: ${uuid}`)
+		const signature: Signature = ethers.utils.splitSignature(receipt)
+		const txn = await contract.mintWithReceipt(bscWallet, amount, uuid, signature.v, signature.r, signature.s)
+		await txn.wait()
+		return txn.hash
 	}
 
 	@Action
 	async swap(swapRequest: SwapToBanRequest) {
 		const { amount, toBanAddress, contract } = swapRequest
-		console.log(`Should swap ${ethers.utils.formatEther(amount)} BAN to ${toBanAddress}`)
+		console.log(`Should swap ${ethers.utils.formatEther(amount)} wBAN to BAN for "${toBanAddress}"`)
 		const txn = await contract.swapToBan(toBanAddress, amount)
 		Dialogs.startSwapToBan(ethers.utils.formatEther(amount))
 		await txn.wait()

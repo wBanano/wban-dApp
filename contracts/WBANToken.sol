@@ -2,93 +2,97 @@
 
 pragma solidity ^0.8.0;
 
-import "./bep20/IBEP20.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import '@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol';
 
-contract WBANToken is ERC20PausableUpgradeable, OwnableUpgradeable, IBEP20 {
+contract WBANToken is ERC20PausableUpgradeable, AccessControlUpgradeable, OwnableUpgradeable {
     using SafeMathUpgradeable for uint256;
 
-    mapping (address => uint256) private _bnbBalances;
+    mapping(bytes32 => bool) private _receipts;
 
-    function initialize() initializer public {
+    bytes32 public constant MINTER_ROLE = keccak256('MINTER_ROLE');
+    bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
+
+    function initialize() public initializer {
         __Ownable_init();
-        __ERC20_init("Wrapped Banano", "wBAN");
+        __ERC20_init('Wrapped Banano', 'wBAN');
+        __AccessControl_init();
+        // setup roles
+        _setupRole(MINTER_ROLE, owner());
+        _setupRole(PAUSER_ROLE, owner());
+        _setupRole(DEFAULT_ADMIN_ROLE, owner());
     }
 
-    /**
-     * @dev Creates `amount` tokens and assigns them to `recipient`, increasing
-     * the total supply.
-     *
-     * Requirements
-     *
-     * - `recipient` must have deposited enough BNB through `bnbDeposit`
-     */
-    function mintTo(address recipient, uint256 amount, uint256 gaslimit) public onlyOwner {
-        require(!paused(), "BEP20Pausable: token transfer while paused");
-        require(gaslimit > 0, "Gas limit can't be zero");
-        // check if recipient has deposited enough BNB to cover for gas costs
-        uint256 _gasCost = gaslimit * tx.gasprice;
-        require(_bnbBalances[recipient] > _gasCost, "Insufficient BNB deposited");
-        // enough BNB were deposited, let's mint!
-        _bnbBalances[recipient] = _bnbBalances[recipient].sub(_gasCost);
+    function mintWithReceipt(
+        address recipient,
+        uint256 amount,
+        uint256 uuid,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public {
+        require(!paused(), 'BEP20Pausable: transfer paused');
+
+        bytes32 payloadHash = keccak256(abi.encode(recipient, amount, uuid));
+        bytes32 hash = keccak256(abi.encodePacked('\x19Ethereum Signed Message:\n32', payloadHash));
+
+        require(!_receipts[hash], 'Receipt already used');
+
+        _checkSignature(hash, v, r, s);
+
         _mint(recipient, amount);
-        emit Fee(recipient, _gasCost);
+        _receipts[hash] = true;
     }
 
-    function swapToBan(string memory banano_address, uint256 amount) external {
-        require(!paused(), "BEP20Pausable: token transfer while paused");
-        require(balanceOf(_msgSender()) >= amount, "Insufficient wBAN");
-        require(bytes(banano_address).length == 64, "Not a Banano address");
+    function isReceiptConsumed(
+        address recipient,
+        uint256 amount,
+        uint256 uuid
+    ) external view returns (bool) {
+        bytes32 payloadHash = keccak256(abi.encode(recipient, amount, uuid));
+        bytes32 hash = keccak256(abi.encodePacked('\x19Ethereum Signed Message:\n32', payloadHash));
+        return _receipts[hash];
+    }
+
+    function swapToBan(string memory bananoAddress, uint256 amount) external {
+        require(!paused(), 'BEP20Pausable: transfer paused');
+        require(balanceOf(_msgSender()) >= amount, 'Insufficient wBAN');
+        require(bytes(bananoAddress).length == 64, 'Not a Banano address');
         _burn(_msgSender(), amount);
-        emit SwapToBan(_msgSender(), banano_address, amount);
+        emit SwapToBan(_msgSender(), bananoAddress, amount);
     }
 
-    /**
-     * @dev Keep track of users BNB deposits in order to pay for later owner initiated transactions.
-     */
-    function bnbDeposit() external payable {
-        _bnbBalances[_msgSender()] = _bnbBalances[_msgSender()].add(msg.value);
-        // solhint-disable-next-line indent
-        payable(owner()).transfer(msg.value);
-        emit BNBDeposit(_msgSender(), msg.value);
-    }
-
-    /**
-     * @dev Returns the amount of BNB deposited in order to pay for owner initiated transactions.
-     */
-    function bnbBalanceOf(address account) external view returns (uint256) {
-        return _bnbBalances[account];
-    }
-
-    function pause() external whenNotPaused onlyOwner {
+    function pause() external whenNotPaused onlyRole(PAUSER_ROLE) {
         _pause();
     }
 
-    function unpause() external whenPaused onlyOwner {
+    function unpause() external whenPaused onlyRole(PAUSER_ROLE) {
         _unpause();
     }
 
-    function getOwner() external view override returns (address) {
+    /**
+     * @dev Returns the bep token owner.
+     * Extra method added in IBEP20 that is not present in IERC20!
+     * Better be safe than sorry.
+     */
+    function getOwner() external view returns (address) {
         return owner();
     }
 
-    /**
-     * @dev Emitted when `value` BNB are deposited.
-     */
-    event BNBDeposit(address indexed from, uint256 value);
+    function _checkSignature(
+        bytes32 hash,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) internal view {
+        address signer = ecrecover(hash, v, r, s);
+        require(hasRole(MINTER_ROLE, signer), 'Signature invalid');
+    }
 
     /**
-     * @dev Emitted when a fee is needed from `bnbBalance` in order to compensate
-     *      for owner transactions costs on behalf of the user
+     * @dev Emitted when a swap is done for `amount` wBAN from `from` to Banano address `ban_address`
      */
-    event Fee(address indexed from, uint256 value);
-
-    /**
-     * @dev Emitted when a swap is done for wBAN from `from` to Banano address
-     *      `ban_address`
-     */
-    event SwapToBan(address indexed from, string ban_address, uint256 amount);
-
+    event SwapToBan(address indexed from, string banAddress, uint256 amount);
 }

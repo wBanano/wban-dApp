@@ -143,11 +143,4 @@ body.body--light
 			background-image: url('../../public/bg-hero.svg') !important
 			background-size: cover !important
 			min-height: 100px
-
-@media (min-width: $breakpoint-md-min)
-	.q-page
-		background-image: url('../../public/blocklettuce.png')
-		background-position: right
-		background-repeat: no-repeat
-		background-size: contain
 </style>

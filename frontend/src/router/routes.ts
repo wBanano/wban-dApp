@@ -8,6 +8,12 @@ const routes: RouteConfig[] = [
 	},
 
 	{
+		path: '/history',
+		component: () => import('@/layouts/MainLayout.vue'),
+		children: [{ path: '', component: () => import('@/pages/History.vue') }]
+	},
+
+	{
 		path: '/setup',
 		component: () => import('@/layouts/MainLayout.vue'),
 		children: [{ path: '', component: () => import('@/pages/Setup.vue') }]

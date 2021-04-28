@@ -3,7 +3,7 @@ import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
 import axios, { AxiosResponse } from 'axios'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, ethers, Signature } from 'ethers'
 import ClaimRequest from '@/models/ClaimRequest'
 import SwapRequest from '@/models/SwapRequest'
 import SwapResponse from '@/models/SwapResponse'
@@ -11,6 +11,7 @@ import WithdrawRequest from '@/models/WithdrawRequest'
 import WithdrawResponse from '@/models/WithdrawResponse'
 import { ClaimResponse } from '@/models/ClaimResponse'
 import Dialogs from '@/utils/Dialogs'
+import HistoryRequest from '@/models/HistoryRequest'
 
 @Module({
 	namespaced: true,
@@ -22,6 +23,12 @@ class BackendModule extends VuexModule {
 	private _online = false
 	private _banWalletForDeposits = ''
 	private _banDeposited: BigNumber = BigNumber.from(0)
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private _deposits: Array<any> = []
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private _withdrawals: Array<any> = []
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private _swaps: Array<any> = []
 	private _inError = false
 	private _errorMessage = ''
 	private _errorLink = ''
@@ -42,6 +49,18 @@ class BackendModule extends VuexModule {
 
 	get banDeposited() {
 		return this._banDeposited
+	}
+
+	get deposits() {
+		return this._deposits
+	}
+
+	get withdrawals() {
+		return this._withdrawals
+	}
+
+	get swaps() {
+		return this._swaps
 	}
 
 	get inError() {
@@ -69,6 +88,24 @@ class BackendModule extends VuexModule {
 	@Mutation
 	setBanDeposited(balance: BigNumber) {
 		this._banDeposited = balance
+	}
+
+	@Mutation
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setDeposits(deposits: Array<any>) {
+		this._deposits = deposits
+	}
+
+	@Mutation
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setWithdrawals(withdrawals: Array<any>) {
+		this._withdrawals = withdrawals
+	}
+
+	@Mutation
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setSwaps(swaps: Array<any>) {
+		this._swaps = swaps
 	}
 
 	@Mutation
@@ -137,19 +174,31 @@ class BackendModule extends VuexModule {
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('swap-ban-to-wban', async (e: any) => {
-					const { banWallet, swapped, balance, wbanBalance, transaction, transactionLink } = JSON.parse(e.data)
-					console.log(
-						`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`
-					)
-					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
-					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
+					const { banWallet, bscWallet, swapped, receipt, uuid, balance, wbanBalance } = JSON.parse(e.data)
+					console.info(`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN.`)
+					console.info(`Receipt is "${receipt}".`)
+					console.info(`Balance is: ${balance} BAN, ${wbanBalance} wBAN.`)
+					const signature: Signature = ethers.utils.splitSignature(receipt)
+					console.log(`Signature is ${JSON.stringify(signature)}`)
 					if (Contracts.wbanContract && Accounts.activeAccount) {
-						Contracts.reloadBNBDeposits({
-							contract: Contracts.wbanContract,
-							account: Accounts.activeAccount
+						const txnHash = await Contracts.mint({
+							amount: ethers.utils.parseEther(swapped.toString()),
+							bscWallet,
+							receipt,
+							uuid,
+							contract: Contracts.wbanContract
 						})
+						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+						Contracts.reloadWBANBalance({
+							account: bscWallet,
+							contract: Contracts.wbanContract
+						})
+						const blockchainExplorerUrl = Accounts.blockExplorerUrl
+						const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
+						Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+					} else {
+						console.error("Can't make the call to the smart-contract to mint")
 					}
-					Dialogs.confirmSwapToWBan(swapped, transaction, transactionLink)
 				})
 				eventSource.addEventListener('swap-wban-to-ban', async (e: any) => {
 					const { banWallet, swapped, balance, wbanBalance } = JSON.parse(e.data)
@@ -350,6 +399,54 @@ class BackendModule extends VuexModule {
 			message: '',
 			transaction: '',
 			link: ''
+		}
+	}
+
+	@Action
+	async getHistory(request: HistoryRequest) {
+		const { bscAddress, banAddress } = request
+		console.info(`About to fetch history for ${bscAddress} and ${banAddress}`)
+		if (banAddress && bscAddress) {
+			try {
+				const resp = await axios.get(`${BackendModule.BACKEND_URL}/history/${bscAddress}/${banAddress}`)
+				const { deposits, withdrawals } = resp.data
+				const swaps = await Promise.all(
+					resp.data.swaps.map(async (swap: any) => {
+						if (swap.receipt && swap.uuid && Contracts.wbanContract) {
+							// swap.consumed = await Contracts.wbanContract.isReceiptConsumed(swap.receipt)
+							console.debug(`BSC address: ${bscAddress}`)
+							console.debug(`Amount: ${swap.amount}`)
+							console.debug(`UUID: ${swap.uuid}`)
+							swap.consumed = await Contracts.wbanContract.isReceiptConsumed(
+								bscAddress,
+								BigNumber.from(swap.amount),
+								swap.uuid
+							)
+						}
+						return swap
+					})
+				)
+				this.context.commit('setDeposits', deposits)
+				this.context.commit('setWithdrawals', withdrawals)
+				this.context.commit('setSwaps', swaps)
+			} catch (err) {
+				console.log(err)
+				this.context.commit('setInError', true)
+				if (err.response) {
+					const response: AxiosResponse = err.response
+					switch (response.status) {
+						case 409:
+							this.context.commit('setErrorMessage', response.data.message)
+							break
+						default:
+							this.context.commit('setErrorMessage', err)
+							break
+					}
+				} else {
+					this.context.commit('setErrorMessage', err)
+				}
+				return ClaimResponse.Error
+			}
 		}
 	}
 }

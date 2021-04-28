@@ -1,6 +1,13 @@
 <template>
 	<form @submit.prevent.stop="swap">
 		<div class="q-pa-md q-gutter-sm">
+			<div class="column items-end">
+				<div class="col">
+					<q-btn to="/history" flat icon="history" color="primary" size="md">
+						<q-tooltip>History</q-tooltip>
+					</q-btn>
+				</div>
+			</div>
 			<swap-currency-input
 				ref="from"
 				label="From"
@@ -32,7 +39,6 @@ import contracts from '@/store/modules/contracts'
 import { WBANToken } from '../../../artifacts/typechain'
 
 const banStore = namespace('ban')
-const contractsStore = namespace('contracts')
 
 @Component({
 	components: {
@@ -50,9 +56,6 @@ export default class SwapInput extends Vue {
 
 	@banStore.Getter('banAddress')
 	banAddress!: string
-
-	@contractsStore.Getter('bnbDeposits')
-	bnbDeposits!: BigNumber
 
 	amount = ''
 	swapInProgress = false
@@ -78,7 +81,6 @@ export default class SwapInput extends Vue {
 			this.amount &&
 			Number.parseInt(this.amount) > 0 &&
 			this.fromBalance.gte(ethers.utils.parseEther(this.amount)) &&
-			this.bnbDeposits.gte(ethers.utils.parseEther('0.002')) &&
 			!this.swapInProgress
 		)
 	}

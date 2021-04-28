@@ -74,13 +74,6 @@
 					<q-separator vertical inset />
 					<q-item-section>Withdraw BAN</q-item-section>
 				</q-item>
-				<q-item clickable v-ripple @click="depositBNB">
-					<q-item-section avatar>
-						<q-icon name="img:bnb-deposit.svg" size="3em" />
-					</q-item-section>
-					<q-separator vertical inset />
-					<q-item-section>BNB Swap Fees</q-item-section>
-				</q-item>
 				<!--
 				<q-item clickable v-ripple @click="reloadBalances">
 					<q-item-section avatar>
@@ -144,9 +137,6 @@ export default class MainLayout extends Vue {
 	@accountsStore.State('activeAccount')
 	activeAccount!: string
 
-	@accountsStore.State('activeBalanceBnb')
-	activeBalanceBnb!: number
-
 	@banStore.Getter('banAddress')
 	banAddress!: string
 
@@ -192,11 +182,6 @@ export default class MainLayout extends Vue {
 
 	withdrawBAN() {
 		document.dispatchEvent(new CustomEvent('withdraw-ban'))
-		this.drawerOpened = false
-	}
-
-	depositBNB() {
-		document.dispatchEvent(new CustomEvent('deposit-bnb'))
 		this.drawerOpened = false
 	}
 
@@ -291,4 +276,12 @@ export default class MainLayout extends Vue {
 		max-width: 1000px
 	#settings
 		max-width: 400px !important
+
+@media (min-width: $breakpoint-md-min)
+	.q-page
+		background-image: url('../../public/blocklettuce.png')
+		background-position: top right
+		background-repeat: no-repeat
+		background-attachment: fixed
+		background-size: contain
 </style>
