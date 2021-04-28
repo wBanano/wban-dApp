@@ -72,22 +72,30 @@
 			</div>
 		</div>
 		<q-dialog v-model="promptForBnbDeposit" persistent>
-			<q-card class="ban-deposits-dialog">
+			<q-card class="bnb-deposits-dialog">
 				<q-card-section>
 					<div class="text-h6">BNB Swap Fees</div>
 				</q-card-section>
-				<q-card-section class="q-gutter-sm">
-					<div class="row">
-						<div class="col-md-9 col-xs-12">
-							<p>
-								This action will prompt your wallet to deposit a small amount of BNB (0.01) used to cover gas for bridge
-								activity. This deposit cannot be refunded.
-							</p>
-						</div>
+				<q-card-section horizontal>
+					<q-card-section class="q-gutter-sm">
+						<p>
+							This action will prompt your wallet to deposit a small amount of BNB used to cover gas for bridge
+							activity. We recommend 0.01 as this deposit cannot be refunded.
+						</p>
+						<q-input
+							outlined
+							filled
+							step="0.01"
+							type="number"
+							v-model.number="bnbAmount"
+							label="BNB Deposit"
+						/>
+					</q-card-section>
+					<q-card-section>
 						<div class="gt-sm col-md-3 text-right">
 							<q-icon name="img:bsc-logo-only.svg" size="128px" />
 						</div>
-					</div>
+					</q-card-section>
 				</q-card-section>
 				<q-card-actions align="right">
 					<q-btn flat label="Cancel" color="primary" v-close-popup />
@@ -192,6 +200,7 @@ export default class ChainInfo extends Vue {
 	public promptForBnbDeposit = false
 	public promptForBanWithdrawal = false
 	public banWalletForDepositsQRCode = ''
+	public bnbAmount = 0.01
 
 	@Ref('currency-input') readonly currencyInput!: SwapCurrencyInput
 
@@ -240,6 +249,7 @@ export default class ChainInfo extends Vue {
 	}
 
 	async depositBNB() {
+		this.bnbAmount = 0.01
 		this.promptForBnbDeposit = true
 	}
 
@@ -273,7 +283,7 @@ export default class ChainInfo extends Vue {
 		console.log('in depositBNB')
 		const contract: WBANToken | null = contracts.wbanContract
 		if (contract) {
-			await contract.bnbDeposit({ value: ethers.utils.parseEther('0.01') })
+			await contract.bnbDeposit({ value: ethers.utils.parseEther(this.bnbAmount.toString()) })
 			contract.on('BNBDeposit', () => {
 				console.info('BNB were deposited!')
 				this.reloadBalances()
@@ -383,6 +393,9 @@ export default class ChainInfo extends Vue {
 
 #balances
 	margin-top: 10px
+
+.bnb-deposits-dialog
+	width: 500px
 
 @media (min-width: 900px)
 	.ban-deposits-dialog
