@@ -25,6 +25,10 @@ jobs:
         run: |
           yarn
           yarn test
+      - name: Checks
+        run: |
+          yarn lint
+          yarn coverage
   build-frontend:
     name: dAPP
     runs-on: ubuntu-latest

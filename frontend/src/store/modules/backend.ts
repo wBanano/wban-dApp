@@ -3,7 +3,7 @@ import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
 import axios, { AxiosResponse } from 'axios'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, ethers, Signature } from 'ethers'
 import ClaimRequest from '@/models/ClaimRequest'
 import SwapRequest from '@/models/SwapRequest'
 import SwapResponse from '@/models/SwapResponse'
@@ -137,19 +137,31 @@ class BackendModule extends VuexModule {
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('swap-ban-to-wban', async (e: any) => {
-					const { banWallet, swapped, balance, wbanBalance, transaction, transactionLink } = JSON.parse(e.data)
-					console.log(
-						`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`
-					)
-					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
-					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
+					const { banWallet, bscWallet, swapped, receipt, uuid, balance, wbanBalance } = JSON.parse(e.data)
+					console.info(`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN.`)
+					console.info(`Receipt is "${receipt}".`)
+					console.info(`Balance is: ${balance} BAN, ${wbanBalance} wBAN.`)
+					const signature: Signature = ethers.utils.splitSignature(receipt)
+					console.log(`Signature is ${JSON.stringify(signature)}`)
 					if (Contracts.wbanContract && Accounts.activeAccount) {
-						Contracts.reloadBNBDeposits({
-							contract: Contracts.wbanContract,
-							account: Accounts.activeAccount
+						const txnHash = await Contracts.mint({
+							amount: ethers.utils.parseEther(swapped.toString()),
+							bscWallet,
+							receipt,
+							uuid,
+							contract: Contracts.wbanContract
 						})
+						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+						Contracts.reloadWBANBalance({
+							account: bscWallet,
+							contract: Contracts.wbanContract
+						})
+						const blockchainExplorerUrl = Accounts.blockExplorerUrl
+						const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
+						Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+					} else {
+						console.error("Can't make the call to the smart-contract to mint")
 					}
-					Dialogs.confirmSwapToWBan(swapped, transaction, transactionLink)
 				})
 				eventSource.addEventListener('swap-wban-to-ban', async (e: any) => {
 					const { banWallet, swapped, balance, wbanBalance } = JSON.parse(e.data)

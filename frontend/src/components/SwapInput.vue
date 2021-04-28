@@ -32,7 +32,6 @@ import contracts from '@/store/modules/contracts'
 import { WBANToken } from '../../../artifacts/typechain'
 
 const banStore = namespace('ban')
-const contractsStore = namespace('contracts')
 
 @Component({
 	components: {
@@ -50,9 +49,6 @@ export default class SwapInput extends Vue {
 
 	@banStore.Getter('banAddress')
 	banAddress!: string
-
-	@contractsStore.Getter('bnbDeposits')
-	bnbDeposits!: BigNumber
 
 	amount = ''
 	swapInProgress = false
@@ -78,7 +74,6 @@ export default class SwapInput extends Vue {
 			this.amount &&
 			Number.parseInt(this.amount) > 0 &&
 			this.fromBalance.gte(ethers.utils.parseEther(this.amount)) &&
-			this.bnbDeposits.gte(ethers.utils.parseEther('0.002')) &&
 			!this.swapInProgress
 		)
 	}

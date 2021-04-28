@@ -10,8 +10,9 @@ import "hardhat-log-remover";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 import "hardhat-gas-reporter";
-import "@nomiclabs/hardhat-solpp";
+import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
+import "@tenderly/hardhat-tenderly";
 
 let mnemonic = process.env.MNEMONIC;
 if (!mnemonic) {
@@ -30,20 +31,32 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: {
-    compilers: [{
-			version: "0.8.4",
-			settings: {
-				optimizer: {
-					enabled: true,
-					runs: 5000,
-				},
+		version: "0.8.4",
+		settings: {
+			metadata: {
+				bytecodeHash: "none"
+			},
+			optimizer: {
+				enabled: true,
+				runs: 5000
+			},
+			outputSelection: {
+				"*": {
+					"*": ["metadata"]
+				}
 			}
-		}],
+		},
 	},
   networks: {
 		hardhat: {
 			accounts
 		},
+		/*
+		hardhat: {
+			chainId: 123,
+			throwOnCallFailures: false
+		},
+		*/
     localhost: {
       url: 'http://localhost:8545',
       accounts,
@@ -70,17 +83,16 @@ const config: HardhatUserConfig = {
 	preprocess: {
     eachLine: removeConsoleLog((bre) => bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'),
 	},
-	/*
-	solpp: {
-		noFlatten: false,
-		collapseEmptyLines: true,
-	},
-	*/
 	gasReporter: {
     currency: 'EUR',
 		gasPrice: 20, // in gwei
 		// coinmarketcap: ,
   },
+	etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: process.env.BSC_SCAN_API_KEY
+  }
 };
 
 export default config;

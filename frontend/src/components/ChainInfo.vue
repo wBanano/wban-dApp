@@ -28,13 +28,6 @@
 							<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
 						</q-btn>
 					</div>
-					<div class="col-3">
-						<q-btn @click="depositBNB" color="primary" stack>
-							<q-icon name="img:bnb-deposit.svg" size="3em" color="secondary" />
-							<div class="text-button">BNB<br />Swap Fees</div>
-							<q-tooltip content-class="bg-positive">Deposit some BNB for swaps fees</q-tooltip>
-						</q-btn>
-					</div>
 					<!--
 					<div class="col-3">
 						<q-btn @click="reloadBalances" color="primary" stack>
@@ -46,22 +39,13 @@
 					-->
 				</div>
 			</div>
-			<p id="balances" class="col-12 text-center">
-				<strong>Available balance for swap fees: </strong>
-				<br class="xs" />
-				{{ bnbDeposits | bnToString }}
-				<img src="@/assets/binance-coin.png" class="currency-logo" />
-				BNB
-			</p>
 		</div>
 		<div class="row justify-center" v-if="warningCode !== ''">
 			<div class="col-md-8 col-xs-12">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
 					<span v-if="warningCode == 'out-of-ban-and-wban'">You need to deposit more BAN!</span>
-					<span v-if="warningCode == 'out-of-bnb'">You're running low on BNB for fees!</span>
 					<template v-slot:action>
 						<q-btn flat label="Deposit BAN" @click="depositBAN" v-if="warningCode == 'out-of-ban-and-wban'" />
-						<q-btn flat label="Deposit BNB" @click="depositBNB" v-if="warningCode == 'out-of-bnb'" />
 					</template>
 				</q-banner>
 			</div>
@@ -71,38 +55,6 @@
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 			</div>
 		</div>
-		<q-dialog v-model="promptForBnbDeposit" persistent>
-			<q-card class="bnb-deposits-dialog">
-				<q-card-section>
-					<div class="text-h6">BNB Swap Fees</div>
-				</q-card-section>
-				<q-card-section horizontal>
-					<q-card-section class="q-gutter-sm">
-						<p>
-							This action will prompt your wallet to deposit a small amount of BNB used to cover gas for bridge
-							activity. We recommend 0.01 as this deposit cannot be refunded.
-						</p>
-						<q-input
-							outlined
-							filled
-							step="0.01"
-							type="number"
-							v-model.number="bnbAmount"
-							label="BNB Deposit"
-						/>
-					</q-card-section>
-					<q-card-section>
-						<div class="gt-sm col-md-3 text-right">
-							<q-icon name="img:bsc-logo-only.svg" size="128px" />
-						</div>
-					</q-card-section>
-				</q-card-section>
-				<q-card-actions align="right">
-					<q-btn flat label="Cancel" color="primary" v-close-popup />
-					<q-btn color="primary" @click="launchDepositBNB" text-color="secondary" label="Deposit" v-close-popup />
-				</q-card-actions>
-			</q-card>
-		</q-dialog>
 		<q-dialog v-model="promptForBanDeposit" persistent>
 			<q-card class="ban-deposits-dialog">
 				<q-card-section>
@@ -197,10 +149,8 @@ export default class ChainInfo extends Vue {
 	public mintAmount = ''
 	public withdrawAmount = ''
 	public promptForBanDeposit = false
-	public promptForBnbDeposit = false
 	public promptForBanWithdrawal = false
 	public banWalletForDepositsQRCode = ''
-	public bnbAmount = 0.01
 
 	@Ref('currency-input') readonly currencyInput!: SwapCurrencyInput
 
@@ -219,9 +169,6 @@ export default class ChainInfo extends Vue {
 	@contractsStore.Getter('wBanBalance')
 	wBanBalance!: BigNumber
 
-	@contractsStore.Getter('bnbDeposits')
-	bnbDeposits!: BigNumber
-
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
 			return getAddress(accounts.activeAccount as string) === getAddress(contracts.owner as string)
@@ -233,8 +180,6 @@ export default class ChainInfo extends Vue {
 	get warningCode() {
 		if (this.banBalance.eq(BigNumber.from(0)) && this.wBanBalance.eq(BigNumber.from(0))) {
 			return 'out-of-ban-and-wban'
-		} else if (this.bnbDeposits.lt(ethers.utils.parseEther('0.002'))) {
-			return 'out-of-bnb'
 		} else {
 			return ''
 		}
@@ -246,11 +191,6 @@ export default class ChainInfo extends Vue {
 
 	async depositBAN() {
 		this.promptForBanDeposit = true
-	}
-
-	async depositBNB() {
-		this.bnbAmount = 0.01
-		this.promptForBnbDeposit = true
 	}
 
 	async askWithdrawalAmount() {
@@ -276,18 +216,6 @@ export default class ChainInfo extends Vue {
 			} catch (err) {
 				console.error("Withdrawal can't be done", err)
 			}
-		}
-	}
-
-	async launchDepositBNB() {
-		console.log('in depositBNB')
-		const contract: WBANToken | null = contracts.wbanContract
-		if (contract) {
-			await contract.bnbDeposit({ value: ethers.utils.parseEther(this.bnbAmount.toString()) })
-			contract.on('BNBDeposit', () => {
-				console.info('BNB were deposited!')
-				this.reloadBalances()
-			})
 		}
 	}
 
@@ -358,7 +286,6 @@ export default class ChainInfo extends Vue {
 		}
 		document.addEventListener('deposit-ban', this.depositBAN)
 		document.addEventListener('withdraw-ban', this.askWithdrawalAmount)
-		document.addEventListener('deposit-bnb', this.depositBNB)
 		document.addEventListener('reload-balances', this.reloadBalances)
 	}
 
@@ -393,9 +320,6 @@ export default class ChainInfo extends Vue {
 
 #balances
 	margin-top: 10px
-
-.bnb-deposits-dialog
-	width: 500px
 
 @media (min-width: 900px)
 	.ban-deposits-dialog

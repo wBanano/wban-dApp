@@ -9,12 +9,10 @@ artifacts
 cache
 coverage*
 deployments
+types
 
 # OpenZeppelin
 .openzeppelin/unknown-*.json
-
-# Waffle generated files
-flatten
 
 # Various files
 .DS_Store
