@@ -10,7 +10,7 @@
   "dependencies": {
     "@libertypie/wallet-provider": "^1.0.16",
     "@quasar/extras": "^1.10.2",
-    "axios": "^0.21.1",
+    "axios": "0.21.1",
     "core-js": "^3.6.5",
     "ethers": "^5.1.3",
     "numeral": "^2.0.6",
