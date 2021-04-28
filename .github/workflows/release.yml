@@ -1,15 +1,7 @@
-name: CI
-
-# Controls when the action will run.
+name: Publish Release
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
+  release:
+    types: [published]
 jobs:
   build-smart-contract:
     name: "Smart Contract"
@@ -25,7 +17,7 @@ jobs:
         run: |
           yarn
           yarn test
-  build-frontend:
+  build-and-deploy-frontend:
     name: dAPP
     runs-on: ubuntu-latest
     env:
@@ -48,3 +40,11 @@ jobs:
           yarn
           yarn build
         working-directory: ${{env.working-directory}}
+      - name: Deploy to Netlify
+        uses: jsmrcaga/action-netlify-deploy@v1.1.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Prod deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          build_directory: frontend/dist
