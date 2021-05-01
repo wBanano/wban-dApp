@@ -5,7 +5,11 @@
 			<div class="text-subtitle2">by Benis</div>
 		</q-card-section>
 		<q-card-section>
-			<p><strong>Total Supply:</strong> {{ totalSupply | bnToHumanString }} wBAN</p>
+			<p>
+				<strong>Total Supply:</strong> {{ totalSupply | bnToHumanString }} wBAN ({{
+					totalSupply | bnToString | banPrice
+				}})
+			</p>
 		</q-card-section>
 	</q-card>
 </template>
@@ -13,14 +17,15 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { bnToStringFilter } from '@/utils/filters'
+import { bnToStringFilter, banPriceFilter } from '@/utils/filters'
 import { BigNumber } from 'ethers'
 
 const contractsStore = namespace('contracts')
 
 @Component({
 	filters: {
-		bnToStringFilter
+		bnToStringFilter,
+		banPriceFilter
 	}
 })
 export default class Statistics extends Vue {

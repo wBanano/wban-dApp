@@ -39,12 +39,13 @@
 <script lang="ts">
 import { Component, Prop, PropSync, Ref, Vue } from 'vue-property-decorator'
 import { BigNumber, ethers } from 'ethers'
-import { bnToStringFilter } from '@/utils/filters'
+import { bnToStringFilter, banPriceFilter } from '@/utils/filters'
 import accounts from '@/store/modules/accounts'
 
 @Component({
 	filters: {
-		bnToStringFilter
+		bnToStringFilter,
+		banPriceFilter
 	}
 })
 export default class SwapCurrencyInput extends Vue {
