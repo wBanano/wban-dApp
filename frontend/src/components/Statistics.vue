@@ -6,9 +6,14 @@
 		</q-card-section>
 		<q-card-section>
 			<p>
-				<strong>Total Supply:</strong> {{ totalSupply | bnToHumanString }} wBAN ({{
-					totalSupply | bnToString | banPrice
-				}})
+				<strong>
+					Total Supply
+					<q-icon name="info" class="dictionary vertical-top">
+						<q-tooltip>Number of wBAN that have been created from associated BAN deposits</q-tooltip>
+					</q-icon>
+					:
+				</strong>
+				{{ totalSupply | bnToHumanString }} wBAN ({{ totalSupply | bnToString | banPrice }})
 			</p>
 		</q-card-section>
 	</q-card>
@@ -40,4 +45,7 @@ export default class Statistics extends Vue {
 .statistics-card
 	background-image: url('../../public/bg-hero.svg') !important
 	background-size: cover !important
+
+.dictionary
+	margin-left: -3px
 </style>
