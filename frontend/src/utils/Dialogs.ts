@@ -8,13 +8,16 @@ class Dialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private static swapToBanDialog: any
 
+	private static TIMEOUT = 20_000
+
 	static confirmUserDeposit(deposit: string): void {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
 			message: `Your deposit of ${deposit} BAN was received.`,
 			caption: 'You can swap it to wBAN.',
-			timeout: 0,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
 			actions: [
 				{
 					label: 'Close',
@@ -57,7 +60,8 @@ class Dialogs {
 			html: true,
 			message: `${withdrawal} BAN were sent back to your wallet.`,
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
-			timeout: 0,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
 			actions: [
 				{
 					label: 'View',
@@ -119,7 +123,8 @@ class Dialogs {
 			html: true,
 			message: `Your swap of ${deposit} BAN was processed succesfully.`,
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
-			timeout: 0,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
 			actions: [
 				{
 					label: 'View',
@@ -160,7 +165,8 @@ class Dialogs {
 			html: true,
 			message: `Your swap of ${deposit} wBAN was processed succesfully.`,
 			caption: 'Your balance of deposited Banano has been updated.',
-			timeout: 0,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
 			actions: [
 				{
 					label: 'Close',
