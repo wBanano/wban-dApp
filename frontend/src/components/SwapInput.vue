@@ -79,7 +79,7 @@ export default class SwapInput extends Vue {
 	get swapEnabled() {
 		return (
 			this.amount &&
-			Number.parseInt(this.amount) > 0 &&
+			Number.parseFloat(this.amount) > 0 &&
 			this.fromBalance.gte(ethers.utils.parseEther(this.amount)) &&
 			!this.swapInProgress
 		)
