@@ -172,7 +172,9 @@ export default class MainLayout extends Vue {
 	}
 
 	home() {
-		router.push('/')
+		if (this.$route.path != '/') {
+			router.push('/')
+		}
 	}
 
 	depositBAN() {
