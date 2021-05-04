@@ -1,3 +1,15 @@
+# v0.6.0
+## New Features
+- New smart-contract not requiring BNB deposits #23
+- New page displaying history of deposits/withdrawals/swaps #20
+## Improvements
+- Display BAN price #11
+- Add info symbols/buttons (i) tooltips to crypto vocabulary like total supply #19
+- Notifications should timeout after 20 seconds #21
+## Bugs fixed
+- Can't make withdrawals/swaps with decimals and less than 1 (w)BAN #1
+- Pending withdrawals job not processing all of them
+
 # v0.5.0
 ## New Features
 - Smart-contracts upgradeability #14
