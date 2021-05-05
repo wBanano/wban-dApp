@@ -1,3 +1,8 @@
+# v0.6.1
+## Bugs fixed
+- Concurrency issues with pending withdrawals
+- Routing error in JavaScript console #26
+
 # v0.6.0
 ## New Features
 - New smart-contract not requiring BNB deposits #23
