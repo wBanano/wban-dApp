@@ -1,8 +1,10 @@
 import { Networks } from '@/utils/Networks'
 import { Dialog } from 'quasar'
+import tokens from '@/config/constants/tokens'
+import { Address } from '@/config/constants/types'
 
 class MetaMask {
-	static WBAN_CONTRACT_ADDRESS: string = process.env.VUE_APP_WBAN_CONTRACT || ''
+	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
 
 	static isMetaMask(): boolean {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,7 +22,7 @@ class MetaMask {
 				params: {
 					type: 'ERC20',
 					options: {
-						address: MetaMask.WBAN_CONTRACT_ADDRESS,
+						address: tokens.wban.address[MetaMask.ENV_NAME as keyof Address],
 						symbol: 'wBAN',
 						decimals: 18,
 						image: logoUrl

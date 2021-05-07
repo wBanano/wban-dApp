@@ -9,6 +9,8 @@ import SwapToBanRequest from '@/models/SwapToBanRequest'
 import LoadBalancesFromContractRequest from '@/models/LoadBalancesFromContractRequest'
 import Dialogs from '@/utils/Dialogs'
 import SwapToWBanRequest from '@/models/SwapToWBanRequest'
+import tokens from '@/config/constants/tokens'
+import { Address } from '@/config/constants/types'
 
 @Module({
 	namespaced: true,
@@ -22,7 +24,7 @@ class ContractsModule extends VuexModule {
 	private _totalSupply: BigNumber = BigNumber.from(0)
 	private _wBanBalance: BigNumber = BigNumber.from(0)
 
-	static WBAN_CONTRACT_ADDRESS: string = process.env.VUE_APP_WBAN_CONTRACT || ''
+	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
 
 	get wbanContract() {
 		return this._wBanToken
@@ -68,7 +70,10 @@ class ContractsModule extends VuexModule {
 			// do not initialize contract if this was done earlier
 			if (!this._wBanToken) {
 				// eslint-disable-next-line @typescript-eslint/camelcase
-				const contract = WBANToken__factory.connect(ContractsModule.WBAN_CONTRACT_ADDRESS, provider.getSigner())
+				const contract = WBANToken__factory.connect(
+					tokens.wban.address[ContractsModule.ENV_NAME as keyof Address],
+					provider.getSigner()
+				)
 				this.context.commit('setWBANToken', contract)
 
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars

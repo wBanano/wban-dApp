@@ -158,7 +158,7 @@ export default class MainLayout extends Vue {
 	appTitle: string = process.env.VUE_APP_TITLE || 'wBAN -- Broken Release!!!'
 	appVersion: string = process.env.VUE_APP_VERSION || '0'
 
-	banWalletForTips = 'ban_3ta69w7cg7jrqswtntxbwaurrhyy44eagtrfeitrzk1hs8ss3qhdwe9gqyiw'
+	banWalletForTips = 'ban_1wban1mwe1ywc7dtknaqdbog5g3ah333acmq8qxo5anibjqe4fqz9x3xz6ky'
 	banWalletForTipsQRCode = ''
 
 	drawerOpened = false
