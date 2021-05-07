@@ -2,7 +2,8 @@ import 'dotenv/config';
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
 import "@nomiclabs/hardhat-waffle";
-import "hardhat-typechain";
+import '@typechain/hardhat';
+import 'hardhat-dependency-compiler';
 import "hardhat-spdx-license-identifier";
 import "hardhat-preprocessor";
 import { removeConsoleLog } from 'hardhat-preprocessor';
@@ -31,21 +32,63 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: {
-		version: "0.8.4",
-		settings: {
-			metadata: {
-				bytecodeHash: "none"
-			},
-			optimizer: {
-				enabled: true,
-				runs: 5000
-			},
-			outputSelection: {
-				"*": {
-					"*": ["metadata"]
+		compilers: [
+      {
+        version: "0.8.4",
+				settings: {
+					metadata: {
+						bytecodeHash: "none"
+					},
+					optimizer: {
+						enabled: true,
+						runs: 5000
+					},
+					outputSelection: {
+						"*": {
+							"*": ["metadata"]
+						}
+					}
+				},
+      },
+      {
+        version: "0.6.12",
+        settings: {
+					optimizer: {
+						enabled: true,
+						runs: 200
+					},
 				}
-			}
-		},
+      },
+			{
+        version: "0.5.16",
+        settings: {
+					optimizer: {
+						enabled: true,
+						runs: 200
+					},
+				}
+      }
+    ],
+		overrides: {
+      "@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol": {
+        version: "0.6.12"
+      },
+			"@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol": {
+        version: "0.6.12"
+      },
+			"@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol": {
+        version: "0.6.12"
+      },
+			"@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol": {
+        version: "0.6.12"
+      },
+			"@pancakeswap/pancake-swap-lib/contracts/utils/Address.sol": {
+        version: "0.6.12"
+      },
+			"@pancakeswap/pancake-swap-lib/contracts/GSN/Context.sol": {
+        version: "0.6.12"
+      }
+    }
 	},
   networks: {
 		hardhat: {
@@ -75,6 +118,13 @@ const config: HardhatUserConfig = {
 	typechain: {
 		outDir: 'artifacts/typechain',
 		target: 'ethers-v5',
+	},
+	dependencyCompiler: {
+		paths: [
+			'ApeSwap-Banana-Farm/contracts/BEP20RewardApeV2.sol',
+			'ApeSwap-Banana-Farm/contracts/libs/MockBEP20.sol',
+			'ApeSwap-Core-Contracts/contracts/ApeFactory.sol',
+		],
 	},
 	spdxLicenseIdentifier: {
 		overwrite: true,
