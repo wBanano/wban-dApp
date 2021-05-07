@@ -1,43 +1,26 @@
 <template>
 	<div>
-		<div v-if="isOwner" class="q-pa-md q-gutter-sm">
-			<p>Welcome <strong>Benis</strong>!</p>
-			<p>Let's mint some wBAN for your fellow monkeys...</p>
-			<div>
-				<q-input rounded outlined v-model="mintToAddress" label="For (address)" />
-				<q-input rounded outlined v-model="mintAmount" label="Amount of wBAN to mint" />
-				<div class="text-right">
-					<q-btn label="Mint" v-if="isOwner" @click="mint" color="primary" text-color="text-black" />
-				</div>
+		<div class="row q-col-gutter-md justify-center buttons text-center gt-xs">
+			<div class="col-4 flex">
+				<q-btn @click="depositBAN" color="primary" class="fit" stack>
+					<q-icon name="img:ban-deposit.svg" size="3em" />
+					<div class="text-button">Deposit BAN</div>
+					<q-tooltip content-class="bg-positive">Deposit some BAN for swaps</q-tooltip>
+				</q-btn>
 			</div>
-		</div>
-		<div v-if="!isOwner" class="row justify-center">
-			<div class="col-md-10 col-sm-12 col-xs-12">
-				<div class="row items-start justify-center buttons text-center gt-xs">
-					<div class="col-3">
-						<q-btn @click="depositBAN" color="primary" stack>
-							<q-icon name="img:ban-deposit.svg" size="3em" />
-							<div class="text-button">Deposit BAN</div>
-							<q-tooltip content-class="bg-positive">Deposit some BAN for swaps</q-tooltip>
-						</q-btn>
-					</div>
-					<div class="col-3">
-						<q-btn @click="askWithdrawalAmount" :disable="withdrawalDisabled" color="primary" stack>
-							<q-icon name="img:ban-withdraw.svg" size="3em" />
-							<div class="text-button">Withdraw BAN</div>
-							<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
-						</q-btn>
-					</div>
-					<!--
-					<div class="col-3">
-						<q-btn @click="reloadBalances" color="primary" stack>
-							<q-icon name="img:ban-refresh.svg" size="3em" color="secondary" />
-							<div class="text-button">Refresh Balances</div>
-							<q-tooltip content-class="bg-positive">Refresh balances</q-tooltip>
-						</q-btn>
-					</div>
-					-->
-				</div>
+			<div class="col-4 flex">
+				<q-btn @click="askWithdrawalAmount" :disable="withdrawalDisabled" color="primary" class="fit" stack>
+					<q-icon name="img:ban-withdraw.svg" size="3em" />
+					<div class="text-button">Withdraw BAN</div>
+					<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
+				</q-btn>
+			</div>
+			<div class="col-4 flex">
+				<q-btn to="/farms" color="primary" class="fit" stack>
+					<q-icon name="img:wban-farming.svg" size="3em" />
+					<div class="text-button">Stake &amp; Farm</div>
+					<q-tooltip content-class="bg-positive">Liquidity Pools Farms</q-tooltip>
+				</q-btn>
 			</div>
 		</div>
 		<div class="warnings row justify-center" v-if="warningCode !== ''">
@@ -125,7 +108,7 @@ import contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
 import WithdrawRequest from '@/models/WithdrawRequest'
 import { WBANToken } from '../../../artifacts/typechain/WBANToken'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import QRCode from 'qrcode'
 import { copyToClipboard } from 'quasar'
@@ -145,8 +128,6 @@ const contractsStore = namespace('contracts')
 })
 export default class ChainInfo extends Vue {
 	public banAddress = ''
-	public mintToAddress = ''
-	public mintAmount = ''
 	public withdrawAmount = ''
 	public promptForBanDeposit = false
 	public promptForBanWithdrawal = false
@@ -216,19 +197,6 @@ export default class ChainInfo extends Vue {
 			} catch (err) {
 				console.error("Withdrawal can't be done", err)
 			}
-		}
-	}
-
-	async mint() {
-		console.debug('in mint')
-		const contract: WBANToken | null = contracts.wbanContract
-		if (contract && this.mintToAddress) {
-			const rawAmount: string = ethers.utils.parseEther(this.mintAmount).toString()
-			await contract.mintTo(this.mintToAddress, rawAmount, 200_000)
-			contract.on('Transfer', () => {
-				console.info('wBAN were minted!')
-				this.reloadBalances()
-			})
 		}
 	}
 

@@ -20,7 +20,7 @@ class AccountsModule extends VuexModule {
 	public chainId: string | null = null
 	public chainName: string | null = null
 	public blockExplorerUrl: string | null = null
-	private _providerEthers: ethers.providers.Provider | null = null // this is "provider" for Ethers.js
+	private _providerEthers: ethers.providers.JsonRpcProvider | null = null // this is "provider" for Ethers.js
 	public isConnected = false
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _walletProvider: any

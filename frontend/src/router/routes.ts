@@ -14,6 +14,12 @@ const routes: RouteConfig[] = [
 	},
 
 	{
+		path: '/farms',
+		component: () => import('@/layouts/MainLayout.vue'),
+		children: [{ path: '', component: () => import('@/pages/Farms.vue') }]
+	},
+
+	{
 		path: '/setup',
 		component: () => import('@/layouts/MainLayout.vue'),
 		children: [{ path: '', component: () => import('@/pages/Setup.vue') }]

@@ -38,7 +38,7 @@ jobs:
       - name: Compile & Test
         run: |
           yarn
-          yarn build
+          yarn build --mode staging
         working-directory: ${{env.working-directory}}
       - name: Deploy to Netlify
         uses: jsmrcaga/action-netlify-deploy@v1.1.0

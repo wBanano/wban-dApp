@@ -7,6 +7,10 @@ class Dialogs {
 	private static swapToWBanDialog: any
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private static swapToBanDialog: any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private static swapFarmSupplyDialog: any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private static swapFarmWithdrawDialog: any
 
 	private static TIMEOUT = 20_000
 
@@ -178,6 +182,90 @@ class Dialogs {
 		if (Dialogs.swapToBanDialog) {
 			Dialogs.swapToBanDialog.hide()
 			Dialogs.swapToBanDialog = null
+		}
+	}
+
+	static startFarmSupply(amount: string, symbol: string): void {
+		Dialogs.swapFarmSupplyDialog = Dialog.create({
+			dark: true,
+			title: `Supply of ${amount} ${symbol} in progress...`,
+			message: 'Working hard to process your supply request!',
+			progress: true,
+			persistent: true,
+			cancel: false,
+			ok: false
+		})
+	}
+
+	static confirmFarmSupply(amount: string, symbol: string, txnHash: string, txnLink: string): void {
+		const dismiss = Notify.create({
+			type: 'positive',
+			html: true,
+			message: `Your supply of ${amount} ${symbol} was processed succesfully.`,
+			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
+			actions: [
+				{
+					label: 'View',
+					color: 'white',
+					noDismiss: true,
+					handler: () => {
+						openURL(txnLink)
+					}
+				},
+				{
+					label: 'Close',
+					color: 'white',
+					handler: () => dismiss()
+				}
+			]
+		})
+		if (Dialogs.swapFarmSupplyDialog) {
+			Dialogs.swapFarmSupplyDialog.hide()
+			Dialogs.swapFarmSupplyDialog = null
+		}
+	}
+
+	static startFarmWithdraw(amount: string, symbol: string): void {
+		Dialogs.swapFarmWithdrawDialog = Dialog.create({
+			dark: true,
+			title: `Withdrawal of ${amount} ${symbol} in progress...`,
+			message: 'Working hard to process your withdrawal request!',
+			progress: true,
+			persistent: true,
+			cancel: false,
+			ok: false
+		})
+	}
+
+	static confirmFarmWithdraw(amount: string, symbol: string, txnHash: string, txnLink: string): void {
+		const dismiss = Notify.create({
+			type: 'positive',
+			html: true,
+			message: `Your withdrawal of ${amount} ${symbol} was processed succesfully.`,
+			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
+			actions: [
+				{
+					label: 'View',
+					color: 'white',
+					noDismiss: true,
+					handler: () => {
+						openURL(txnLink)
+					}
+				},
+				{
+					label: 'Close',
+					color: 'white',
+					handler: () => dismiss()
+				}
+			]
+		})
+		if (Dialogs.swapFarmWithdrawDialog) {
+			Dialogs.swapFarmWithdrawDialog.hide()
+			Dialogs.swapFarmWithdrawDialog = null
 		}
 	}
 }

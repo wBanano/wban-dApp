@@ -8,6 +8,14 @@ const bnToStringFilter = Vue.filter('bnToString', (value: string) => {
 	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00000')
 })
 
+const bnToTwoDecimalsStringFilter = Vue.filter('bnToTwoDecimalsString', (value: string) => {
+	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00')
+})
+
+const bnToExactStringFilter = Vue.filter('bnToExactString', (value: string) => {
+	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00000000')
+})
+
 const bnToHumanStringFilter = Vue.filter('bnToHumanString', (value: string) => {
 	return `~ ${numeral(ethers.utils.formatUnits(value, 18)).format('0,00 a')}`
 })
@@ -19,8 +27,9 @@ const bscAddressFilter = Vue.filter('bscAddress', (address: string) => {
 		.concat(address.substring(address.length - 6))
 })
 
-const banPriceFilter = Vue.filter('banPrice', (amount: string) => {
-	return numeral(Number.parseFloat(amount) * ban.banPriceInUSD).format('$0,0.00')
+const banPriceFilter = Vue.filter('banPrice', (_amount: string) => {
+	const amount = numeral(_amount).value()
+	return numeral(amount * ban.banPriceInUSD).format('$0,0.00')
 })
 
 const timestampFilter = Vue.filter('timestamp', (timestamp: string) => {
@@ -34,4 +43,13 @@ const hashTrimmedFilter = Vue.filter('hash_trimmed', (hash: string) => {
 		.concat(hash.substring(hash.length - 7, hash.length - 1))
 })
 
-export { bnToStringFilter, bnToHumanStringFilter, bscAddressFilter, banPriceFilter, timestampFilter, hashTrimmedFilter }
+export {
+	bnToStringFilter,
+	bnToTwoDecimalsStringFilter,
+	bnToExactStringFilter,
+	bnToHumanStringFilter,
+	bscAddressFilter,
+	banPriceFilter,
+	timestampFilter,
+	hashTrimmedFilter
+}
