@@ -1,3 +1,7 @@
+# v0.7.0
+## New Features
+- wBAN farms #29
+
 # v0.6.1
 ## Bugs fixed
 - Concurrency issues with pending withdrawals
