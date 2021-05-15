@@ -32,14 +32,14 @@ contract Benis is Ownable {
     struct PoolInfo {
         IBEP20 stakingToken; // Contract address of staked token
         uint256 stakingTokenTotalAmount; //Total amount of deposited tokens
-        uint256 accWBANPerShare; // Accumulated WBAN per share, times 1e12. See below.
-        uint32 lastRewardTime; // Last timestamp number that WBAN distribution occurs.
-        uint16 allocPoint; // How many allocation points assigned to this pool. WBAN to distribute per second.
+        uint256 accWBANPerShare; // Accumulated wBAN per share, times 1e12. See below.
+        uint32 lastRewardTime; // Last timestamp number that wBAN distribution occurs.
+        uint16 allocPoint; // How many allocation points assigned to this pool. wBAN to distribute per second.
     }
 
-    IBEP20 public immutable wban; // The WBAN TOKEN!!
+    IBEP20 public immutable wban; // The wBAN TOKEN!!
 
-    uint256 public wbanPerSecond; // wban tokens vested per second.
+    uint256 public wbanPerSecond; // wBAN tokens vested per second.
 
     PoolInfo[] public poolInfo; // Info of each pool.
 
@@ -47,7 +47,7 @@ contract Benis is Ownable {
 
     uint256 public totalAllocPoint = 0; // Total allocation points. Must be the sum of all allocation points in all pools.
 
-    uint32 public immutable startTime; // The timestamp when WBAN farming starts.
+    uint32 public immutable startTime; // The timestamp when wBAN farming starts.
 
     uint32 public endTime; // Time on which the reward calculation should end
 
@@ -71,9 +71,10 @@ contract Benis is Ownable {
         endTime += addSeconds;
     }
 
-    // Changes wban token reward per second. Use this function to moderate the `lockup amount`. Essentially this function changes the amount of the reward
-    // which is entitled to the user for his token staking by the time the `endTime` is passed.
-    //Good practice to update pools without messing up the contract
+    // Changes wBAN token reward per second. Use this function to moderate the `lockup amount`.
+    // Essentially this function changes the amount of the reward which is entitled to the
+    // user for his token staking by the time the `endTime` is passed.
+    // Good practice to update pools without messing up the contract
     function setWBANPerSecond(uint256 _wbanPerSecond, bool _withUpdate) external onlyOwner {
         if (_withUpdate) {
             massUpdatePools();
@@ -87,7 +88,7 @@ contract Benis is Ownable {
     }
 
     // Add a new staking token to the pool. Can only be called by the owner.
-    // VERY IMPORTANT NOTWBAN
+    // VERY IMPORTANT NOTICE
     // ----------- DO NOT add the same staking token more than once. Rewards will be messed up if you do. -------------
     // Good practice to update pools without messing up the contract
     function add(
@@ -111,7 +112,7 @@ contract Benis is Ownable {
         );
     }
 
-    // Update the given pool's WBAN allocation point. Can only be called by the owner.
+    // Update the given pool's wBAN allocation point. Can only be called by the owner.
     // Good practice to update pools without messing up the contract
     function set(
         uint256 _pid,
@@ -137,7 +138,7 @@ contract Benis is Ownable {
         return _to - _from;
     }
 
-    // View function to see pending WBAN on frontend.
+    // View function to see pending wBAN on frontend.
     function pendingWBAN(uint256 _pid, address _user) external view returns (uint256) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
@@ -176,7 +177,7 @@ contract Benis is Ownable {
         pool.lastRewardTime = uint32(block.timestamp);
     }
 
-    // Deposit staking tokens to Sorbettiere for WBAN allocation.
+    // Deposit staking tokens to Benis for wBAN rewards.
     function deposit(uint256 _pid, uint256 _amount) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
@@ -193,7 +194,7 @@ contract Benis is Ownable {
         emit Deposit(msg.sender, _pid, _amount);
     }
 
-    // Withdraw staked tokens from Sorbettiere.
+    // Withdraw staked tokens from Benis.
     function withdraw(uint256 _pid, uint256 _amount) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
@@ -220,7 +221,7 @@ contract Benis is Ownable {
         emit EmergencyWithdraw(msg.sender, _pid, userAmount);
     }
 
-    // Safe wban transfer function. Just in case if the pool does not have enough WBAN token,
+    // Safe wBAN transfer function. Just in case if the pool does not have enough wBAN token,
     // The function returns the amount which is owed to the user
     function safeRewardTransfer(address _to, uint256 _amount) internal returns (uint256) {
         uint256 wbanBalance = wban.balanceOf(address(this));
