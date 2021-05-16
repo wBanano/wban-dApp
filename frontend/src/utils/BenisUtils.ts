@@ -52,10 +52,12 @@ class BenisUtils {
 	}
 
 	public getFarmDurationLeft(pid: number, environment: string): string {
-		const farmEndTime = this.getEndTime(pid, environment)
-		if (farmEndTime) {
-			return humanizeDuration(farmEndTime * 1_000 - Date.now(), { largest: 2 })
+		const now = Date.now()
+		const farmEndTime = this.getEndTime(pid, environment) * 1_000
+		if (farmEndTime && farmEndTime > now) {
+			return humanizeDuration(farmEndTime - now, { largest: 2 })
 		} else {
+			console.warn(`Pool (pid: ${pid}) is finished!`)
 			return 'Finished'
 		}
 	}

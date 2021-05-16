@@ -28,23 +28,32 @@ class BEP20Utils {
 		return balance
 	}
 
-	public async getLPDetails(lpAddress: string, signer: Signer) {
+	public async getLPDetails(account: string, lpStakedBalance: BigNumber, lpAddress: string, signer: Signer) {
 		// eslint-disable-next-line @typescript-eslint/camelcase
 		const lp: IApePair = await IApePair__factory.connect(lpAddress, signer)
 		const addressToken0 = await lp.token0()
 		const addressToken1 = await lp.token1()
 		// eslint-disable-next-line @typescript-eslint/camelcase
-		const liquidityToken0 = await (await IBEP20__factory.connect(addressToken0, signer)).balanceOf(lpAddress)
+		const token0 = await IBEP20__factory.connect(addressToken0, signer)
+		const liquidityToken0 = await token0.balanceOf(lpAddress)
 		// eslint-disable-next-line @typescript-eslint/camelcase
-		const liquidityToken1 = await (await IBEP20__factory.connect(addressToken1, signer)).balanceOf(lpAddress)
+		const token1 = await IBEP20__factory.connect(addressToken1, signer)
+		const liquidityToken1 = await token1.balanceOf(lpAddress)
+		// pool total supply
+		const totalSupply = await lp.totalSupply()
+		// compute user liquidities -- pool token A * (user LP token / total supply) + pool token B * (user LP token / total supply)
+		const userLiquidityToken0 = liquidityToken0.mul(lpStakedBalance).div(totalSupply)
+		const userLiquidityToken1 = liquidityToken1.mul(lpStakedBalance).div(totalSupply)
 		return {
 			token0: {
 				address: addressToken0,
-				liquidity: liquidityToken0
+				liquidity: liquidityToken0,
+				user: userLiquidityToken0
 			},
 			token1: {
 				address: addressToken1,
-				liquidity: liquidityToken1
+				liquidity: liquidityToken1,
+				user: userLiquidityToken1
 			}
 		}
 	}
