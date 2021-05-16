@@ -8,7 +8,7 @@
 				</h6>
 			</div>
 			<div class="row q-col-gutter-md justify-center">
-				<farm v-for="farm in farms" v-bind:key="farm.pid" :account="activeAccount" :value="farm" />
+				<farm v-for="farm in farms" :key="farm.pid" :account="activeAccount" :value="farm" />
 				<div class="col-md-1" />
 			</div>
 		</div>
@@ -22,7 +22,10 @@ import Farm from '@/components/farms/Farm.vue'
 import benis from '@/store/modules/benis'
 import accounts from '@/store/modules/accounts'
 import prices from '@/store/modules/prices'
-import { FarmConfig } from '@/config/constants/types'
+import { FarmConfig, Address } from '@/config/constants/types'
+import tokens from '@/config/constants/tokens'
+import { Benis } from '../../../artifacts/typechain'
+import { ethers } from 'ethers'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -39,7 +42,17 @@ export default class FarmsPage extends Vue {
 	@accountsStore.State('activeAccount')
 	activeAccount!: string
 
-	async mounted() {
+	@benisStore.Getter('benisContract')
+	benis!: Benis
+
+	@accountsStore.Getter('providerEthers')
+	provider!: ethers.providers.JsonRpcProvider | null
+
+	wbanAddress: string = tokens.wban.address[Farm.ENV_NAME as keyof Address]
+
+	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
+
+	async created() {
 		const provider = accounts.providerEthers
 		await benis.initContract(provider)
 		await prices.loadPrices()

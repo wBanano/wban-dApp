@@ -107,6 +107,7 @@ import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
+import prices from '@/store/modules/prices'
 import SettingsMenu from '@/components/SettingsMenu.vue'
 import { bscAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
@@ -197,6 +198,7 @@ export default class MainLayout extends Vue {
 		await accounts.ethereumListener()
 		await ban.init()
 		await backend.initBackend(this.banAddress)
+		await prices.loadPrices()
 		try {
 			const qrcode: string = await QRCode.toDataURL(this.banWalletForTips, {
 				color: {

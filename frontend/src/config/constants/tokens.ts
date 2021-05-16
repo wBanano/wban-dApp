@@ -2,7 +2,7 @@ const tokens = {
 	wban: {
 		symbol: 'wBAN',
 		address: {
-			dev: '0xfa979b6080583bD3Af0B5A4B9b8054bD17bEE1B7',
+			dev: '0x3CeCA6F19fbf2e6f1B3B50aCBaE78fC531E350b6',
 			staging: '0x58EDaBF911597C4DE6AC95ABb462D02ef94d5c66',
 			production: ''
 		},
@@ -22,16 +22,6 @@ const tokens = {
 		},
 		decimals: 18,
 		projectLink: 'https://www.paxos.com/busd/'
-	},
-	wbnb: {
-		symbol: 'wBNB',
-		address: {
-			dev: '0x9AD54a3ca0df6E96c949c0Ae8B03faD04703024e',
-			staging: '0x9AD54a3ca0df6E96c949c0Ae8B03faD04703024e',
-			production: '0xae13d989dac2f0debff460ac112a837c89baa7cd'
-		},
-		decimals: 18,
-		projectLink: 'https://pancakeswap.finance/'
 	}
 }
 

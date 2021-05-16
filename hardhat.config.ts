@@ -12,8 +12,12 @@ import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 import "hardhat-gas-reporter";
 import "@nomiclabs/hardhat-etherscan";
-import "@openzeppelin/hardhat-upgrades";
 import "@tenderly/hardhat-tenderly";
+import "@openzeppelin/hardhat-upgrades";
+import {
+  hashBytecodeWithoutMetadata,
+  Manifest,
+} from "@openzeppelin/upgrades-core";
 
 let mnemonic = process.env.MNEMONIC;
 if (!mnemonic) {
@@ -29,6 +33,29 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
     console.log(await account.address);
   }
 });
+
+task("wban:deploy", "Deploy wBAN")
+	.setAction(async (args, hre) => {
+		// deploy upgradeable contract
+		const WBANToken = await hre.ethers.getContractFactory("WBANToken");
+		const wban = await hre.upgrades.deployProxy(WBANToken);
+		await wban.deployed();
+		console.log(`wBAN proxy deployed at: "${wban.address}"`);
+
+		// peer into OpenZeppelin manifest to extract the implementation address
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
+		const manifest = await ozUpgradesManifestClient.read();
+		const bytecodeHash = hashBytecodeWithoutMetadata(WBANToken.bytecode);
+		const implementationContract = manifest.impls[bytecodeHash];
+
+		// verifiy implementation contract
+		if (implementationContract) {
+			console.log(`wBAN impl deployed at: "${implementationContract.address}"`);
+			await hre.run("verify:verify", {
+				address: implementationContract.address
+			});
+		}
+	})
 
 task("benis:deploy", "Deploy Benis")
 	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
