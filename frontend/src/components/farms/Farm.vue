@@ -256,7 +256,11 @@ export default class Farm extends Vue {
 	}
 
 	get apr(): string {
-		return numeral(this.farmData.apr).format('0,0[.]000 a')
+		if (this.farmData.timeLeft === 'Finished') {
+			return '0'
+		} else {
+			return numeral(this.farmData.apr).format('0,0[.]000 a')
+		}
 	}
 
 	public isStaking(): boolean {
