@@ -1,3 +1,11 @@
+# v0.7.1
+## Improvements
+- Farm UX redesign #35
+## Bugs fixed
+- Farm: time left should be 0 and not increasing when the farm is done #32
+- Farm: APR should be 0 when the farm ended or the allocation points are zero #33
+- Add link to "Staking/Farming" page in the burger menu for mobiles #34
+
 # v0.7.0
 ## New Features
 - wBAN farms #29
