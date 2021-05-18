@@ -17,11 +17,15 @@ class BenisUtils {
 	 */
 	public async getFarmAPR(
 		pid: number,
+		envName: string,
 		wbanPriceUsd: BigNumber,
 		poolLiquidityUsd: BigNumber,
 		benis: Benis
 	): Promise<number> {
 		if (poolLiquidityUsd.isZero()) {
+			return 0
+		}
+		if (this.getFarmDurationLeft(pid, envName) === 'Finished') {
 			return 0
 		}
 		const wbanPerSecond = BigNumber.from(1)

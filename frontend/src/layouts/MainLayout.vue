@@ -74,15 +74,13 @@
 					<q-separator vertical inset />
 					<q-item-section>Withdraw BAN</q-item-section>
 				</q-item>
-				<!--
-				<q-item clickable v-ripple @click="reloadBalances">
+				<q-item clickable v-ripple to="/farms">
 					<q-item-section avatar>
-						<q-icon name="img:ban-refresh.svg" size="3em" />
+						<q-icon name="img:wban-farming.svg" size="3em" />
 					</q-item-section>
 					<q-separator vertical inset />
-					<q-item-section>Refresh Balances</q-item-section>
+					<q-item-section>Stake &amp; Farm</q-item-section>
 				</q-item>
-				-->
 			</q-list>
 		</q-drawer>
 		<q-page-container>

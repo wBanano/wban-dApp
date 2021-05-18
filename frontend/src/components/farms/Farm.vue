@@ -280,8 +280,8 @@ export default class Farm extends Vue {
 		if (this.isLoading) {
 			return BN_ZERO
 		}
-		return this.farmData.userPoolData.balanceToken0
-			.mul(ethers.utils.parseEther(this.farmData.poolData.priceToken0.toString()))
+		return this.farmData.userPoolData.balanceToken1
+			.mul(ethers.utils.parseEther(this.farmData.poolData.priceToken1.toString()))
 			.div(ethers.utils.parseEther('1'))
 	}
 

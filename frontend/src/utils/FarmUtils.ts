@@ -43,7 +43,7 @@ class FarmUtils {
 
 		farmData.timeLeft = await benisUtils.getFarmDurationLeft(farmData.pid, envName)
 
-		farmData = await this.computeAPR(farmData, signer, benis)
+		farmData = await this.computeAPR(farmData, envName, signer, benis)
 		if (this.isStaking()) {
 			farmData.userGlobalBalance = farmData.stakedBalance.add(farmData.userPendingRewards)
 			farmData.stakedValue = farmData.stakedBalance.mul(ethers.utils.parseEther(banPriceInUSD.toString())).div(BN_ONE)
@@ -71,7 +71,7 @@ class FarmUtils {
 		return this.wbanAddress === this.farmConfig.lpAddresses[this.envName as keyof Address]
 	}
 
-	private async computeAPR(farmData: FarmData, signer: Signer, benis: Benis): Promise<FarmData> {
+	private async computeAPR(farmData: FarmData, envName: string, signer: Signer, benis: Benis): Promise<FarmData> {
 		console.info(`Computing APR for ${farmData.poolData.name}`)
 
 		const bep20 = new BEP20Utils()
@@ -147,7 +147,7 @@ class FarmUtils {
 		farmData.poolData.tvl = poolLiquidityUsd
 		console.debug(`Pool liquidity price: ${ethers.utils.formatEther(poolLiquidityUsd)}`)
 
-		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, wbanPriceUsd, poolLiquidityUsd, benis)
+		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, envName, wbanPriceUsd, poolLiquidityUsd, benis)
 		return farmData
 	}
 
