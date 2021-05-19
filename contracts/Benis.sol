@@ -40,7 +40,9 @@ contract Benis is Ownable {
     IBEP20 public immutable wban; // The wBAN TOKEN!!
 
     uint256 public wbanPerSecond; // wBAN tokens vested per second.
-
+    
+    uint256 maxWbanPerSecond; // maximum wban per second.
+    
     PoolInfo[] public poolInfo; // Info of each pool.
 
     mapping(uint256 => mapping(address => UserInfo)) public userInfo; // Info of each user that stakes tokens.
@@ -59,10 +61,12 @@ contract Benis is Ownable {
         IBEP20 _wban,
         uint256 _wbanPerSecond,
         uint32 _startTime
+        uint256 _maxWbanPerSecond
     ) public {
         wban = _wban;
 
         wbanPerSecond = _wbanPerSecond;
+        maxWbanPerSecond = _maxWbanPerSecond;
         startTime = _startTime;
         endTime = _startTime;
     }
@@ -76,6 +80,8 @@ contract Benis is Ownable {
     // user for his token staking by the time the `endTime` is passed.
     // Good practice to update pools without messing up the contract
     function setWBANPerSecond(uint256 _wbanPerSecond, bool _withUpdate) external onlyOwner {
+        require(_wbanPerSecond <= maxWbanPerSecond, "_wbanPerSecond too high!");
+     
         if (_withUpdate) {
             massUpdatePools();
         }
