@@ -30,6 +30,10 @@ class ContractsModule extends VuexModule {
 		return this._wBanToken
 	}
 
+	get wbanAddress() {
+		return this._wBanToken ? this._wBanToken.address : ''
+	}
+
 	get owner() {
 		return this._owner
 	}

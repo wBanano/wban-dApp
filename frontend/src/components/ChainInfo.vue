@@ -1,21 +1,28 @@
 <template>
 	<div>
 		<div class="row q-col-gutter-md justify-center buttons text-center gt-xs">
-			<div class="col-4 flex">
+			<div class="col-3 flex">
 				<q-btn @click="depositBAN" color="primary" class="fit" stack>
 					<q-icon name="img:ban-deposit.svg" size="3em" />
 					<div class="text-button">Deposit BAN</div>
 					<q-tooltip content-class="bg-positive">Deposit some BAN for swaps</q-tooltip>
 				</q-btn>
 			</div>
-			<div class="col-4 flex">
+			<div class="col-3 flex">
 				<q-btn @click="askWithdrawalAmount" :disable="withdrawalDisabled" color="primary" class="fit" stack>
 					<q-icon name="img:ban-withdraw.svg" size="3em" />
 					<div class="text-button">Withdraw BAN</div>
 					<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
 				</q-btn>
 			</div>
-			<div class="col-4 flex">
+			<div class="col-3 flex">
+				<q-btn @click="swap" color="primary" class="fit" stack>
+					<q-icon name="img:wban-swap.svg" size="3em" style="width: 100px" />
+					<div class="text-button">Swaps</div>
+					<q-tooltip content-class="bg-positive">Swaps</q-tooltip>
+				</q-btn>
+			</div>
+			<div class="col-3 flex">
 				<q-btn to="/farms" color="primary" class="fit" stack>
 					<q-icon name="img:wban-farming.svg" size="3em" />
 					<div class="text-button">Stake &amp; Farm</div>
@@ -111,7 +118,7 @@ import { WBANToken } from '../../../artifacts/typechain/WBANToken'
 import { BigNumber } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import QRCode from 'qrcode'
-import { copyToClipboard } from 'quasar'
+import { copyToClipboard, openURL } from 'quasar'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -149,6 +156,9 @@ export default class ChainInfo extends Vue {
 
 	@contractsStore.Getter('wBanBalance')
 	wBanBalance!: BigNumber
+
+	@contractsStore.Getter('wbanAddress')
+	wbanAddress!: string
 
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
@@ -198,6 +208,10 @@ export default class ChainInfo extends Vue {
 				console.error("Withdrawal can't be done", err)
 			}
 		}
+	}
+
+	swap() {
+		openURL(`https://dex.apeswap.finance/#/swap?inputCurrency=${this.wbanAddress}`)
 	}
 
 	async reloadBalances() {
@@ -272,7 +286,7 @@ export default class ChainInfo extends Vue {
 	vertical-align: top
 
 .buttons
-	max-width: 500px
+	max-width: 700px
 	margin-left: auto
 	margin-right: auto
 	button
