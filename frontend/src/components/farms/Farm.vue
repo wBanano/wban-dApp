@@ -34,6 +34,7 @@
 				<div class="row justify-around">
 					<div class="col-4"><q-skeleton type="QBtn" /></div>
 					<div class="col-4"><q-skeleton type="QBtn" /></div>
+					<div class="col-4"><q-skeleton type="QBtn" /></div>
 				</div>
 			</q-card-section>
 		</q-card>
@@ -124,6 +125,7 @@
 			<q-card-actions class="farm-actions">
 				<q-btn @click="approve" v-if="!lpTokenAllowance" color="primary" class="fit" flat>Approve</q-btn>
 				<q-btn-group outline spread class="fit">
+					<q-btn @click="addLiquidity" v-if="!isStaking()" color="primary" class="fit" flat>Add Liquidity</q-btn>
 					<q-btn @click="beginSupply" v-if="lpTokenAllowance" color="primary" flat>Supply</q-btn>
 					<q-btn
 						@click="beginWithdraw"
@@ -196,6 +198,7 @@ import tokens from '@/config/constants/tokens'
 import { bnToTwoDecimalsStringFilter, bnToSixDecimalsStringFilter, bnToExactStringFilter } from '@/utils/filters'
 import Dialogs from '@/utils/Dialogs'
 import numeral from 'numeral'
+import { openURL } from 'quasar'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -249,6 +252,7 @@ export default class Farm extends Vue {
 	private benisUtils = new BenisUtils()
 
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
+	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 	static BENIS_CONTRACT_ADDRESS: string = process.env.VUE_APP_BENIS_CONTRACT || ''
 
 	get symbol(): string {
@@ -283,6 +287,15 @@ export default class Farm extends Vue {
 		return this.farmData.userPoolData.balanceToken1
 			.mul(ethers.utils.parseEther(this.farmData.poolData.priceToken1.toString()))
 			.div(ethers.utils.parseEther('1'))
+	}
+
+	addLiquidity() {
+		if (this.value.quoteToken.address) {
+			const otherToken = this.value.quoteToken.address[Farm.ENV_NAME as keyof Address]
+			openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/${otherToken}`)
+		} else {
+			openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/ETH`)
+		}
 	}
 
 	async approve() {

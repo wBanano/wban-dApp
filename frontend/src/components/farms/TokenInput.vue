@@ -55,8 +55,7 @@ export default class TokenInput extends Vue {
 	]
 
 	setToMax() {
-		const rawAmount = Number.parseFloat(ethers.utils.formatEther(this.balance))
-		this.syncAmount = (Math.round(rawAmount * 100) / 100).toString()
+		this.syncAmount = ethers.utils.formatEther(this.balance)
 	}
 
 	isLowerThanMax(val: string) {

@@ -160,6 +160,8 @@ export default class ChainInfo extends Vue {
 	@contractsStore.Getter('wbanAddress')
 	wbanAddress!: string
 
+	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
+
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
 			return getAddress(accounts.activeAccount as string) === getAddress(contracts.owner as string)
@@ -211,7 +213,7 @@ export default class ChainInfo extends Vue {
 	}
 
 	swap() {
-		openURL(`https://dex.apeswap.finance/#/swap?inputCurrency=${this.wbanAddress}`)
+		openURL(`${ChainInfo.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
 	}
 
 	async reloadBalances() {
