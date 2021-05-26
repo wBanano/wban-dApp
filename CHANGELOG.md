@@ -1,3 +1,11 @@
+# v0.7.2
+## Improvements
+- Add swaps button with direct link to DEX #41
+- For each farm, add a link to supply liquidity in the associated pool #42
+## Bugs fixed
+- Problem with farm page when reloading page #38
+- "Max" links should put values rounded to two decimals #40
+
 # v0.7.1
 ## Improvements
 - Farm UX redesign #35
