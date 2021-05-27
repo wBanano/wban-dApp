@@ -24,7 +24,6 @@ import accounts from '@/store/modules/accounts'
 import prices from '@/store/modules/prices'
 import { FarmConfig, Address } from '@/config/constants/types'
 import tokens from '@/config/constants/tokens'
-import { Benis } from '../../../artifacts/typechain'
 import { ethers } from 'ethers'
 
 const benisStore = namespace('benis')
@@ -42,9 +41,6 @@ export default class FarmsPage extends Vue {
 	@accountsStore.State('activeAccount')
 	activeAccount!: string
 
-	@benisStore.Getter('benisContract')
-	benis!: Benis
-
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.JsonRpcProvider | null
 
@@ -52,10 +48,10 @@ export default class FarmsPage extends Vue {
 
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
 
-	async created() {
-		const provider = accounts.providerEthers
-		await benis.initContract(provider)
+	async mounted() {
+		await accounts.initWalletProvider()
 		await prices.loadPrices()
+		await benis.initContract(this.provider)
 	}
 }
 </script>

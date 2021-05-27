@@ -104,7 +104,6 @@ class ContractsModule extends VuexModule {
 			}
 			const contract = this._wBanToken
 			const owner = await contract.owner()
-			console.log(`Owner is: ${owner}`)
 			const totalSupply: BigNumber = await contract.totalSupply()
 			this.setOwner(owner)
 			this.setTotalSupply(totalSupply)

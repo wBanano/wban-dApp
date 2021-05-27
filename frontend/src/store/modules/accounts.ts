@@ -49,7 +49,7 @@ class AccountsModule extends VuexModule {
 		this.activeAccount = null
 		this.activeBalance = 0
 		this._providerEthers = null
-		await this.walletProvider.removeProviderCache()
+		await this._walletProvider.removeProviderCache()
 		this._walletProvider = null
 
 		window.location.href = '../' // redirect to the Main page
@@ -100,44 +100,28 @@ class AccountsModule extends VuexModule {
 	async initWalletProvider() {
 		console.debug('in initWalletProvider')
 
-		/* eslint-disable */
-		const providers = {
-			web3_wallets: {
-				connect_text: 'Connect with Metamask or Brave'
-			},
-			/*
-			binance_chain_wallet: {
-				connect_text: 'Connect with Binance Chain Wallet'
-			},
-			*/
-		}
-		/* eslint-enable */
-
 		const walletProvider = new WalletProvider({
 			modalTitle: 'Choose your wallet',
-			cacheProvider: false,
-			providers,
+			cacheProvider: true,
+			providers: {
+				// eslint-disable-next-line @typescript-eslint/camelcase
+				web3_wallets: {
+					// eslint-disable-next-line @typescript-eslint/camelcase
+					connect_text: 'Connect with Metamask or Brave'
+				}
+			},
 			debug: true
 		})
 
-		// This will get deprecated soon. Setting it to false removes a warning from the console.
-		// @ts-ignore
-		window.ethereum.autoRefreshOnNetworkChange = false
+		this.context.commit('setWalletProvider', walletProvider)
 
 		// if the user is flagged as already connected, automatically connect back to Web3Modal
-		/*
 		if (localStorage.getItem('isConnected') === 'true') {
-			const connectStatus = await walletProvider.connect()
-			const resultInfo = connectStatus.getData()
-			this.context.commit('setIsConnected', true)
-			this.context.commit('setActiveAccount', resultInfo.account)
-			this.context.commit('setChainData', resultInfo.chainId)
-			this.context.commit('setEthersProvider', resultInfo.provider)
-			this.context.dispatch('fetchActiveBalance')
+			// This will get deprecated soon. Setting it to false removes a warning from the console.
+			// @ts-ignore
+			window.ethereum.autoRefreshOnNetworkChange = false
+			await this.connectWalletProvider()
 		}
-		*/
-
-		this.context.commit('setWalletProvider', walletProvider)
 	}
 
 	@Action
@@ -185,21 +169,23 @@ class AccountsModule extends VuexModule {
 	@Action
 	async ethereumListener() {
 		console.debug('in ethereumListener')
-		// @ts-ignore
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		window.ethereum.on('accountsChanged', (accounts: any) => {
-			if (this.isConnected) {
-				this.context.commit('setActiveAccount', accounts[0])
+		if (this.isConnected) {
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			window.ethereum.on('accountsChanged', (accounts: any) => {
+				if (this.isConnected) {
+					this.context.commit('setActiveAccount', accounts[0])
+					// this.context.commit('setEthersProvider', this.providerW3m)
+					this.context.dispatch('fetchActiveBalance')
+				}
+			})
+			// @ts-ignore
+			window.ethereum.on('chainChanged', (chainId: string) => {
+				this.context.commit('setChainData', chainId)
 				// this.context.commit('setEthersProvider', this.providerW3m)
 				this.context.dispatch('fetchActiveBalance')
-			}
-		})
-		// @ts-ignore
-		window.ethereum.on('chainChanged', (chainId: string) => {
-			this.context.commit('setChainData', chainId)
-			// this.context.commit('setEthersProvider', this.providerW3m)
-			this.context.dispatch('fetchActiveBalance')
-		})
+			})
+		}
 	}
 
 	@Action
