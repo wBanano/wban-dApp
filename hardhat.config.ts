@@ -105,7 +105,7 @@ task("benis:alloc-pool", "Change allocation points")
 		const pid = args.pid;
 		const alloc = args.alloc;
 		const benis = await hre.ethers.getContractAt("Benis", benisAddress)
-		await benis.set(pid, alloc, true)
+		await benis.set(pid, alloc, true, { gasLimit: 300_000 })
 	});
 
 task("benis:create-pool", "Deploy Benis")
