@@ -3,7 +3,7 @@ const tokens = {
 		symbol: 'wBAN',
 		address: {
 			dev: '0x8e29C5f6Aa0F4a7595B53295152f4c7c427C8fb4',
-			staging: '0x8707Dc43c5B31189C2886309352ece6865a1f9a6',
+			staging: '0x9222D24274E912F4d5E889b460924C4fEFe97954',
 			production: ''
 		},
 		decimals: 18,

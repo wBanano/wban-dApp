@@ -1,3 +1,7 @@
+# v0.7.3
+## Improvements
+- Auto-reconnect with web3 provider on page reload + fix farms page reload #44
+
 # v0.7.2
 ## Improvements
 - Add swaps button with direct link to DEX #41
