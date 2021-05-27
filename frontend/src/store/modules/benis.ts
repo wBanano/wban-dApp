@@ -70,6 +70,8 @@ class BenisModule extends VuexModule {
 				console.error('Smart-contract client not initialized')
 				return
 			}
+		} else {
+			console.warn("BenisModule can't be initialized. Missing provider.")
 		}
 	}
 }

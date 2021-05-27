@@ -79,6 +79,7 @@ import { namespace } from 'vuex-class'
 import router from '@/router'
 import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
+import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
 
 const accountsStore = namespace('accounts')
@@ -105,6 +106,10 @@ export default class PageIndex extends Vue {
 		} else {
 			console.debug(`BAN address: ${this.banAddress}`)
 		}
+	}
+
+	mounted() {
+		ban.init()
 	}
 
 	async connectWalletProvider() {

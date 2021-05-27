@@ -177,7 +177,7 @@ export default class SetupPage extends Vue {
 
 	async mounted() {
 		console.debug('in mounted')
-		await ban.init()
+		ban.init()
 		await backend.initBackend(this.banAddress)
 		if (!this.isUserConnected) {
 			router.push('/')
