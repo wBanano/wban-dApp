@@ -57,6 +57,14 @@ task("wban:deploy", "Deploy wBAN")
 		}
 	})
 
+task("wban:pause", "Pause wBAN -- [EMERGENCY ONLY]")
+	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
+	.setAction(async (args, hre) => {
+		const wbanAddress = args.wban;
+		const wban = await hre.ethers.getContractAt("WBANToken", wbanAddress)
+		await wban.pause()
+	});
+
 task("benis:deploy", "Deploy Benis")
 	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
 	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
@@ -86,6 +94,18 @@ task("benis:add-time", "Deploy Benis")
 		const additionalTime = args.time;
 		const benis = await hre.ethers.getContractAt("Benis", benisAddress)
 		await benis.changeEndTime(additionalTime)
+	});
+
+task("benis:alloc-pool", "Change allocation points")
+	.addParam("benis", "The address of Benis smart-contract", '', types.string)
+	.addParam("pid", "The pool ID", 0, types.int)
+	.addParam("alloc", "Number of seconds to extends Benis end time to", 1, types.int)
+	.setAction(async (args, hre) => {
+		const benisAddress = args.benis;
+		const pid = args.pid;
+		const alloc = args.alloc;
+		const benis = await hre.ethers.getContractAt("Benis", benisAddress)
+		await benis.set(pid, alloc, true)
 	});
 
 task("benis:create-pool", "Deploy Benis")
