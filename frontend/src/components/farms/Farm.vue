@@ -115,9 +115,6 @@
 							</div>
 							<div class="col-4 text-right">${{ farmData.poolData.tvl | bnToTwoDecimalsStringFilter }}</div>
 						</div>
-						<div class="row q-mt-md">
-							<div class="col-12 text-center">Time left: {{ farmData.timeLeft }}</div>
-						</div>
 					</q-card-section>
 				</q-card>
 			</q-expansion-item>
