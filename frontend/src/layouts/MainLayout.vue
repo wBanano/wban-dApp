@@ -74,6 +74,13 @@
 					<q-separator vertical inset />
 					<q-item-section>Withdraw BAN</q-item-section>
 				</q-item>
+				<q-item clickable v-ripple @click="swap">
+					<q-item-section avatar>
+						<q-icon name="img:wban-swap.svg" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>Swaps</q-item-section>
+				</q-item>
 				<q-item clickable v-ripple to="/farms">
 					<q-item-section avatar>
 						<q-icon name="img:wban-farming.svg" size="3em" />
@@ -114,6 +121,7 @@ import { openURL } from 'quasar'
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
 const backendStore = namespace('backend')
+const contractsStore = namespace('contracts')
 
 @Component({
 	components: {
@@ -154,6 +162,9 @@ export default class MainLayout extends Vue {
 	@backendStore.Getter('errorLink')
 	errorLink!: string
 
+	@contractsStore.Getter('wbanAddress')
+	wbanAddress!: string
+
 	appTitle: string = process.env.VUE_APP_TITLE || 'wBAN -- Broken Release!!!'
 	appVersion: string = process.env.VUE_APP_VERSION || '0'
 
@@ -161,6 +172,8 @@ export default class MainLayout extends Vue {
 	banWalletForTipsQRCode = ''
 
 	drawerOpened = false
+
+	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 
 	get isMainnet() {
 		return this.chainName === 'BSC Mainnet'
@@ -186,9 +199,8 @@ export default class MainLayout extends Vue {
 		this.drawerOpened = false
 	}
 
-	reloadBalances() {
-		document.dispatchEvent(new CustomEvent('reload-balances'))
-		this.drawerOpened = false
+	swap() {
+		openURL(`${MainLayout.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
 	}
 
 	async created() {
