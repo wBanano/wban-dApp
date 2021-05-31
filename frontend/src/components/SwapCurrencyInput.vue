@@ -74,7 +74,7 @@ export default class SwapCurrencyInput extends Vue {
 
 	setToMax() {
 		const rawAmount = Number.parseFloat(ethers.utils.formatEther(this.balance))
-		this.syncAmount = (Math.round(rawAmount * 100) / 100).toString()
+		this.syncAmount = (Math.floor(rawAmount * 100) / 100).toString()
 	}
 
 	hasNoMoreThanTwoDecimals(val: string) {
