@@ -1,3 +1,10 @@
+# v0.7.4
+## Improvements
+- Remove time left value from all farms #46
+## Bugs fixed
+- Add a link to "wBAN Swaps" in burger menu #48
+- Rounding error when clicking on "Max" #49
+
 # v0.7.3
 ## Improvements
 - Auto-reconnect with web3 provider on page reload + fix farms page reload #44

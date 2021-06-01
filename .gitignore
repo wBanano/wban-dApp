@@ -3,6 +3,7 @@ dist
 
 # Secrets files
 .env
+.env.sh
 
 # Hardhat generated files
 artifacts
