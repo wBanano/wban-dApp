@@ -1,0 +1,50 @@
+name: Deploy to staging env
+on:
+  release:
+    types: [prereleased]
+jobs:
+  build-smart-contract:
+    name: "Smart Contract"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+      - run: npm install -g yarn
+      - name: Compile & Test
+        run: |
+          yarn
+          yarn test
+  build-and-deploy-frontend:
+    name: dAPP
+    runs-on: ubuntu-latest
+    env:
+      working-directory: frontend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+      - run: npm install -g yarn
+        working-directory: ${{env.working-directory}}
+      - name: Build Smart Contract artifacts
+        run: |
+          yarn
+          yarn compile
+        working-directory: "."
+      - name: Compile & Test
+        run: |
+          yarn
+          yarn build --mode staging
+        working-directory: ${{env.working-directory}}
+      - name: Deploy to Netlify
+        uses: jsmrcaga/action-netlify-deploy@v1.1.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Prod deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          build_directory: frontend/dist

@@ -1,7 +1,7 @@
-name: Publish Release
+name: Deploy to prod env
 on:
   release:
-    types: [published]
+    types: [released]
 jobs:
   build-smart-contract:
     name: "Smart Contract"
@@ -38,13 +38,13 @@ jobs:
       - name: Compile & Test
         run: |
           yarn
-          yarn build --mode staging
+          yarn build
         working-directory: ${{env.working-directory}}
       - name: Deploy to Netlify
         uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_LIVE_SITE_ID }}
           NETLIFY_DEPLOY_MESSAGE: "Prod deploy v${{ github.ref }}"
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: frontend/dist

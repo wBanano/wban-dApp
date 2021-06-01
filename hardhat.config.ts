@@ -36,6 +36,9 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 
 task("wban:deploy", "Deploy wBAN")
 	.setAction(async (args, hre) => {
+		const accounts = await hre.ethers.getSigners();
+		console.info(`Deploying wBAN with owner "${accounts[0].address}"`)
+
 		// deploy upgradeable contract
 		const WBANToken = await hre.ethers.getContractFactory("WBANToken");
 		const wban = await hre.upgrades.deployProxy(WBANToken);
@@ -203,6 +206,11 @@ const config: HardhatUserConfig = {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
       accounts,
 			chainId: 97,
+		},
+		bsc: {
+			url: 'https://bsc-dataseed.binance.org/',
+      accounts,
+			chainId: 56,
 		}
 	},
 	typechain: {
