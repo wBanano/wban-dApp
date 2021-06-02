@@ -18,6 +18,7 @@ import {
   hashBytecodeWithoutMetadata,
   Manifest,
 } from "@openzeppelin/upgrades-core";
+import "hardhat-abi-exporter";
 
 let mnemonic = process.env.MNEMONIC;
 if (!mnemonic) {
@@ -239,7 +240,14 @@ const config: HardhatUserConfig = {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
     apiKey: process.env.BSC_SCAN_API_KEY
-  }
+  },
+	abiExporter: {
+		path: './abi',
+		clear: true,
+		flat: false,
+		// only: ['WBANToken', 'Benis'],
+		spacing: 2
+	}
 };
 
 export default config;

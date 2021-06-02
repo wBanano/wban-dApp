@@ -45,6 +45,7 @@
       "ethereum-waffle": "^3.3.0",
       "ethers": "5.0.32",
       "hardhat": "^2.2.1",
+      "hardhat-abi-exporter": "^2.2.1",
       "hardhat-dependency-compiler": "^1.1.1",
       "hardhat-gas-reporter": "^1.0.4",
       "hardhat-log-remover": "^2.0.1",
