@@ -132,8 +132,8 @@ const contractsStore = namespace('contracts')
 	}
 })
 export default class MainLayout extends Vue {
-	@accountsStore.State('chainName')
-	chainName!: string
+	@accountsStore.State('chainId')
+	chainId!: string
 
 	@accountsStore.State('blockExplorerUrl')
 	blockExplorerUrl!: string
@@ -176,7 +176,7 @@ export default class MainLayout extends Vue {
 	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 
 	get isMainnet() {
-		return this.chainName === 'BSC Mainnet'
+		return this.chainId === '0x38'
 	}
 
 	get drawerEnabled() {
