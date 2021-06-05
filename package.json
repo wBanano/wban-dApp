@@ -1,8 +1,8 @@
 {
    "name": "wban-smart-contract",
-   "version": "0.7.4",
+   "version": "1.0.0",
    "description": "dApp for swapping BAN to wBAN on Binance Smart Chain",
-   "author": "Jérôme Bernard <jerome.bernard@gmail.com>",
+   "author": "Wrap That Potassium <wrap-that-potassium@protonmail.com>",
    "license": "GPL-3.0-or-later",
    "main": "dist/index.js",
    "types": "dist/index.d.ts",
