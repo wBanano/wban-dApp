@@ -72,10 +72,11 @@ task("wban:pause", "Pause wBAN -- [EMERGENCY ONLY]")
 task("benis:deploy", "Deploy Benis")
 	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
 	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
+	.addParam("starttime", "The timestamp at which Benis farms should start", 0, types.int)
 	.setAction(async (args, hre) => {
-		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
-		const rewardsStartTime = (await hre.ethers.provider.getBlock('latest')).timestamp;
 		const wbanAddress = args.wban;
+		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
+		let rewardsStartTime = args.starttime == 0 ? (await hre.ethers.provider.getBlock('latest')).timestamp : args.starttime;
 		const Benis = await hre.ethers.getContractFactory("Benis");
 		const benis = await Benis.deploy(wbanAddress, rewardsPerSecond, rewardsStartTime);
 		await benis.deployed();
