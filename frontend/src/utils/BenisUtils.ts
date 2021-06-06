@@ -5,6 +5,7 @@ import humanizeDuration from 'humanize-duration'
 import { EndTime, FarmConfig } from '@/config/constants/types'
 import Dialogs from './Dialogs'
 
+const ONE_UNIT = ethers.utils.parseEther('1')
 const ONE_YEAR = 365 * 24 * 60 * 60
 
 class BenisUtils {
@@ -28,31 +29,22 @@ class BenisUtils {
 		if (this.getFarmDurationLeft(pid, envName) === 'Finished') {
 			return 0
 		}
-		const wbanPerSecond = BigNumber.from(1)
+		const wbanPerSecond = await benis.wbanPerSecond()
 		const wbanPerYear = wbanPerSecond.mul(ONE_YEAR)
 		const pool = await benis.poolInfo(pid)
 		const poolRewardsPerYear = wbanPerYear.mul(pool.allocPoint).div(await benis.totalAllocPoint())
-		console.debug(`Pool rewards per year: ${poolRewardsPerYear} wBAN`)
-		console.debug(
-			`wBAN price: $${ethers.utils.formatEther(wbanPriceUsd)}, pool price: $${ethers.utils.formatEther(
-				poolLiquidityUsd
-			)}`
-		)
 		const apr = poolRewardsPerYear
 			.mul(wbanPriceUsd)
 			.div(poolLiquidityUsd)
 			.mul(100)
-		console.debug(`APR: ${apr.toString()}`)
+			.div(ONE_UNIT)
 		return apr.toNumber()
 	}
 
 	public async getFarmWeight(pid: number, benis: Benis): Promise<number> {
 		const totalAlloc = await benis.totalAllocPoint()
 		const pool = await benis.poolInfo(pid)
-		console.debug(`alloc / total: ${pool.allocPoint} / ${totalAlloc.toString()}`)
-		const weight = pool.allocPoint / totalAlloc.toNumber()
-		console.debug(weight.toString())
-		return weight
+		return pool.allocPoint / totalAlloc.toNumber()
 	}
 
 	public getFarmDurationLeft(pid: number, environment: string): string {

@@ -42,13 +42,13 @@ class BANModule extends VuexModule {
 	}
 
 	@Action
-	init() {
+	async init() {
 		const banAddress = localStorage.getItem('banAddress')
 		if (banAddress) {
 			this.context.commit('setBanAddress', banAddress)
 		}
 		if (!this._initialized) {
-			axios
+			return axios
 				.request({ url: 'https://api.coingecko.com/api/v3/simple/price?ids=banano&vs_currencies=usd' })
 				.then((resp: AxiosResponse) => resp.data)
 				.then(prices => prices.banano.usd)
@@ -57,8 +57,8 @@ class BANModule extends VuexModule {
 					return banPrice
 				})
 				.then(banPrice => this.context.commit('setBanPriceInUSD', Number.parseFloat(banPrice)))
+				.then(() => this.context.commit('setInitialized', true))
 		}
-		this.context.commit('setInitialized', true)
 	}
 
 	@Action

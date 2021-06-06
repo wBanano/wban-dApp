@@ -59,7 +59,6 @@ class FarmUtils {
 				.mul(ethers.utils.parseEther(farmData.poolData.priceToken1.toString()))
 				.div(BN_ONE)
 			farmData.stakedValue = userValueToken0.add(userValueToken1)
-			console.warn(`Staked value: ${ethers.utils.formatEther(farmData.stakedValue)}`)
 			farmData.totalValue = farmData.stakedValue.add(
 				farmData.userPendingRewards.mul(ethers.utils.parseEther(banPriceInUSD.toString())).div(BN_ONE)
 			)
@@ -107,12 +106,8 @@ class FarmUtils {
 				farmData.poolData.address[this.envName as keyof Address],
 				signer
 			)
-			console.warn(`LP details: ${JSON.stringify(lpDetails)}`)
 			farmData.poolData.priceToken0 = await this.getTokenPriceUsd(lpDetails.token0.address, signer, bep20)
 			farmData.poolData.priceToken1 = await this.getTokenPriceUsd(lpDetails.token1.address, signer, bep20)
-			console.debug(
-				`Prices: token0 (${farmData.poolData.symbolToken0}): $${farmData.poolData.priceToken0}, token1 (${farmData.poolData.symbolToken1}): $${farmData.poolData.priceToken1}`
-			)
 			farmData.poolData.symbolToken0 = await bep20.getTokenSymbol(lpDetails.token0.address, signer)
 			farmData.poolData.symbolToken1 = await bep20.getTokenSymbol(lpDetails.token1.address, signer)
 			farmData.userPendingRewards = await benis.pendingWBAN(farmData.pid, this.account)

@@ -341,6 +341,7 @@ export default class Farm extends Vue {
 		if (this.provider) {
 			this.signer = this.provider.getSigner()
 
+			await ban.init()
 			this.farmUtils = new FarmUtils()
 			this.farmData = await this.farmUtils.computeData(
 				this.value,
@@ -365,9 +366,7 @@ export default class Farm extends Vue {
 
 	mounted() {
 		this.isLoading = true
-		console.warn(`Should mount ${this.value.lpSymbol}`)
-		this.reload()
-		this.isLoading = false
+		this.reload().then(() => this.isLoading = false)
 	}
 }
 </script>
