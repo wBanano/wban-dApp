@@ -68,7 +68,7 @@
 			<q-card-section>
 				<div class="row">
 					<div class="col-2 text-right">Deposit</div>
-					<div class="col-5 offset-1">{{ farmData.stakedBalance | bnToExactString }} {{ symbol }}</div>
+					<div class="col-5 offset-1">{{ farmData.stakedBalance | bnToSixDecimalsString }} {{ symbol }}</div>
 					<div class="col-4 text-right">${{ farmData.stakedValue | bnToTwoDecimalsString }}</div>
 				</div>
 			</q-card-section>
@@ -111,7 +111,7 @@
 						<div class="row q-mt-md">
 							<div class="col-2 text-right">TVL</div>
 							<div class="col-5 offset-1">
-								<span v-if="isStaking()">{{ farmData.poolData.balanceToken0 | bnToExactString }} wBAN</span>
+								<span v-if="isStaking()">{{ farmData.poolData.balanceToken0 | bnToZeroDecimalsStringFilter }} wBAN</span>
 							</div>
 							<div class="col-4 text-right">${{ farmData.poolData.tvl | bnToTwoDecimalsStringFilter }}</div>
 						</div>
@@ -192,7 +192,12 @@ import FarmUtils from '@/utils/FarmUtils'
 import BEP20Utils from '@/utils/BEP20Utils'
 import BenisUtils from '@/utils/BenisUtils'
 import tokens from '@/config/constants/tokens'
-import { bnToTwoDecimalsStringFilter, bnToSixDecimalsStringFilter, bnToExactStringFilter } from '@/utils/filters'
+import {
+	bnToZeroDecimalsStringFilter,
+	bnToTwoDecimalsStringFilter,
+	bnToSixDecimalsStringFilter,
+	bnToExactStringFilter
+} from '@/utils/filters'
 import Dialogs from '@/utils/Dialogs'
 import numeral from 'numeral'
 import { openURL } from 'quasar'
@@ -206,6 +211,7 @@ const pricesStore = namespace('prices')
 		TokenInput
 	},
 	filters: {
+		bnToZeroDecimalsStringFilter,
 		bnToTwoDecimalsStringFilter,
 		bnToSixDecimalsStringFilter,
 		bnToExactStringFilter

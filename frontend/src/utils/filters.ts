@@ -8,6 +8,10 @@ const bnToStringFilter = Vue.filter('bnToString', (value: string) => {
 	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00000')
 })
 
+const bnToZeroDecimalsStringFilter = Vue.filter('bnToZeroDecimalsString', (value: string) => {
+	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0')
+})
+
 const bnToTwoDecimalsStringFilter = Vue.filter('bnToTwoDecimalsString', (value: string) => {
 	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00')
 })
@@ -49,6 +53,7 @@ const hashTrimmedFilter = Vue.filter('hash_trimmed', (hash: string) => {
 
 export {
 	bnToStringFilter,
+	bnToZeroDecimalsStringFilter,
 	bnToTwoDecimalsStringFilter,
 	bnToSixDecimalsStringFilter,
 	bnToExactStringFilter,
