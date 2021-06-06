@@ -1,3 +1,11 @@
+# v1.0.1
+## Improvements
+- Rounding of deposit values
+- Rounding of wBAN staking TVL
+## Bugs fixed
+- APR computations
+- BAN price shouldn't be set to zero
+
 # v0.7.4
 ## Improvements
 - Remove time left value from all farms #46
