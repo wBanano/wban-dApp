@@ -1,3 +1,7 @@
+# v1.0.3
+## Improvements
+- Load prices from CoinGecko instead of PancakeSwap API #59
+
 # v1.0.2
 ## Improvements
 - Disable swap button if user has not at least 0.0006 BNB
