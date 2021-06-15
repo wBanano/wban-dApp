@@ -37,22 +37,15 @@ class PricesModule extends VuexModule {
 	async loadPrices() {
 		console.debug('in loadPrices')
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
-			const resp = await axios.request({ url: 'https://api.pancakeswap.info/api/v2/tokens' })
-			const apiResponse: PriceApiResponse = resp.data
-			this.context.commit('setLastUpdateTimestamp', apiResponse.updated_at)
-			const priceData: PriceApiList = apiResponse.data
+			const resp = await axios.request({ url: 'https://api.coingecko.com/api/v3/simple/price?ids=busd,wbnb&vs_currencies=usd' })
+			const apiResponse = resp.data
+			this.context.commit('setLastUpdateTimestamp', Date.now())
 			const prices: Map<string, number> = new Map()
-			Object.values(priceData).forEach(token => {
-				// filter to only keep relevant tokens
-				if (this._tokenPricesWhitelist.has(token.symbol)) {
-					console.debug(`Setting price of ${token.symbol} to ${token.price}`)
-					prices.set(token.symbol, Number.parseFloat(token.price))
-				}
-				if (token.symbol === 'WBNB') {
-					console.debug(`Setting price of BNB to ${token.price}`)
-					prices.set('BNB', Number.parseFloat(token.price))
-				}
-			})
+			const busdPrice = apiResponse.busd.usd
+			const wbnbPrice = apiResponse.wbnb.usd
+			prices.set('BUSD', Number.parseFloat(busdPrice))
+			prices.set('WBNB', Number.parseFloat(wbnbPrice))
+			prices.set('BNB', Number.parseFloat(wbnbPrice))
 			this.context.commit('setPrices', prices)
 		}
 	}
