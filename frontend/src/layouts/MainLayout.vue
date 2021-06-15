@@ -3,7 +3,9 @@
 		<q-header elevated>
 			<q-toolbar class="bg-toolbar text-white">
 				<q-btn v-if="drawerEnabled" dense flat round icon="menu" @click="drawerOpened = !drawerOpened" />
-				<a @click="home" class="gt-xs"><img src="@/assets/wban-logo.png" class="currency-logo"/></a>
+				<a @click="home" class="gt-xs">
+					<img :src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)" class="currency-logo" />
+				</a>
 				<q-toolbar-title @click="home">{{ appTitle }}</q-toolbar-title>
 				<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
 				<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">
@@ -15,7 +17,7 @@
 				</q-avatar>
 				<q-btn
 					v-if="isUserConnected"
-					@click="openBsc(activeAccount)"
+					@click="openBlockchainAccount(activeAccount)"
 					flat
 					round
 					dense
@@ -114,9 +116,10 @@ import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import prices from '@/store/modules/prices'
 import SettingsMenu from '@/components/SettingsMenu.vue'
-import { bscAddressFilter } from '@/utils/filters'
+import { blockchainAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
 import { openURL } from 'quasar'
+import { Network, Networks } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -128,7 +131,7 @@ const contractsStore = namespace('contracts')
 		SettingsMenu
 	},
 	filters: {
-		bscAddressFilter
+		blockchainAddressFilter
 	}
 })
 export default class MainLayout extends Vue {
@@ -179,11 +182,15 @@ export default class MainLayout extends Vue {
 	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 
 	get isMainnet() {
-		return this.chainId === '0x38'
+		return this.chainId === '0x38' || this.chainId == '0x89'
 	}
 
 	get drawerEnabled() {
 		return Screen.lt.sm && this.isUserConnected
+	}
+
+	get expectedBlockchain(): Network {
+		return new Networks().getExpectedNetworkData()
 	}
 
 	home() {
@@ -233,7 +240,7 @@ export default class MainLayout extends Vue {
 		await accounts.connectWalletProvider()
 	}
 
-	openBsc(address: string) {
+	openBlockchainAccount(address: string) {
 		openURL(`${this.blockExplorerUrl}/address/${address}`)
 	}
 

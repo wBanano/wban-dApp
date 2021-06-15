@@ -1,7 +1,7 @@
 type SwapRequest = {
 	amount: number
 	banAddress: string
-	bscAddress: string
+	blockchainAddress: string
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	provider: any
 }

@@ -52,7 +52,7 @@ task("wban:deploy", "Deploy wBAN")
 		const bytecodeHash = hashBytecodeWithoutMetadata(WBANToken.bytecode);
 		const implementationContract = manifest.impls[bytecodeHash];
 
-		// verifiy implementation contract
+		// verify implementation contract
 		if (implementationContract) {
 			console.log(`wBAN impl deployed at: "${implementationContract.address}"`);
 			await hre.run("verify:verify", {
@@ -224,6 +224,17 @@ const config: HardhatUserConfig = {
 			url: 'https://bsc-dataseed.binance.org/',
       accounts,
 			chainId: 56,
+		},
+		polygontestnet: {
+			url: 'https://rpc-mumbai.maticvigil.com',
+      accounts,
+			chainId: 80001,
+		},
+		polygon: {
+			url: 'https://rpc-mainnet.maticvigil.com',
+      accounts,
+			chainId: 137,
+			gasPrice: 24000000000,
 		}
 	},
 	typechain: {
@@ -251,7 +262,7 @@ const config: HardhatUserConfig = {
 	etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: process.env.BSC_SCAN_API_KEY
+    apiKey: process.env.ETHERSCAN_API_KEY
   },
 	abiExporter: {
 		path: './abi',

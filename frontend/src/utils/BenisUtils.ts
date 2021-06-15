@@ -1,9 +1,9 @@
 import { Benis } from '@artifacts/typechain'
 import { BigNumber, ethers } from 'ethers'
-import farms from '@/config/constants/farms'
 import humanizeDuration from 'humanize-duration'
 import { EndTime, FarmConfig } from '@/config/constants/types'
 import Dialogs from './Dialogs'
+import FarmUtils from './FarmUtils'
 
 const ONE_UNIT = ethers.utils.parseEther('1')
 const ONE_YEAR = 365 * 24 * 60 * 60
@@ -85,6 +85,7 @@ class BenisUtils {
 	}
 
 	private getEndTime(pid: number, environment: string): number {
+		const farms = FarmUtils.getFarms()
 		const farm: FarmConfig | undefined = farms.find(farm => farm.pid === pid)
 		if (farm) {
 			return farm.endTime[environment as keyof EndTime]

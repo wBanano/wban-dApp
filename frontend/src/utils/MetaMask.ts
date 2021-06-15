@@ -1,10 +1,9 @@
 import { Networks } from '@/utils/Networks'
 import { Dialog } from 'quasar'
-import tokens from '@/config/constants/tokens'
-import { Address } from '@/config/constants/types'
+import TokensUtil from './TokensUtil'
 
 class MetaMask {
-	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
+	static BLOCKCHAIN: string = process.env.VUE_APP_BLOCKCHAIN || ''
 
 	static isMetaMask(): boolean {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,14 +14,16 @@ class MetaMask {
 	static async addWBANToken(): Promise<void> {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const ethereum = (window as any).ethereum
-		const logoUrl = `${window.location.origin}/wban-logo.svg`
+		const logo = await import(`../assets/wban-logo-${MetaMask.BLOCKCHAIN}.svg`)
+		const logoUrl = `${window.location.origin}${logo.default}`
+		console.warn(logoUrl)
 		if (MetaMask.isMetaMask()) {
 			await ethereum.request({
 				method: 'wallet_watchAsset',
 				params: {
 					type: 'ERC20',
 					options: {
-						address: tokens.wban.address[MetaMask.ENV_NAME as keyof Address],
+						address: TokensUtil.getWBANAddress(),
 						symbol: 'wBAN',
 						decimals: 18,
 						image: logoUrl
@@ -35,11 +36,11 @@ class MetaMask {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static switchToBSC(): any {
+	static switchToProperNetwork(): any {
 		return Dialog.create({
 			dark: true,
 			title: 'Wrong Network',
-			message: `Please connect to appropriate Binance Smart Chain network.`,
+			message: `Please connect to appropriate network.`,
 			ok: {
 				label: 'Switch network',
 				color: 'primary',
@@ -57,12 +58,34 @@ class MetaMask {
 			console.debug(`About to add custom network "${network.chainName}" with chainId: ${chainId}`)
 			return ethereum.request({
 				method: 'wallet_addEthereumChain',
-				params: [network]
+				params: [
+					{
+						chainId: network.chainId,
+						chainName: network.chainName,
+						nativeCurrency: network.nativeCurrency,
+						rpcUrls: network.rpcUrls,
+						blockExplorerUrls: network.blockExplorerUrls,
+						iconUrls: network.iconUrls
+					}
+				]
 			})
 		} else {
 			console.debug(`Not MetaMask. Skipping...`)
 		}
 	}
+}
+
+interface AddEthereumChainParameter {
+	chainId: string
+	chainName: string
+	nativeCurrency: {
+		name: string
+		symbol: string // 2-6 characters long
+		decimals: 18
+	}
+	rpcUrls: string[]
+	blockExplorerUrls: string[]
+	iconUrls?: string[] // Currently ignored.
 }
 
 export default MetaMask

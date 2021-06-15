@@ -61,7 +61,14 @@
 							}})
 						</div>
 						<div class="col-4 text-right">
-							<q-btn label="Harvest" @click="harvest" v-if="isActive()" :disable="emptyRewards" color="primary" text-color="secondary" />
+							<q-btn
+								label="Harvest"
+								@click="harvest"
+								v-if="isActive()"
+								:disable="emptyRewards"
+								color="primary"
+								text-color="secondary"
+							/>
 						</div>
 					</div>
 				</div>
@@ -194,7 +201,7 @@ import { FarmConfig, Address } from '@/config/constants/types'
 import FarmUtils from '@/utils/FarmUtils'
 import BEP20Utils from '@/utils/BEP20Utils'
 import BenisUtils from '@/utils/BenisUtils'
-import tokens from '@/config/constants/tokens'
+import TokensUtil from '@/utils/TokensUtil'
 import {
 	bnToZeroDecimalsStringFilter,
 	bnToTwoDecimalsStringFilter,
@@ -251,7 +258,7 @@ export default class Farm extends Vue {
 
 	signer!: Signer
 
-	wbanAddress: string = tokens.wban.address[Farm.ENV_NAME as keyof Address]
+	wbanAddress: string = TokensUtil.getWBANAddress()
 
 	private farmUtils!: FarmUtils
 	private bep20 = new BEP20Utils()
@@ -306,7 +313,11 @@ export default class Farm extends Vue {
 	addLiquidity() {
 		if (this.value.quoteToken.address) {
 			const otherToken = this.value.quoteToken.address[Farm.ENV_NAME as keyof Address]
-			openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/${otherToken}`)
+			if (Farm.DEX_URL === 'https://app.sushi.com') {
+				openURL(`${Farm.DEX_URL}/add/${this.wbanAddress}/${otherToken}`)
+			} else {
+				openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/${otherToken}`)
+			}
 		} else {
 			openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/ETH`)
 		}

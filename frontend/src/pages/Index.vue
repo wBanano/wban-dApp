@@ -18,19 +18,23 @@
 						<q-icon name="add_circle" color="positive" size="2em" />
 					</div>
 					<div class="col">
-						<q-img src="bsc-logo.svg" />
+						<img :src="require(`@/assets/${expectedBlockchain.network}-logo.svg`)" />
 					</div>
 					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold;">
 						=
 					</div>
 					<div class="col-3 text-left">
-						<img :src="require(`@/assets/wban-logo.svg`)" width="150px" />
+						<img :src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)" width="150px" />
 					</div>
 				</div>
-				<img v-if="$q.platform.is.mobile" :src="require(`@/assets/wban-logo.svg`)" width="150px" />
+				<img
+					v-if="$q.platform.is.mobile"
+					:src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)"
+					width="150px"
+				/>
 				<h3>
 					wBAN is wrapped <a href="https://banano.cc">Banano</a> on
-					<a href="https://www.binance.org/en/smartChain">Binance Smart Chain (BSC)</a>
+					<a :href="expectedBlockchain.chainUrl" target="_blank">{{ expectedBlockchain.chainName }}</a>
 				</h3>
 				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" label="connect" />
 				<div v-if="!$q.platform.is.mobile">
@@ -81,6 +85,7 @@ import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
 import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
+import { Network, Networks } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -106,6 +111,10 @@ export default class PageIndex extends Vue {
 		} else {
 			console.debug(`BAN address: ${this.banAddress}`)
 		}
+	}
+
+	get expectedBlockchain(): Network {
+		return new Networks().getExpectedNetworkData()
 	}
 
 	mounted() {

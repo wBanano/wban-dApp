@@ -27,13 +27,13 @@ class AccountsModule extends VuexModule {
 	private _walletProvider: any
 	private _isInitialized = false
 
-	static BSC_EXPECTED_CHAIN_ID: string = process.env.VUE_APP_BSC_EXPECTED_CHAIN_ID || ''
+	static EXPECTED_CHAIN_ID: string = process.env.VUE_APP_EXPECTED_CHAIN_ID || ''
 
 	get isUserConnected() {
 		return this.isConnected
 	}
 
-	get activeBalanceBnb() {
+	get activeCryptoBalance() {
 		return ethers.utils.formatEther(this.activeBalance)
 	}
 
@@ -142,6 +142,7 @@ class AccountsModule extends VuexModule {
 	@Action
 	async connectWalletProvider() {
 		console.debug('in connectWalletProvider')
+
 		const connectStatus = await this.context.getters.walletProvider.connect()
 		if (connectStatus.isError()) {
 			console.error("Can't connect to web3")
@@ -153,7 +154,7 @@ class AccountsModule extends VuexModule {
 		const resultInfo: any = connectStatus.getData()
 		const provider = resultInfo.provider
 
-		if (resultInfo.chainId == AccountsModule.BSC_EXPECTED_CHAIN_ID) {
+		if (resultInfo.chainId == AccountsModule.EXPECTED_CHAIN_ID) {
 			this.context.commit('setIsConnected', true)
 			this.context.commit('setActiveAccount', resultInfo.account)
 			this.context.commit('setChainData', resultInfo.chainId)
@@ -161,8 +162,8 @@ class AccountsModule extends VuexModule {
 			this.context.dispatch('fetchActiveBalance')
 		} else {
 			this.context.commit('setIsConnected', false)
-			MetaMask.switchToBSC().onOk(async () => {
-				await MetaMask.addCustomNetwork(AccountsModule.BSC_EXPECTED_CHAIN_ID)
+			MetaMask.switchToProperNetwork().onOk(async () => {
+				await MetaMask.addCustomNetwork(AccountsModule.EXPECTED_CHAIN_ID)
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				const resultInfo: any = connectStatus.getData()
 				const provider = resultInfo.provider
@@ -210,7 +211,7 @@ class AccountsModule extends VuexModule {
 		let balance: BigNumber = BigNumber.from(0)
 		if (this.providerEthers != null && this.activeAccount != null) {
 			balance = await this.providerEthers.getBalance(this.activeAccount)
-			console.info(`Balance is ${ethers.utils.formatEther(balance)} BNB`)
+			console.info(`Crypto balance is ${ethers.utils.formatEther(balance)}`)
 		} else {
 			console.error('Could not get balance')
 		}

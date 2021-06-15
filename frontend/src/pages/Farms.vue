@@ -53,8 +53,8 @@ import Farm from '@/components/farms/Farm.vue'
 import benis from '@/store/modules/benis'
 import accounts from '@/store/modules/accounts'
 import prices from '@/store/modules/prices'
-import { FarmConfig, Address } from '@/config/constants/types'
-import tokens from '@/config/constants/tokens'
+import { FarmConfig } from '@/config/constants/types'
+import TokensUtil from '@/utils/TokensUtil'
 import { ethers } from 'ethers'
 import BenisUtils from '@/utils/BenisUtils'
 import { BN_ZERO } from '@/models/FarmData'
@@ -85,7 +85,7 @@ export default class FarmsPage extends Vue {
 
 	userHasDepositsInEndedFarms = false
 
-	wbanAddress: string = tokens.wban.address[Farm.ENV_NAME as keyof Address]
+	wbanAddress: string = TokensUtil.getWBANAddress()
 
 	benisUtils = new BenisUtils()
 

@@ -180,7 +180,7 @@ export default class HistoryPage extends Vue {
 			console.debug(`Amount: ${event.amount}`)
 			const swapRequest: SwapToWBanRequest = {
 				amount: BigNumber.from(event.amount),
-				bscWallet: this.activeAccount,
+				blockchainWallet: this.activeAccount,
 				receipt: event.receipt,
 				uuid: event.uuid,
 				contract: contracts.wbanContract
@@ -192,7 +192,7 @@ export default class HistoryPage extends Vue {
 
 	async loadHistory() {
 		backend.getHistory({
-			bscAddress: this.activeAccount,
+			blockchainAddress: this.activeAccount,
 			banAddress: this.banAddress
 		})
 	}

@@ -170,6 +170,27 @@ class Dialogs {
 		}
 	}
 
+	static errorSwapToWBan(deposit: string): void {
+		const dismiss = Notify.create({
+			type: 'negative',
+			html: true,
+			message: `Your swap of ${deposit} BAN couldn't be processed.`,
+			caption: `Go to the history page and click on the claim button associated to the wrap request.`,
+			timeout: 0,
+			actions: [
+				{
+					label: 'Close',
+					color: 'white',
+					handler: () => dismiss()
+				}
+			]
+		})
+		if (Dialogs.swapToWBanDialog) {
+			Dialogs.swapToWBanDialog.hide()
+			Dialogs.swapToWBanDialog = null
+		}
+	}
+
 	static startSwapToBan(amount: string): void {
 		Dialogs.swapToBanDialog = Dialog.create({
 			dark: true,
@@ -294,10 +315,10 @@ class Dialogs {
 		})
 	}
 
-	static showGasNeededError(bnbBalance: number) {
+	static showGasNeededError(balance: number) {
 		Dialog.create({
 			component: GasNeededDialog,
-			bnbBalance: bnbBalance
+			balance: balance
 		})
 	}
 }

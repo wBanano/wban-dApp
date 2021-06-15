@@ -4,7 +4,7 @@ module.exports = {
 	pages: {
 		index: {
 			entry: 'src/main.ts',
-			title: 'wBAN - Wrapped Banano on Binance Smart Chain'
+			title: process.env.VUE_APP_TITLE
 		}
 	},
 	pluginOptions: {

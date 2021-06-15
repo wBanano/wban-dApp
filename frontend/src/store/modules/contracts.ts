@@ -9,8 +9,7 @@ import SwapToBanRequest from '@/models/SwapToBanRequest'
 import LoadBalancesFromContractRequest from '@/models/LoadBalancesFromContractRequest'
 import Dialogs from '@/utils/Dialogs'
 import SwapToWBanRequest from '@/models/SwapToWBanRequest'
-import tokens from '@/config/constants/tokens'
-import { Address } from '@/config/constants/types'
+import TokensUtil from '@/utils/TokensUtil'
 
 @Module({
 	namespaced: true,
@@ -23,8 +22,6 @@ class ContractsModule extends VuexModule {
 	private _owner = ''
 	private _totalSupply: BigNumber = BigNumber.from(0)
 	private _wBanBalance: BigNumber = BigNumber.from(0)
-
-	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
 
 	get wbanContract() {
 		return this._wBanToken
@@ -74,10 +71,7 @@ class ContractsModule extends VuexModule {
 			// do not initialize contract if this was done earlier
 			if (!this._wBanToken) {
 				// eslint-disable-next-line @typescript-eslint/camelcase
-				const contract = WBANToken__factory.connect(
-					tokens.wban.address[ContractsModule.ENV_NAME as keyof Address],
-					provider.getSigner()
-				)
+				const contract = WBANToken__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
 				this.context.commit('setWBANToken', contract)
 
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -115,7 +109,7 @@ class ContractsModule extends VuexModule {
 		const { contract, account } = request
 		console.debug(`in loadBalances for account: ${account}`)
 		const balance = await contract.balanceOf(account)
-		console.info(`Balance is ${balance} wBAN`)
+		console.info(`Balance is ${ethers.utils.formatEther(balance)} wBAN`)
 		this.context.commit('setWBANBalance', balance)
 	}
 
@@ -137,21 +131,22 @@ class ContractsModule extends VuexModule {
 
 	@Action
 	async mint(swapRequest: SwapToWBanRequest): Promise<string> {
-		console.log('Should mint wBAN')
-		const { amount, bscWallet, receipt, uuid, contract } = swapRequest
+		console.debug('Minting wBAN')
+		const { amount, blockchainWallet, receipt, uuid, contract } = swapRequest
 		const signature: Signature = ethers.utils.splitSignature(receipt)
-		const txn = await contract.mintWithReceipt(bscWallet, amount, uuid, signature.v, signature.r, signature.s)
+		const txn = await contract.mintWithReceipt(blockchainWallet, amount, uuid, signature.v, signature.r, signature.s)
 		await txn.wait()
+		console.debug(`wBAN minted in transaction ${txn.hash}`)
 		return txn.hash
 	}
 
 	@Action
 	async claim(swapRequest: SwapToWBanRequest): Promise<string> {
-		console.log('Should claim wBAN')
-		const { amount, bscWallet, receipt, uuid, contract } = swapRequest
-		console.debug(`Amount: ${amount}, bscWallet: ${bscWallet}, receipt: ${receipt}, uuid: ${uuid}`)
+		console.log('Claiming wBAN')
+		const { amount, blockchainWallet, receipt, uuid, contract } = swapRequest
+		console.debug(`Amount: ${amount}, blockchainWallet: ${blockchainWallet}, receipt: ${receipt}, uuid: ${uuid}`)
 		const signature: Signature = ethers.utils.splitSignature(receipt)
-		const txn = await contract.mintWithReceipt(bscWallet, amount, uuid, signature.v, signature.r, signature.s)
+		const txn = await contract.mintWithReceipt(blockchainWallet, amount, uuid, signature.v, signature.r, signature.s)
 		await txn.wait()
 		return txn.hash
 	}
