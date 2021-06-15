@@ -1,3 +1,6 @@
+# v1.1.0
+- Deployment on Polygon
+
 # v1.0.11
 ## Changes
 - wBAN-BNB and wBAN-BUSD farms extended to 2021-09-25 3PM UTC.

@@ -36,7 +36,9 @@
 				<p>
 					Please verify that your Banano address is indeed <span class="banano-address">{{ banAddress }}</span>
 				</p>
-				<p>This is important as we will <i>link</i> your Banano address with your Binance Smart Chain one.</p>
+				<p>
+					This is important as we will <i>link</i> your Banano address with your {{ expectedBlockchain.chainName }} one.
+				</p>
 				<q-stepper-navigation>
 					<q-btn @click="claimBananoWallet" color="primary" text-color="secondary" label="Continue" />
 					<q-btn @click="step = 1" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
@@ -92,6 +94,7 @@ import { BigNumber } from 'ethers'
 import QRCode from 'qrcode'
 import { ClaimResponse } from '@/models/ClaimResponse'
 import { copyToClipboard } from 'quasar'
+import { Network, Networks } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -115,6 +118,10 @@ export default class SetupPage extends Vue {
 
 	banWalletForDepositsQRCode = ''
 
+	get expectedBlockchain(): Network {
+		return new Networks().getExpectedNetworkData()
+	}
+
 	get activeColor(): string {
 		if (this.$q.dark.isActive) {
 			return 'primary'
@@ -130,7 +137,7 @@ export default class SetupPage extends Vue {
 	async claimBananoWallet() {
 		const result: ClaimResponse = await backend.claimAddresses({
 			banAddress: this.banAddress,
-			bscAddress: accounts.activeAccount as string,
+			blockchainAddress: accounts.activeAccount as string,
 			provider: accounts.providerEthers
 		})
 		switch (result) {

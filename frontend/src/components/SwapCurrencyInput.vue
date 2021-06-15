@@ -41,6 +41,7 @@ import { Component, Prop, PropSync, Ref, Vue } from 'vue-property-decorator'
 import { BigNumber, ethers } from 'ethers'
 import { bnToStringFilter, banPriceFilter } from '@/utils/filters'
 import accounts from '@/store/modules/accounts'
+import { Network, Networks } from '@/utils/Networks'
 
 @Component({
 	filters: {
@@ -68,8 +69,12 @@ export default class SwapCurrencyInput extends Vue {
 		if (this.currency === 'BAN') {
 			return 'ban-logo.png'
 		} else {
-			return 'wban-logo.svg'
+			return `wban-logo-${this.expectedBlockchain.network}.svg`
 		}
+	}
+
+	get expectedBlockchain(): Network {
+		return new Networks().getExpectedNetworkData()
 	}
 
 	setToMax() {
@@ -119,7 +124,7 @@ export default class SwapCurrencyInput extends Vue {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 @import '@/styles/quasar.sass'
 
 body.body--light .bg-token-chooser
@@ -133,4 +138,6 @@ body.body--dark #add-wban-to-metamask
 .max
 	font-size: 0.7em
 	text-decoration: underline
+.q-field--disabled .q-field__control > div.q-field__append
+	opacity: 1 !important
 </style>

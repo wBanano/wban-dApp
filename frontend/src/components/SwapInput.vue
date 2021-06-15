@@ -38,6 +38,7 @@ import backend from '@/store/modules/backend'
 import contracts from '@/store/modules/contracts'
 import { WBANToken } from '../../../artifacts/typechain'
 import Dialogs from '@/utils/Dialogs'
+import { Network, Networks } from '@/utils/Networks'
 
 const banStore = namespace('ban')
 const accountsStore = namespace('accounts')
@@ -59,8 +60,8 @@ export default class SwapInput extends Vue {
 	@banStore.Getter('banAddress')
 	banAddress!: string
 
-	@accountsStore.Getter('activeBalanceBnb')
-	bnbBalance!: string
+	@accountsStore.Getter('activeCryptoBalance')
+	cryptoBalance!: string
 
 	amount = ''
 	swapInProgress = false
@@ -98,6 +99,10 @@ export default class SwapInput extends Vue {
 		)
 	}
 
+	get expectedBlockchain(): Network {
+		return new Networks().getExpectedNetworkData()
+	}
+
 	switchCurrencyInputs() {
 		const tempCurrency: string = this.toCurrency
 		this.toCurrency = this.fromCurrency
@@ -115,10 +120,18 @@ export default class SwapInput extends Vue {
 			return
 		}
 
-		// check that the user as at least 0.0006 BNB available for wrapping costs
-		if (this.fromCurrency === 'BAN' && Number.parseFloat(this.bnbBalance) < 0.0006) {
-			Dialogs.showGasNeededError(Number.parseFloat(this.bnbBalance))
+		// check that the user as at sufficient crypto available for wrapping costs
+		console.debug(
+			`Required crypto balance: ${this.expectedBlockchain.minimumNeededForWrap} ${this.expectedBlockchain.nativeCurrency.symbol}`
+		)
+		if (
+			this.fromCurrency === 'BAN' &&
+			Number.parseFloat(this.cryptoBalance) < this.expectedBlockchain.minimumNeededForWrap
+		) {
+			Dialogs.showGasNeededError(Number.parseFloat(this.cryptoBalance))
 			return
+		} else {
+			console.info(`Crypto balance is: ${this.cryptoBalance} ${this.expectedBlockchain.nativeCurrency.symbol}`)
 		}
 
 		if (accounts.activeAccount && this.amount) {
@@ -127,7 +140,7 @@ export default class SwapInput extends Vue {
 				await backend.swap({
 					amount: Number.parseFloat(this.amount),
 					banAddress: ban.banAddress,
-					bscAddress: accounts.activeAccount,
+					blockchainAddress: accounts.activeAccount,
 					provider: accounts.providerEthers
 				})
 			} else {

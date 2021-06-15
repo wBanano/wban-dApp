@@ -1,3 +1,5 @@
+export type TokensList = Record<string, Token>
+
 export interface Token {
   symbol: string
   address?: Address
@@ -18,19 +20,6 @@ export interface FarmConfig {
     earnLabel: string
     endBlock: number
   }
-}
-
-export interface PoolConfig {
-  sousId: number
-  earningToken: Token
-  stakingToken: Token
-  stakingLimit?: number
-  contractAddress: Address
-  tokenPerBlock: string
-  sortOrder?: number
-  harvest?: boolean
-  isFinished?: boolean
-  enableEmergencyWithdraw?: boolean
 }
 
 export interface Address {

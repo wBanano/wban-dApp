@@ -6,7 +6,7 @@ import store from '@/store'
 import { Benis, Benis__factory } from '@artifacts/typechain'
 import { BigNumber } from 'ethers'
 import { FarmConfig } from '@/config/constants/types'
-import farms from '@/config/constants/farms'
+import FarmUtils from '@/utils/FarmUtils'
 
 @Module({
 	namespaced: true,
@@ -59,6 +59,7 @@ class BenisModule extends VuexModule {
 				const benis = Benis__factory.connect(BenisModule.BENIS_CONTRACT_ADDRESS, provider.getSigner())
 				this.context.commit('setBenis', benis)
 
+				const farms = FarmUtils.getFarms()
 				this.context.commit('setFarms', farms)
 
 				const farmsCount = farms.length

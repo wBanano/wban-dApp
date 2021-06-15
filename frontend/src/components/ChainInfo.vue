@@ -208,7 +208,7 @@ export default class ChainInfo extends Vue {
 					amount: Number.parseFloat(this.withdrawAmount),
 					// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
 					banAddress: ban.banAddress,
-					bscAddress: accounts.activeAccount,
+					blockchainAddress: accounts.activeAccount,
 					provider: accounts.providerEthers
 				} as WithdrawRequest)
 				this.promptForBanWithdrawal = false
@@ -221,7 +221,11 @@ export default class ChainInfo extends Vue {
 	}
 
 	swap() {
-		openURL(`${ChainInfo.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
+		if (ChainInfo.DEX_URL === 'https://app.sushi.com') {
+			openURL(`${ChainInfo.DEX_URL}/swap?inputCurrency=${this.wbanAddress}`)
+		} else {
+			openURL(`${ChainInfo.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
+		}
 	}
 
 	async reloadBalances() {

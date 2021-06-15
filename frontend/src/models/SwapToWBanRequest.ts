@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 
 type SwapToWBanRequest = {
 	amount: BigNumber,
-	bscWallet: string,
+	blockchainWallet: string,
 	receipt: string,
 	uuid: string,
 	contract: WBANToken

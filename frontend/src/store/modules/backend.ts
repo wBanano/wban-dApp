@@ -180,28 +180,33 @@ class BackendModule extends VuexModule {
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('swap-ban-to-wban', async (e: any) => {
-					const { banWallet, bscWallet, swapped, receipt, uuid, balance, wbanBalance } = JSON.parse(e.data)
+					const { banWallet, blockchainWallet, swapped, receipt, uuid, balance, wbanBalance } = JSON.parse(e.data)
 					console.info(`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN.`)
 					console.info(`Receipt is "${receipt}".`)
 					console.info(`Balance is: ${balance} BAN, ${wbanBalance} wBAN.`)
 					const signature: Signature = ethers.utils.splitSignature(receipt)
 					console.log(`Signature is ${JSON.stringify(signature)}`)
 					if (Contracts.wbanContract && Accounts.activeAccount) {
-						const txnHash = await Contracts.mint({
-							amount: ethers.utils.parseEther(swapped.toString()),
-							bscWallet,
-							receipt,
-							uuid,
-							contract: Contracts.wbanContract
-						})
-						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
-						Contracts.reloadWBANBalance({
-							account: bscWallet,
-							contract: Contracts.wbanContract
-						})
-						const blockchainExplorerUrl = Accounts.blockExplorerUrl
-						const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
-						Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+						try {
+							const txnHash = await Contracts.mint({
+								amount: ethers.utils.parseEther(swapped.toString()),
+								blockchainWallet,
+								receipt,
+								uuid,
+								contract: Contracts.wbanContract
+							})
+							this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+							Contracts.reloadWBANBalance({
+								account: blockchainWallet,
+								contract: Contracts.wbanContract
+							})
+							const blockchainExplorerUrl = Accounts.blockExplorerUrl
+							const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
+							Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+						} catch (err) {
+							console.error(err)
+							Dialogs.errorSwapToWBan(swapped)
+						}
 					} else {
 						console.error("Can't make the call to the smart-contract to mint")
 					}
@@ -238,7 +243,10 @@ class BackendModule extends VuexModule {
 		} catch (err) {
 			console.error(err)
 			this.context.commit('setOnline', false)
-			this.context.commit('setErrorMessage', 'wBAN bridge is under maintenance. You can still use the farms while we work on this.')
+			this.context.commit(
+				'setErrorMessage',
+				'wBAN bridge is under maintenance. You can still use the farms while we work on this.'
+			)
 		}
 	}
 
@@ -265,16 +273,16 @@ class BackendModule extends VuexModule {
 
 	@Action
 	async claimAddresses(claimRequest: ClaimRequest): Promise<ClaimResponse> {
-		const { banAddress, bscAddress, provider } = claimRequest
-		console.info(`About to claim ${banAddress} with ${bscAddress}`)
-		if (provider && banAddress && bscAddress) {
+		const { banAddress, blockchainAddress, provider } = claimRequest
+		console.info(`About to claim ${banAddress} with ${blockchainAddress}`)
+		if (provider && banAddress && blockchainAddress) {
 			const sig = await provider.getSigner().signMessage(`I hereby claim that the BAN address "${banAddress}" is mine`)
 			// call the backend for the swap
 			try {
 				const resp = await axios.post(`${BackendModule.BACKEND_URL}/claim`, {
-					banAddress: banAddress,
-					bscAddress: bscAddress,
-					sig: sig
+					banAddress,
+					blockchainAddress,
+					sig
 				})
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
@@ -310,9 +318,9 @@ class BackendModule extends VuexModule {
 
 	@Action
 	async swap(swapRequest: SwapRequest): Promise<SwapResponse> {
-		const { amount, banAddress, bscAddress, provider } = swapRequest
+		const { amount, banAddress, blockchainAddress, provider } = swapRequest
 		console.info(`Swap from BAN to wBAN requested for ${amount} BAN`)
-		if (provider && amount && bscAddress) {
+		if (provider && amount && blockchainAddress) {
 			const sig = await provider
 				.getSigner()
 				.signMessage(`Swap ${amount} BAN for wBAN with BAN I deposited from my wallet "${banAddress}"`)
@@ -320,7 +328,7 @@ class BackendModule extends VuexModule {
 			try {
 				await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
 					ban: banAddress,
-					bsc: bscAddress,
+					blockchain: blockchainAddress,
 					amount: amount,
 					sig: sig
 				})
@@ -356,9 +364,9 @@ class BackendModule extends VuexModule {
 
 	@Action
 	async withdrawBAN(withdrawRequest: WithdrawRequest): Promise<WithdrawResponse> {
-		const { amount, banAddress, bscAddress, provider } = withdrawRequest
+		const { amount, banAddress, blockchainAddress, provider } = withdrawRequest
 		console.info(`Should withdraw ${amount} BAN to ${banAddress}...`)
-		if (provider && amount && bscAddress) {
+		if (provider && amount && blockchainAddress) {
 			if (amount <= 0) {
 				throw new Error('Invalid withdrawal amount')
 			}
@@ -368,7 +376,7 @@ class BackendModule extends VuexModule {
 			try {
 				const resp = await axios.post(`${BackendModule.BACKEND_URL}/withdrawals/ban`, {
 					ban: banAddress,
-					bsc: bscAddress,
+					blockchain: blockchainAddress,
 					amount: amount,
 					sig: sig
 				})
@@ -410,21 +418,21 @@ class BackendModule extends VuexModule {
 
 	@Action
 	async getHistory(request: HistoryRequest) {
-		const { bscAddress, banAddress } = request
-		console.info(`About to fetch history for ${bscAddress} and ${banAddress}`)
-		if (banAddress && bscAddress) {
+		const { blockchainAddress, banAddress } = request
+		console.info(`About to fetch history for ${blockchainAddress} and ${banAddress}`)
+		if (banAddress && blockchainAddress) {
 			try {
-				const resp = await axios.get(`${BackendModule.BACKEND_URL}/history/${bscAddress}/${banAddress}`)
+				const resp = await axios.get(`${BackendModule.BACKEND_URL}/history/${blockchainAddress}/${banAddress}`)
 				const { deposits, withdrawals } = resp.data
 				const swaps = await Promise.all(
 					resp.data.swaps.map(async (swap: any) => {
 						if (swap.receipt && swap.uuid && Contracts.wbanContract) {
 							// swap.consumed = await Contracts.wbanContract.isReceiptConsumed(swap.receipt)
-							console.debug(`BSC address: ${bscAddress}`)
+							console.debug(`Blockchain address: ${blockchainAddress}`)
 							console.debug(`Amount: ${swap.amount}`)
 							console.debug(`UUID: ${swap.uuid}`)
 							swap.consumed = await Contracts.wbanContract.isReceiptConsumed(
-								bscAddress,
+								blockchainAddress,
 								BigNumber.from(swap.amount),
 								swap.uuid
 							)

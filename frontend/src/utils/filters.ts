@@ -28,7 +28,7 @@ const bnToHumanStringFilter = Vue.filter('bnToHumanString', (value: string) => {
 	return `~ ${numeral(ethers.utils.formatUnits(value, 18)).format('0,00 a')}`
 })
 
-const bscAddressFilter = Vue.filter('bscAddress', (address: string) => {
+const blockchainAddressFilter = Vue.filter('blockchainAddress', (address: string) => {
 	return address
 		.substring(0, 8)
 		.concat('...')
@@ -58,7 +58,7 @@ export {
 	bnToSixDecimalsStringFilter,
 	bnToExactStringFilter,
 	bnToHumanStringFilter,
-	bscAddressFilter,
+	blockchainAddressFilter,
 	banPriceFilter,
 	timestampFilter,
 	hashTrimmedFilter

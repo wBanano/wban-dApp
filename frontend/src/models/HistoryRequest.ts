@@ -1,6 +1,6 @@
 type HistoryRequest = {
 	banAddress: string
-	bscAddress: string
+	blockchainAddress: string
 }
 
 export default HistoryRequest
