@@ -7,6 +7,7 @@ import { BigNumber, ethers } from 'ethers'
 import WalletProvider from '@libertypie/wallet-provider'
 import MetaMask from '@/utils/MetaMask'
 import { Networks } from '@/utils/Networks'
+import Dialogs from '@/utils/Dialogs'
 
 @Module({
 	namespaced: true,
@@ -143,7 +144,8 @@ class AccountsModule extends VuexModule {
 		console.debug('in connectWalletProvider')
 		const connectStatus = await this.context.getters.walletProvider.connect()
 		if (connectStatus.isError()) {
-			//some error info
+			console.error("Can't connect to web3")
+			Dialogs.showWeb3Error()
 			return
 		}
 

@@ -111,7 +111,9 @@
 						<div class="row q-mt-md">
 							<div class="col-2 text-right">TVL</div>
 							<div class="col-5 offset-1">
-								<span v-if="isStaking()">{{ farmData.poolData.balanceToken0 | bnToZeroDecimalsStringFilter }} wBAN</span>
+								<span v-if="isStaking()">
+									{{ farmData.poolData.balanceToken0 | bnToZeroDecimalsStringFilter }} wBAN
+								</span>
 							</div>
 							<div class="col-4 text-right">${{ farmData.poolData.tvl | bnToTwoDecimalsStringFilter }}</div>
 						</div>
@@ -372,7 +374,7 @@ export default class Farm extends Vue {
 
 	mounted() {
 		this.isLoading = true
-		this.reload().then(() => this.isLoading = false)
+		this.reload().then(() => (this.isLoading = false))
 	}
 }
 </script>

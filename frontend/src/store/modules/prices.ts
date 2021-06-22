@@ -37,7 +37,9 @@ class PricesModule extends VuexModule {
 	async loadPrices() {
 		console.debug('in loadPrices')
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
-			const resp = await axios.request({ url: 'https://api.coingecko.com/api/v3/simple/price?ids=busd,wbnb&vs_currencies=usd' })
+			const resp = await axios.request({
+				url: 'https://api.coingecko.com/api/v3/simple/price?ids=busd,wbnb&vs_currencies=usd'
+			})
 			const apiResponse = resp.data
 			this.context.commit('setLastUpdateTimestamp', Date.now())
 			const prices: Map<string, number> = new Map()

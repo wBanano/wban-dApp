@@ -1,4 +1,5 @@
 import { Dialog, Notify, openURL } from 'quasar'
+import Web3ErrorDialog from '@/utils/dialogs/Web3ErrorDialog.vue'
 
 class Dialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -267,6 +268,12 @@ class Dialogs {
 			Dialogs.swapFarmWithdrawDialog.hide()
 			Dialogs.swapFarmWithdrawDialog = null
 		}
+	}
+
+	static showWeb3Error() {
+		Dialog.create({
+			component: Web3ErrorDialog
+		})
 	}
 }
 
