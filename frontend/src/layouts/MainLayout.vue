@@ -135,6 +135,9 @@ export default class MainLayout extends Vue {
 	@accountsStore.State('chainId')
 	chainId!: string
 
+	@accountsStore.State('chainName')
+	chainName!: string
+
 	@accountsStore.State('blockExplorerUrl')
 	blockExplorerUrl!: string
 

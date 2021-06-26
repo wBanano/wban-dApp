@@ -21,7 +21,7 @@
 			</div>
 			<swap-currency-input ref="to" label="To" :amount="amount" :balance="toBalance" :currency="toCurrency" />
 			<div class="text-right">
-				<q-btn label="Swap" type="submit" :disable="!swapEnabled" color="primary" text-color="text-black" />
+				<q-btn :label="swapLabel" type="submit" :disable="!swapEnabled" color="primary" text-color="text-black" />
 			</div>
 		</div>
 	</form>
@@ -77,6 +77,14 @@ export default class SwapInput extends Vue {
 			return this.banBalance
 		} else {
 			return this.wBanBalance
+		}
+	}
+
+	get swapLabel() {
+		if (this.toCurrency === 'BAN') {
+			return 'Unwrap'
+		} else {
+			return 'Wrap'
 		}
 	}
 
