@@ -3,8 +3,8 @@
 		<div class="q-pa-md q-gutter-sm">
 			<div class="column items-end">
 				<div class="col">
-					<q-btn to="/history" flat icon="history" color="primary" size="md">
-						<q-tooltip>History</q-tooltip>
+					<q-btn to="/history" flat icon="history" label="History" color="primary" size="md">
+						<q-tooltip>History: see your past transactions and claim previously rejected transactions</q-tooltip>
 					</q-btn>
 				</div>
 			</div>
