@@ -1,3 +1,11 @@
+# v1.0.4
+## Improvements
+- History button should have a label and a better tooltip #56
+- Warn the user to not deposit more than 2 decimals #54
+- Check BNB balance before a wrap #55
+- Swap buttons and mainnet message #57
+- Warn user to install MetaMask or use a compatible wallet #60
+
 # v1.0.3
 ## Improvements
 - Load prices from CoinGecko instead of PancakeSwap API #59
