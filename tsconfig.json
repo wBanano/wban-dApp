@@ -11,7 +11,15 @@
     "sourceMap": true,
     "strict": true,
     "target": "es5",
-		"declaration": true
+		"declaration": true,
+		"paths": {
+      "@/*": [
+        "./frontend/src/*"
+			],
+			"@artifacts/*": [
+				"./artifacts/*"
+			]
+    },
 	},
 	"include": [
 		"artifacts/typechain/*"

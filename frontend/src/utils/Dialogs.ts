@@ -1,5 +1,6 @@
 import { Dialog, Notify, openURL } from 'quasar'
 import Web3ErrorDialog from '@/utils/dialogs/Web3ErrorDialog.vue'
+import GasNeededDialog from '@/utils/dialogs/GasNeededDialog.vue'
 
 class Dialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -273,6 +274,13 @@ class Dialogs {
 	static showWeb3Error() {
 		Dialog.create({
 			component: Web3ErrorDialog
+		})
+	}
+
+	static showGasNeededError(bnbBalance: number) {
+		Dialog.create({
+			component: GasNeededDialog,
+			bnbBalance: bnbBalance
 		})
 	}
 }

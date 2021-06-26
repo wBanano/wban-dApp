@@ -37,6 +37,7 @@ import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import contracts from '@/store/modules/contracts'
 import { WBANToken } from '../../../artifacts/typechain'
+import Dialogs from '@/utils/Dialogs'
 
 const banStore = namespace('ban')
 const accountsStore = namespace('accounts')
@@ -93,8 +94,6 @@ export default class SwapInput extends Vue {
 			this.amount &&
 			Number.parseFloat(this.amount) > 0 &&
 			this.fromBalance.gte(ethers.utils.parseEther(this.amount)) &&
-			// check that the user as at least 0.0006 BNB available for wrapping costs
-			Number.parseFloat(this.bnbBalance) > 0.0006 &&
 			!this.swapInProgress
 		)
 	}
@@ -115,6 +114,13 @@ export default class SwapInput extends Vue {
 		if (!this.fromInput.validate()) {
 			return
 		}
+
+		// check that the user as at least 0.0006 BNB available for wrapping costs
+		if (Number.parseFloat(this.bnbBalance) < 0.0006) {
+			Dialogs.showGasNeededError(Number.parseFloat(this.bnbBalance))
+			return
+		}
+
 		if (accounts.activeAccount && this.amount) {
 			this.swapInProgress = true
 			if (this.fromCurrency === 'BAN') {
