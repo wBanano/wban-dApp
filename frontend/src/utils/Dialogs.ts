@@ -34,6 +34,23 @@ class Dialogs {
 		})
 	}
 
+	static declineUserDeposit(deposit: string): void {
+		const dismiss = Notify.create({
+			type: 'warning',
+			html: true,
+			message: `Your deposit of ${deposit} BAN was rejected.`,
+			caption: "Make sure you don't send amounts with more than 2 decimals or with raw values",
+			timeout: 0,
+			actions: [
+				{
+					label: 'Close',
+					color: 'secondary',
+					handler: () => dismiss()
+				}
+			]
+		})
+	}
+
 	static startWithdrawal(): void {
 		Dialogs.withdrawalDialog = Dialog.create({
 			dark: true,

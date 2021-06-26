@@ -164,12 +164,18 @@ class BackendModule extends VuexModule {
 				}
 
 				eventSource.addEventListener('banano-deposit', (e: any) => {
-					const { banWallet, deposit, balance } = JSON.parse(e.data)
-					console.log(
-						`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
-					)
-					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
-					Dialogs.confirmUserDeposit(deposit)
+					console.debug(e.data)
+					const { banWallet, deposit, balance, rejected } = JSON.parse(e.data)
+					if (rejected) {
+						console.log(`Received ${deposit} BAN which were sent back.`)
+						Dialogs.declineUserDeposit(deposit)
+					} else {
+						console.log(
+							`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
+						)
+						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
+						Dialogs.confirmUserDeposit(deposit)
+					}
 				})
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
