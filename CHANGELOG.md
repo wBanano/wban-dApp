@@ -1,3 +1,7 @@
+# v1.0.5
+## Changes
+- Farms extended to 2021-07-31 3PM UTC.
+
 # v1.0.4
 ## Improvements
 - History button should have a label and a better tooltip #56
