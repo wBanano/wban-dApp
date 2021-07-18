@@ -46,13 +46,14 @@
 					</q-item-label>
 				</q-item-section>
 				<q-item-section side>
-					<q-item-label class="text-right text-bold">APR: {{ apr }}&nbsp;%</q-item-label>
+					<q-item-label v-if="isActive()" class="text-right text-bold">APR: {{ apr }}&nbsp;%</q-item-label>
+					<q-item-label v-if="isFinished()" class="text-right text-primary">Farm Ended!</q-item-label>
 				</q-item-section>
 			</q-item>
 			<q-separator class="bg-secondary" />
 			<q-card-section>
 				<div class="rewards">
-					<div class="title">wBAN Earned</div>
+					<div class="title">wBAN Earned<span v-if="isFinished()"> (withdraw to harvest)</span></div>
 					<div class="row items-center">
 						<div class="col-8">
 							{{ farmData.userPendingRewards | bnToTwoDecimalsString }} ({{
@@ -60,7 +61,7 @@
 							}})
 						</div>
 						<div class="col-4 text-right">
-							<q-btn label="Harvest" @click="harvest" :disable="emptyRewards" color="primary" text-color="secondary" />
+							<q-btn label="Harvest" @click="harvest" v-if="isActive()" :disable="emptyRewards" color="primary" text-color="secondary" />
 						</div>
 					</div>
 				</div>
@@ -125,7 +126,7 @@
 				<q-btn @click="approve" v-if="!lpTokenAllowance" color="primary" class="fit" flat>Approve</q-btn>
 				<q-btn-group outline spread class="fit">
 					<q-btn @click="addLiquidity" v-if="!isStaking()" color="primary" class="fit" flat>Add Liquidity</q-btn>
-					<q-btn @click="beginSupply" v-if="lpTokenAllowance" color="primary" flat>Supply</q-btn>
+					<q-btn @click="beginSupply" v-if="lpTokenAllowance && isActive()" color="primary" flat>Supply</q-btn>
 					<q-btn
 						@click="beginWithdraw"
 						v-if="lpTokenAllowance"
@@ -133,7 +134,7 @@
 						color="primary"
 						flat
 					>
-						Withdraw
+						<span v-if="isFinished()">Harvest &amp; </span>Withdraw
 					</q-btn>
 				</q-btn-group>
 			</q-card-actions>
@@ -265,7 +266,7 @@ export default class Farm extends Vue {
 	}
 
 	get apr(): string {
-		if (this.farmData.timeLeft === 'Finished') {
+		if (this.isFinished()) {
 			return '0'
 		} else {
 			return numeral(this.farmData.apr).format('0,0[.]000 a')
@@ -274,6 +275,14 @@ export default class Farm extends Vue {
 
 	public isStaking(): boolean {
 		return this.wbanAddress === this.value.lpAddresses[Farm.ENV_NAME as keyof Address]
+	}
+
+	public isActive(): boolean {
+		return !this.isFinished()
+	}
+
+	public isFinished(): boolean {
+		return this.farmData.timeLeft === 'Finished'
 	}
 
 	get depositValueToken0(): BigNumber {
