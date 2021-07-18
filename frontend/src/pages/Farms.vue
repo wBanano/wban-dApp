@@ -7,8 +7,38 @@
 					Home
 				</h6>
 			</div>
+			<div v-if="userHasDepositsInEndedFarms" class="row justify-center q-pb-md">
+				<q-banner inline-actions rounded class="bg-primary text-secondary">
+					<span>You have some deposits left in ended farms. Please withdraw!</span>
+					<template v-slot:action>
+						<q-btn flat label="Withdraw" @click="farmsSelected = 'ended'" />
+					</template>
+				</q-banner>
+				<div class="col-md-1" />
+			</div>
+			<div class="row justify-center q-pb-md">
+				<q-btn-toggle
+					v-model="farmsSelected"
+					rounded
+					color="grey-9"
+					text-color="primary"
+					toggle-color="primary"
+					toggle-text-color="secondary"
+					:options="[
+						{label: 'Active', value: 'active', slot: 'active'},
+						{label: 'Ended', value: 'ended', slot: 'ended'}
+					]">
+					<template v-slot:active>
+						<q-tooltip>Farms still distributing rewards</q-tooltip>
+					</template>
+					<template v-slot:ended>
+						<q-tooltip>Old farms not distributing rewards anymore!</q-tooltip>
+					</template>
+				</q-btn-toggle>
+				<div class="col-md-1" />
+			</div>
 			<div class="row q-col-gutter-md justify-center">
-				<farm v-for="farm in farms" :key="farm.pid" :account="activeAccount" :value="farm" />
+				<farm v-for="farm in selectedFarms" :key="farm.pid" :account="activeAccount" :value="farm" />
 				<div class="col-md-1" />
 			</div>
 		</div>
@@ -22,9 +52,12 @@ import Farm from '@/components/farms/Farm.vue'
 import benis from '@/store/modules/benis'
 import accounts from '@/store/modules/accounts'
 import prices from '@/store/modules/prices'
-import { FarmConfig, Address } from '@/config/constants/types'
+import { FarmConfig, Address, EndTime } from '@/config/constants/types'
 import tokens from '@/config/constants/tokens'
 import { ethers } from 'ethers'
+import BenisUtils from '@/utils/BenisUtils'
+import { BN_ZERO } from '@/models/FarmData'
+import { Benis } from '@artifacts/typechain'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -36,7 +69,7 @@ const accountsStore = namespace('accounts')
 })
 export default class FarmsPage extends Vue {
 	@benisStore.Getter('farms')
-	farms!: Array<FarmConfig>
+	allFarms!: Array<FarmConfig>
 
 	@accountsStore.State('activeAccount')
 	activeAccount!: string
@@ -44,14 +77,57 @@ export default class FarmsPage extends Vue {
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.JsonRpcProvider | null
 
+	@benisStore.Getter('benisContract')
+	benis!: Benis
+
+	farmsSelected = 'active'
+
+	userHasDepositsInEndedFarms = false
+
 	wbanAddress: string = tokens.wban.address[Farm.ENV_NAME as keyof Address]
 
+	benisUtils = new BenisUtils()
+
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
+
+	get selectedFarms(): Array<FarmConfig> {
+		return this.farmsSelected === 'active' ? this.activeFarms : this.endedFarms
+	}
+
+	get activeFarms(): Array<FarmConfig> {
+		return this.allFarms
+			// only keep farms not ended
+			.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) !== 'Finished')
+	}
+
+	get endedFarms(): Array<FarmConfig> {
+		return this.allFarms
+			// only keep farms ended
+			.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) === 'Finished')
+	}
 
 	async mounted() {
 		await accounts.initWalletProvider()
 		await prices.loadPrices()
 		await benis.initContract(this.provider)
+
+		// find out if there are some user deposits in ended farms
+		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async (farm) => {
+			const deposits = await this.benisUtils.getStakedBalance(farm.pid, this.activeAccount, this.benis)
+			return deposits.gt(BN_ZERO)
+		})
+		if (userNeedsWithdrawal) {
+			this.userHasDepositsInEndedFarms = true
+		}
+	}
+
+	private async findAsyncSequential<T>(array: T[], predicate: (t: T) => Promise<boolean>): Promise<T | undefined> {
+		for (const t of array) {
+			if (await predicate(t)) {
+				return t
+			}
+		}
+		return undefined
 	}
 }
 </script>
