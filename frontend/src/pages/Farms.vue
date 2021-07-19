@@ -25,9 +25,10 @@
 					toggle-color="primary"
 					toggle-text-color="secondary"
 					:options="[
-						{label: 'Active', value: 'active', slot: 'active'},
-						{label: 'Ended', value: 'ended', slot: 'ended'}
-					]">
+						{ label: 'Active', value: 'active', slot: 'active' },
+						{ label: 'Ended', value: 'ended', slot: 'ended' }
+					]"
+				>
 					<template v-slot:active>
 						<q-tooltip>Farms still distributing rewards</q-tooltip>
 					</template>
@@ -52,7 +53,7 @@ import Farm from '@/components/farms/Farm.vue'
 import benis from '@/store/modules/benis'
 import accounts from '@/store/modules/accounts'
 import prices from '@/store/modules/prices'
-import { FarmConfig, Address, EndTime } from '@/config/constants/types'
+import { FarmConfig, Address } from '@/config/constants/types'
 import tokens from '@/config/constants/tokens'
 import { ethers } from 'ethers'
 import BenisUtils from '@/utils/BenisUtils'
@@ -95,15 +96,19 @@ export default class FarmsPage extends Vue {
 	}
 
 	get activeFarms(): Array<FarmConfig> {
-		return this.allFarms
-			// only keep farms not ended
-			.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) !== 'Finished')
+		return (
+			this.allFarms
+				// only keep farms not ended
+				.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) !== 'Finished')
+		)
 	}
 
 	get endedFarms(): Array<FarmConfig> {
-		return this.allFarms
-			// only keep farms ended
-			.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) === 'Finished')
+		return (
+			this.allFarms
+				// only keep farms ended
+				.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) === 'Finished')
+		)
 	}
 
 	async mounted() {
@@ -112,7 +117,7 @@ export default class FarmsPage extends Vue {
 		await benis.initContract(this.provider)
 
 		// find out if there are some user deposits in ended farms
-		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async (farm) => {
+		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async farm => {
 			const deposits = await this.benisUtils.getStakedBalance(farm.pid, this.activeAccount, this.benis)
 			return deposits.gt(BN_ZERO)
 		})
