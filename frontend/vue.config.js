@@ -11,8 +11,11 @@ module.exports = {
 		quasar: {
 			importStrategy: 'kebab',
 			rtlSupport: false
+		},
+		apollo: {
+			lintGQL: true
 		}
-	},
+	}
 	/*
 	transpileDependencies: ['quasar'],
 	devServer: {

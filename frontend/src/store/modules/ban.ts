@@ -1,6 +1,6 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import store from '@/store'
-import axios, { AxiosResponse } from 'axios'
+import Prices from '@/store/modules/prices'
 
 @Module({
 	namespaced: true,
@@ -48,16 +48,11 @@ class BANModule extends VuexModule {
 			this.context.commit('setBanAddress', banAddress)
 		}
 		if (!this._initialized) {
-			return axios
-				.request({ url: 'https://api.coingecko.com/api/v3/simple/price?ids=banano&vs_currencies=usd' })
-				.then((resp: AxiosResponse) => resp.data)
-				.then(prices => prices.banano.usd)
-				.then(banPrice => {
-					console.debug(`BAN price: $${banPrice}`)
-					return banPrice
-				})
-				.then(banPrice => this.context.commit('setBanPriceInUSD', Number.parseFloat(banPrice)))
-				.then(() => this.context.commit('setInitialized', true))
+			await Prices.loadPrices()
+			const wbanPrice = Prices.prices.get('wBAN')
+			console.debug(`BAN price: $${wbanPrice}`)
+			this.context.commit('setBanPriceInUSD', wbanPrice)
+			this.context.commit('setInitialized', true)
 		}
 	}
 

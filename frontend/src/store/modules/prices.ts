@@ -2,7 +2,8 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
-import axios from 'axios'
+import { ApolloClient, InMemoryCache } from '@apollo/client/core'
+import { gql } from 'graphql-tag'
 
 @Module({
 	namespaced: true,
@@ -13,7 +14,12 @@ import axios from 'axios'
 class PricesModule extends VuexModule {
 	private _lastUpdateTimestamp = 0
 	private _prices: Map<string, number> = new Map()
-	private _tokenPricesWhitelist: Set<string> = new Set(['BNB', 'BUSD', 'WBNB'])
+
+	private cache = new InMemoryCache()
+	private apolloClient = new ApolloClient({
+		cache: this.cache,
+		uri: 'https://graph.apeswap.finance/subgraphs/name/ape-swap/apeswap-subgraph'
+	})
 
 	get lastUpdateTimeStamp(): number {
 		return this._lastUpdateTimestamp
@@ -37,17 +43,27 @@ class PricesModule extends VuexModule {
 	async loadPrices() {
 		console.debug('in loadPrices')
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
-			const resp = await axios.request({
-				url: 'https://api.coingecko.com/api/v3/simple/price?ids=busd,wbnb&vs_currencies=usd'
+			const result = await this.apolloClient.query({
+				query: gql`
+					{
+						pair(id: "0x7898466cacf92df4a4e77a3b4d0170960e43b896") {
+							token1Price
+						}
+						bundle(id: "1") {
+							ethPrice
+						}
+					}
+				`
 			})
-			const apiResponse = resp.data
+			const data = result.data
+			const bnbPrice = data.bundle.ethPrice
+			const wbanPrice = data.pair.token1Price.match(/^-?\d+(?:\.\d{0,18})?/)[0]
 			this.context.commit('setLastUpdateTimestamp', Date.now())
 			const prices: Map<string, number> = new Map()
-			const busdPrice = apiResponse.busd.usd
-			const wbnbPrice = apiResponse.wbnb.usd
-			prices.set('BUSD', Number.parseFloat(busdPrice))
-			prices.set('WBNB', Number.parseFloat(wbnbPrice))
-			prices.set('BNB', Number.parseFloat(wbnbPrice))
+			prices.set('BUSD', 1)
+			prices.set('wBAN', Number.parseFloat(wbanPrice))
+			prices.set('WBNB', Number.parseFloat(bnbPrice))
+			prices.set('BNB', Number.parseFloat(bnbPrice))
 			this.context.commit('setPrices', prices)
 		}
 	}
