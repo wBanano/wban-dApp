@@ -1,3 +1,6 @@
+# v1.0.6
+## Improvements
+- Manage ended farms #62
 # v1.0.5
 ## Changes
 - Farms extended to 2021-07-31 3PM UTC.
