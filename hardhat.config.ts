@@ -101,6 +101,17 @@ task("benis:add-time", "Deploy Benis")
 		await benis.changeEndTime(additionalTime)
 	});
 
+task("benis:change-rewards", "Changes Benis rewards per second")
+	.addParam("benis", "The address of Benis smart-contract", '', types.string)
+	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
+	.setAction(async (args, hre) => {
+		const benisAddress = args.benis;
+		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
+		console.log(`Rewards per second: ${hre.ethers.utils.formatEther(rewardsPerSecond)}`);
+		const benis = await hre.ethers.getContractAt("Benis", benisAddress);
+		await benis.setWBANPerSecond(rewardsPerSecond, true);
+	});
+
 task("benis:alloc-pool", "Change allocation points")
 	.addParam("benis", "The address of Benis smart-contract", '', types.string)
 	.addParam("pid", "The pool ID", 0, types.int)
@@ -109,8 +120,8 @@ task("benis:alloc-pool", "Change allocation points")
 		const benisAddress = args.benis;
 		const pid = args.pid;
 		const alloc = args.alloc;
-		const benis = await hre.ethers.getContractAt("Benis", benisAddress)
-		await benis.set(pid, alloc, true, { gasLimit: 300_000 })
+		const benis = await hre.ethers.getContractAt("Benis", benisAddress);
+		await benis.set(pid, alloc, true, { gasLimit: 300_000 });
 	});
 
 task("benis:create-pool", "Deploy Benis")
