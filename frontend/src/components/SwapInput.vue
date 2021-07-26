@@ -116,7 +116,7 @@ export default class SwapInput extends Vue {
 		}
 
 		// check that the user as at least 0.0006 BNB available for wrapping costs
-		if (Number.parseFloat(this.bnbBalance) < 0.0006) {
+		if (this.fromCurrency === 'BAN' && Number.parseFloat(this.bnbBalance) < 0.0006) {
 			Dialogs.showGasNeededError(Number.parseFloat(this.bnbBalance))
 			return
 		}
