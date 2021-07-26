@@ -1,3 +1,7 @@
+# v1.0.8
+## Improvements
+- Don't check BNB balance of user for unwraps #66
+
 # v1.0.7
 ## Improvements
 - Fetch wBAN and BNB prices from ApeSwap instead of CoinGecko #64
