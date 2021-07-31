@@ -31,7 +31,7 @@ const farms: FarmConfig[] = [
 		endTime: {
 			dev: 1622142747,
 			staging: 1622323076,
-			production: 1627743600
+			production: 1630162800
 		}
 	},
 	{
@@ -47,7 +47,7 @@ const farms: FarmConfig[] = [
 		endTime: {
 			dev: 1622142747,
 			staging: 1622323076,
-			production: 1627743600
+			production: 1630162800
 		}
 	}
 ]
