@@ -91,7 +91,7 @@
 			</q-list>
 		</q-drawer>
 		<q-page-container>
-			<q-banner v-if="!backendOnline || inError" inline-actions class="text-white text-center bg-error">
+			<q-banner v-if="!backendOnline || inError" inline-actions class="text-secondary text-center bg-primary">
 				{{ errorMessage }}
 				<br />
 				<a v-if="errorLink !== ''" :href="errorLink">{{ errorLink }}</a>

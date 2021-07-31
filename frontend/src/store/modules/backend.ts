@@ -238,7 +238,7 @@ class BackendModule extends VuexModule {
 		} catch (err) {
 			console.error(err)
 			this.context.commit('setOnline', false)
-			this.context.commit('setErrorMessage', 'API is not reacheable. Please try again later.')
+			this.context.commit('setErrorMessage', 'wBAN bridge is under maintenance. You can still use the farms while we work on this.')
 		}
 	}
 
