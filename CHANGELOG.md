@@ -1,3 +1,7 @@
+# v1.0.11
+## Changes
+- wBAN-BNB and wBAN-BUSD farms extended to 2021-09-25 3PM UTC.
+
 # v1.0.10
 ## Changes
 - Changed maintenance messages and banner background.
