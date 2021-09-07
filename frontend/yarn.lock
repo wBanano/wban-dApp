@@ -10693,6 +10693,11 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
+wban-nfts@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/wban-nfts/-/wban-nfts-0.2.0.tgz#59726ffdcd3c133525c4f8d18fe47ead595527fa"
+  integrity sha512-tcz85CV/c/bQnj0GswZINXORwCybJZuqOWDp0GZRBbvBwVTGdoWB2Pg9LjGjMfe+wlQtnd06rH9tbU0vQ7TINw==
+
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"
   resolved "https://registry.npm.taobao.org/wbuf/download/wbuf-1.7.3.tgz#c1d8d149316d3ea852848895cb6a0bfe887b87df"

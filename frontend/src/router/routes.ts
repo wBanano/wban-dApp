@@ -31,6 +31,12 @@ const routes: RouteConfig[] = [
 		children: [{ path: '', component: () => import('@/pages/About.vue') }]
 	},
 
+	{
+		path: '/nft',
+		component: () => import('@/layouts/MainLayout.vue'),
+		children: [{ path: '', component: () => import('@/pages/NftRewards.vue') }]
+	},
+
 	// Always leave this as last one,
 	// but you can also remove it
 	{
