@@ -22,7 +22,7 @@
 					round
 					dense
 					class="gt-xs"
-					icon="img:bsc-logo-only.svg"
+					:icon="blockchainAddressIcon"
 				>
 					<q-tooltip>{{ activeAccount }}</q-tooltip>
 				</q-btn>
@@ -187,6 +187,10 @@ export default class MainLayout extends Vue {
 
 	get drawerEnabled() {
 		return Screen.lt.sm && this.isUserConnected
+	}
+
+	get blockchainAddressIcon() {
+		return `img:${this.expectedBlockchain.network}-logo-only.svg`
 	}
 
 	get expectedBlockchain(): Network {
