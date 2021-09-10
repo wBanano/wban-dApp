@@ -46,7 +46,7 @@ const POLYGON_MAINNET: Network = {
 		symbol: 'MATIC',
 		decimals: 18
 	},
-	minimumNeededForWrap: 0.004,
+	minimumNeededForWrap: 0.001,
 	rpcUrls: ['https://rpc-mainnet.matic.network'],
 	blockExplorerUrls: ['https://explorer.matic.network/']
 }
