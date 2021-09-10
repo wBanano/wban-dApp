@@ -1,3 +1,9 @@
+# v1.1.1
+## Improvements
+- Lower MATIC balance requirement #68
+## Bugs fixed
+- Polygon version: replace BSC logo in top bar with Polygon one #69
+
 # v1.1.0
 - Deployment on Polygon
 
