@@ -1,3 +1,8 @@
+# v1.1.2
+## Improvements
+- Change default Matic RPC endpoint #71
+- Give users notice that adding additional funds to a farm will trigger a harvest #70
+
 # v1.1.1
 ## Improvements
 - Lower MATIC balance requirement #68
