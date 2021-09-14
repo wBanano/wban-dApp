@@ -133,7 +133,10 @@
 				<q-btn @click="approve" v-if="!lpTokenAllowance" color="primary" class="fit" flat>Approve</q-btn>
 				<q-btn-group outline spread class="fit">
 					<q-btn @click="addLiquidity" v-if="!isStaking()" color="primary" class="fit" flat>Add Liquidity</q-btn>
-					<q-btn @click="beginSupply" v-if="lpTokenAllowance && isActive()" color="primary" flat>Supply</q-btn>
+					<q-btn @click="beginSupply" v-if="lpTokenAllowance && isActive()" color="primary" flat>
+						<div class="text-button">Supply</div>
+						<q-tooltip>When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!</q-tooltip>
+					</q-btn>
 					<q-btn
 						@click="beginWithdraw"
 						v-if="lpTokenAllowance"
@@ -141,7 +144,8 @@
 						color="primary"
 						flat
 					>
-						<span v-if="isFinished()">Harvest &amp; </span>Withdraw
+						<div class="text-button"><span v-if="isFinished()">Harvest &amp; </span>Withdraw</div>
+						<q-tooltip>When withdrawing your liquidity tokens from the farm, you harvest your wBAN earned as well!</q-tooltip>
 					</q-btn>
 				</q-btn-group>
 			</q-card-actions>
