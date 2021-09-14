@@ -47,7 +47,7 @@ const POLYGON_MAINNET: Network = {
 		decimals: 18
 	},
 	minimumNeededForWrap: 0.001,
-	rpcUrls: ['https://rpc-mainnet.matic.network'],
+	rpcUrls: ['https://polygon-rpc.com'],
 	blockExplorerUrls: ['https://explorer.matic.network/']
 }
 
