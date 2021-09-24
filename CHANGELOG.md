@@ -1,3 +1,7 @@
+# v1.1.3
+## Improvements
+- Binance Smart Chain bridge use the same codebase now!
+
 # v1.1.2
 ## Improvements
 - Change default Matic RPC endpoint #71
