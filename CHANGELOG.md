@@ -1,3 +1,6 @@
+# v1.1.4
+- Introduced new wBAN-BUSD farm on PancakeSwap
+
 # v1.1.3
 ## Improvements
 - Binance Smart Chain bridge use the same codebase now!

@@ -221,7 +221,7 @@ export default class ChainInfo extends Vue {
 	}
 
 	swap() {
-		if (ChainInfo.DEX_URL === 'https://app.sushi.com') {
+		if (ChainInfo.DEX_URL === 'https://app.sushi.com' || ChainInfo.DEX_URL === 'https://pancakeswap.finance') {
 			openURL(`${ChainInfo.DEX_URL}/swap?inputCurrency=${this.wbanAddress}`)
 		} else {
 			openURL(`${ChainInfo.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)

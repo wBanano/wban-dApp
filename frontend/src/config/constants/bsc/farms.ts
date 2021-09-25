@@ -20,7 +20,7 @@ const farms: FarmConfig[] = [
 	},
 	{
 		pid: 1,
-		lpSymbol: 'wBAN-BNB',
+		lpSymbol: 'wBAN-BNB (ApeSwap)',
 		lpAddresses: {
 			dev: '0x4A80A8FF323beA03f16647647B53C2d4B619a31F',
 			staging: '0xD9061825D488Fb96C49CE94320c3b1d2CAF5aeA6',
@@ -36,7 +36,7 @@ const farms: FarmConfig[] = [
 	},
 	{
 		pid: 2,
-		lpSymbol: 'wBAN-BUSD',
+		lpSymbol: 'wBAN-BUSD (ApeSwap)',
 		lpAddresses: {
 			dev: '0x006554C403C65E07837ec5a6059D318AD3F901a1',
 			staging: '0x66E98B0271756f1DC960cbD84690C07A554f4bcc',
@@ -48,6 +48,22 @@ const farms: FarmConfig[] = [
 			dev: 1622142747,
 			staging: 1622323076,
 			production: 1632582000
+		}
+	},
+	{
+		pid: 3,
+		lpSymbol: 'wBAN-BUSD (PancakeSwap)',
+		lpAddresses: {
+			dev: '',
+			staging: '',
+			production: '0x351A295AfBAB020Bc7eedcB7fd5A823c01A95Fda'
+		},
+		token: tokens.wban,
+		quoteToken: tokens.busd,
+		endTime: {
+			dev: 0,
+			staging: 0,
+			production: 1635001200
 		}
 	}
 ]

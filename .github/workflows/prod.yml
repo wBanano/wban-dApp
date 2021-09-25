@@ -18,7 +18,7 @@ jobs:
           yarn
           yarn test
   build-and-deploy-frontend-for-bsc:
-    name: dAPP
+    name: BSC
     runs-on: ubuntu-latest
     env:
       working-directory: frontend
@@ -49,7 +49,7 @@ jobs:
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: frontend/dist
   build-and-deploy-frontend-for-polygon:
-    name: dAPP
+    name: Polygon
     runs-on: ubuntu-latest
     env:
       working-directory: frontend

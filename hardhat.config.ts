@@ -124,7 +124,7 @@ task("benis:alloc-pool", "Change allocation points")
 		await benis.set(pid, alloc, true, { gasLimit: 300_000 });
 	});
 
-task("benis:create-pool", "Deploy Benis")
+task("benis:create-pool", "Create a farm")
 	.addParam("benis", "The address of Benis smart-contract", '', types.string)
 	.addParam("lp", "The address of the LP token or wBAN", '', types.string)
 	.addParam("alloc", "The allocation points for this pool", 1000, types.int)
