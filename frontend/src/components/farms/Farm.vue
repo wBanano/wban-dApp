@@ -55,10 +55,17 @@
 				<div class="rewards">
 					<div class="title">wBAN Earned<span v-if="isFinished()"> (withdraw to harvest)</span></div>
 					<div class="row items-center">
-						<div class="col-8">
-							{{ farmData.userPendingRewards | bnToTwoDecimalsString }} ({{
-								farmData.userPendingRewards | bnToExactString | banPrice
-							}})
+						<div class="col-8 row items-center q-gutter-xs">
+							<div class="col-auto">
+								{{ farmData.userPendingRewards | bnToTwoDecimalsString }} ({{
+									farmData.userPendingRewards | bnToExactString | banPrice
+								}})
+							</div>
+							<div class="col-auto">
+								<q-btn @click="reload" flat dense icon="refresh" color="primary" size="sm">
+									<q-tooltip>Refresh</q-tooltip>
+								</q-btn>
+							</div>
 						</div>
 						<div class="col-4 text-right">
 							<q-btn
