@@ -164,6 +164,9 @@
 						editable
 					/>
 				</q-card-section>
+				<q-card-section>
+					When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!
+				</q-card-section>
 				<q-card-actions align="right">
 					<q-btn flat label="Cancel" color="primary" v-close-popup />
 					<q-btn @click="supply" color="primary" text-color="secondary" label="Supply" v-close-popup />
@@ -183,6 +186,9 @@
 						:amount.sync="lpAmount"
 						editable
 					/>
+				</q-card-section>
+				<q-card-section>
+					When withdrawing your liquidity tokens from the farm, you harvest your wBAN earned as well!
 				</q-card-section>
 				<q-card-actions align="right">
 					<q-btn flat label="Cancel" color="primary" v-close-popup />
