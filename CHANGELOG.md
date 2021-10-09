@@ -1,3 +1,9 @@
+# v1.1.5
+## Changes
+- Polygon SushiSwap wBAN-WETH farms extended to 2021-11-06 3PM UTC.
+## Improvements
+- Copied harvest info to supply/withdrawal dialogs #72
+
 # v1.1.4
 - Introduced new wBAN-BUSD farm on PancakeSwap
 
