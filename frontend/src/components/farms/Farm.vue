@@ -40,9 +40,12 @@
 		</q-card>
 		<q-card v-if="!isLoading" class="farm-card fit text-white">
 			<q-item>
-				<q-item-section>
-					<q-item-label>
-						<div class="text-bold">{{ value.lpSymbol }}</div>
+				<q-item-section class="farm-name">
+					<q-item-label class="text-bold">
+						{{ value.lpSymbol }}
+						<q-btn @click="reload" avatar flat dense icon="refresh" color="primary" size="xs" class="reload">
+							<q-tooltip>Refresh</q-tooltip>
+						</q-btn>
 					</q-item-label>
 				</q-item-section>
 				<q-item-section side>
@@ -55,10 +58,12 @@
 				<div class="rewards">
 					<div class="title">wBAN Earned<span v-if="isFinished()"> (withdraw to harvest)</span></div>
 					<div class="row items-center">
-						<div class="col-8">
-							{{ farmData.userPendingRewards | bnToTwoDecimalsString }} ({{
-								farmData.userPendingRewards | bnToExactString | banPrice
-							}})
+						<div class="col-8 row items-center q-gutter-xs">
+							<div class="col-auto">
+								{{ farmData.userPendingRewards | bnToTwoDecimalsString }} ({{
+									farmData.userPendingRewards | bnToExactString | banPrice
+								}})
+							</div>
 						</div>
 						<div class="col-4 text-right">
 							<q-btn
@@ -418,6 +423,8 @@ export default class Farm extends Vue {
 
 .farm-card
 	background-color: lighten($secondary, 10%) !important
+	.farm-name .reload
+		margin-top: -4px
 	.farm-actions, .farm-details
 		background-color: lighten($secondary, 10%) !important
 	.rewards
