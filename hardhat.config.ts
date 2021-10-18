@@ -137,10 +137,10 @@ task("benis:create-pool", "Create a farm")
 	});
 
 const config: HardhatUserConfig = {
-  solidity: {
+	solidity: {
 		compilers: [
-      {
-        version: "0.8.4",
+			{
+				version: "0.8.4",
 				settings: {
 					metadata: {
 						bytecodeHash: "none"
@@ -155,48 +155,48 @@ const config: HardhatUserConfig = {
 						}
 					}
 				},
-      },
-      {
-        version: "0.6.12",
-        settings: {
-					optimizer: {
-						enabled: true,
-						runs: 200
-					},
-				}
-      },
+			},
 			{
-        version: "0.5.16",
-        settings: {
+				version: "0.6.12",
+				settings: {
 					optimizer: {
 						enabled: true,
 						runs: 200
 					},
 				}
-      }
-    ],
+			},
+			{
+				version: "0.5.16",
+				settings: {
+					optimizer: {
+						enabled: true,
+						runs: 200
+					},
+				}
+			}
+		],
 		overrides: {
-      "@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol": {
-        version: "0.6.12"
-      },
+			"@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol": {
+				version: "0.6.12"
+			},
 			"@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol": {
-        version: "0.6.12"
-      },
+				version: "0.6.12"
+			},
 			"@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol": {
-        version: "0.6.12"
-      },
+				version: "0.6.12"
+			},
 			"@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol": {
-        version: "0.6.12"
-      },
+				version: "0.6.12"
+			},
 			"@pancakeswap/pancake-swap-lib/contracts/utils/Address.sol": {
-        version: "0.6.12"
-      },
+				version: "0.6.12"
+			},
 			"@pancakeswap/pancake-swap-lib/contracts/GSN/Context.sol": {
-        version: "0.6.12"
-      }
-    }
+				version: "0.6.12"
+			}
+		}
 	},
-  networks: {
+  	networks: {
 		hardhat: {
 			accounts
 		},
@@ -206,33 +206,38 @@ const config: HardhatUserConfig = {
 			throwOnCallFailures: false
 		},
 		*/
-    localhost: {
-      url: 'http://localhost:8545',
-      accounts,
-    },
+		localhost: {
+			url: 'http://localhost:8545',
+			accounts,
+		},
+		rinkeby: {
+			gasMultiplier: 2,
+			accounts,
+			url: "https://rinkeby.infura.io/v3/2b0e677e7a214cc9855fa34e2e1f682e"
+		},
 		bscdevnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-      accounts,
+			accounts,
 			chainId: 97,
 		},
 		bsctestnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-      accounts,
+			accounts,
 			chainId: 97,
 		},
 		bsc: {
 			url: 'https://bsc-dataseed.binance.org/',
-      accounts,
+			accounts,
 			chainId: 56,
 		},
 		polygontestnet: {
 			url: 'https://rpc-mumbai.maticvigil.com',
-      accounts,
+			accounts,
 			chainId: 80001,
 		},
 		polygon: {
 			url: 'https://rpc-mainnet.maticvigil.com',
-      accounts,
+			accounts,
 			chainId: 137,
 			gasPrice: 24000000000,
 		}
@@ -252,18 +257,18 @@ const config: HardhatUserConfig = {
 		runOnCompile: true,
 	},
 	preprocess: {
-    eachLine: removeConsoleLog((bre) => bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'),
+		eachLine: removeConsoleLog((bre) => bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'),
 	},
 	gasReporter: {
-    currency: 'EUR',
+		currency: 'EUR',
 		gasPrice: 20, // in gwei
 		// coinmarketcap: ,
-  },
+	},
 	etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: process.env.ETHERSCAN_API_KEY
-  },
+		// Your API key for Etherscan
+		// Obtain one at https://etherscan.io/
+		apiKey: process.env.ETHERSCAN_API_KEY
+	},
 	abiExporter: {
 		path: './abi',
 		clear: true,
