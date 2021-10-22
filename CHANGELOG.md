@@ -1,3 +1,7 @@
+# v1.1.6
+## Changes
+- BSC PancakeSwap wBAN-BUSD farm extended to 2021-11-20 3PM UTC.
+
 # v1.1.5
 ## Changes
 - Polygon SushiSwap wBAN-WETH farms extended to 2021-11-06 3PM UTC.
