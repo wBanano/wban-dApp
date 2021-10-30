@@ -1,3 +1,7 @@
+# v1.1.7
+## New Features
+- New page allowing to blend airdropped NFTs
+
 # v1.1.6
 ## Changes
 - BSC PancakeSwap wBAN-BUSD farm extended to 2021-11-20 3PM UTC.
