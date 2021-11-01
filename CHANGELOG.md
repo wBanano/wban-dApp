@@ -1,3 +1,7 @@
+# v1.1.8
+## Improvements
+- Improve QR-Code scans by Kalium #74
+
 # v1.1.7
 ## New Features
 - New page allowing to blend airdropped NFTs
