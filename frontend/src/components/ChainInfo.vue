@@ -69,7 +69,7 @@
 							</p>
 						</div>
 						<div class="gt-sm col-md-3 text-right">
-							<q-icon :name="banWalletForDepositsQRCode" size="128px" />
+							<q-icon :name="banWalletForDepositsQRCode" size="200px" />
 						</div>
 					</div>
 				</q-card-section>
@@ -271,6 +271,7 @@ export default class ChainInfo extends Vue {
 		await this.reloadBalances()
 		try {
 			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
+				scale: 6,
 				color: {
 					dark: '2A2A2E',
 					light: 'FBDD11'

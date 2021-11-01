@@ -40,7 +40,7 @@
 							<q-separator vertical inset class="q-mx-lg" />
 							<div class="column items-center" v-if="$q.platform.is.desktop">
 								<div class="text-subtitle1 q-mt-md q-mb-xs">Tip me at:</div>
-								<q-icon :name="banWalletForTipsQRCode" size="128px" />
+								<q-icon :name="banWalletForTipsQRCode" size="200px" />
 							</div>
 							<q-btn v-if="$q.platform.is.mobile" color="primary" text-color="secondary" label="OK" v-close-popup />
 						</div>
@@ -225,6 +225,7 @@ export default class MainLayout extends Vue {
 		await prices.loadPrices()
 		try {
 			const qrcode: string = await QRCode.toDataURL(this.banWalletForTips, {
+				scale: 6,
 				color: {
 					dark: '2A2A2E',
 					light: 'FBDD11'

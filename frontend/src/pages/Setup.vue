@@ -65,7 +65,7 @@
 								or scan QRCode:
 							</div>
 							<div class="col">
-								<q-icon :name="banWalletForDepositsQRCode" size="128px" />
+								<q-icon :name="banWalletForDepositsQRCode" size="200px" />
 								<br />
 							</div>
 						</div>
@@ -192,6 +192,7 @@ export default class SetupPage extends Vue {
 		this.banAddress = ban.banAddress
 		try {
 			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
+				scale: 6,
 				color: {
 					dark: '2A2A2E',
 					light: 'FBDD11'
