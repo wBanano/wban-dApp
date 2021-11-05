@@ -1,3 +1,13 @@
+# v1.2.0
+## Fixes
+- New wrapping algorithm
+## Changes
+- Polygon SushiSwap wBAN-WETH farm extended to 2021-12-04 3PM UTC.
+
+# v1.1.9
+## Fixes
+- Temporary switch to CoinGecko prices until the bridge is back online.
+
 # v1.1.8
 ## Improvements
 - Improve QR-Code scans by Kalium #74
