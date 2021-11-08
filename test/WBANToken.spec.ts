@@ -35,7 +35,7 @@ describe('WBANToken', () => {
 			const user1_interaction = token.connect(user1);
 			const uuid = BigNumber.from(await user1.getTransactionCount());
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 
 			await expect(user1_interaction.mintWithReceipt(user1.address, ethers.utils.parseEther("1"), uuid, sig.v, sig.r, sig.s))
 				.to.be.revertedWith("Signature invalid");
@@ -45,12 +45,22 @@ describe('WBANToken', () => {
 				.to.be.revertedWith("Signature invalid");
 		});
 
+		it('Refuses to mint if the amount and uuid parameters are swapped', async () => {
+			const user1_interaction = token.connect(user1);
+			const wBanToMint = ethers.utils.parseEther("123");
+			const uuid = ethers.utils.parseEther("456");
+
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
+			await expect(user1_interaction.mintWithReceipt(user1.address, uuid, wBanToMint, sig.v, sig.r, sig.s))
+				.to.be.revertedWith("Signature invalid");
+		});
+
 		it('Refuses to mint if the receipt was not signed by the owner', async () => {
 			const wBanToMint = ethers.utils.parseEther("123");
 			const user1_interaction = token.connect(user1);
 			const uuid = BigNumber.from(await user1.getTransactionCount());
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(user1, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(user1, user1.address, wBanToMint, uuid, await owner.getChainId());
 
 			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 				.to.be.revertedWith("Signature invalid");
@@ -63,9 +73,19 @@ describe('WBANToken', () => {
 
 			await token.pause();
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 				.to.be.revertedWith("BEP20Pausable: transfer paused");
+		});
+
+		it('Refuses to mint if using wrong chain ID', async () => {
+			const wBanToMint = ethers.utils.parseEther("123");
+			const user1_interaction = token.connect(user1);
+			const uuid = BigNumber.from(await user1.getTransactionCount());
+
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, 98765);
+			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
+				.to.be.revertedWith("Signature invalid");
 		});
 
 		it('Mints wBAN if the receipt matches parameters', async () => {
@@ -73,7 +93,7 @@ describe('WBANToken', () => {
 			const user1_interaction = token.connect(user1);
 			const uuid = BigNumber.from(await user1.getTransactionCount());
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 				.to.emit(token, 'Transfer')
 				.withArgs("0x0000000000000000000000000000000000000000", user1.address, wBanToMint);
@@ -82,6 +102,8 @@ describe('WBANToken', () => {
 			expect(await token.balanceOf(user1.address)).to.equal(wBanToMint);
 			// make sure total supply was changed
 			expect(await token.totalSupply()).to.equal(wBanToMint);
+			// make sure the associated receipt is consumed
+			expect(await token.isReceiptConsumed(user1.address, wBanToMint, uuid)).to.be.true;
 		});
 
 	});
@@ -94,7 +116,7 @@ describe('WBANToken', () => {
 			const user1_interaction = token.connect(user1);
 			const uuid = BigNumber.from(await user1.getTransactionCount());
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 				.to.emit(token, 'Transfer')
 				.withArgs("0x0000000000000000000000000000000000000000", user1.address, wBanToMint);
@@ -112,7 +134,7 @@ describe('WBANToken', () => {
 			const user1_interaction = token.connect(user1);
 			const uuid = BigNumber.from(await user1.getTransactionCount());
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 				.to.emit(token, 'Transfer')
 				.withArgs("0x0000000000000000000000000000000000000000", user1.address, wBanToMint);
@@ -130,7 +152,7 @@ describe('WBANToken', () => {
 			const user1_interaction = token.connect(user1);
 			const uuid = BigNumber.from(await user1.getTransactionCount());
 
-			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+			const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 			await expect(user1_interaction.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 				.to.emit(token, 'Transfer')
 				.withArgs("0x0000000000000000000000000000000000000000", user1.address, wBanToMint);

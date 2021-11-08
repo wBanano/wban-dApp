@@ -72,7 +72,7 @@ describe('Benis', () => {
 		const wBanRewards = rewardsPerSecond.mul(ONE_WEEK);
 		console.debug(`Minting ${ethers.utils.formatEther(wBanRewards)} wBAN for rewards over 7 days`);
 		const uuid = BigNumber.from(await owner.getTransactionCount());
-		const sig: Signature = await ReceiptsUtil.createReceipt(owner, rewarder.address, wBanRewards, uuid);
+		const sig: Signature = await ReceiptsUtil.createReceipt(owner, rewarder.address, wBanRewards, uuid, await owner.getChainId());
 		const rewarder_wban = wban.connect(rewarder);
 		await expect(rewarder_wban.mintWithReceipt(rewarder.address, wBanRewards, uuid, sig.v, sig.r, sig.s))
 			.to.emit(wban, 'Transfer')
@@ -86,7 +86,7 @@ describe('Benis', () => {
 		const wBanToMint = ethers.utils.parseEther("10000");
 		const user1_wban = wban.connect(user1);
 		const uuid = BigNumber.from(await user1.getTransactionCount());
-		const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid);
+		const sig: Signature = await ReceiptsUtil.createReceipt(owner, user1.address, wBanToMint, uuid, await owner.getChainId());
 		await expect(user1_wban.mintWithReceipt(user1.address, wBanToMint, uuid, sig.v, sig.r, sig.s))
 			.to.emit(wban, 'Transfer')
 			.withArgs("0x0000000000000000000000000000000000000000", user1.address, wBanToMint);

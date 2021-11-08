@@ -59,7 +59,33 @@ task("wban:deploy", "Deploy wBAN")
 				address: implementationContract.address
 			});
 		}
-	})
+	});
+
+task("wban:upgrade", "Upgrade wBAN")
+	.addParam("contract", "The smart-contract address", '', types.string)
+	.setAction(async (args, hre) => {
+		const accounts = await hre.ethers.getSigners();
+		console.info(`Upgrading wBAN from owner "${accounts[0].address}"`)
+
+		// deploy upgradeable contract
+		const WBANToken = await hre.ethers.getContractFactory("WBANToken");
+		const wban = WBANToken.attach(args.contract);
+		await hre.upgrades.upgradeProxy(wban, WBANToken);
+
+		// peer into OpenZeppelin manifest to extract the implementation address
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
+		const manifest = await ozUpgradesManifestClient.read();
+		const bytecodeHash = hashBytecodeWithoutMetadata(WBANToken.bytecode);
+		const implementationContract = manifest.impls[bytecodeHash];
+
+		// verify implementation contract
+		if (implementationContract) {
+			console.log(`wBAN impl deployed at: "${implementationContract.address}"`);
+			await hre.run("verify:verify", {
+				address: implementationContract.address
+			});
+		}
+	});
 
 task("wban:pause", "Pause wBAN -- [EMERGENCY ONLY]")
 	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
@@ -196,7 +222,7 @@ const config: HardhatUserConfig = {
 			}
 		}
 	},
-  	networks: {
+  networks: {
 		hardhat: {
 			accounts
 		},
@@ -230,16 +256,26 @@ const config: HardhatUserConfig = {
 			accounts,
 			chainId: 56,
 		},
+		/*
 		polygontestnet: {
 			url: 'https://rpc-mumbai.maticvigil.com',
 			accounts,
 			chainId: 80001,
 		},
-		polygon: {
-			url: 'https://rpc-mainnet.maticvigil.com',
+		*/
+		polygontestnet: {
+			url: 'https://speedy-nodes-nyc.moralis.io/3fb1dabd5bbe4112064814a2/polygon/mumbai',
 			accounts,
+			chainId: 80001,
+			gasMultiplier: 1.1,
+			gasPrice: 45000000000,
+		},
+		polygon: {
+			url: 'https://polygon-rpc.com',
+      accounts,
 			chainId: 137,
-			gasPrice: 24000000000,
+			gasMultiplier: 1.1,
+			gasPrice: 60000000000,
 		}
 	},
 	typechain: {

@@ -7,6 +7,11 @@ import '@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol';
 
+/**
+ * wBAN token with mints and burns controlled by the bridge.
+ *
+ * @author Wrap That Potassium <wrap-that-potassium@protonmail.com>
+ */
 contract WBANToken is ERC20PausableUpgradeable, AccessControlUpgradeable, OwnableUpgradeable {
     using SafeMathUpgradeable for uint256;
 
@@ -35,7 +40,7 @@ contract WBANToken is ERC20PausableUpgradeable, AccessControlUpgradeable, Ownabl
     ) public {
         require(!paused(), 'BEP20Pausable: transfer paused');
 
-        bytes32 payloadHash = keccak256(abi.encode(recipient, amount, uuid));
+        bytes32 payloadHash = keccak256(abi.encode(recipient, amount, uuid, getChainID()));
         bytes32 hash = keccak256(abi.encodePacked('\x19Ethereum Signed Message:\n32', payloadHash));
 
         require(!_receipts[hash], 'Receipt already used');
@@ -46,14 +51,25 @@ contract WBANToken is ERC20PausableUpgradeable, AccessControlUpgradeable, Ownabl
         _receipts[hash] = true;
     }
 
+    /**
+     * Check if a receipt is already claimed/consumed, meaning the associated wBAN were minted.
+     *
+     * @dev this code checks for both old and new signatures, using/forgetting the `chainId`
+     */
     function isReceiptConsumed(
         address recipient,
         uint256 amount,
         uint256 uuid
     ) external view returns (bool) {
-        bytes32 payloadHash = keccak256(abi.encode(recipient, amount, uuid));
+        // new format fixing the vulnerability
+        bytes32 payloadHash = keccak256(abi.encode(recipient, amount, uuid, getChainID()));
         bytes32 hash = keccak256(abi.encodePacked('\x19Ethereum Signed Message:\n32', payloadHash));
-        return _receipts[hash];
+
+        // old format vulnerable to replay from one chain against another
+        bytes32 oldPayloadHash = keccak256(abi.encode(recipient, amount, uuid));
+        bytes32 oldHash = keccak256(abi.encodePacked('\x19Ethereum Signed Message:\n32', oldPayloadHash));
+
+        return _receipts[hash] || _receipts[oldHash];
     }
 
     function swapToBan(string memory bananoAddress, uint256 amount) external {
@@ -89,6 +105,14 @@ contract WBANToken is ERC20PausableUpgradeable, AccessControlUpgradeable, Ownabl
     ) internal view {
         address signer = ecrecover(hash, v, r, s);
         require(hasRole(MINTER_ROLE, signer), 'Signature invalid');
+    }
+
+    function getChainID() internal view returns (uint256) {
+        uint256 id;
+        assembly {
+            id := chainid()
+        }
+        return id;
     }
 
     /**
