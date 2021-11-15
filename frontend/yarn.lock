@@ -2876,9 +2876,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001173:
-  version "1.0.30001239"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001239.tgz"
-  integrity sha512-cyBkXJDMeI4wthy8xJ2FvDU6+0dtcZSJW3voUF8+e9f1bBeuvyZfc3PNbkOETyhbR+dGCPzn9E7MA3iwzusOhQ==
+  version "1.0.30001283"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001283.tgz"
+  integrity sha512-9RoKo841j1GQFSJz/nCXOj0sD7tHBtlowjYlrqIUS812x9/emfBLBt6IyMz1zIaYc/eRL8Cs6HPUVi2Hzq4sIg==
 
 case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.3.0"
@@ -10693,10 +10693,10 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
-wban-nfts@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/wban-nfts/-/wban-nfts-0.2.0.tgz#59726ffdcd3c133525c4f8d18fe47ead595527fa"
-  integrity sha512-tcz85CV/c/bQnj0GswZINXORwCybJZuqOWDp0GZRBbvBwVTGdoWB2Pg9LjGjMfe+wlQtnd06rH9tbU0vQ7TINw==
+wban-nfts@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/wban-nfts/-/wban-nfts-0.3.0.tgz#6465d0e702b5ddd7c4cbd66ec51c9aa724cf9b82"
+  integrity sha512-M78UN4NarKW8FtfnW6FeoO1k+tdhBVZxI3z3Rn1jf6mGP/WaZNjKg5UJt0KTvTA8Xb1Ksd4WQI35N6Kf5xvUMA==
 
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"

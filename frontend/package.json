@@ -23,7 +23,7 @@
     "vuex": "^3.4.0",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^1.0.1",
-    "wban-nfts": "^0.2.0"
+    "wban-nfts": "^0.3.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.2.4",

@@ -7,8 +7,10 @@ import { WBANLPRewards, WBANLPRewards__factory } from 'wban-nfts'
 import NftData from '@/models/nft/NftData'
 import LoadBalanceRequest from '@/models/nft/LoadBalanceRequest'
 import ClaimGoldenRequest from '@/models/nft/ClaimGoldenRequest'
-import { ethers } from 'ethers'
+import { ClaimAirdroppedNftRequest } from '@/models/nft/ClaimableNft'
+import { ethers, Signature } from 'ethers'
 import { fetchJson } from 'ethers/lib/utils'
+import NftDialogs from '@/utils/NftDialogs'
 
 @Module({
 	namespaced: true,
@@ -21,7 +23,7 @@ class NftModule extends VuexModule {
 	private _uri = ''
 	private _nfts: Map<string, NftData> = new Map()
 
-	static NFT_IDS = [0, 1, 2, 10, 11, 12, 20, 21, 22, 100, 101, 102]
+	static NFT_IDS = [900, 901, 0, 1, 2, 10, 11, 12, 20, 21, 22, 100, 101, 102]
 	static NFT_REWARDS_CONTRACT: string = process.env.VUE_APP_NFT_REWARDS_CONTRACT || ''
 	static NFT_OPENSEA_URL: string = process.env.VUE_APP_NFT_OPENSEA_URL || ''
 
@@ -81,7 +83,22 @@ class NftModule extends VuexModule {
 		console.debug(`in loadNFTs for ${account}`)
 		// load NFT balances
 		const balances = await contract.balanceOfBatch(
-			[account, account, account, account, account, account, account, account, account, account, account, account],
+			[
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account,
+				account
+			],
 			NftModule.NFT_IDS
 		)
 		console.debug(`Balances of ${account} are ${balances}`)
@@ -121,6 +138,44 @@ class NftModule extends VuexModule {
 		await this.loadNFTs({
 			contract,
 			account
+		})
+	}
+
+	@Action
+	async claimAirdroppedNFTs(request: ClaimAirdroppedNftRequest) {
+		const { contract, claimableNfts } = request
+		return new Promise((resolve, reject) => {
+			// open dialog asking yes/no for claims + numbers
+			NftDialogs.startNftClaims(claimableNfts.length).onOk(async () => {
+				for (let i = 0; i < claimableNfts.length; i++) {
+					console.info(`Claiming NFT ${i + 1} of ${claimableNfts.length}`)
+					const claim = claimableNfts[i]
+					// update dialog -- loop over each NFT to claim
+					NftDialogs.claimNft(i + 1, claimableNfts.length)
+					// claim NFT
+					try {
+						console.debug(`Claiming NFT ${claim.nft} with ${claim.quantity} quantity`)
+						const signature: Signature = ethers.utils.splitSignature(claim.receipt)
+						const txn = await contract.claimFromReceipt(
+							claim.address,
+							claim.nft,
+							claim.quantity,
+							'0x00',
+							claim.uuid,
+							signature.v,
+							signature.r,
+							signature.s
+						)
+						await txn.wait()
+					} catch (err) {
+						console.error('Claiming NFT aborted', err)
+						reject(undefined)
+					}
+				}
+				// close dialog
+				NftDialogs.endClaimNft()
+				resolve(undefined)
+			})
 		})
 	}
 }

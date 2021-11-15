@@ -7,6 +7,14 @@
 					Home
 				</h6>
 			</div>
+			<div v-if="claimableNfts.length > 0" class="row justify-center q-pb-md">
+				<q-banner inline-actions rounded class="bg-primary text-secondary">
+					<span>You have been airdropped and you can claim some free NFTs.</span>
+					<template v-slot:action>
+						<q-btn flat label="Grab them" @click="claimAirdroppedNFTs()" />
+					</template>
+				</q-banner>
+			</div>
 			<div v-if="missingForGolden !== 0" class="row justify-center q-pb-md">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
 					<span>You are missing only a single NFT in order to claim a golden one.</span>
@@ -111,10 +119,13 @@ import { namespace } from 'vuex-class'
 import NftReward from '@/components/nft/NftReward.vue'
 import NftPicture from '@/components/nft/NftPicture.vue'
 import NftData from '@/models/nft/NftData'
+import { ClaimableNft } from '@/models/nft/ClaimableNft'
 import nft from '@/store/modules/nft'
 import accounts from '@/store/modules/accounts'
 import { WBANLPRewards } from 'wban-nfts'
+import { asyncFilter } from '@/utils/AsyncUtils'
 import { ethers } from 'ethers'
+import axios, { AxiosResponse } from 'axios'
 import { openURL } from 'quasar'
 
 const nftStore = namespace('nft')
@@ -142,6 +153,10 @@ export default class NftRewardsPage extends Vue {
 	missingForGolden = 0
 	claimableForGolden = -1
 	promptForGoldenNFT = false
+
+	claimableNfts: Array<ClaimableNft> = []
+
+	static NFT_CLAIMABLE_ENDPOINT: string = process.env.VUE_APP_NFT_CLAIMABLE_ENDPOINT || ''
 
 	buy(nftId: number) {
 		openURL(`${NftReward.NFT_OPENSEA_URL}/${NftReward.NFT_REWARDS_CONTRACT}/${nftId}`)
@@ -182,7 +197,6 @@ export default class NftRewardsPage extends Vue {
 				balances.set(Number.parseInt(key), nft.balance)
 			}
 		})
-		console.debug(balances)
 		const levels = [0, 1, 2]
 		const missingNfts = levels
 			.map(level => {
@@ -237,9 +251,16 @@ export default class NftRewardsPage extends Vue {
 		})
 	}
 
-	async mounted() {
-		await accounts.initWalletProvider()
-		await nft.initContract(this.provider)
+	async claimAirdroppedNFTs() {
+		await nft.claimAirdroppedNFTs({
+			contract: this.rewardsContract,
+			claimableNfts: this.claimableNfts
+		})
+		console.debug(`Reloading balances`)
+		await this.reload()
+	}
+
+	async reload() {
 		await nft.loadNFTs({
 			contract: this.rewardsContract,
 			account: this.activeAccount
@@ -247,6 +268,28 @@ export default class NftRewardsPage extends Vue {
 		// check if there is a single NFT missing in order to claim a golden one
 		this.missingForGolden = this.computeFirstMissingNft()
 		this.claimableForGolden = this.canClaimGoldenNft()
+		const response: AxiosResponse<Array<ClaimableNft>> = await axios.request({
+			url: `${NftRewardsPage.NFT_CLAIMABLE_ENDPOINT}?address=${this.activeAccount}`
+		})
+		// filter consumed receipts
+		this.claimableNfts = await asyncFilter(response.data, async (claim: ClaimableNft) => {
+			const consumed = await this.rewardsContract.isReceiptConsumed(
+				this.activeAccount,
+				claim.nft,
+				claim.quantity,
+				'0x00',
+				claim.uuid
+			)
+			console.debug(`${claim.nft} consumed? ${consumed}`)
+			return !consumed
+		})
+		console.info(`${this.claimableNfts.length} different NFT claimable`)
+	}
+
+	async mounted() {
+		await accounts.initWalletProvider()
+		await nft.initContract(this.provider)
+		await this.reload()
 	}
 }
 </script>
