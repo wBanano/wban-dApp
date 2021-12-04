@@ -1,3 +1,7 @@
+# v1.2.1
+## Changes
+- Polygon SushiSwap wBAN-WETH farms extended to 2022-01-01 3PM UTC.
+
 # v1.2.0
 ## Fixes
 - New wrapping algorithm
