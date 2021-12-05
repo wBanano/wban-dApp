@@ -1,3 +1,7 @@
+# v1.2.2
+## New Features
+- New page allowing to claim airdropped NFTs
+
 # v1.2.1
 ## Changes
 - Polygon SushiSwap wBAN-WETH farms extended to 2022-01-01 3PM UTC.
