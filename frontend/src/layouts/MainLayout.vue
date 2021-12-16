@@ -266,9 +266,9 @@ export default class MainLayout extends Vue {
 	background-color: $positive !important
 
 .q-drawer
-	background-color: $primary
+	background-color: $secondary
 	.q-item
-		color: $secondary
+		color: $primary
 	.q-separator
 		background-color: darken($primary, 15%)
 		margin-left: -10px
