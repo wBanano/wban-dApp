@@ -1,3 +1,12 @@
+# v1.2.3
+## Improvements
+- Refresh button on farm #73
+## Fixes
+- Links to Polygon explorer don't work #78
+- Action names not visible on mobile #76
+## Changes
+- Polygon SushiSwap wBAN-WETH farms extended to 2022-01-29 3PM UTC.
+
 # v1.2.2
 ## New Features
 - New page allowing to claim airdropped NFTs
