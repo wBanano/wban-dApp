@@ -48,7 +48,7 @@ const POLYGON_MAINNET: Network = {
 	},
 	minimumNeededForWrap: 0.001,
 	rpcUrls: ['https://polygon-rpc.com'],
-	blockExplorerUrls: ['https://explorer.matic.network/']
+	blockExplorerUrls: ['https://polygonscan.com']
 }
 
 const POLYGON_TESTNET: Network = {
