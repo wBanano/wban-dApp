@@ -1,11 +1,47 @@
 <template>
 	<div class="q-pa-md">
-		<q-banner inline-actions rounded class="bg-primary text-secondary text-center">
+		<div v-if="choiceMade === ''" class="q-pa-md row items-start justify-center q-gutter-md">
+			<q-card class="coming-from-card" flat>
+				<q-card-section class="currency-logo">
+					<img :src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)" width="128px" />
+				</q-card-section>
+				<q-card-section>
+					<div class="title">I'm new to wBAN</div>
+					<div class="subtitle">I have Banano and want to start learning DeFi with wBAN.</div>
+				</q-card-section>
+				<q-card-section class="text-center">
+					<q-btn
+						@click="
+							choiceMade = 'BAN'
+							step = 3
+						"
+						color="primary"
+						text-color="black"
+						label="Continue"
+					/>
+				</q-card-section>
+			</q-card>
+			<q-card class="coming-from-card" flat>
+				<q-card-section class="currency-logo">
+					<img :src="require('@/assets/banano-logo-big.png')" />
+				</q-card-section>
+				<q-card-section>
+					<div class="title">I'm new to Banano</div>
+					<div class="subtitle">I have wBAN and want to use the Banano network.</div>
+				</q-card-section>
+				<q-card-section class="text-center">
+					<q-btn @click="choiceMade = 'wBAN'" color="primary" text-color="black" label="Continue" />
+				</q-card-section>
+			</q-card>
+		</div>
+
+		<q-banner v-if="choiceMade !== ''" inline-actions rounded class="bg-primary text-secondary text-center">
 			<p>We need to verify your BAN address!</p>
-			<p>This step is important as it ensures that no one else than you can claim wBAN.</p>
+			<p>This step is important as it ensures that you control the BAN wallet interacting with wBAN.</p>
 		</q-banner>
 
 		<q-stepper
+			v-if="choiceMade !== ''"
 			v-model="step"
 			vertical
 			:active-color="activeColor"
@@ -13,8 +49,53 @@
 			done-color="positive"
 			animated
 		>
-			<q-step :name="1" title="Banano Address" icon="settings" :done="step > 1">
-				<q-form @submit="step = 2">
+			<q-step :name="1" title="Setup a Banano Wallet" icon="settings" :done="step > 1" v-if="choiceMade === 'wBAN'">
+				For the best user experience, we recommend using the Kalium mobile wallet:
+				<div class="row">
+					<div class="col-auto">
+						<a href="https://itunes.apple.com/us/app/kalium/id1449623414?ls=1&mt=8" target="_blank">
+							<img :src="require('@/assets/kalium-appstore.svg')" class="kalium" />
+						</a>
+					</div>
+					<div class="col-auto offset-1">
+						<a href="https://play.google.com/store/apps/details?id=com.banano.kaliumwallet&hl=en_US" target="_blank">
+							<img :src="require('@/assets/kalium-playstore.svg')" class="kalium" />
+						</a>
+					</div>
+				</div>
+				<p>
+					If you prefer to use a web wallet, then
+					<a href="https://vault.banano.cc/" target="_blank" style="color: $primary">BananoVault</a> web wallet is the
+					next best choice.
+				</p>
+				<p>
+					Click "Continue" button when you have created your wallet.
+				</p>
+				<q-stepper-navigation>
+					<q-btn @click="step = 2" color="primary" text-color="black" label="Continue" />
+				</q-stepper-navigation>
+			</q-step>
+
+			<q-step :name="2" title="Get some free Banano" icon="settings" :done="step > 2" v-if="choiceMade === 'wBAN'">
+				<p>You need some BAN to do the bridge setup.</p>
+				<div>
+					Banano has multiple faucets giving some BAN for free, like:
+					<ul>
+						<li><a href="https://getbanano.cc" target="_blank">iMalFect's Banano Faucet</a></li>
+						<li><a href="https://faucet.prussia.dev" target="_blank">Prussia's Banano Faucet</a></li>
+					</ul>
+				</div>
+				<p>
+					Click "Continue" button when you have at least 0.01 BAN in your wallet.
+				</p>
+				<q-stepper-navigation>
+					<q-btn @click="step = 3" color="primary" text-color="black" label="Continue" />
+					<q-btn @click="step = 1" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
+				</q-stepper-navigation>
+			</q-step>
+
+			<q-step :name="3" title="Banano Address" icon="settings" :done="step > 3">
+				<q-form @submit="step = 4">
 					<q-input
 						v-model="banAddress"
 						label="Banano Address"
@@ -29,11 +110,19 @@
 					/>
 					<q-stepper-navigation>
 						<q-btn type="submit" color="primary" text-color="black" label="Continue" />
+						<q-btn
+							@click="step = 2"
+							:text-color="activeColor"
+							label="Back"
+							flat
+							class="q-ml-sm"
+							v-if="choiceMade === 'wBAN'"
+						/>
 					</q-stepper-navigation>
 				</q-form>
 			</q-step>
 
-			<q-step :name="2" title="Claim your address" icon="create_new_folder" :done="step > 2">
+			<q-step :name="4" title="Claim your address" icon="create_new_folder" :done="step > 4">
 				<p>
 					Please verify that your Banano address is indeed <span class="banano-address">{{ banAddress }}</span>
 				</p>
@@ -42,11 +131,11 @@
 				</p>
 				<q-stepper-navigation>
 					<q-btn @click="claimBananoWallet" color="primary" text-color="secondary" label="Continue" />
-					<q-btn @click="step = 1" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
+					<q-btn @click="step = 3" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 
-			<q-step :name="3" title="Make a Banano deposit" icon="add_comment">
+			<q-step :name="5" title="Make a Banano deposit" icon="add_comment">
 				<div class="row">
 					<div class="col-8 col-xs-12">
 						<p>
@@ -71,13 +160,15 @@
 							</div>
 						</div>
 						<p>
-							Although any amount would be fine, let's be safe and only transfer 1 BAN.
+							Although any amount would be fine, let's be safe and transfer 0.01 BAN.
+							<br />
+							Don't worry this deposit will be available for withdrawal if you want so.
 						</p>
 					</div>
 				</div>
 				<q-stepper-navigation>
 					<q-btn @click="checkBananoDeposit" color="primary" text-color="secondary" label="Check Deposit" />
-					<q-btn @click="step = 2" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
+					<q-btn @click="step = 4" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 		</q-stepper>
@@ -103,6 +194,7 @@ const backendStore = namespace('backend')
 
 @Component
 export default class SetupPage extends Vue {
+	public choiceMade = ''
 	public banAddress = ''
 	public step = 1
 
@@ -154,10 +246,10 @@ export default class SetupPage extends Vue {
 		})
 		switch (result) {
 			case ClaimResponse.Ok:
-				this.step = 3
+				this.step = 5
 				break
 			case ClaimResponse.AlreadyDone:
-				// skip step 3 and redirect to home if claim was previously done
+				// skip step 5 and redirect to home if claim was previously done
 				ban.setBanAccount(this.banAddress)
 				router.push('/')
 				break
@@ -224,6 +316,31 @@ export default class SetupPage extends Vue {
 
 <style lang="sass">
 @import '@/styles/quasar.sass'
+
+.coming-from-card
+	background-color: lighten($secondary, 5%)
+	max-width: 400px
+	padding: 20px
+	.currency-logo
+		padding-bottom: 0
+		img
+			width: 128px
+	.title
+		text-align: left
+		font-weight: bold
+		font-size: 2rem
+	.subtitle
+		color: darken(white, 20%)
+		font-size: 1.3rem
+
+.kalium
+	background-color: $secondary
+	padding: 10px
+	border-radius: 5px
+
+.q-stepper
+	a:link, a:visited
+		color: $primary
 
 .q-stepper--dark
 	background-color: lighten($secondary, 10%) !important
