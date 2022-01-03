@@ -291,6 +291,8 @@ class BackendModule extends VuexModule {
 						return ClaimResponse.Ok
 					case 202:
 						return ClaimResponse.AlreadyDone
+					case 403:
+						return ClaimResponse.Blacklisted
 					default:
 						return ClaimResponse.Error
 				}
@@ -300,6 +302,12 @@ class BackendModule extends VuexModule {
 				if (err.response) {
 					const response: AxiosResponse = err.response
 					switch (response.status) {
+						case 403:
+							this.context.commit(
+								'setErrorMessage',
+								`BAN address "${banAddress}" is blacklisted. Use another BAN address.`
+							)
+							break
 						case 409:
 							this.context.commit('setErrorMessage', response.data.message)
 							break

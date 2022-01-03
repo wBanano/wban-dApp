@@ -23,7 +23,8 @@
 						autofocus
 						:rules="[
 							val => !!val || 'Banano address is required',
-							val => val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || 'Invalid Banano address'
+							val => val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || 'Invalid Banano address',
+							val => this.isNotBlacklisted(val) || 'Blacklisted address'
 						]"
 					/>
 					<q-stepper-navigation>
@@ -95,6 +96,7 @@ import QRCode from 'qrcode'
 import { ClaimResponse } from '@/models/ClaimResponse'
 import { copyToClipboard } from 'quasar'
 import { Network, Networks } from '@/utils/Networks'
+import { BananoWalletsBlacklist, BlacklistRecord } from '@/utils/BananoWalletsBlacklist'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -132,6 +134,16 @@ export default class SetupPage extends Vue {
 
 	get inactiveColor(): string {
 		return '#9e9e9e'
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	async isNotBlacklisted(banWallet: string): Promise<any> {
+		const result: BlacklistRecord | undefined = await BananoWalletsBlacklist.isBlacklisted(banWallet)
+		if (result !== undefined) {
+			return 'Do not use an exchange or faucet address.'
+		} else {
+			return true
+		}
 	}
 
 	async claimBananoWallet() {

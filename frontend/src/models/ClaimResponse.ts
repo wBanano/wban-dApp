@@ -1,5 +1,6 @@
 enum ClaimResponse {
 	Ok,
+	Blacklisted,
 	AlreadyDone,
 	InvalidSignature,
 	Error
