@@ -119,7 +119,7 @@ import SettingsMenu from '@/components/SettingsMenu.vue'
 import { blockchainAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
 import { openURL } from 'quasar'
-import { Network, Networks } from '@/utils/Networks'
+import { Network, Networks, BSC_MAINNET, POLYGON_MAINNET } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -136,7 +136,7 @@ const contractsStore = namespace('contracts')
 })
 export default class MainLayout extends Vue {
 	@accountsStore.State('chainId')
-	chainId!: string
+	chainId!: number
 
 	@accountsStore.State('chainName')
 	chainName!: string
@@ -182,7 +182,7 @@ export default class MainLayout extends Vue {
 	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 
 	get isMainnet() {
-		return this.chainId === '0x38' || this.chainId == '0x89'
+		return this.chainId === BSC_MAINNET.chainIdNumber || this.chainId === POLYGON_MAINNET.chainIdNumber
 	}
 
 	get drawerEnabled() {
@@ -219,7 +219,6 @@ export default class MainLayout extends Vue {
 
 	async created() {
 		await accounts.initWalletProvider()
-		await accounts.ethereumListener()
 		await ban.init()
 		await backend.initBackend(this.banAddress)
 		await prices.loadPrices()

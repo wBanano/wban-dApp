@@ -10,9 +10,8 @@ import { removeConsoleLog } from 'hardhat-preprocessor';
 import "hardhat-log-remover";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
-import "hardhat-gas-reporter";
+// import "hardhat-gas-reporter";
 import "@nomiclabs/hardhat-etherscan";
-import "@tenderly/hardhat-tenderly";
 import "@openzeppelin/hardhat-upgrades";
 import {
   hashBytecodeWithoutMetadata,
@@ -272,7 +271,7 @@ const config: HardhatUserConfig = {
 		},
 		polygon: {
 			url: 'https://polygon-rpc.com',
-      		accounts,
+			accounts,
 			chainId: 137,
 			gasMultiplier: 1.1,
 			gasPrice: 60000000000,
@@ -295,11 +294,13 @@ const config: HardhatUserConfig = {
 	preprocess: {
 		eachLine: removeConsoleLog((bre) => bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'),
 	},
+	/*
 	gasReporter: {
 		currency: 'EUR',
 		gasPrice: 20, // in gwei
 		// coinmarketcap: ,
 	},
+	*/
 	etherscan: {
 		// Your API key for Etherscan
 		// Obtain one at https://etherscan.io/

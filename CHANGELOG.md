@@ -1,3 +1,10 @@
+# v1.3.0
+## Improvements
+- New Web3 wallet provider #82
+- Support for WalletConnect #77
+- New setup page #81
+- Blacklist known BAN wallets used by exchanges #80
+
 # v1.2.3
 ## Improvements
 - Refresh button on farm #73

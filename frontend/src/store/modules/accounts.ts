@@ -3,11 +3,9 @@ import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 import { BigNumber, ethers } from 'ethers'
-// @ts-ignore
-import WalletProvider from '@libertypie/wallet-provider'
+import Onboard from 'bnc-onboard'
 import MetaMask from '@/utils/MetaMask'
 import { Networks } from '@/utils/Networks'
-import Dialogs from '@/utils/Dialogs'
 
 @Module({
 	namespaced: true,
@@ -18,16 +16,16 @@ import Dialogs from '@/utils/Dialogs'
 class AccountsModule extends VuexModule {
 	public activeAccount: string | null = null
 	public activeBalance = 0
-	public chainId: string | null = null
+	public chainId: number | null = null
 	public chainName: string | null = null
 	public blockExplorerUrl: string | null = null
 	private _providerEthers: ethers.providers.JsonRpcProvider | null = null // this is "provider" for Ethers.js
 	public isConnected = false
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private _walletProvider: any
+	private _onboard: any
 	private _isInitialized = false
 
-	static EXPECTED_CHAIN_ID: string = process.env.VUE_APP_EXPECTED_CHAIN_ID || ''
+	static EXPECTED_CHAIN_ID = Number.parseInt(process.env.VUE_APP_EXPECTED_CHAIN_ID || '')
 
 	get isUserConnected() {
 		return this.isConnected
@@ -43,7 +41,7 @@ class AccountsModule extends VuexModule {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	get walletProvider(): any {
-		return this._walletProvider
+		return this._onboard
 	}
 
 	get isInitialized(): boolean {
@@ -52,11 +50,13 @@ class AccountsModule extends VuexModule {
 
 	@Mutation
 	async disconnectWallet() {
+		window.localStorage.removeItem('selectedWallet')
+		const onboard = this.context.getters.walletProvider
+		onboard.walletReset()
 		this.activeAccount = null
 		this.activeBalance = 0
 		this._providerEthers = null
-		await this._walletProvider.removeProviderCache()
-		this._walletProvider = null
+		this._onboard = null
 
 		window.location.href = '../' // redirect to the Main page
 	}
@@ -72,7 +72,7 @@ class AccountsModule extends VuexModule {
 	}
 
 	@Mutation
-	setChainData(chainId: string) {
+	setChainData(chainId: number) {
 		this.chainId = chainId
 		const networks = new Networks()
 		const networkData = networks.getNetworkData(chainId)
@@ -98,8 +98,8 @@ class AccountsModule extends VuexModule {
 
 	@Mutation
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setWalletProvider(walletProvider: any) {
-		this._walletProvider = walletProvider
+	setWalletProvider(onboard: any) {
+		this._onboard = onboard
 	}
 
 	@Mutation
@@ -112,20 +112,70 @@ class AccountsModule extends VuexModule {
 		console.debug('in initWalletProvider')
 
 		if (!this._isInitialized) {
-			const walletProvider = new WalletProvider({
-				modalTitle: 'Choose your wallet',
-				cacheProvider: true,
-				providers: {
-					// eslint-disable-next-line @typescript-eslint/camelcase
-					web3_wallets: {
-						// eslint-disable-next-line @typescript-eslint/camelcase
-						connect_text: 'Connect with Metamask or Brave'
+			const networks = new Networks()
+			const RPC_URL = networks.getExpectedNetworkData().rpcUrls[0]
+			// common wallets for all networks
+			const defaultWallets = [
+				{ walletName: 'metamask', preferred: true },
+				{ walletName: 'trust', preferred: true, rpcUrl: RPC_URL },
+				{ walletName: 'coinbase' },
+				{
+					walletName: 'walletConnect',
+					rpc: {
+						'56': networks.getNetworkData(56)?.rpcUrls[0] || '',
+						'97': networks.getNetworkData(97)?.rpcUrls[0] || '',
+						'137': networks.getNetworkData(137)?.rpcUrls[0] || '',
+						'80001': networks.getNetworkData(80001)?.rpcUrls[0] || ''
 					}
 				},
-				debug: true
+				{ walletName: 'opera' },
+				{ walletName: 'operaTouch' }
+			]
+			const wallets = defaultWallets
+			// only allow Binance Chain Wallet for BSC networks
+			if (AccountsModule.EXPECTED_CHAIN_ID === 56 || AccountsModule.EXPECTED_CHAIN_ID === 97) {
+				wallets.push({ walletName: 'binance', preferred: true })
+			}
+			const onboard = Onboard({
+				dappId: process.env.VUE_APP_ONBOARD_DAPP_ID || '',
+				networkId: AccountsModule.EXPECTED_CHAIN_ID,
+				networkName: networks.getNetworkData(AccountsModule.EXPECTED_CHAIN_ID)?.chainName,
+				darkMode: true,
+				hideBranding: true,
+				walletSelect: {
+					description: 'Please select a wallet to connect to wBAN bridge:',
+					wallets
+				},
+				walletCheck: [
+					{ checkName: 'derivationPath' },
+					{ checkName: 'accounts' },
+					{ checkName: 'connect' },
+					{ checkName: 'network' }
+				],
+				subscriptions: {
+					address: async address => {
+						console.debug(`Address: ${address}`)
+						this.context.commit('setActiveAccount', address)
+					},
+					network: async network => {
+						console.debug(`Blockchain network: ${ethers.utils.hexlify(network)}`)
+						// create network if missing
+						if (network !== AccountsModule.EXPECTED_CHAIN_ID) {
+							await MetaMask.addCustomNetwork(AccountsModule.EXPECTED_CHAIN_ID)
+						}
+					},
+					wallet: wallet => {
+						if (wallet !== undefined) {
+							this.context.commit('setEthersProvider', wallet.provider)
+							// store the selected wallet name to be retrieved next time the app loads
+							if (wallet.name) {
+								window.localStorage.setItem('selectedWallet', wallet.name)
+							}
+						}
+					}
+				}
 			})
-
-			this.context.commit('setWalletProvider', walletProvider)
+			this.context.commit('setWalletProvider', onboard)
 
 			// if the user is flagged as already connected, automatically connect back to Web3Modal
 			if (localStorage.getItem('isConnected') === 'true') {
@@ -143,36 +193,25 @@ class AccountsModule extends VuexModule {
 	async connectWalletProvider() {
 		console.debug('in connectWalletProvider')
 
-		const connectStatus = await this.context.getters.walletProvider.connect()
-		if (connectStatus.isError()) {
-			console.error("Can't connect to web3")
-			Dialogs.showWeb3Error()
-			return
+		const onboard = this.context.getters.walletProvider
+
+		// get the selectedWallet value from local storage
+		const previouslySelectedWallet = window.localStorage.getItem('selectedWallet')
+		// call wallet select with that value if it exists
+		if (previouslySelectedWallet != null) {
+			await onboard.walletSelect(previouslySelectedWallet)
+		} else {
+			await onboard.walletSelect()
 		}
+		const readyToTransact = await onboard.walletCheck()
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const resultInfo: any = connectStatus.getData()
-		const provider = resultInfo.provider
-
-		if (resultInfo.chainId == AccountsModule.EXPECTED_CHAIN_ID) {
+		if (readyToTransact) {
+			const currentState = onboard.getState()
 			this.context.commit('setIsConnected', true)
-			this.context.commit('setActiveAccount', resultInfo.account)
-			this.context.commit('setChainData', resultInfo.chainId)
-			this.context.commit('setEthersProvider', provider)
+			this.context.commit('setChainData', currentState.appNetworkId)
 			this.context.dispatch('fetchActiveBalance')
 		} else {
 			this.context.commit('setIsConnected', false)
-			MetaMask.switchToProperNetwork().onOk(async () => {
-				await MetaMask.addCustomNetwork(AccountsModule.EXPECTED_CHAIN_ID)
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const resultInfo: any = connectStatus.getData()
-				const provider = resultInfo.provider
-				this.context.commit('setIsConnected', true)
-				this.context.commit('setActiveAccount', resultInfo.account)
-				this.context.commit('setChainData', resultInfo.chainId)
-				this.context.commit('setEthersProvider', provider)
-				this.context.dispatch('fetchActiveBalance')
-			})
 		}
 	}
 
@@ -181,28 +220,6 @@ class AccountsModule extends VuexModule {
 		console.debug('in disconnectWalletProvider')
 		this.context.commit('disconnectWallet')
 		this.context.commit('setIsConnected', false)
-	}
-
-	@Action
-	async ethereumListener() {
-		console.debug('in ethereumListener')
-		if (this.isConnected) {
-			// @ts-ignore
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			window.ethereum.on('accountsChanged', (accounts: any) => {
-				if (this.isConnected) {
-					this.context.commit('setActiveAccount', accounts[0])
-					// this.context.commit('setEthersProvider', this.providerW3m)
-					this.context.dispatch('fetchActiveBalance')
-				}
-			})
-			// @ts-ignore
-			window.ethereum.on('chainChanged', (chainId: string) => {
-				this.context.commit('setChainData', chainId)
-				// this.context.commit('setEthersProvider', this.providerW3m)
-				this.context.dispatch('fetchActiveBalance')
-			})
-		}
 	}
 
 	@Action

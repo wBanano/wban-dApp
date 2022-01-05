@@ -1,6 +1,7 @@
 const BSC_MAINNET: Network = {
 	network: 'bsc',
 	chainId: '0x38',
+	chainIdNumber: 56,
 	chainName: 'Binance Smart Chain',
 	chainUrl: 'https://www.binance.org/en/smartChain',
 	nativeCurrency: {
@@ -20,6 +21,7 @@ const BSC_MAINNET: Network = {
 const BSC_TESTNET: Network = {
 	network: 'bsc',
 	chainId: '0x61',
+	chainIdNumber: 97,
 	chainName: 'Binance Smart Chain Testnet',
 	chainUrl: 'https://www.binance.org/en/smartChain',
 	nativeCurrency: {
@@ -39,6 +41,7 @@ const BSC_TESTNET: Network = {
 const POLYGON_MAINNET: Network = {
 	network: 'polygon',
 	chainId: '0x89',
+	chainIdNumber: 137,
 	chainName: 'Polygon',
 	chainUrl: 'https://polygon.technology',
 	nativeCurrency: {
@@ -54,6 +57,7 @@ const POLYGON_MAINNET: Network = {
 const POLYGON_TESTNET: Network = {
 	network: 'polygon',
 	chainId: '0x13881',
+	chainIdNumber: 80001,
 	chainName: 'Polygon Testnet',
 	chainUrl: 'https://polygon.technology',
 	nativeCurrency: {
@@ -67,19 +71,19 @@ const POLYGON_TESTNET: Network = {
 }
 
 class Networks {
-	private networks: Map<string, Network>
+	private networks: Map<number, Network>
 
-	static EXPECTED_CHAIN_ID: string = process.env.VUE_APP_EXPECTED_CHAIN_ID || ''
+	static EXPECTED_CHAIN_ID = Number.parseInt(process.env.VUE_APP_EXPECTED_CHAIN_ID || '')
 
 	constructor() {
 		this.networks = new Map()
-		this.networks.set('0x38', BSC_MAINNET)
-		this.networks.set('0x61', BSC_TESTNET)
-		this.networks.set('0x89', POLYGON_MAINNET)
-		this.networks.set('0x13881', POLYGON_TESTNET)
+		this.networks.set(BSC_MAINNET.chainIdNumber, BSC_MAINNET)
+		this.networks.set(BSC_TESTNET.chainIdNumber, BSC_TESTNET)
+		this.networks.set(POLYGON_MAINNET.chainIdNumber, POLYGON_MAINNET)
+		this.networks.set(POLYGON_TESTNET.chainIdNumber, POLYGON_TESTNET)
 	}
 
-	public getNetworkData(chainId: string): Network | undefined {
+	public getNetworkData(chainId: number): Network | undefined {
 		return this.networks.get(chainId)
 	}
 
@@ -96,6 +100,7 @@ class Networks {
 interface Network {
 	network: 'bsc' | 'polygon'
 	chainId: string
+	chainIdNumber: number
 	chainName: string
 	chainUrl: string
 	nativeCurrency: {
@@ -109,4 +114,4 @@ interface Network {
 	iconUrls?: string[] // Currently ignored.
 }
 
-export { Networks, Network }
+export { Networks, Network, BSC_MAINNET, POLYGON_MAINNET }

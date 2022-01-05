@@ -1,5 +1,4 @@
 import { Networks } from '@/utils/Networks'
-import { Dialog } from 'quasar'
 import TokensUtil from './TokensUtil'
 
 class MetaMask {
@@ -36,21 +35,7 @@ class MetaMask {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static switchToProperNetwork(): any {
-		return Dialog.create({
-			dark: true,
-			title: 'Wrong Network',
-			message: `Please connect to appropriate network.`,
-			ok: {
-				label: 'Switch network',
-				color: 'primary',
-				'text-color': 'secondary'
-			}
-		})
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static async addCustomNetwork(chainId: string): Promise<any> {
+	static async addCustomNetwork(chainId: number): Promise<any> {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const ethereum = (window as any).ethereum
 		const network = new Networks().getNetworkData(chainId)

@@ -276,9 +276,11 @@ class BackendModule extends VuexModule {
 		const { banAddress, blockchainAddress, provider } = claimRequest
 		console.info(`About to claim ${banAddress} with ${blockchainAddress}`)
 		if (provider && banAddress && blockchainAddress) {
-			const sig = await provider.getSigner().signMessage(`I hereby claim that the BAN address "${banAddress}" is mine`)
-			// call the backend for the swap
 			try {
+				const sig = await provider
+					.getSigner()
+					.signMessage(`I hereby claim that the BAN address "${banAddress}" is mine`)
+				// call the backend for the swap
 				const resp = await axios.post(`${BackendModule.BACKEND_URL}/claim`, {
 					banAddress,
 					blockchainAddress,
