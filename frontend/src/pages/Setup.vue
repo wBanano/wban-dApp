@@ -52,12 +52,12 @@
 			<q-step :name="1" title="Setup a Banano Wallet" icon="settings" :done="step > 1" v-if="choiceMade === 'wBAN'">
 				For the best user experience, we recommend using the Kalium mobile wallet:
 				<div class="row">
-					<div class="col-auto">
+					<div class="col-sm-auto col-xs-12">
 						<a href="https://itunes.apple.com/us/app/kalium/id1449623414?ls=1&mt=8" target="_blank">
 							<img :src="require('@/assets/kalium-appstore.svg')" class="kalium" />
 						</a>
 					</div>
-					<div class="col-auto offset-1">
+					<div class="col-sm-auto col-xs-12 offset-sm-1">
 						<a href="https://play.google.com/store/apps/details?id=com.banano.kaliumwallet&hl=en_US" target="_blank">
 							<img :src="require('@/assets/kalium-playstore.svg')" class="kalium" />
 						</a>

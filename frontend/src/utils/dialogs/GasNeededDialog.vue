@@ -87,7 +87,10 @@ export default class GasNeededDialog extends Vue {
 @import '@/styles/quasar.sass'
 
 .q-dialog-plugin
-	min-width: 500px
 	a
 		color: $primary
+
+@media (min-width: $breakpoint-sm-min)
+	.q-dialog-plugin
+		min-width: 500px
 </style>
