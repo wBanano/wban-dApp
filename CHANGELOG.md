@@ -4,6 +4,8 @@
 - Support for WalletConnect #77
 - New setup page #81
 - Blacklist known BAN wallets used by exchanges #80
+## Bugs
+- Welcome page - layout issue for BSC #84
 
 # v1.2.3
 ## Improvements

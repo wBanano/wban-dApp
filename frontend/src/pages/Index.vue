@@ -18,7 +18,7 @@
 						<q-icon name="add_circle" color="positive" size="2em" />
 					</div>
 					<div class="col">
-						<img :src="require(`@/assets/${expectedBlockchain.network}-logo.svg`)" />
+						<img :src="require(`@/assets/${expectedBlockchain.network}-logo.svg`)" width="150px" />
 					</div>
 					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold;">
 						=
