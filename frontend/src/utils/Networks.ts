@@ -49,7 +49,7 @@ const POLYGON_MAINNET: Network = {
 		symbol: 'MATIC',
 		decimals: 18
 	},
-	minimumNeededForWrap: 0.001,
+	minimumNeededForWrap: 0.02,
 	rpcUrls: ['https://polygon-rpc.com'],
 	blockExplorerUrls: ['https://polygonscan.com']
 }
