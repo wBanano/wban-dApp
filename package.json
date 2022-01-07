@@ -58,7 +58,7 @@
 		"prettier-plugin-solidity": "^1.0.0-beta.10",
 		"rimraf": "^3.0.0",
 		"solhint": "^3.3.6",
-		"solidity-coverage": "v0.8.0-beta.0",
+		"solidity-coverage": "0.7.17",
 		"ts-generator": "^0.1.1",
 		"ts-node": "^10.2.1",
 		"typechain": "^6.1.0",

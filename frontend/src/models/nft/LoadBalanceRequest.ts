@@ -1,4 +1,4 @@
-import { WBANLPRewards } from "wban-nfts"
+import { WBANLPRewards } from 'wban-nfts'
 
 type LoadBalanceRequest = {
 	contract: WBANLPRewards
