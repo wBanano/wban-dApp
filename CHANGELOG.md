@@ -3,6 +3,7 @@
 - New Web3 wallet provider #82
 - Support for WalletConnect #77
 - New setup page #81
+- Display warning about blockchain fees is (un)wrapping up to 100 BAN #87
 - Blacklist known BAN wallets used by exchanges #80
 - Add Discord & Telegram links #25
 - Add a link to GitBook documentation #47

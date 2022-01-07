@@ -134,6 +134,14 @@ export default class SwapInput extends Vue {
 			console.info(`Crypto balance is: ${this.cryptoBalance} ${this.expectedBlockchain.nativeCurrency.symbol}`)
 		}
 
+		// warn use if wrapping/unwrapping less than 100 BAN/wBAN
+		if (Number.parseFloat(this.amount) <= 100) {
+			const proceed = await Dialogs.showLowAmountToWrapWarning(Number.parseFloat(this.amount))
+			if (!proceed) {
+				return
+			}
+		}
+
 		if (accounts.activeAccount && this.amount) {
 			this.swapInProgress = true
 			if (this.fromCurrency === 'BAN') {

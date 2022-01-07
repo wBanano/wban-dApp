@@ -1,6 +1,7 @@
 import { Dialog, Notify, openURL } from 'quasar'
 import Web3ErrorDialog from '@/utils/dialogs/Web3ErrorDialog.vue'
 import GasNeededDialog from '@/utils/dialogs/GasNeededDialog.vue'
+import LowAmountToWrapDialog from '@/utils/dialogs/LowAmountToWrapDialog.vue'
 
 class Dialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -319,6 +320,14 @@ class Dialogs {
 		Dialog.create({
 			component: GasNeededDialog,
 			balance: balance
+		})
+	}
+
+	static showLowAmountToWrapWarning(amount: number): Promise<boolean> {
+		return new Promise(resolve => {
+			Dialog.create({ component: LowAmountToWrapDialog, amount: amount })
+				.onOk(() => resolve(true))
+				.onCancel(() => resolve(false))
 		})
 	}
 }
