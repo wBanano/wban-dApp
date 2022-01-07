@@ -27,7 +27,7 @@
 					<q-tooltip>{{ activeAccount }}</q-tooltip>
 				</q-btn>
 				<q-btn flat round dense @click="openNftPage()">
-					<q-icon name="img:opensea.svg" />
+					<q-icon name="img:nft.svg" />
 					<q-tooltip>wBAN NFTs</q-tooltip>
 				</q-btn>
 				<q-btn flat round dense icon="redeem" class="text-primary">
