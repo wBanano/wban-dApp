@@ -26,6 +26,10 @@
 				>
 					<q-tooltip>{{ activeAccount }}</q-tooltip>
 				</q-btn>
+				<q-btn flat round dense @click="openNftPage()">
+					<q-icon name="img:opensea.svg" />
+					<q-tooltip>wBAN NFTs</q-tooltip>
+				</q-btn>
 				<q-btn flat round dense icon="redeem" class="text-primary">
 					<q-menu id="donations">
 						<div class="row no-wrap q-pa-md">
@@ -275,6 +279,10 @@ export default class MainLayout extends Vue {
 
 	openGithub(version: string) {
 		openURL(`https://github.com/wBanano/wban-dApp/releases/tag/v${version}`)
+	}
+
+	openNftPage() {
+		router.push('/nft')
 	}
 }
 </script>
