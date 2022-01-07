@@ -100,8 +100,29 @@
 			</q-banner>
 			<router-view />
 		</q-page-container>
-		<q-footer @click="openGithub(appVersion)" class="bg-footer">
-			<q-icon name="img:github-logo.svg" size="20px" style="margin-top: -3px" /> wBAN v{{ appVersion }}
+		<q-footer class="bg-footer">
+			<span @click="openGithub(appVersion)">
+				<q-icon name="fab fa-github" size="20px" style="margin-top: -3px" />
+				wBAN v{{ appVersion }}
+			</span>
+			-
+			<span class="social">
+				<a href="https://wrap-that-potassium.gitbook.io/wban/introduction/quick-tour" target="_blank">
+					<q-icon name="live_help" color="white" size="24px" style="margin-top: -3px">
+						<q-tooltip>Documentation</q-tooltip>
+					</q-icon>
+				</a>
+				<a href="https://chat.banano.cc" target="_blank">
+					<q-icon name="fab fa-discord" color="white" size="20px" style="margin-top: -3px">
+						<q-tooltip>Discord</q-tooltip>
+					</q-icon>
+				</a>
+				<a href="https://t.me/banano_official" target="_blank">
+					<q-icon name="fab fa-telegram" color="white" size="20px" style="margin-top: -3px">
+						<q-tooltip>Telegram</q-tooltip>
+					</q-icon>
+				</a>
+			</span>
 		</q-footer>
 	</q-layout>
 </template>
@@ -279,6 +300,10 @@ export default class MainLayout extends Vue {
 	font-size: 1em
 	padding-top: 5px
 	padding-bottom: 5px
+.social a
+	font-weight: normal
+	&:link, &:visited
+		margin-right: 5px
 
 //.q-page
 //	background-color: $positive

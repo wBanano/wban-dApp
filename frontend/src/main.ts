@@ -5,6 +5,7 @@ import store from './store'
 import { Quasar, Notify, Dialog } from 'quasar'
 import './styles/quasar.sass'
 import '@quasar/extras/material-icons/material-icons.css'
+import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
 
 Vue.config.productionTip = false
 

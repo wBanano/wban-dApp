@@ -4,6 +4,8 @@
 - Support for WalletConnect #77
 - New setup page #81
 - Blacklist known BAN wallets used by exchanges #80
+- Add Discord & Telegram links #25
+- Add a link to GitBook documentation #47
 ## Bugs
 - Welcome page - layout issue for BSC #84
 - Missing crypto dialog not entirely visible on mobile #86
