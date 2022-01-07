@@ -53,5 +53,10 @@
 	},
 	"alias": {
 		"web3": false
+	},
+	"resolutions": {
+		"handlebars": "^4.7.7",
+		"underscore": "^1.12.1",
+		"node-fetch": "^2.6.1"
 	}
 }
