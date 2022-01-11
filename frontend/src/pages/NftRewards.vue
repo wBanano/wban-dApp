@@ -58,36 +58,36 @@
 							<q-avatar square class="fit">
 								<img :src="pictureOf(claimableForGolden)" />
 								<q-badge floating outline transparent color="secondary">
-									<q-icon name="whatshot" color="red" style="font-size: 15rem;" />
+									<q-icon name="whatshot" color="red" style="font-size: 15rem" />
 								</q-badge>
 							</q-avatar>
 						</div>
 						<div class="col-1 text-center">
-							<q-icon name="add_circle_outline" color="positive" style="font-size: 2rem;" />
+							<q-icon name="add_circle_outline" color="positive" style="font-size: 2rem" />
 						</div>
 						<div class="col-3">
 							<q-avatar square class="fit">
 								<img :src="pictureOf(10 + claimableForGolden)" />
 								<q-badge floating outline transparent color="secondary">
-									<q-icon name="whatshot" color="red" style="font-size: 15rem;" />
+									<q-icon name="whatshot" color="red" style="font-size: 15rem" />
 								</q-badge>
 							</q-avatar>
 						</div>
 						<div class="col-1 text-center">
-							<q-icon name="add_circle_outline" color="positive" style="font-size: 2rem;" />
+							<q-icon name="add_circle_outline" color="positive" style="font-size: 2rem" />
 						</div>
 						<div class="col-3">
 							<q-avatar square class="fit">
 								<img :src="pictureOf(20 + claimableForGolden)" />
 								<q-badge floating outline transparent color="secondary">
-									<q-icon name="whatshot" color="red" style="font-size: 15rem;" />
+									<q-icon name="whatshot" color="red" style="font-size: 15rem" />
 								</q-badge>
 							</q-avatar>
 						</div>
 					</div>
 					<div class="row justify-center" style="padding-top: 20px">
 						<div class="col-auto">
-							<q-icon name="arrow_downward" color="positive" style="font-size: 2rem;" />
+							<q-icon name="arrow_downward" color="positive" style="font-size: 2rem" />
 						</div>
 					</div>
 					<div class="row justify-center">
@@ -118,7 +118,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import NftReward from '@/components/nft/NftReward.vue'
 import NftPicture from '@/components/nft/NftPicture.vue'
-import NftData from '@/models/nft/NftData'
+import { NftData } from '@/models/nft/NftData'
 import { ClaimableNft } from '@/models/nft/ClaimableNft'
 import nft from '@/store/modules/nft'
 import accounts from '@/store/modules/accounts'
@@ -134,8 +134,8 @@ const accountsStore = namespace('accounts')
 @Component({
 	components: {
 		NftReward,
-		NftPicture
-	}
+		NftPicture,
+	},
 })
 export default class NftRewardsPage extends Vue {
 	@nftStore.Getter('nfts')
@@ -199,7 +199,7 @@ export default class NftRewardsPage extends Vue {
 		})
 		const levels = [0, 1, 2]
 		const missingNfts = levels
-			.map(level => {
+			.map((level) => {
 				// missing wBAN staking NFT?
 				if (!balances.has(0 + level) && balances.has(10 + level) && balances.has(20 + level)) {
 					return 0 + level
@@ -213,7 +213,7 @@ export default class NftRewardsPage extends Vue {
 					return 20 + level
 				}
 			})
-			.filter(level => level !== undefined)
+			.filter((level) => level !== undefined)
 		if (missingNfts.length > 0 && missingNfts[0] !== undefined) {
 			return missingNfts[0]
 		} else {
@@ -234,7 +234,7 @@ export default class NftRewardsPage extends Vue {
 		})
 		const levels = [0, 1, 2]
 		const claimableLevels = levels.filter(
-			level => balances.has(0 + level) && balances.has(10 + level) && balances.has(20 + level)
+			(level) => balances.has(0 + level) && balances.has(10 + level) && balances.has(20 + level)
 		)
 		if (claimableLevels.length > 0 && claimableLevels[0] !== undefined) {
 			return claimableLevels[0]
@@ -247,14 +247,14 @@ export default class NftRewardsPage extends Vue {
 		await nft.claimGoldenNFT({
 			contract: this.rewardsContract,
 			account: this.activeAccount,
-			level: level
+			level: level,
 		})
 	}
 
 	async claimAirdroppedNFTs() {
 		await nft.claimAirdroppedNFTs({
 			contract: this.rewardsContract,
-			claimableNfts: this.claimableNfts
+			claimableNfts: this.claimableNfts,
 		})
 		console.debug(`Reloading balances`)
 		await this.reload()
@@ -263,13 +263,13 @@ export default class NftRewardsPage extends Vue {
 	async reload() {
 		await nft.loadNFTs({
 			contract: this.rewardsContract,
-			account: this.activeAccount
+			account: this.activeAccount,
 		})
 		// check if there is a single NFT missing in order to claim a golden one
 		this.missingForGolden = this.computeFirstMissingNft()
 		this.claimableForGolden = this.canClaimGoldenNft()
 		const response: AxiosResponse<Array<ClaimableNft>> = await axios.request({
-			url: `${NftRewardsPage.NFT_CLAIMABLE_ENDPOINT}?address=${this.activeAccount}`
+			url: `${NftRewardsPage.NFT_CLAIMABLE_ENDPOINT}?address=${this.activeAccount}`,
 		})
 		// filter consumed receipts
 		this.claimableNfts = await asyncFilter(response.data, async (claim: ClaimableNft) => {

@@ -6,4 +6,4 @@ type NftData = {
 	balance: number
 }
 
-export default NftData
+export { NftData }

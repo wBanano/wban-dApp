@@ -2,20 +2,19 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
 import { ethers, BigNumber, Signature } from 'ethers'
-import SwapToBanRequest from '@/models/SwapToBanRequest'
-import LoadBalancesFromContractRequest from '@/models/LoadBalancesFromContractRequest'
+import { SwapToBanRequest } from '@/models/SwapToBanRequest'
+import { LoadBalancesFromContractRequest } from '@/models/LoadBalancesFromContractRequest'
 import Dialogs from '@/utils/Dialogs'
-import SwapToWBanRequest from '@/models/SwapToWBanRequest'
+import { SwapToWBanRequest } from '@/models/SwapToWBanRequest'
 import TokensUtil from '@/utils/TokensUtil'
 
 @Module({
 	namespaced: true,
 	name: 'contracts',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class ContractsModule extends VuexModule {
 	private _wBanToken: WBANToken | null = null
@@ -70,7 +69,6 @@ class ContractsModule extends VuexModule {
 		if (provider) {
 			// do not initialize contract if this was done earlier
 			if (!this._wBanToken) {
-				// eslint-disable-next-line @typescript-eslint/camelcase
 				const contract = WBANToken__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
 				this.context.commit('setWBANToken', contract)
 

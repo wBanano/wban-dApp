@@ -4,4 +4,4 @@ type SwapResponse = {
 	link: string
 }
 
-export default SwapResponse
+export { SwapResponse }

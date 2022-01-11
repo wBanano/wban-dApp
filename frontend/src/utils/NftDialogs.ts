@@ -12,7 +12,7 @@ class NftDialogs {
 			message: `You have ${count} NFT to claim. Proceed?`,
 			persistent: true,
 			cancel: true,
-			ok: true
+			ok: true,
 		})
 	}
 
@@ -25,11 +25,11 @@ class NftDialogs {
 				progress: true,
 				persistent: true,
 				cancel: true,
-				ok: false
+				ok: false,
 			})
 		} else {
 			NftDialogs.claimNftDialog.update({
-				message: `Claiming NFT ${count} of ${total}...`
+				message: `Claiming NFT ${count} of ${total}...`,
 			})
 		}
 	}

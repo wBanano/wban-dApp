@@ -6,4 +6,4 @@ type ClaimGoldenRequest = {
 	level: number
 }
 
-export default ClaimGoldenRequest
+export { ClaimGoldenRequest }

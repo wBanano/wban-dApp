@@ -6,7 +6,7 @@ import Prices from '@/store/modules/prices'
 	namespaced: true,
 	name: 'ban',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class BANModule extends VuexModule {
 	private _banAddress = ''

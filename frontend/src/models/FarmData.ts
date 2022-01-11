@@ -1,21 +1,6 @@
 import { Address } from '@/config/constants/types'
 import { BigNumber } from 'ethers'
 
-export interface FarmData {
-	pid: number
-	poolData: PoolData
-	userPoolData: UserPoolData // only for liquidity pools
-
-	userGlobalBalance?: BigNumber // for wBAN staking only
-	userPendingRewards: BigNumber
-	timeLeft: string
-
-	apr: number
-	totalValue: BigNumber
-	stakedBalance: BigNumber
-	stakedValue: BigNumber
-}
-
 interface PoolData {
 	name: string
 	symbol: string
@@ -35,6 +20,21 @@ interface UserPoolData {
 	balanceToken1: BigNumber
 }
 
+export interface FarmData {
+	pid: number
+	poolData: PoolData
+	userPoolData: UserPoolData // only for liquidity pools
+
+	userGlobalBalance?: BigNumber // for wBAN staking only
+	userPendingRewards: BigNumber
+	timeLeft: string
+
+	apr: number
+	totalValue: BigNumber
+	stakedBalance: BigNumber
+	stakedValue: BigNumber
+}
+
 export const BN_ZERO = BigNumber.from(0)
 
 export const EMPTY_FARM_DATA: FarmData = {
@@ -45,7 +45,7 @@ export const EMPTY_FARM_DATA: FarmData = {
 		address: {
 			dev: '',
 			staging: '',
-			production: ''
+			production: '',
 		},
 		tvl: BN_ZERO,
 		balanceToken0: BN_ZERO,
@@ -53,12 +53,12 @@ export const EMPTY_FARM_DATA: FarmData = {
 		priceToken0: 0,
 		priceToken1: 0,
 		symbolToken0: '',
-		symbolToken1: ''
+		symbolToken1: '',
 	},
 	userPoolData: {
 		balance: BN_ZERO,
 		balanceToken0: BN_ZERO,
-		balanceToken1: BN_ZERO
+		balanceToken1: BN_ZERO,
 	},
 	userGlobalBalance: BN_ZERO,
 	userPendingRewards: BN_ZERO,
@@ -66,5 +66,5 @@ export const EMPTY_FARM_DATA: FarmData = {
 	apr: 0,
 	totalValue: BN_ZERO,
 	stakedBalance: BN_ZERO,
-	stakedValue: BN_ZERO
+	stakedValue: BN_ZERO,
 }

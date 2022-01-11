@@ -18,8 +18,8 @@
 			<div class="col-3 flex">
 				<q-btn @click="swap" color="primary" class="fit" stack>
 					<q-icon name="img:wban-swap.svg" size="3em" style="width: 100px" />
-					<div class="text-button">Swaps</div>
-					<q-tooltip content-class="bg-positive">Swaps</q-tooltip>
+					<div class="text-button">Swap</div>
+					<q-tooltip content-class="bg-positive">Swap</q-tooltip>
 				</q-btn>
 			</div>
 			<div class="col-3 flex">
@@ -63,9 +63,7 @@
 								Don't send amounts with more than 2 decimals and make sure there is no raw.<br />
 								Using "Max" link in Kalium is probably not going to work well.<br />
 								If you don't follow the previous rule, your BAN will be sent back to the wallet you sent them from.
-								<b>
-									Make sure you don't withdraw from a CEX straight to this address or you may loose your BAN!
-								</b>
+								<b>Make sure you don't withdraw from a CEX straight to this address or you may loose your BAN!</b>
 							</p>
 						</div>
 						<div class="gt-sm col-md-3 text-right">
@@ -121,12 +119,12 @@ import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
 import contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
-import WithdrawRequest from '@/models/WithdrawRequest'
+import { WithdrawRequest } from '@/models/WithdrawRequest'
 import { WBANToken } from '../../../artifacts/typechain/WBANToken'
 import { BigNumber } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import QRCode from 'qrcode'
-import { copyToClipboard, openURL } from 'quasar'
+import { copyToClipboard } from 'quasar'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -135,11 +133,11 @@ const contractsStore = namespace('contracts')
 @Component({
 	components: {
 		SwapInput,
-		SwapCurrencyInput
+		SwapCurrencyInput,
 	},
 	filters: {
-		bnToStringFilter
-	}
+		bnToStringFilter,
+	},
 })
 export default class ChainInfo extends Vue {
 	public banAddress = ''
@@ -209,7 +207,7 @@ export default class ChainInfo extends Vue {
 					// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
 					banAddress: ban.banAddress,
 					blockchainAddress: accounts.activeAccount,
-					provider: accounts.providerEthers
+					provider: accounts.providerEthers,
 				} as WithdrawRequest)
 				this.promptForBanWithdrawal = false
 				this.withdrawAmount = ''
@@ -221,11 +219,14 @@ export default class ChainInfo extends Vue {
 	}
 
 	swap() {
+		this.$router.push('/swaps')
+		/*
 		if (ChainInfo.DEX_URL === 'https://app.sushi.com' || ChainInfo.DEX_URL === 'https://pancakeswap.finance') {
 			openURL(`${ChainInfo.DEX_URL}/swap?inputCurrency=${this.wbanAddress}`)
 		} else {
 			openURL(`${ChainInfo.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
 		}
+		*/
 	}
 
 	async reloadBalances() {
@@ -243,7 +244,7 @@ export default class ChainInfo extends Vue {
 		} else {
 			this.$q.notify({
 				type: 'negative',
-				message: 'Unable to reload balances!'
+				message: 'Unable to reload balances!',
 			})
 		}
 	}
@@ -253,12 +254,12 @@ export default class ChainInfo extends Vue {
 			await copyToClipboard(this.banWalletForDeposits)
 			this.$q.notify({
 				type: 'positive',
-				message: 'Address copied'
+				message: 'Address copied',
 			})
 		} catch (err) {
 			this.$q.notify({
 				type: 'negative',
-				message: "Can't write to clipboard!"
+				message: "Can't write to clipboard!",
 			})
 		}
 	}
@@ -274,8 +275,8 @@ export default class ChainInfo extends Vue {
 				scale: 6,
 				color: {
 					dark: '2A2A2E',
-					light: 'FBDD11'
-				}
+					light: 'FBDD11',
+				},
 			})
 			this.banWalletForDepositsQRCode = `img:${qrcode}`
 		} catch (err) {
@@ -284,6 +285,7 @@ export default class ChainInfo extends Vue {
 		document.addEventListener('deposit-ban', this.depositBAN)
 		document.addEventListener('withdraw-ban', this.askWithdrawalAmount)
 		document.addEventListener('reload-balances', this.reloadBalances)
+		document.addEventListener('swap', this.swap)
 	}
 
 	async unmounted() {
@@ -306,10 +308,6 @@ export default class ChainInfo extends Vue {
 	margin-right: auto
 	button
 		width: 90%
-//		margin-left: 5px
-//		width: 110px
-//	:first-child
-//		margin-left: 0 !important
 
 .text-button
 	color: $secondary

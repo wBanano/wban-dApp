@@ -6,7 +6,7 @@ import { Dark } from 'quasar'
 	namespaced: true,
 	name: 'settings',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class SettingsModule extends VuexModule {
 	private _darkMode!: boolean

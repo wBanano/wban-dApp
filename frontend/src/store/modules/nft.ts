@@ -2,11 +2,10 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { WBANLPRewards, WBANLPRewards__factory } from 'wban-nfts'
-import NftData from '@/models/nft/NftData'
-import LoadBalanceRequest from '@/models/nft/LoadBalanceRequest'
-import ClaimGoldenRequest from '@/models/nft/ClaimGoldenRequest'
+import { NftData } from '@/models/nft/NftData'
+import { LoadBalanceRequest } from '@/models/nft/LoadBalanceRequest'
+import { ClaimGoldenRequest } from '@/models/nft/ClaimGoldenRequest'
 import { ClaimAirdroppedNftRequest } from '@/models/nft/ClaimableNft'
 import { ethers, Signature } from 'ethers'
 import { fetchJson } from 'ethers/lib/utils'
@@ -16,7 +15,7 @@ import NftDialogs from '@/utils/NftDialogs'
 	namespaced: true,
 	name: 'nft',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class NftModule extends VuexModule {
 	private _rewards: WBANLPRewards | null = null
@@ -61,7 +60,6 @@ class NftModule extends VuexModule {
 		if (provider) {
 			// do not initialize contract if this was done earlier
 			if (!this._rewards) {
-				// eslint-disable-next-line @typescript-eslint/camelcase
 				const contract = WBANLPRewards__factory.connect(NftModule.NFT_REWARDS_CONTRACT, provider.getSigner())
 				this.context.commit('setRewardsContract', contract)
 			} else {
@@ -97,7 +95,7 @@ class NftModule extends VuexModule {
 				account,
 				account,
 				account,
-				account
+				account,
 			],
 			NftModule.NFT_IDS
 		)
@@ -124,7 +122,7 @@ class NftModule extends VuexModule {
 				name,
 				description,
 				image: uri,
-				balance
+				balance,
 			})
 		}
 		this.context.commit('setNfts', nfts)
@@ -137,7 +135,7 @@ class NftModule extends VuexModule {
 		await txn.wait()
 		await this.loadNFTs({
 			contract,
-			account
+			account,
 		})
 	}
 

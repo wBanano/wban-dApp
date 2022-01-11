@@ -11,7 +11,7 @@ import { Networks } from '@/utils/Networks'
 	namespaced: true,
 	name: 'accounts',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class AccountsModule extends VuexModule {
 	public activeAccount: string | null = null
@@ -125,11 +125,11 @@ class AccountsModule extends VuexModule {
 						'56': networks.getNetworkData(56)?.rpcUrls[0] || '',
 						'97': networks.getNetworkData(97)?.rpcUrls[0] || '',
 						'137': networks.getNetworkData(137)?.rpcUrls[0] || '',
-						'80001': networks.getNetworkData(80001)?.rpcUrls[0] || ''
-					}
+						'80001': networks.getNetworkData(80001)?.rpcUrls[0] || '',
+					},
 				},
 				{ walletName: 'opera' },
-				{ walletName: 'operaTouch' }
+				{ walletName: 'operaTouch' },
 			]
 			const wallets = defaultWallets
 			// only allow Binance Chain Wallet for BSC networks
@@ -144,27 +144,27 @@ class AccountsModule extends VuexModule {
 				hideBranding: true,
 				walletSelect: {
 					description: 'Please select a wallet to connect to wBAN bridge:',
-					wallets
+					wallets,
 				},
 				walletCheck: [
 					{ checkName: 'derivationPath' },
 					{ checkName: 'accounts' },
 					{ checkName: 'connect' },
-					{ checkName: 'network' }
+					{ checkName: 'network' },
 				],
 				subscriptions: {
-					address: async address => {
+					address: async (address) => {
 						console.debug(`Address: ${address}`)
 						this.context.commit('setActiveAccount', address)
 					},
-					network: async network => {
+					network: async (network) => {
 						console.debug(`Blockchain network: ${ethers.utils.hexlify(network)}`)
 						// create network if missing
 						if (network !== AccountsModule.EXPECTED_CHAIN_ID) {
 							await MetaMask.addCustomNetwork(AccountsModule.EXPECTED_CHAIN_ID)
 						}
 					},
-					wallet: wallet => {
+					wallet: (wallet) => {
 						if (wallet !== undefined) {
 							this.context.commit('setEthersProvider', wallet.provider)
 							// store the selected wallet name to be retrieved next time the app loads
@@ -172,8 +172,8 @@ class AccountsModule extends VuexModule {
 								window.localStorage.setItem('selectedWallet', wallet.name)
 							}
 						}
-					}
-				}
+					},
+				},
 			})
 			this.context.commit('setWalletProvider', onboard)
 
@@ -237,7 +237,7 @@ class AccountsModule extends VuexModule {
 
 	@Action
 	async addWBANTokenToMetaMask() {
-		return MetaMask.addWBANToken()
+		return MetaMask.addWBANToWallet()
 	}
 }
 

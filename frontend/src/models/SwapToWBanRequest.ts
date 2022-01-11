@@ -9,4 +9,4 @@ type SwapToWBanRequest = {
 	contract: WBANToken
 }
 
-export default SwapToWBanRequest
+export { SwapToWBanRequest }

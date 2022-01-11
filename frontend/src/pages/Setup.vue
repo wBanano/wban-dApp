@@ -68,9 +68,7 @@
 					<a href="https://vault.banano.cc/" target="_blank" style="color: $primary">BananoVault</a> web wallet is the
 					next best choice.
 				</p>
-				<p>
-					Click "Continue" button when you have created your wallet.
-				</p>
+				<p>Click "Continue" button when you have created your wallet.</p>
 				<q-stepper-navigation>
 					<q-btn @click="step = 2" color="primary" text-color="black" label="Continue" />
 				</q-stepper-navigation>
@@ -85,9 +83,7 @@
 						<li><a href="https://faucet.prussia.dev" target="_blank">Prussia's Banano Faucet</a></li>
 					</ul>
 				</div>
-				<p>
-					Click "Continue" button when you have at least 0.01 BAN in your wallet.
-				</p>
+				<p>Click "Continue" button when you have at least 0.01 BAN in your wallet.</p>
 				<q-stepper-navigation>
 					<q-btn @click="step = 3" color="primary" text-color="black" label="Continue" />
 					<q-btn @click="step = 1" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
@@ -103,9 +99,9 @@
 						dense
 						autofocus
 						:rules="[
-							val => !!val || 'Banano address is required',
-							val => val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || 'Invalid Banano address',
-							val => this.isNotBlacklisted(val) || 'Blacklisted address'
+							(val) => !!val || 'Banano address is required',
+							(val) => val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || 'Invalid Banano address',
+							(val) => this.isNotBlacklisted(val) || 'Blacklisted address',
 						]"
 					/>
 					<q-stepper-navigation>
@@ -242,7 +238,7 @@ export default class SetupPage extends Vue {
 		const result: ClaimResponse = await backend.claimAddresses({
 			banAddress: this.banAddress,
 			blockchainAddress: accounts.activeAccount as string,
-			provider: accounts.providerEthers
+			provider: accounts.providerEthers,
 		})
 		switch (result) {
 			case ClaimResponse.Ok:
@@ -264,7 +260,7 @@ export default class SetupPage extends Vue {
 		while (!this.banDeposited.gt(0)) {
 			console.log('Waiting for deposit...')
 			// eslint-disable-next-line no-await-in-loop
-			await new Promise(resolve => setTimeout(resolve, 5000))
+			await new Promise((resolve) => setTimeout(resolve, 5000))
 		}
 		console.log(`Found a balance of ${this.banDeposited}`)
 		ban.setBanAccount(this.banAddress)
@@ -276,12 +272,12 @@ export default class SetupPage extends Vue {
 			await copyToClipboard(this.banWalletForDeposits)
 			this.$q.notify({
 				type: 'positive',
-				message: 'Address copied'
+				message: 'Address copied',
 			})
 		} catch (err) {
 			this.$q.notify({
 				type: 'negative',
-				message: "Can't write to clipboard!"
+				message: "Can't write to clipboard!",
 			})
 		}
 	}
@@ -299,8 +295,8 @@ export default class SetupPage extends Vue {
 				scale: 6,
 				color: {
 					dark: '2A2A2E',
-					light: 'FBDD11'
-				}
+					light: 'FBDD11',
+				},
 			})
 			this.banWalletForDepositsQRCode = `img:${qrcode}`
 		} catch (err) {

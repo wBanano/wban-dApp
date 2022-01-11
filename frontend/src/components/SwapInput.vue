@@ -45,8 +45,8 @@ const accountsStore = namespace('accounts')
 
 @Component({
 	components: {
-		SwapCurrencyInput
-	}
+		SwapCurrencyInput,
+	},
 })
 export default class SwapInput extends Vue {
 	@Prop({ type: Object, required: true }) banBalance!: BigNumber
@@ -149,7 +149,7 @@ export default class SwapInput extends Vue {
 					amount: Number.parseFloat(this.amount),
 					banAddress: ban.banAddress,
 					blockchainAddress: accounts.activeAccount,
-					provider: accounts.providerEthers
+					provider: accounts.providerEthers,
 				})
 			} else {
 				const contract: WBANToken | null = contracts.wbanContract
@@ -158,7 +158,7 @@ export default class SwapInput extends Vue {
 					await contracts.swap({
 						amount: ethers.utils.parseEther(this.amount),
 						toBanAddress: this.banAddress,
-						contract
+						contract,
 					})
 				}
 			}

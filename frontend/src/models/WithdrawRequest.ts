@@ -6,4 +6,4 @@ type WithdrawRequest = {
 	provider: any
 }
 
-export default WithdrawRequest
+export { WithdrawRequest }

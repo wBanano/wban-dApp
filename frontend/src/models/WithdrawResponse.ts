@@ -4,4 +4,4 @@ type WithdrawResponse = {
 	link: string
 }
 
-export default WithdrawResponse
+export { WithdrawResponse }

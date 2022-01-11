@@ -1,3 +1,23 @@
+import axios from 'axios'
+import { BigNumber, ethers } from 'ethers'
+
+interface Network {
+	network: 'bsc' | 'polygon'
+	chainId: string
+	chainIdNumber: number
+	chainName: string
+	chainUrl: string
+	nativeCurrency: {
+		name: string
+		symbol: string // 2-6 characters long
+		decimals: 18
+	}
+	minimumNeededForWrap: number
+	rpcUrls: string[]
+	blockExplorerUrls: string[]
+	iconUrls?: string[] // Currently ignored.
+}
+
 const BSC_MAINNET: Network = {
 	network: 'bsc',
 	chainId: '0x38',
@@ -7,15 +27,15 @@ const BSC_MAINNET: Network = {
 	nativeCurrency: {
 		name: 'BNB',
 		symbol: 'BNB',
-		decimals: 18
+		decimals: 18,
 	},
 	minimumNeededForWrap: 0.0006,
 	rpcUrls: [
 		'https://bsc-dataseed.binance.org/',
 		'https://bsc-dataseed1.defibit.io/',
-		'https://bsc-dataseed1.ninicoin.io/'
+		'https://bsc-dataseed1.ninicoin.io/',
 	],
-	blockExplorerUrls: ['https://www.bscscan.com']
+	blockExplorerUrls: ['https://www.bscscan.com'],
 }
 
 const BSC_TESTNET: Network = {
@@ -27,15 +47,15 @@ const BSC_TESTNET: Network = {
 	nativeCurrency: {
 		name: 'BNB',
 		symbol: 'BNB',
-		decimals: 18
+		decimals: 18,
 	},
 	minimumNeededForWrap: 0.0006,
 	rpcUrls: [
 		'https://data-seed-prebsc-1-s1.binance.org:8545/',
 		'https://data-seed-prebsc-2-s1.binance.org:8545/',
-		'https://data-seed-prebsc-1-s2.binance.org:8545/'
+		'https://data-seed-prebsc-1-s2.binance.org:8545/',
 	],
-	blockExplorerUrls: ['https://testnet.bscscan.com']
+	blockExplorerUrls: ['https://testnet.bscscan.com'],
 }
 
 const POLYGON_MAINNET: Network = {
@@ -47,11 +67,11 @@ const POLYGON_MAINNET: Network = {
 	nativeCurrency: {
 		name: 'MATIC',
 		symbol: 'MATIC',
-		decimals: 18
+		decimals: 18,
 	},
 	minimumNeededForWrap: 0.02,
 	rpcUrls: ['https://polygon-rpc.com'],
-	blockExplorerUrls: ['https://polygonscan.com']
+	blockExplorerUrls: ['https://polygonscan.com'],
 }
 
 const POLYGON_TESTNET: Network = {
@@ -63,12 +83,14 @@ const POLYGON_TESTNET: Network = {
 	nativeCurrency: {
 		name: 'MATIC',
 		symbol: 'MATIC',
-		decimals: 18
+		decimals: 18,
 	},
 	minimumNeededForWrap: 0.004,
 	rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
-	blockExplorerUrls: ['https://mumbai.polygonscan.com']
+	blockExplorerUrls: ['https://mumbai.polygonscan.com'],
 }
+
+const BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
 
 class Networks {
 	private networks: Map<number, Network>
@@ -95,23 +117,11 @@ class Networks {
 			return expectChain
 		}
 	}
-}
 
-interface Network {
-	network: 'bsc' | 'polygon'
-	chainId: string
-	chainIdNumber: number
-	chainName: string
-	chainUrl: string
-	nativeCurrency: {
-		name: string
-		symbol: string // 2-6 characters long
-		decimals: 18
+	public static async getSuggestedTransactionGasPriceInGwei(): Promise<BigNumber> {
+		const resp = await axios.get(`${BACKEND_URL}/blockchain/gas-price`)
+		return ethers.utils.parseUnits(resp.data.SafeGasPrice, 'gwei')
 	}
-	minimumNeededForWrap: number
-	rpcUrls: string[]
-	blockExplorerUrls: string[]
-	iconUrls?: string[] // Currently ignored.
 }
 
 export { Networks, Network, BSC_MAINNET, POLYGON_MAINNET }

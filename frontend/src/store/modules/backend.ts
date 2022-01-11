@@ -4,20 +4,20 @@ import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
 import axios, { AxiosResponse } from 'axios'
 import { BigNumber, ethers, Signature } from 'ethers'
-import ClaimRequest from '@/models/ClaimRequest'
-import SwapRequest from '@/models/SwapRequest'
-import SwapResponse from '@/models/SwapResponse'
-import WithdrawRequest from '@/models/WithdrawRequest'
-import WithdrawResponse from '@/models/WithdrawResponse'
+import { ClaimRequest } from '@/models/ClaimRequest'
+import { SwapRequest } from '@/models/SwapRequest'
+import { SwapResponse } from '@/models/SwapResponse'
+import { WithdrawRequest } from '@/models/WithdrawRequest'
+import { WithdrawResponse } from '@/models/WithdrawResponse'
 import { ClaimResponse } from '@/models/ClaimResponse'
 import Dialogs from '@/utils/Dialogs'
-import HistoryRequest from '@/models/HistoryRequest'
+import { HistoryRequest } from '@/models/HistoryRequest'
 
 @Module({
 	namespaced: true,
 	name: 'backend',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class BackendModule extends VuexModule {
 	private _online = false
@@ -151,7 +151,7 @@ class BackendModule extends VuexModule {
 						if (Contracts.wbanContract && Accounts.activeAccount) {
 							Contracts.reloadWBANBalance({
 								contract: Contracts.wbanContract,
-								account: Accounts.activeAccount
+								account: Accounts.activeAccount,
 							})
 						}
 						Dialogs.showWithdrawalSuccess(withdrawal, transaction)
@@ -193,12 +193,12 @@ class BackendModule extends VuexModule {
 								blockchainWallet,
 								receipt,
 								uuid,
-								contract: Contracts.wbanContract
+								contract: Contracts.wbanContract,
 							})
 							this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 							Contracts.reloadWBANBalance({
 								account: blockchainWallet,
-								contract: Contracts.wbanContract
+								contract: Contracts.wbanContract,
 							})
 							const blockchainExplorerUrl = Accounts.blockExplorerUrl
 							const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
@@ -284,7 +284,7 @@ class BackendModule extends VuexModule {
 				const resp = await axios.post(`${BackendModule.BACKEND_URL}/claim`, {
 					banAddress,
 					blockchainAddress,
-					sig
+					sig,
 				})
 				this.context.commit('setInError', false)
 				this.context.commit('setErrorMessage', '')
@@ -340,7 +340,7 @@ class BackendModule extends VuexModule {
 					ban: banAddress,
 					blockchain: blockchainAddress,
 					amount: amount,
-					sig: sig
+					sig: sig,
 				})
 				Dialogs.startSwapToWBan(amount.toString())
 			} catch (err) {
@@ -368,7 +368,7 @@ class BackendModule extends VuexModule {
 		return {
 			message: '',
 			transaction: '',
-			link: ''
+			link: '',
 		}
 	}
 
@@ -388,7 +388,7 @@ class BackendModule extends VuexModule {
 					ban: banAddress,
 					blockchain: blockchainAddress,
 					amount: amount,
-					sig: sig
+					sig: sig,
 				})
 				const result: any = resp.data
 				/*
@@ -422,7 +422,7 @@ class BackendModule extends VuexModule {
 		return {
 			message: '',
 			transaction: '',
-			link: ''
+			link: '',
 		}
 	}
 

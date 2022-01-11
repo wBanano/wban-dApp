@@ -10,28 +10,27 @@ class MetaMask {
 		return ethereum && ethereum.isMetaMask
 	}
 
-	static async addWBANToken(): Promise<void> {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const ethereum = (window as any).ethereum
+	static async addWBANToWallet(): Promise<void> {
 		const logo = await import(`../assets/wban-logo-${MetaMask.BLOCKCHAIN}.svg`)
 		const logoUrl = `${window.location.origin}${logo.default}`
-		console.warn(logoUrl)
-		if (MetaMask.isMetaMask()) {
-			await ethereum.request({
-				method: 'wallet_watchAsset',
-				params: {
-					type: 'ERC20',
-					options: {
-						address: TokensUtil.getWBANAddress(),
-						symbol: 'wBAN',
-						decimals: 18,
-						image: logoUrl
-					}
-				}
-			})
-		} else {
-			console.debug(`Not MetaMask. Skipping...`)
-		}
+		MetaMask.addTokenToWallet(TokensUtil.getWBANAddress(), 'wBAN', 18, logoUrl)
+	}
+
+	static async addTokenToWallet(address: string, symbol: string, decimals: number, logoURI: string): Promise<void> {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const ethereum = (window as any).ethereum
+		await ethereum.request({
+			method: 'wallet_watchAsset',
+			params: {
+				type: 'ERC20',
+				options: {
+					address: address,
+					symbol: symbol,
+					decimals: decimals,
+					image: logoURI,
+				},
+			},
+		})
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,9 +49,9 @@ class MetaMask {
 						nativeCurrency: network.nativeCurrency,
 						rpcUrls: network.rpcUrls,
 						blockExplorerUrls: network.blockExplorerUrls,
-						iconUrls: network.iconUrls
-					}
-				]
+						iconUrls: network.iconUrls,
+					},
+				],
 			})
 		} else {
 			console.debug(`Not MetaMask. Skipping...`)
@@ -60,6 +59,7 @@ class MetaMask {
 	}
 }
 
+/*
 interface AddEthereumChainParameter {
 	chainId: string
 	chainName: string
@@ -72,5 +72,6 @@ interface AddEthereumChainParameter {
 	blockExplorerUrls: string[]
 	iconUrls?: string[] // Currently ignored.
 }
+*/
 
 export default MetaMask

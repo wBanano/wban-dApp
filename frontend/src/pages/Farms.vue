@@ -1,12 +1,12 @@
 <template>
 	<q-page>
+		<div class="row items-center">
+			<h6 class="subtitle justify-center offset-md-1">
+				<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
+				Home
+			</h6>
+		</div>
 		<div class="q-pa-md">
-			<div class="row items-center">
-				<h6 class="subtitle justify-center offset-md-1">
-					<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
-					Home
-				</h6>
-			</div>
 			<div v-if="userHasDepositsInEndedFarms" class="row justify-center q-pb-md">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
 					<span>You have some deposits left in ended farms. Please withdraw!</span>
@@ -26,7 +26,7 @@
 					toggle-text-color="secondary"
 					:options="[
 						{ label: 'Active', value: 'active', slot: 'active' },
-						{ label: 'Ended', value: 'ended', slot: 'ended' }
+						{ label: 'Ended', value: 'ended', slot: 'ended' },
 					]"
 				>
 					<template v-slot:active>
@@ -65,8 +65,8 @@ const accountsStore = namespace('accounts')
 
 @Component({
 	components: {
-		Farm
-	}
+		Farm,
+	},
 })
 export default class FarmsPage extends Vue {
 	@benisStore.Getter('farms')
@@ -99,7 +99,7 @@ export default class FarmsPage extends Vue {
 		return (
 			this.allFarms
 				// only keep farms not ended
-				.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) !== 'Finished')
+				.filter((farm) => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) !== 'Finished')
 		)
 	}
 
@@ -107,7 +107,7 @@ export default class FarmsPage extends Vue {
 		return (
 			this.allFarms
 				// only keep farms ended
-				.filter(farm => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) === 'Finished')
+				.filter((farm) => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) === 'Finished')
 		)
 	}
 
@@ -117,7 +117,7 @@ export default class FarmsPage extends Vue {
 		await benis.initContract(this.provider)
 
 		// find out if there are some user deposits in ended farms
-		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async farm => {
+		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async (farm) => {
 			const deposits = await this.benisUtils.getStakedBalance(farm.pid, this.activeAccount, this.benis)
 			return deposits.gt(BN_ZERO)
 		})
@@ -126,6 +126,7 @@ export default class FarmsPage extends Vue {
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private async findAsyncSequential<T>(array: T[], predicate: (t: T) => Promise<boolean>): Promise<T | undefined> {
 		for (const t of array) {
 			if (await predicate(t)) {
@@ -136,3 +137,12 @@ export default class FarmsPage extends Vue {
 	}
 }
 </script>
+
+<style lang="sass">
+@import '@/styles/quasar.sass'
+
+@media (max-width: $breakpoint-sm-min)
+	h6.subtitle
+		margin-top: $space-base !important
+		margin-bottom: $space-base !important
+</style>

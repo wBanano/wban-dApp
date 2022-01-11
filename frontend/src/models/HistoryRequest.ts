@@ -3,4 +3,4 @@ type HistoryRequest = {
 	blockchainAddress: string
 }
 
-export default HistoryRequest
+export { HistoryRequest }

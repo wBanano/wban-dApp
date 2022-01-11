@@ -1,3 +1,7 @@
+# v1.4.0
+## New Features
+- Swaps through the bridge
+
 # v1.3.1
 ## Changes
 - Polygon SushiSwap wBAN-WETH farms extended to 2022-02-26 3PM UTC.

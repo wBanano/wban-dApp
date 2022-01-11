@@ -7,4 +7,4 @@ type SwapToBanRequest = {
 	contract: WBANToken
 }
 
-export default SwapToBanRequest
+export { SwapToBanRequest }

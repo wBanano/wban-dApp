@@ -29,15 +29,15 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import NftPicture from '@/components/nft/NftPicture.vue'
-import NftData from '@/models/nft/NftData'
+import { NftData } from '@/models/nft/NftData'
 import { openURL } from 'quasar'
 
 const nftStore = namespace('nft')
 
 @Component({
 	components: {
-		NftPicture
-	}
+		NftPicture,
+	},
 })
 export default class NftReward extends Vue {
 	@Prop({ type: String, required: true }) nftId!: string

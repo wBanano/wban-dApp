@@ -5,4 +5,4 @@ type ClaimRequest = {
 	provider: any
 }
 
-export default ClaimRequest
+export { ClaimRequest }

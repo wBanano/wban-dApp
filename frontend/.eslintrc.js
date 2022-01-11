@@ -19,5 +19,7 @@ module.exports = {
 		'no-console': 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'polygon' ? 'warn' : 'off',
 		'@typescript-eslint/ban-ts-ignore': 'off',
+		'@typescript-eslint/no-loss-of-precision': 'off',
+		'@typescript-eslint/ban-ts-comment': 'off',
 	}
 }

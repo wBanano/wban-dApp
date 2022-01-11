@@ -36,8 +36,8 @@ import accounts from '@/store/modules/accounts'
 @Component({
 	filters: {
 		bnToExactStringFilter,
-		banPriceFilter
-	}
+		banPriceFilter,
+	},
 })
 export default class TokenInput extends Vue {
 	@Prop({ type: String, required: true }) readonly label!: string
@@ -49,9 +49,10 @@ export default class TokenInput extends Vue {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	@Ref('amount') readonly amountField!: any
 
-	validationRules: Array<Function> = [
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	validationRules: Array<any> = [
 		(val: string) => val == '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
-		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`
+		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`,
 	]
 
 	setToMax() {

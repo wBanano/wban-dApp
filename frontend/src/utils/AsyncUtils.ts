@@ -4,4 +4,7 @@ const asyncFilter = async (arr: Array<any>, predicate: any) => {
 	return arr.filter((_v, index) => results[index])
 }
 
-export { asyncFilter }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sleep = (ms: number) => new Promise((resolve: any) => setTimeout(resolve, ms))
+
+export { asyncFilter, sleep }

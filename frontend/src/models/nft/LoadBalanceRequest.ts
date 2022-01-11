@@ -5,4 +5,4 @@ type LoadBalanceRequest = {
 	account: string
 }
 
-export default LoadBalanceRequest
+export { LoadBalanceRequest }

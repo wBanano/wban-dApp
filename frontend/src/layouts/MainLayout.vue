@@ -85,7 +85,7 @@
 						<q-icon name="img:wban-swap.svg" size="3em" />
 					</q-item-section>
 					<q-separator vertical inset />
-					<q-item-section>Swaps</q-item-section>
+					<q-item-section>Swap</q-item-section>
 				</q-item>
 				<q-item clickable v-ripple to="/farms">
 					<q-item-section avatar>
@@ -153,11 +153,11 @@ const contractsStore = namespace('contracts')
 
 @Component({
 	components: {
-		SettingsMenu
+		SettingsMenu,
 	},
 	filters: {
-		blockchainAddressFilter
-	}
+		blockchainAddressFilter,
+	},
 })
 export default class MainLayout extends Vue {
 	@accountsStore.State('chainId')
@@ -239,7 +239,8 @@ export default class MainLayout extends Vue {
 	}
 
 	swap() {
-		openURL(`${MainLayout.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
+		document.dispatchEvent(new CustomEvent('swap'))
+		this.drawerOpened = false
 	}
 
 	async created() {
@@ -252,8 +253,8 @@ export default class MainLayout extends Vue {
 				scale: 6,
 				color: {
 					dark: '2A2A2E',
-					light: 'FBDD11'
-				}
+					light: 'FBDD11',
+				},
 			})
 			this.banWalletForTipsQRCode = `img:${qrcode}`
 		} catch (err) {
@@ -282,7 +283,11 @@ export default class MainLayout extends Vue {
 	}
 
 	openNftPage() {
-		router.push('/nft')
+		if (this.chainId === POLYGON_MAINNET.chainIdNumber) {
+			router.push('/nft')
+		} else {
+			openURL('https://opensea.io/collection/wban')
+		}
 	}
 }
 </script>
@@ -340,7 +345,7 @@ export default class MainLayout extends Vue {
 
 @media (min-width: $breakpoint-md-min)
 	.q-page
-		background-image: url('../../public/blocklettuce.png')
+		// background-image: url('../../public/blocklettuce.png')
 		background-position: top right
 		background-repeat: no-repeat
 		background-attachment: fixed

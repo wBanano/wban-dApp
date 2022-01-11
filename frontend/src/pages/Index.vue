@@ -20,9 +20,7 @@
 					<div class="col">
 						<img :src="require(`@/assets/${expectedBlockchain.network}-logo.svg`)" width="150px" />
 					</div>
-					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold;">
-						=
-					</div>
+					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold">=</div>
 					<div class="col-3 text-left">
 						<img :src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)" width="150px" />
 					</div>
@@ -93,8 +91,8 @@ const banStore = namespace('ban')
 @Component({
 	components: {
 		Statistics,
-		ChainInfo
-	}
+		ChainInfo,
+	},
 })
 export default class PageIndex extends Vue {
 	@accountsStore.Getter('isUserConnected')

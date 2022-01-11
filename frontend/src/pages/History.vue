@@ -78,7 +78,7 @@ import { namespace } from 'vuex-class'
 import Statistics from '@/components/Statistics.vue'
 import backend from '@/store/modules/backend'
 import contracts from '@/store/modules/contracts'
-import SwapToWBanRequest from '@/models/SwapToWBanRequest'
+import { SwapToWBanRequest } from '@/models/SwapToWBanRequest'
 import { bnToStringFilter, banPriceFilter, timestampFilter, hashTrimmedFilter } from '@/utils/filters'
 import { BigNumber } from 'ethers'
 
@@ -88,14 +88,14 @@ const backendStore = namespace('backend')
 
 @Component({
 	components: {
-		Statistics
+		Statistics,
 	},
 	filters: {
 		bnToStringFilter,
 		banPriceFilter,
 		timestampFilter,
-		hashTrimmedFilter
-	}
+		hashTrimmedFilter,
+	},
 })
 export default class HistoryPage extends Vue {
 	@accountsStore.Getter('isUserConnected')
@@ -183,7 +183,7 @@ export default class HistoryPage extends Vue {
 				blockchainWallet: this.activeAccount,
 				receipt: event.receipt,
 				uuid: event.uuid,
-				contract: contracts.wbanContract
+				contract: contracts.wbanContract,
 			}
 			await contracts.claim(swapRequest)
 			await this.loadHistory()
@@ -193,7 +193,7 @@ export default class HistoryPage extends Vue {
 	async loadHistory() {
 		backend.getHistory({
 			blockchainAddress: this.activeAccount,
-			banAddress: this.banAddress
+			banAddress: this.banAddress,
 		})
 	}
 

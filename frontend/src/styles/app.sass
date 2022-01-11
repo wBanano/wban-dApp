@@ -21,17 +21,19 @@
 body
 	font-family: $main-font !important
 
-@font-face
-	font-family: NeueHansKendrick
-	src: url('/fonts/NeueHansKendrick-Regular.ttf')
+@import './font-now-alt.sass'
 
-@font-face
-	font-family: OverpassMono
-	src: url('/fonts/OverpassMono-Regular.ttf')
-@font-face
-	font-family: OverpassMono
-	font-weight: bold
-	src: url('/fonts/OverpassMono-Bold.ttf')
+//@font-face
+//	font-family: NeueHansKendrick
+//	src: url('/fonts/NeueHansKendrick-Regular.ttf')
+
+//@font-face
+//	font-family: OverpassMono
+//	src: url('/fonts/OverpassMono-Regular.ttf')
+//@font-face
+//	font-family: OverpassMono
+//	font-weight: bold
+//	src: url('/fonts/OverpassMono-Bold.ttf')
 
 .q-timeline__dot .q-icon
 	color: $secondary !important
@@ -39,6 +41,9 @@ body
 .q-notification__progress
 	opacity: 0.70 !important
 	background-color: $primary !important
+
+.q-btn__content
+	font-weight: normal
 
 /**
 	* Dark mode settings
@@ -55,3 +60,9 @@ body.body--dark
 
 body.body--light
 	background-color: lighten($secondary, 80%)
+
+.text-light-secondary
+	color: lighten($secondary, 10%) !important
+
+.bg-light-secondary
+	background-color: lighten($secondary, 10%) !important

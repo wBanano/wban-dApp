@@ -106,7 +106,7 @@ class FarmUtils {
 			farmData.userPoolData = {
 				balance: farmData.stakedBalance,
 				balanceToken0: BigNumber.from(0),
-				balanceToken1: BN_ZERO
+				balanceToken1: BN_ZERO,
 			}
 			const pool = await benis.poolInfo(farmData.pid)
 			const wbanLiquidity: BigNumber = pool.stakingTokenTotalAmount
@@ -132,7 +132,7 @@ class FarmUtils {
 			farmData.userPoolData = {
 				balance: userInfo.amount,
 				balanceToken0: lpDetails.token0.user,
-				balanceToken1: lpDetails.token1.user
+				balanceToken1: lpDetails.token1.user,
 			}
 
 			const liquidityToken0: BigNumber = lpDetails.token0.liquidity
