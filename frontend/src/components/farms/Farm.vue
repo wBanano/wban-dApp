@@ -225,7 +225,7 @@ import {
 	bnToZeroDecimalsStringFilter,
 	bnToTwoDecimalsStringFilter,
 	bnToSixDecimalsStringFilter,
-	bnToExactStringFilter
+	bnToExactStringFilter,
 } from '@/utils/filters'
 import Dialogs from '@/utils/Dialogs'
 import numeral from 'numeral'
@@ -237,14 +237,14 @@ const pricesStore = namespace('prices')
 
 @Component({
 	components: {
-		TokenInput
+		TokenInput,
 	},
 	filters: {
 		bnToZeroDecimalsStringFilter,
 		bnToTwoDecimalsStringFilter,
 		bnToSixDecimalsStringFilter,
-		bnToExactStringFilter
-	}
+		bnToExactStringFilter,
+	},
 })
 export default class Farm extends Vue {
 	@Prop({ type: Object, required: true }) value!: FarmConfig

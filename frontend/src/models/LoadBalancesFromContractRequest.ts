@@ -5,4 +5,4 @@ type LoadBalancesFromContractRequest = {
 	account: string
 }
 
-export default LoadBalancesFromContractRequest
+export { LoadBalancesFromContractRequest }

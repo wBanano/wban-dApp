@@ -29,9 +29,9 @@ class Dialogs {
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 	}
 
@@ -46,9 +46,9 @@ class Dialogs {
 				{
 					label: 'Close',
 					color: 'secondary',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 	}
 
@@ -60,7 +60,7 @@ class Dialogs {
 			progress: true,
 			persistent: true,
 			cancel: false,
-			ok: false
+			ok: false,
 		})
 	}
 
@@ -71,9 +71,9 @@ class Dialogs {
 			progress: false,
 			ok: {
 				color: 'primary',
-				'text-color': 'secondary'
+				'text-color': 'secondary',
 			},
-			html: true
+			html: true,
 		})
 		Dialogs.withdrawalDialog = null
 	}
@@ -93,14 +93,14 @@ class Dialogs {
 					noDismiss: true,
 					handler: () => {
 						openURL(`https://creeper.banano.cc/explorer/block/${txnHash}`)
-					}
+					},
 				},
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.withdrawalDialog) {
 			Dialogs.withdrawalDialog.hide()
@@ -119,9 +119,9 @@ class Dialogs {
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.withdrawalDialog) {
 			Dialogs.withdrawalDialog.hide()
@@ -137,7 +137,7 @@ class Dialogs {
 			progress: true,
 			persistent: true,
 			cancel: false,
-			ok: false
+			ok: false,
 		})
 	}
 
@@ -156,14 +156,14 @@ class Dialogs {
 					noDismiss: true,
 					handler: () => {
 						openURL(txnLink)
-					}
+					},
 				},
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.swapToWBanDialog) {
 			Dialogs.swapToWBanDialog.hide()
@@ -182,9 +182,9 @@ class Dialogs {
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.swapToWBanDialog) {
 			Dialogs.swapToWBanDialog.hide()
@@ -200,7 +200,7 @@ class Dialogs {
 			progress: true,
 			persistent: true,
 			cancel: false,
-			ok: false
+			ok: false,
 		})
 	}
 
@@ -216,9 +216,9 @@ class Dialogs {
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.swapToBanDialog) {
 			Dialogs.swapToBanDialog.hide()
@@ -234,7 +234,7 @@ class Dialogs {
 			progress: true,
 			persistent: true,
 			cancel: false,
-			ok: false
+			ok: false,
 		})
 	}
 
@@ -253,14 +253,14 @@ class Dialogs {
 					noDismiss: true,
 					handler: () => {
 						openURL(txnLink)
-					}
+					},
 				},
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.swapFarmSupplyDialog) {
 			Dialogs.swapFarmSupplyDialog.hide()
@@ -276,7 +276,7 @@ class Dialogs {
 			progress: true,
 			persistent: true,
 			cancel: false,
-			ok: false
+			ok: false,
 		})
 	}
 
@@ -295,14 +295,14 @@ class Dialogs {
 					noDismiss: true,
 					handler: () => {
 						openURL(txnLink)
-					}
+					},
 				},
 				{
 					label: 'Close',
 					color: 'white',
-					handler: () => dismiss()
-				}
-			]
+					handler: () => dismiss(),
+				},
+			],
 		})
 		if (Dialogs.swapFarmWithdrawDialog) {
 			Dialogs.swapFarmWithdrawDialog.hide()
@@ -312,19 +312,19 @@ class Dialogs {
 
 	static showWeb3Error() {
 		Dialog.create({
-			component: Web3ErrorDialog
+			component: Web3ErrorDialog,
 		})
 	}
 
 	static showGasNeededError(balance: number) {
 		Dialog.create({
 			component: GasNeededDialog,
-			balance: balance
+			balance: balance,
 		})
 	}
 
 	static showLowAmountToWrapWarning(amount: number): Promise<boolean> {
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			Dialog.create({ component: LowAmountToWrapDialog, amount: amount })
 				.onOk(() => resolve(true))
 				.onCancel(() => resolve(false))

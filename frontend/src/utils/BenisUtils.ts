@@ -33,11 +33,7 @@ class BenisUtils {
 		const wbanPerYear = wbanPerSecond.mul(ONE_YEAR)
 		const pool = await benis.poolInfo(pid)
 		const poolRewardsPerYear = wbanPerYear.mul(pool.allocPoint).div(await benis.totalAllocPoint())
-		const apr = poolRewardsPerYear
-			.mul(wbanPriceUsd)
-			.div(poolLiquidityUsd)
-			.mul(100)
-			.div(ONE_UNIT)
+		const apr = poolRewardsPerYear.mul(wbanPriceUsd).div(poolLiquidityUsd).mul(100).div(ONE_UNIT)
 		return apr.toNumber()
 	}
 
@@ -86,7 +82,7 @@ class BenisUtils {
 
 	private getEndTime(pid: number, environment: string): number {
 		const farms = FarmUtils.getFarms()
-		const farm: FarmConfig | undefined = farms.find(farm => farm.pid === pid)
+		const farm: FarmConfig | undefined = farms.find((farm) => farm.pid === pid)
 		if (farm) {
 			return farm.endTime[environment as keyof EndTime]
 		} else {

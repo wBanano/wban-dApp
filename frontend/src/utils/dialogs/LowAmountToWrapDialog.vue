@@ -2,9 +2,7 @@
 	<q-dialog ref="dialog" @hide="onDialogHide">
 		<q-card class="q-dialog-plugin">
 			<q-card-section>
-				<div class="text-h5 q-mt-sm q-mb-xs">
-					⚠️ Are you sure?
-				</div>
+				<div class="text-h5 q-mt-sm q-mb-xs">⚠️ Are you sure?</div>
 			</q-card-section>
 			<q-card-section horizontal>
 				<q-card-section class="q-pt-xs">

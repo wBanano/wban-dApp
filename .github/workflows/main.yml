@@ -51,4 +51,5 @@ jobs:
         run: |
           yarn
           yarn build
+          yarn test:unit
         working-directory: ${{env.working-directory}}

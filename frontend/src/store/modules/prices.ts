@@ -8,7 +8,7 @@ import axios from 'axios'
 	namespaced: true,
 	name: 'prices',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class PricesModule extends VuexModule {
 	private _lastUpdateTimestamp = 0
@@ -38,7 +38,7 @@ class PricesModule extends VuexModule {
 		console.debug('in loadPrices')
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
 			const resp = await axios.request({
-				url: `${PricesModule.BACKEND_URL}/prices`
+				url: `${PricesModule.BACKEND_URL}/prices`,
 			})
 			const apiResponse = resp.data
 			const wbanPrice: number = apiResponse.ban
@@ -61,12 +61,6 @@ class PricesModule extends VuexModule {
 	}
 }
 
-interface PriceApiResponse {
-	/* eslint-disable camelcase */
-	updated_at: number
-	data: PriceApiList
-}
-
 interface PriceApiList {
 	/* eslint-disable camelcase */
 	[key: string]: {
@@ -76,6 +70,14 @@ interface PriceApiList {
 		price_BNB: string
 	}
 }
+
+/*
+interface PriceApiResponse {
+	// eslint-disable camelcase
+	updated_at: number
+	data: PriceApiList
+}
+*/
 
 export default getModule(PricesModule)
 export { PriceApiList }

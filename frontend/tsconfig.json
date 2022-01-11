@@ -1,5 +1,4 @@
 {
-	"moduleResolution": "node",
   "extends": "@quasar/app/tsconfig-preset",
   "compilerOptions": {
     "target": "esnext",
@@ -9,15 +8,19 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"allowJs": true,
-		"resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
+
+		"skipLibCheck": true,
+		"allowJs": true,
+		"resolveJsonModule": true,
+
     "types": [
-      "webpack-env"
+      "webpack-env",
+			"jest",
+			"node"
     ],
     "paths": {
       "@/*": [

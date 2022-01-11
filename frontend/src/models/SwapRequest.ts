@@ -6,4 +6,4 @@ type SwapRequest = {
 	provider: any
 }
 
-export default SwapRequest
+export { SwapRequest }

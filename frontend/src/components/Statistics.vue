@@ -30,8 +30,8 @@ const contractsStore = namespace('contracts')
 @Component({
 	filters: {
 		bnToStringFilter,
-		banPriceFilter
-	}
+		banPriceFilter,
+	},
 })
 export default class Statistics extends Vue {
 	@contractsStore.Getter('totalSupply')

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { IBEP20, IBEP20__factory, IApePair, IApePair__factory } from '@artifacts/typechain'
 import { BigNumber, ethers, Signer } from 'ethers'
 
@@ -7,7 +6,6 @@ class BEP20Utils {
 
 	public async approve(stakingToken: string, signer: Signer) {
 		console.debug(`Should approve unlimited spending of "${stakingToken}" LP tokens`)
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		const token: IBEP20 = await IBEP20__factory.connect(stakingToken, signer)
 		const txn = await token.approve(
 			BEP20Utils.BENIS_CONTRACT_ADDRESS,
@@ -29,14 +27,11 @@ class BEP20Utils {
 	}
 
 	public async getLPDetails(account: string, lpStakedBalance: BigNumber, lpAddress: string, signer: Signer) {
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		const lp: IApePair = await IApePair__factory.connect(lpAddress, signer)
 		const addressToken0 = await lp.token0()
 		const addressToken1 = await lp.token1()
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		const token0 = await IBEP20__factory.connect(addressToken0, signer)
 		const liquidityToken0 = await token0.balanceOf(lpAddress)
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		const token1 = await IBEP20__factory.connect(addressToken1, signer)
 		const liquidityToken1 = await token1.balanceOf(lpAddress)
 		// pool total supply
@@ -48,13 +43,13 @@ class BEP20Utils {
 			token0: {
 				address: addressToken0,
 				liquidity: liquidityToken0,
-				user: userLiquidityToken0
+				user: userLiquidityToken0,
 			},
 			token1: {
 				address: addressToken1,
 				liquidity: liquidityToken1,
-				user: userLiquidityToken1
-			}
+				user: userLiquidityToken1,
+			},
 		}
 	}
 
@@ -69,7 +64,6 @@ class BEP20Utils {
 	}
 
 	private async getBEP20Token(tokenAddress: string, signer: Signer): Promise<IBEP20> {
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		return IBEP20__factory.connect(tokenAddress, signer)
 	}
 }

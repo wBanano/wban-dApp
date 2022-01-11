@@ -5,7 +5,7 @@
 		:class="nftClass"
 		fit="scaled-down"
 		spinner-color="white"
-		style="max-width: 300px; height: 300px;"
+		style="max-width: 300px; height: 300px"
 	/>
 </template>
 

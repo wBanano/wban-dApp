@@ -15,7 +15,7 @@ class BananoWalletsBlacklist {
 	public static async isBlacklisted(banWallet: string): Promise<BlacklistRecord | undefined> {
 		const resp = await axios.get('https://kirby.eu.pythonanywhere.com/api/v1/resources/addresses/all')
 		const blacklist = resp.data as Array<BlacklistRecord>
-		const result = blacklist.find(record => record.address === banWallet)
+		const result = blacklist.find((record) => record.address === banWallet)
 		console.debug(`Blacklist check for "${banWallet}": ${JSON.stringify(result)}`)
 		return result
 	}

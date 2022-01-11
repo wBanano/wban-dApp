@@ -5,7 +5,11 @@ import { date } from 'quasar'
 import ban from '@/store/modules/ban'
 
 const bnToStringFilter = Vue.filter('bnToString', (value: string) => {
-	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00000')
+	if (value === '') {
+		return ''
+	} else {
+		return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00000')
+	}
 })
 
 const bnToZeroDecimalsStringFilter = Vue.filter('bnToZeroDecimalsString', (value: string) => {
@@ -36,7 +40,7 @@ const blockchainAddressFilter = Vue.filter('blockchainAddress', (address: string
 })
 
 const banPriceFilter = Vue.filter('banPrice', (_amount: string) => {
-	const amount = numeral(_amount).value()
+	const amount = numeral(_amount).value() || 0
 	return numeral(amount * ban.banPriceInUSD).format('$0,0.00')
 })
 
@@ -61,5 +65,5 @@ export {
 	blockchainAddressFilter,
 	banPriceFilter,
 	timestampFilter,
-	hashTrimmedFilter
+	hashTrimmedFilter,
 }

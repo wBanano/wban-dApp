@@ -1,10 +1,23 @@
-export type TokensList = Record<string, Token>
+export interface Address {
+	dev: string
+	staging: string
+	production: string
+}
 
 export interface Token {
 	symbol: string
 	address?: Address
 	decimals?: number
 	projectLink?: string
+	iconUrl?: string
+}
+
+export type TokensList = Record<string, Token>
+
+export interface EndTime {
+	dev: number
+	staging: number
+	production: number
 }
 
 export interface FarmConfig {
@@ -20,18 +33,6 @@ export interface FarmConfig {
 		earnLabel: string
 		endBlock: number
 	}
-}
-
-export interface Address {
-	dev: string
-	staging: string
-	production: string
-}
-
-export interface EndTime {
-	dev: number
-	staging: number
-	production: number
 }
 
 export type Images = {

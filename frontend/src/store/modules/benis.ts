@@ -2,7 +2,6 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { Benis, Benis__factory } from '@artifacts/typechain'
 import { BigNumber } from 'ethers'
 import { FarmConfig } from '@/config/constants/types'
@@ -12,7 +11,7 @@ import FarmUtils from '@/utils/FarmUtils'
 	namespaced: true,
 	name: 'benis',
 	store,
-	dynamic: true
+	dynamic: true,
 })
 class BenisModule extends VuexModule {
 	private _benis: Benis | null = null
@@ -55,7 +54,6 @@ class BenisModule extends VuexModule {
 		if (provider) {
 			// do not initialize contract if this was done earlier
 			if (!this._benis) {
-				// eslint-disable-next-line @typescript-eslint/camelcase
 				const benis = Benis__factory.connect(BenisModule.BENIS_CONTRACT_ADDRESS, provider.getSigner())
 				this.context.commit('setBenis', benis)
 

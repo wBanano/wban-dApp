@@ -12,12 +12,12 @@ Vue.config.productionTip = false
 Vue.use(Quasar, {
 	plugins: {
 		Notify,
-		Dialog
-	}
+		Dialog,
+	},
 })
 
 new Vue({
 	router,
 	store,
-	render: h => h(App)
+	render: (h) => h(App),
 }).$mount('#app')

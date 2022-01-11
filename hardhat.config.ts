@@ -283,6 +283,7 @@ const config: HardhatUserConfig = {
 	},
 	dependencyCompiler: {
 		paths: [
+			'@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol',
 			'ApeSwap-Banana-Farm/contracts/libs/MockBEP20.sol',
 			'ApeSwap-Core-Contracts/contracts/ApeFactory.sol',
 		],
