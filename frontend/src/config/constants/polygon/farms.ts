@@ -15,7 +15,7 @@ const farms: FarmConfig[] = [
 		endTime: {
 			dev: 0,
 			staging: 0,
-			production: 1643468400
+			production: 1645887600
 		}
 	}
 ]

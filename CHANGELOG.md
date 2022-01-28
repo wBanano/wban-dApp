@@ -1,3 +1,7 @@
+# v1.3.1
+## Changes
+- Polygon SushiSwap wBAN-WETH farms extended to 2022-02-26 3PM UTC.
+
 # v1.3.0
 ## Improvements
 - New Web3 wallet provider #82
