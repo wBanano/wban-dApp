@@ -2,7 +2,7 @@ import axios from 'axios'
 import { BigNumber, ethers } from 'ethers'
 
 interface Network {
-	network: 'bsc' | 'polygon'
+	network: 'bsc' | 'polygon' | 'fantom'
 	chainId: string
 	chainIdNumber: number
 	chainName: string
@@ -90,6 +90,38 @@ const POLYGON_TESTNET: Network = {
 	blockExplorerUrls: ['https://mumbai.polygonscan.com'],
 }
 
+const FANTOM_MAINNET: Network = {
+	network: 'fantom',
+	chainId: '0xFA',
+	chainIdNumber: 250,
+	chainName: 'Fantom',
+	chainUrl: 'https://fantom.foundation',
+	nativeCurrency: {
+		name: 'FTM',
+		symbol: 'FTM',
+		decimals: 18,
+	},
+	minimumNeededForWrap: 0.03,
+	rpcUrls: ['https://rpc.ankr.com/fantom'],
+	blockExplorerUrls: ['https://ftmscan.com'],
+}
+
+const FANTOM_TESTNET: Network = {
+	network: 'fantom',
+	chainId: '0xFA2',
+	chainIdNumber: 4002,
+	chainName: 'Fantom Testnet',
+	chainUrl: 'https://fantom.foundation',
+	nativeCurrency: {
+		name: 'FTM',
+		symbol: 'FTM',
+		decimals: 18,
+	},
+	minimumNeededForWrap: 0.03,
+	rpcUrls: ['https://rpc.testnet.fantom.network'],
+	blockExplorerUrls: ['https://testnet.ftmscan.com'],
+}
+
 const BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
 
 class Networks {
@@ -103,6 +135,8 @@ class Networks {
 		this.networks.set(BSC_TESTNET.chainIdNumber, BSC_TESTNET)
 		this.networks.set(POLYGON_MAINNET.chainIdNumber, POLYGON_MAINNET)
 		this.networks.set(POLYGON_TESTNET.chainIdNumber, POLYGON_TESTNET)
+		this.networks.set(FANTOM_MAINNET.chainIdNumber, FANTOM_MAINNET)
+		this.networks.set(FANTOM_TESTNET.chainIdNumber, FANTOM_TESTNET)
 	}
 
 	public getNetworkData(chainId: number): Network | undefined {
@@ -124,4 +158,4 @@ class Networks {
 	}
 }
 
-export { Networks, Network, BSC_MAINNET, POLYGON_MAINNET }
+export { Networks, Network, BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET }

@@ -332,13 +332,21 @@ export default class Farm extends Vue {
 	addLiquidity() {
 		if (this.value.quoteToken.address) {
 			const otherToken = this.value.quoteToken.address[Farm.ENV_NAME as keyof Address]
-			if (Farm.DEX_URL === 'https://app.sushi.com' || Farm.DEX_URL === 'https://pancakeswap.finance') {
+			if (
+				Farm.DEX_URL === 'https://app.sushi.com' ||
+				Farm.DEX_URL === 'https://pancakeswap.finance' ||
+				Farm.DEX_URL === 'https://spookyswap.finance'
+			) {
 				openURL(`${Farm.DEX_URL}/add/${this.wbanAddress}/${otherToken}`)
 			} else {
 				openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/${otherToken}`)
 			}
 		} else {
-			openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/ETH`)
+			if (Farm.DEX_URL === 'https://spookyswap.finance') {
+				openURL(`${Farm.DEX_URL}/add/${this.wbanAddress}/FTM`)
+			} else {
+				openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/ETH`)
+			}
 		}
 	}
 

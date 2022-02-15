@@ -144,7 +144,7 @@ import SettingsMenu from '@/components/SettingsMenu.vue'
 import { blockchainAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
 import { openURL } from 'quasar'
-import { Network, Networks, BSC_MAINNET, POLYGON_MAINNET } from '@/utils/Networks'
+import { Network, Networks, BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -207,7 +207,11 @@ export default class MainLayout extends Vue {
 	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 
 	get isMainnet() {
-		return this.chainId === BSC_MAINNET.chainIdNumber || this.chainId === POLYGON_MAINNET.chainIdNumber
+		return (
+			this.chainId === BSC_MAINNET.chainIdNumber ||
+			this.chainId === POLYGON_MAINNET.chainIdNumber ||
+			this.chainId === FANTOM_MAINNET.chainIdNumber
+		)
 	}
 
 	get drawerEnabled() {

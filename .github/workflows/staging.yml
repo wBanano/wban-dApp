@@ -39,6 +39,7 @@ jobs:
         run: |
           yarn
           yarn build --mode staging
+          yarn test:unit
         working-directory: ${{env.working-directory}}
       - name: Deploy to bsc-testnet.banano.cc
         uses: jsmrcaga/action-netlify-deploy@v1.1.0
@@ -70,12 +71,45 @@ jobs:
         run: |
           yarn
           yarn build --mode polygonstaging
+          yarn test:unit
         working-directory: ${{env.working-directory}}
       - name: Deploy to polygon-testnet.banano.cc
         uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_POLYGON_TESTNET_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Staging deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          build_directory: frontend/dist
+  build-and-deploy-frontend-for-fantom:
+    name: dAPP for Fantom
+    runs-on: ubuntu-latest
+    env:
+      working-directory: frontend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+      - run: npm install -g yarn
+        working-directory: ${{env.working-directory}}
+      - name: Build Smart Contract artifacts
+        run: |
+          yarn
+          yarn compile
+        working-directory: "."
+      - name: Compile & Test
+        run: |
+          yarn
+          yarn build --mode fantomstaging
+          yarn test:unit
+        working-directory: ${{env.working-directory}}
+      - name: Deploy to fantom-testnet.banano.cc
+        uses: jsmrcaga/action-netlify-deploy@v1.1.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_FANTOM_TESTNET_SITE_ID }}
           NETLIFY_DEPLOY_MESSAGE: "Staging deploy v${{ github.ref }}"
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: frontend/dist

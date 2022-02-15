@@ -4,7 +4,7 @@ import { Benis } from '@artifacts/typechain'
 import { BigNumber, ethers, Signer } from 'ethers'
 import BenisUtils from './BenisUtils'
 import BEP20Utils from './BEP20Utils'
-import { bscFarms, polygonFarms } from '@/config/constants/farms'
+import { bscFarms, fantomFarms, polygonFarms } from '@/config/constants/farms'
 
 const BN_ONE = ethers.utils.parseEther('1')
 
@@ -82,6 +82,9 @@ class FarmUtils {
 			// Polygon farms
 			case 'polygon':
 				return polygonFarms
+			// Fantom farms
+			case 'fantom':
+				return fantomFarms
 			default:
 				throw new Error('Unexpected network')
 		}
@@ -129,35 +132,35 @@ class FarmUtils {
 			farmData.poolData.symbolToken1 = await bep20.getTokenSymbol(lpDetails.token1.address, signer)
 			farmData.userPendingRewards = await benis.pendingWBAN(farmData.pid, this.account)
 
+			const token0decimals = lpDetails.token0.decimals
+			const token1decimals = lpDetails.token1.decimals
+
 			farmData.userPoolData = {
 				balance: userInfo.amount,
-				balanceToken0: lpDetails.token0.user,
-				balanceToken1: lpDetails.token1.user,
+				balanceToken0: ethers.utils.parseEther(ethers.utils.formatUnits(lpDetails.token0.user, token0decimals)),
+				balanceToken1: ethers.utils.parseEther(ethers.utils.formatUnits(lpDetails.token1.user, token1decimals)),
 			}
+
+			farmData.poolData.addressToken0 = lpDetails.token0.address
+			farmData.poolData.addressToken1 = lpDetails.token1.address
+			farmData.poolData.decimalsToken0 = token0decimals
+			farmData.poolData.decimalsToken1 = token1decimals
 
 			const liquidityToken0: BigNumber = lpDetails.token0.liquidity
 			const liquidityToken1: BigNumber = lpDetails.token1.liquidity
-			console.debug(
-				`Liquidities: token0: ${ethers.utils.formatEther(liquidityToken0)}, token1: ${ethers.utils.formatEther(
-					liquidityToken1
-				)}`
-			)
-			const liquidityUsdToken0: BigNumber = liquidityToken0
+			const liquidityUsdToken0: BigNumber = ethers.utils
+				.parseEther(ethers.utils.formatUnits(liquidityToken0, token0decimals))
 				.mul(ethers.utils.parseEther(farmData.poolData.priceToken0.toString()))
 				.div(BN_ONE)
-			const liquidityUsdToken1: BigNumber = liquidityToken1
+			const liquidityUsdToken1: BigNumber = ethers.utils
+				.parseEther(ethers.utils.formatUnits(liquidityToken1, token1decimals))
 				.mul(ethers.utils.parseEther(farmData.poolData.priceToken1.toString()))
 				.div(BN_ONE)
-			console.debug(
-				`Liquidities in USD: token0: $${ethers.utils.formatEther(
-					liquidityUsdToken0
-				)}, token1: $${ethers.utils.formatEther(liquidityUsdToken1)}`
-			)
 			poolLiquidityUsd = liquidityUsdToken0.add(liquidityUsdToken1)
 		}
 
 		farmData.poolData.tvl = poolLiquidityUsd
-		console.debug(`Pool liquidity price: ${ethers.utils.formatEther(poolLiquidityUsd)}`)
+		console.debug(`Pool liquidity price: $${ethers.utils.formatEther(poolLiquidityUsd)}`)
 
 		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, envName, wbanPriceUsd, poolLiquidityUsd, benis)
 		return farmData

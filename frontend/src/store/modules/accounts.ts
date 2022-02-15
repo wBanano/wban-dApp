@@ -125,6 +125,8 @@ class AccountsModule extends VuexModule {
 						'56': networks.getNetworkData(56)?.rpcUrls[0] || '',
 						'97': networks.getNetworkData(97)?.rpcUrls[0] || '',
 						'137': networks.getNetworkData(137)?.rpcUrls[0] || '',
+						'250': networks.getNetworkData(250)?.rpcUrls[0] || '',
+						'4002': networks.getNetworkData(4002)?.rpcUrls[0] || '',
 						'80001': networks.getNetworkData(80001)?.rpcUrls[0] || '',
 					},
 				},

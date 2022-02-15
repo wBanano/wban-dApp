@@ -1,3 +1,6 @@
+# v1.5.0
+- Deployment on Fantom
+
 # v1.4.0
 ## New Features
 - Embedded swaps with the help of 0x protocol #88

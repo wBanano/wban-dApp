@@ -45,6 +45,7 @@ class PricesModule extends VuexModule {
 			const bnbPrice: number = apiResponse.bnb
 			const ethPrice: number = apiResponse.eth
 			const maticPrice: number = apiResponse.matic
+			const ftmPrice: number = apiResponse.ftm
 			const prices: Map<string, number> = new Map()
 			prices.set('BUSD', 1)
 			prices.set('USDC', 1)
@@ -55,6 +56,8 @@ class PricesModule extends VuexModule {
 			prices.set('ETH', ethPrice)
 			prices.set('WMATIC', maticPrice)
 			prices.set('MATIC', maticPrice)
+			prices.set('FTM', ftmPrice)
+			prices.set('WFTM', ftmPrice)
 			this.context.commit('setPrices', prices)
 			this.context.commit('setLastUpdateTimestamp', Date.now())
 		}

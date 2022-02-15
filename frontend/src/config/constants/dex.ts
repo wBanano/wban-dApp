@@ -1,11 +1,13 @@
 import BSCDEX from './bsc/dex'
 import PolygonDEX from './polygon/dex'
+import FantomDEX from './fantom/dex'
 import axios from 'axios'
 import { Networks } from '@/utils/Networks'
 
 const networks = new Networks()
 const bsc = new BSCDEX()
 const polygon = new PolygonDEX()
+const fantom = new FantomDEX()
 
 const BLOCKCHAIN: string = process.env.VUE_APP_BLOCKCHAIN || ''
 const BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
@@ -30,12 +32,12 @@ const EMPTY_TOKEN: Token = {
 
 function get0xSwapAPI(): string {
 	switch (BLOCKCHAIN) {
-		// BSC farms
 		case 'bsc':
 			return bsc.get0xSwapAPI()
-		// Polygon farms
 		case 'polygon':
 			return polygon.get0xSwapAPI()
+		case 'fantom':
+			return fantom.get0xSwapAPI()
 		default:
 			throw new Error('Unexpected network')
 	}

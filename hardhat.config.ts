@@ -60,6 +60,25 @@ task("wban:deploy", "Deploy wBAN")
 		}
 	});
 
+task("wban:verify", "Verify wBAN source code on blockchain explorer")
+	.setAction(async (args, hre) => {
+		const WBANToken = await hre.ethers.getContractFactory("WBANToken");
+
+		// peer into OpenZeppelin manifest to extract the implementation address
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
+		const manifest = await ozUpgradesManifestClient.read();
+		const bytecodeHash = hashBytecodeWithoutMetadata(WBANToken.bytecode);
+		const implementationContract = manifest.impls[bytecodeHash];
+
+		// verify implementation contract
+		if (implementationContract) {
+			console.log(`wBAN impl deployed at: "${implementationContract.address}"`);
+			await hre.run("verify:verify", {
+				address: implementationContract.address
+			});
+		}
+	});
+
 task("wban:upgrade", "Upgrade wBAN")
 	.addParam("contract", "The smart-contract address", '', types.string)
 	.setAction(async (args, hre) => {
@@ -114,6 +133,26 @@ task("benis:deploy", "Deploy Benis")
 			]
 		});
 		console.log(`Benis deployed and verified at "${benis.address}" with rewardsPerSecond ${rewardsPerSecond.toString()} and startTime ${rewardsStartTime}`);
+	});
+
+task("benis:verify", "Verify Benis source code on blockchain explorer")
+	.addParam("benis", "The address of Benis smart-contract", '', types.string)
+	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
+	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
+	.addParam("starttime", "The timestamp at which Benis farms should start", 0, types.int)
+	.setAction(async (args, hre) => {
+		const benisAddress = args.benis;
+		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
+		let rewardsStartTime = args.starttime == 0 ? (await hre.ethers.provider.getBlock('latest')).timestamp : args.starttime;
+		console.log(`Benis deployed at: "${benisAddress}"`);
+		await hre.run("verify:verify", {
+			address: benisAddress,
+  		constructorArguments: [
+				args.wban,
+				rewardsPerSecond,
+				rewardsStartTime
+			]
+		});
 	});
 
 task("benis:add-time", "Deploy Benis")
@@ -263,7 +302,7 @@ const config: HardhatUserConfig = {
 		},
 		*/
 		polygontestnet: {
-			url: 'https://speedy-nodes-nyc.moralis.io/3fb1dabd5bbe4112064814a2/polygon/mumbai',
+			url: 'https://rpc-mumbai.maticvigil.com',
 			accounts,
 			chainId: 80001,
 			gasMultiplier: 1.1,
@@ -275,7 +314,19 @@ const config: HardhatUserConfig = {
 			chainId: 137,
 			gasMultiplier: 1.1,
 			gasPrice: 60000000000,
-		}
+		},
+		fantomtestnet: {
+			url: 'https://rpc.testnet.fantom.network',
+			accounts,
+			chainId: 4002,
+		},
+		fantom: {
+			url: 'https://rpc.ftm.tools',
+			accounts,
+			chainId: 250,
+			gasMultiplier: 1.4,
+			//gasPrice: 4000000000000,
+		},
 	},
 	typechain: {
 		outDir: 'artifacts/typechain',
@@ -310,7 +361,7 @@ const config: HardhatUserConfig = {
 	abiExporter: {
 		path: './abi',
 		clear: true,
-		flat: false,
+		flat: true,
 		// only: ['WBANToken', 'Benis'],
 		spacing: 2
 	}

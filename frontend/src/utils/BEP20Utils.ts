@@ -31,8 +31,10 @@ class BEP20Utils {
 		const addressToken0 = await lp.token0()
 		const addressToken1 = await lp.token1()
 		const token0 = await IBEP20__factory.connect(addressToken0, signer)
+		const token0decimals = await token0.decimals()
 		const liquidityToken0 = await token0.balanceOf(lpAddress)
 		const token1 = await IBEP20__factory.connect(addressToken1, signer)
+		const token1decimals = await token1.decimals()
 		const liquidityToken1 = await token1.balanceOf(lpAddress)
 		// pool total supply
 		const totalSupply = await lp.totalSupply()
@@ -42,11 +44,13 @@ class BEP20Utils {
 		return {
 			token0: {
 				address: addressToken0,
+				decimals: token0decimals,
 				liquidity: liquidityToken0,
 				user: userLiquidityToken0,
 			},
 			token1: {
 				address: addressToken1,
+				decimals: token1decimals,
 				liquidity: liquidityToken1,
 				user: userLiquidityToken1,
 			},

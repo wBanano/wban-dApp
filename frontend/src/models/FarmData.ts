@@ -10,8 +10,12 @@ interface PoolData {
 	balanceToken1?: BigNumber // empty when wBAN stakiing
 	priceToken0: number
 	priceToken1: number
+	addressToken0: string
+	addressToken1: string
 	symbolToken0: string
 	symbolToken1: string
+	decimalsToken0: number
+	decimalsToken1: number
 }
 
 interface UserPoolData {
@@ -52,8 +56,12 @@ export const EMPTY_FARM_DATA: FarmData = {
 		balanceToken1: BN_ZERO,
 		priceToken0: 0,
 		priceToken1: 0,
+		addressToken0: '',
+		addressToken1: '',
 		symbolToken0: '',
 		symbolToken1: '',
+		decimalsToken0: 0,
+		decimalsToken1: 0,
 	},
 	userPoolData: {
 		balance: BN_ZERO,
