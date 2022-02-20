@@ -1,6 +1,8 @@
 # v1.4.0
 ## New Features
-- Swaps through the bridge
+- Embedded swaps with the help of 0x protocol #88
+## Changes
+- Polygon SushiSwap wBAN-WETH farms extended to 2022-03-26 3PM UTC.
 
 # v1.3.1
 ## Changes
