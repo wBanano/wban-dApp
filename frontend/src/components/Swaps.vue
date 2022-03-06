@@ -107,7 +107,7 @@ import { BigNumberish } from 'ethers'
 import TokenInput from '@/components/tokens/TokenInput.vue'
 import { TokenAmount, emptyTokenAmount } from '@/models/dex/TokenAmount'
 import { Network, Networks } from '@/utils/Networks'
-import { DEXUtils, EXCHANGE_PROXY } from '@/utils/DEXUtils'
+import { DEXUtils } from '@/utils/DEXUtils'
 import { sleep } from '@/utils/AsyncUtils'
 import { SwapQuoteResponse, EMPTY_QUOTE } from '@/models/dex/SwapQuote'
 import { TransactionRequest } from '@ethersproject/providers'
@@ -214,7 +214,7 @@ export default class Swaps extends Vue {
 		try {
 			// check allowance for 0x Exchange Proxy
 			const token = IERC20__factory.connect(this.from.token.address, this.provider)
-			const allowance: BigNumber = await token.allowance(this.user, EXCHANGE_PROXY)
+			const allowance: BigNumber = await token.allowance(this.user, DEXUtils.get0xExchangeRouterAddress())
 			let skipValidation = false
 			if (allowance.lt(ethers.utils.parseUnits(this.from.amount, this.from.token.decimals))) {
 				this.approveLabel = `Approve ${this.from.token.symbol}`

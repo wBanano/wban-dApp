@@ -43,6 +43,19 @@ function get0xSwapAPI(): string {
 	}
 }
 
+function get0xExchangeRouterAddress(): string {
+	switch (BLOCKCHAIN) {
+		case 'bsc':
+			return bsc.get0xExchangeRouterAddress()
+		case 'polygon':
+			return polygon.get0xExchangeRouterAddress()
+		case 'fantom':
+			return fantom.get0xExchangeRouterAddress()
+		default:
+			throw new Error('Unexpected network')
+	}
+}
+
 async function getTokensList(): Promise<Array<Token>> {
 	console.info(`Fetching tokens list from ${BACKEND_URL}/dex/tokens`)
 	const result = await axios.get(`${BACKEND_URL}/dex/tokens`)
@@ -53,4 +66,4 @@ async function getTokensList(): Promise<Array<Token>> {
 	return tokens
 }
 
-export { get0xSwapAPI, getTokensList, Token, EMPTY_TOKEN }
+export { get0xSwapAPI, get0xExchangeRouterAddress, getTokensList, Token, EMPTY_TOKEN }

@@ -1,11 +1,9 @@
 import { SwapPath, SwapQuoteRequest, SwapQuoteResponse, SwapRoute } from '@/models/dex/SwapQuote'
-import { get0xSwapAPI } from '@/config/constants/dex'
+import { get0xSwapAPI, get0xExchangeRouterAddress } from '@/config/constants/dex'
 import TokensUtil from './TokensUtil'
 import { BigNumber, ethers } from 'ethers'
 import axios from 'axios'
 import qs from 'qs'
-
-const EXCHANGE_PROXY = '0xdef1c0ded9bec7f1a1670819833240f027b25eff'
 
 class DEXUtils {
 	static async getQuote(request: SwapQuoteRequest, skipValidation = false): Promise<SwapQuoteResponse> {
@@ -73,6 +71,9 @@ class DEXUtils {
 			throw new Error(error.response.data.values.message)
 		}
 	}
+	static get0xExchangeRouterAddress(): string {
+		return get0xExchangeRouterAddress()
+	}
 }
 
-export { DEXUtils, EXCHANGE_PROXY }
+export { DEXUtils }
