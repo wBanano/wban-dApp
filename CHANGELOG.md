@@ -1,3 +1,7 @@
+# v1.5.1
+## Bugs
+- Fix swap features on Fantom #90
+
 # v1.5.0
 - Deployment on Fantom
 
