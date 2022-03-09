@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<div v-if="!isUserConnected" class="welcome-section q-pa-md row justify-center">
-			<div class="col-lg-5 col-md-6 col-sm-9 col-xs-12 text-center">
+			<div class="col-lg-5 col-md-8 col-sm-9 col-xs-12 text-center">
 				<div v-if="!$q.platform.is.mobile" class="love row justify-center items-center q-col-gutter-lg">
 					<div class="col text-right">
 						<q-img src="banano-logo-vertical.svg" />
@@ -18,21 +18,21 @@
 						<q-icon name="add_circle" color="positive" size="2em" />
 					</div>
 					<div class="col">
-						<img :src="require(`@/assets/${expectedBlockchain.network}-logo.svg`)" width="150px" />
+						<img :src="require(`@/assets/${currentBlockchain.network}-logo.svg`)" width="150px" />
 					</div>
 					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold">=</div>
 					<div class="col-3 text-left">
-						<img :src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)" width="150px" />
+						<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" width="150px" />
 					</div>
 				</div>
 				<img
 					v-if="$q.platform.is.mobile"
-					:src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)"
+					:src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)"
 					width="150px"
 				/>
 				<h3>
 					wBAN is wrapped <a href="https://banano.cc">Banano</a> on
-					<a :href="expectedBlockchain.chainUrl" target="_blank">{{ expectedBlockchain.chainName }}</a>
+					<a :href="currentBlockchain.chainUrl" target="_blank">{{ currentBlockchain.chainName }}</a>
 				</h3>
 				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" label="connect" />
 				<div v-if="!$q.platform.is.mobile">
@@ -81,12 +81,11 @@ import { namespace } from 'vuex-class'
 import router from '@/router'
 import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
-import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
-import { Network, Networks } from '@/utils/Networks'
+import { Network } from '@/utils/Networks'
 
-const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
+const accountsStore = namespace('accounts')
 
 @Component({
 	components: {
@@ -95,6 +94,9 @@ const banStore = namespace('ban')
 	},
 })
 export default class PageIndex extends Vue {
+	@accountsStore.State('network')
+	currentBlockchain!: Network | undefined
+
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
 
@@ -104,19 +106,13 @@ export default class PageIndex extends Vue {
 	@Watch('isUserConnected')
 	redirect() {
 		console.log('in redirect')
-		if (this.isUserConnected && this.banAddress === '') {
-			router.push('/setup')
+		if (this.isUserConnected && (!this.banAddress || this.banAddress === '')) {
+			if (router.currentRoute.path !== '/setup') {
+				router.push('/setup')
+			}
 		} else {
 			console.debug(`BAN address: ${this.banAddress}`)
 		}
-	}
-
-	get expectedBlockchain(): Network {
-		return new Networks().getExpectedNetworkData()
-	}
-
-	mounted() {
-		ban.init()
 	}
 
 	async connectWalletProvider() {

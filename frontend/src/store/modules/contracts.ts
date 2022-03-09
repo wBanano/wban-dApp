@@ -67,8 +67,10 @@ class ContractsModule extends VuexModule {
 	async initContract(provider: any) {
 		console.debug('in initContract')
 		if (provider) {
+			const oldProvider = this._wBanToken?.provider
 			// do not initialize contract if this was done earlier
-			if (!this._wBanToken) {
+			if (!this._wBanToken || provider !== oldProvider) {
+				console.debug('Connecting to wBAN contract...')
 				const contract = WBANToken__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
 				this.context.commit('setWBANToken', contract)
 
@@ -99,6 +101,8 @@ class ContractsModule extends VuexModule {
 			const totalSupply: BigNumber = await contract.totalSupply()
 			this.setOwner(owner)
 			this.setTotalSupply(totalSupply)
+		} else {
+			console.error('Missing Web3 provider')
 		}
 	}
 

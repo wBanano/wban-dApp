@@ -3,9 +3,13 @@ import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 import { BigNumber, ethers } from 'ethers'
-import Onboard from 'bnc-onboard'
 import MetaMask from '@/utils/MetaMask'
-import { Networks } from '@/utils/Networks'
+import { BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, Network, Networks } from '@/utils/Networks'
+import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
+import injectedModule from '@web3-onboard/injected-wallets'
+import walletConnectModule from '@web3-onboard/walletconnect'
+import ledgerModule from '@web3-onboard/ledger'
+import gnosisModule from '@web3-onboard/gnosis'
 
 @Module({
 	namespaced: true,
@@ -16,13 +20,12 @@ import { Networks } from '@/utils/Networks'
 class AccountsModule extends VuexModule {
 	public activeAccount: string | null = null
 	public activeBalance = 0
-	public chainId: number | null = null
-	public chainName: string | null = null
-	public blockExplorerUrl: string | null = null
-	private _providerEthers: ethers.providers.JsonRpcProvider | null = null // this is "provider" for Ethers.js
+	public network: Network = POLYGON_MAINNET
+	private _providerEthers: ethers.providers.Web3Provider | null = null // this is "provider" for Ethers.js
 	public isConnected = false
+	private _onboard: OnboardAPI | undefined = undefined
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private _onboard: any
+	private _subscription: any
 	private _isInitialized = false
 
 	static EXPECTED_CHAIN_ID = Number.parseInt(process.env.VUE_APP_EXPECTED_CHAIN_ID || '')
@@ -39,54 +42,13 @@ class AccountsModule extends VuexModule {
 		return this._providerEthers
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	get walletProvider(): any {
-		return this._onboard
-	}
-
 	get isInitialized(): boolean {
 		return this._isInitialized
 	}
 
 	@Mutation
-	async disconnectWallet() {
-		window.localStorage.removeItem('selectedWallet')
-		const onboard = this.context.getters.walletProvider
-		onboard.walletReset()
-		this.activeAccount = null
-		this.activeBalance = 0
-		this._providerEthers = null
-		this._onboard = null
-
-		window.location.href = '../' // redirect to the Main page
-	}
-
-	@Mutation
-	setActiveAccount(selectedAddress: string) {
-		this.activeAccount = selectedAddress
-	}
-
-	@Mutation
 	setActiveBalance(balance: number) {
 		this.activeBalance = balance
-	}
-
-	@Mutation
-	setChainData(chainId: number) {
-		this.chainId = chainId
-		const networks = new Networks()
-		const networkData = networks.getNetworkData(chainId)
-		if (!networkData) {
-			return
-		}
-		this.chainName = networkData.chainName
-		this.blockExplorerUrl = networkData.blockExplorerUrls[0]
-	}
-
-	@Mutation
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async setEthersProvider(provider: any) {
-		this._providerEthers = new ethers.providers.Web3Provider(provider)
 	}
 
 	@Mutation
@@ -97,97 +59,121 @@ class AccountsModule extends VuexModule {
 	}
 
 	@Mutation
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setWalletProvider(onboard: any) {
-		this._onboard = onboard
+	setInitialized(initialized: boolean) {
+		this._isInitialized = initialized
 	}
 
 	@Mutation
-	setInitialized(initialized: boolean) {
-		this._isInitialized = initialized
+	setNetwork(network: Network) {
+		this.network = network
+	}
+
+	@Mutation
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setSubscription(subscription: any) {
+		this._subscription = subscription
+	}
+
+	@Mutation
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	updateNetworkData(update: any) {
+		console.debug('in updateNetworkData')
+
+		const oldAccount = this.activeAccount
+		const oldNetworkChainId = this.network.chainId
+
+		const wallet = update.wallets[0]
+		this.activeAccount = wallet.accounts[0].address
+		this._providerEthers = new ethers.providers.Web3Provider(wallet.provider)
+		const chainId = wallet.chains[0].id
+		console.debug(`Switched to chain ${chainId}`)
+		this.network = new Networks().getNetworkData(chainId) ?? POLYGON_MAINNET
+		window.localStorage.setItem(
+			'selectedWallet',
+			JSON.stringify(update.wallets.map((wallet: WalletState) => wallet.label))
+		)
+		window.localStorage.setItem('selectedBlockchain', chainId)
+
+		// only emit event if network or connected address was changed
+		if (this.activeAccount !== oldAccount || oldNetworkChainId !== chainId) {
+			document.dispatchEvent(new CustomEvent('web3-connection'))
+		}
+	}
+
+	@Mutation
+	async disconnectWallet() {
+		window.localStorage.removeItem('selectedWallet')
+		// disconnect the first wallet in the wallets array
+		// const [primaryWallet] = this._onboard?.state.get().wallets
+		// await this._onboard?.disconnectWallet({ label: primaryWallet.label })
+		this.activeAccount = null
+		this.activeBalance = 0
+		this._providerEthers = null
+		// unsubscribe when updates are no longer needed
+		this._subscription.unsubscribe()
+		window.location.href = '../' // redirect to the Main page
 	}
 
 	@Action
 	async initWalletProvider() {
 		console.debug('in initWalletProvider')
-
 		if (!this._isInitialized) {
-			const networks = new Networks()
-			const RPC_URL = networks.getExpectedNetworkData().rpcUrls[0]
-			// common wallets for all networks
-			const defaultWallets = [
-				{ walletName: 'metamask', preferred: true },
-				{ walletName: 'trust', preferred: true, rpcUrl: RPC_URL },
-				{ walletName: 'coinbase' },
-				{
-					walletName: 'walletConnect',
-					rpc: {
-						'56': networks.getNetworkData(56)?.rpcUrls[0] || '',
-						'97': networks.getNetworkData(97)?.rpcUrls[0] || '',
-						'137': networks.getNetworkData(137)?.rpcUrls[0] || '',
-						'250': networks.getNetworkData(250)?.rpcUrls[0] || '',
-						'4002': networks.getNetworkData(4002)?.rpcUrls[0] || '',
-						'80001': networks.getNetworkData(80001)?.rpcUrls[0] || '',
+			this.context.commit('setInitialized', true)
+			const injected = injectedModule()
+			const walletConnect = walletConnectModule()
+			const ledger = ledgerModule()
+			const gnosis = gnosisModule()
+			this._onboard = Onboard({
+				wallets: [injected, walletConnect, ledger, gnosis],
+				chains: [
+					{
+						id: BSC_MAINNET.chainId,
+						token: BSC_MAINNET.nativeCurrency.symbol,
+						label: BSC_MAINNET.chainName,
+						rpcUrl: BSC_MAINNET.rpcUrls[0],
 					},
-				},
-				{ walletName: 'opera' },
-				{ walletName: 'operaTouch' },
-			]
-			const wallets = defaultWallets
-			// only allow Binance Chain Wallet for BSC networks
-			if (AccountsModule.EXPECTED_CHAIN_ID === 56 || AccountsModule.EXPECTED_CHAIN_ID === 97) {
-				wallets.push({ walletName: 'binance', preferred: true })
-			}
-			const onboard = Onboard({
-				dappId: process.env.VUE_APP_ONBOARD_DAPP_ID || '',
-				networkId: AccountsModule.EXPECTED_CHAIN_ID,
-				networkName: networks.getNetworkData(AccountsModule.EXPECTED_CHAIN_ID)?.chainName,
-				darkMode: true,
-				hideBranding: true,
-				walletSelect: {
-					description: 'Please select a wallet to connect to wBAN bridge:',
-					wallets,
-				},
-				walletCheck: [
-					{ checkName: 'derivationPath' },
-					{ checkName: 'accounts' },
-					{ checkName: 'connect' },
-					{ checkName: 'network' },
+					{
+						id: POLYGON_MAINNET.chainId,
+						token: POLYGON_MAINNET.nativeCurrency.symbol,
+						label: POLYGON_MAINNET.chainName,
+						rpcUrl: POLYGON_MAINNET.rpcUrls[0],
+					},
+					{
+						id: FANTOM_MAINNET.chainId,
+						token: FANTOM_MAINNET.nativeCurrency.symbol,
+						label: FANTOM_MAINNET.chainName,
+						rpcUrl: FANTOM_MAINNET.rpcUrls[0],
+					},
 				],
-				subscriptions: {
-					address: async (address) => {
-						console.debug(`Address: ${address}`)
-						this.context.commit('setActiveAccount', address)
-					},
-					network: async (network) => {
-						console.debug(`Blockchain network: ${ethers.utils.hexlify(network)}`)
-						// create network if missing
-						if (network !== AccountsModule.EXPECTED_CHAIN_ID) {
-							await MetaMask.addCustomNetwork(AccountsModule.EXPECTED_CHAIN_ID)
-						}
-					},
-					wallet: (wallet) => {
-						if (wallet !== undefined) {
-							this.context.commit('setEthersProvider', wallet.provider)
-							// store the selected wallet name to be retrieved next time the app loads
-							if (wallet.name) {
-								window.localStorage.setItem('selectedWallet', wallet.name)
-							}
-						}
-					},
+				appMetadata: {
+					name: 'Wrapped Banano',
+					icon: require(`@/assets/wban-logo-${this.network.network}.svg`),
+					logo: require(`@/assets/wban-logo-${this.network.network}.svg`),
+					description: 'Wrapped Banano',
+					recommendedInjectedWallets: [
+						{ name: 'MetaMask', url: 'https://metamask.io' },
+						{ name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
+					],
 				},
 			})
-			this.context.commit('setWalletProvider', onboard)
 
-			// if the user is flagged as already connected, automatically connect back to Web3Modal
-			if (localStorage.getItem('isConnected') === 'true') {
-				// This will get deprecated soon. Setting it to false removes a warning from the console.
-				// @ts-ignore
-				window.ethereum.autoRefreshOnNetworkChange = false
-				await this.connectWalletProvider()
+			const state = this._onboard.state.select()
+			const subscription = state.subscribe((update) => {
+				this.context.commit('updateNetworkData', update)
+				this.context.dispatch('fetchActiveBalance')
+			})
+			this.context.commit('setSubscription', subscription)
+
+			const previouslyConnectedBlockchain = window.localStorage.getItem('selectedBlockchain')
+			if (previouslyConnectedBlockchain) {
+				const network = new Networks().getNetworkData(previouslyConnectedBlockchain) ?? POLYGON_MAINNET
+				this.context.commit('setNetwork', network)
 			}
 
-			this.context.commit('setInitialized', true)
+			const previouslyConnectedWallets = window.localStorage.getItem('selectedWallet')
+			if (previouslyConnectedWallets != null && previouslyConnectedWallets !== '') {
+				await this.connectWalletProvider()
+			}
 		}
 	}
 
@@ -195,26 +181,38 @@ class AccountsModule extends VuexModule {
 	async connectWalletProvider() {
 		console.debug('in connectWalletProvider')
 
-		const onboard = this.context.getters.walletProvider
-
-		// get the selectedWallet value from local storage
-		const previouslySelectedWallet = window.localStorage.getItem('selectedWallet')
-		// call wallet select with that value if it exists
-		if (previouslySelectedWallet != null) {
-			await onboard.walletSelect(previouslySelectedWallet)
-		} else {
-			await onboard.walletSelect()
+		if (!this._onboard) {
+			throw new Error('Web3 provider not initialized')
 		}
-		const readyToTransact = await onboard.walletCheck()
 
-		if (readyToTransact) {
-			const currentState = onboard.getState()
+		const previouslyConnectedWallets = window.localStorage.getItem('selectedWallet')
+
+		if (previouslyConnectedWallets != null && previouslyConnectedWallets !== '') {
+			console.debug('Found existing wallet... Reconnecting...')
+			// connect the most recently connected wallet (first in the array)
+			await this._onboard.connectWallet({
+				autoSelect: { label: JSON.parse(previouslyConnectedWallets)[0], disableModals: true },
+			})
+			const previouslyConnectedBlockchain = window.localStorage.getItem('selectedBlockchain')
+			if (previouslyConnectedBlockchain) {
+				await this._onboard.setChain({ chainId: previouslyConnectedBlockchain })
+			}
 			this.context.commit('setIsConnected', true)
-			this.context.commit('setChainData', currentState.appNetworkId)
-			this.context.dispatch('fetchActiveBalance')
 		} else {
-			this.context.commit('setIsConnected', false)
+			try {
+				const wallets = await this._onboard.connectWallet()
+				this.context.commit('setIsConnected', wallets.length > 0)
+			} catch (err) {
+				console.error('Unsupported blockchain?', err)
+			}
 		}
+	}
+
+	@Action
+	async switchBlockchain(network: Network) {
+		this._onboard?.setChain({
+			chainId: network.chainId,
+		})
 	}
 
 	@Action
@@ -227,6 +225,7 @@ class AccountsModule extends VuexModule {
 	@Action
 	async fetchActiveBalance() {
 		console.debug('in fetchActiveBalance')
+
 		let balance: BigNumber = BigNumber.from(0)
 		if (this.providerEthers != null && this.activeAccount != null) {
 			balance = await this.providerEthers.getBalance(this.activeAccount)

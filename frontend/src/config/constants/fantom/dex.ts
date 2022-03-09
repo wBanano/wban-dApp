@@ -1,4 +1,7 @@
 export default class DEX {
+	getDexUrl() {
+		return 'https://spookyswap.finance'
+	}
 	get0xSwapAPI(): string {
 		return 'https://fantom.api.0x.org/swap/v1/quote'
 	}

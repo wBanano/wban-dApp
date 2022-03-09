@@ -1,21 +1,21 @@
-import tokens from '@/config/constants/tokens'
+import { getTokens } from '@/config/constants/tokens'
 import { getTokensList, Token } from '@/config/constants/dex'
 import { Address } from '@/config/constants/types'
 import { IDBPDatabase, openDB } from 'idb'
 import { IERC20__factory } from '@artifacts/typechain'
 import { BigNumber, ethers } from 'ethers'
 import { Provider } from '@ethersproject/providers'
-import { Networks } from './Networks'
+import { POLYGON_MAINNET } from './Networks'
 import { TokenAmount } from '@/models/dex/TokenAmount'
+import Accounts from '@/store/modules/accounts'
 
 const TOKENS_STORE_NAME = 'tokens'
 
 class TokensUtil {
-	static initialized = false
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
-	static BLOCKCHAIN: string = process.env.VUE_APP_BLOCKCHAIN || ''
 
 	static getWBANAddress(): string {
+		const tokens = getTokens()
 		if (tokens && tokens.wban && tokens.wban.address) {
 			return tokens.wban.address[TokensUtil.ENV_NAME as keyof Address]
 		} else {
@@ -23,14 +23,21 @@ class TokensUtil {
 		}
 	}
 
+	static async isInitialized(): Promise<boolean> {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const factory: any = window.indexedDB
+		const databases = await factory.databases()
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		return databases.map((db: any) => db.name).includes(Accounts.network.network)
+	}
+
 	static async loadTokensList(): Promise<void> {
-		if (this.initialized) {
+		if (await this.isInitialized()) {
 			console.info('IndexDB database already initialized')
 			return
 		}
-		TokensUtil.initialized = true
 		console.info('Initializing tokens database')
-		const db: IDBPDatabase = await openDB('wBAN', 1, {
+		const db: IDBPDatabase = await openDB(Accounts.network.network, 1, {
 			upgrade(db) {
 				console.debug('in IndexDB database upgrade')
 				if (!db.objectStoreNames.contains(TOKENS_STORE_NAME)) {
@@ -48,8 +55,9 @@ class TokensUtil {
 		const wban = tokens.find((token) => token.symbol === 'wBAN')
 		// add it
 		if (!wban) {
+			const chainName = Accounts.network?.network
 			const wbanAddress = TokensUtil.getWBANAddress()
-			const logo = await import(`../assets/wban-logo-${TokensUtil.BLOCKCHAIN}.svg`)
+			const logo = await import(`../assets/wban-logo-${chainName}.svg`)
 			const logoUrl = `${window.location.origin}${logo.default}`
 			console.warn(`wBAN is not whitelisted in the DEX. Adding it at ${wbanAddress}`)
 			await db.put(
@@ -60,7 +68,7 @@ class TokensUtil {
 					address: wbanAddress,
 					decimals: 18,
 					logoURI: logoUrl,
-					chainId: Networks.EXPECTED_CHAIN_ID,
+					chainId: POLYGON_MAINNET.chainId,
 				},
 				TokensUtil.getWBANAddress().toLowerCase()
 			)
@@ -69,22 +77,22 @@ class TokensUtil {
 	}
 
 	static async getToken(address: string): Promise<Token | undefined> {
-		if (!TokensUtil.initialized) {
+		if (!(await TokensUtil.isInitialized())) {
 			await TokensUtil.loadTokensList()
 		}
 		console.info(`Searching for token "${address.toLowerCase()}"`)
-		const db: IDBPDatabase = await openDB('wBAN')
+		const db: IDBPDatabase = await openDB(Accounts.network.network)
 		const token = db.get(TOKENS_STORE_NAME, address.toLowerCase())
 		db.close()
 		return token
 	}
 
 	static async getTokenBySymbol(symbol: string): Promise<Token | undefined> {
-		if (!TokensUtil.initialized) {
+		if (!(await TokensUtil.isInitialized())) {
 			await TokensUtil.loadTokensList()
 		}
 		console.info(`Searching for token "${symbol.toLowerCase()}"`)
-		const db: IDBPDatabase = await openDB('wBAN')
+		const db: IDBPDatabase = await openDB(Accounts.network.network)
 		const token = await db.getFromIndex(TOKENS_STORE_NAME, 'symbol', symbol)
 		db.close()
 		return token
@@ -96,10 +104,10 @@ class TokensUtil {
 	}
 
 	static async getAllTokens(owner: string, provider: Provider | null): Promise<Array<Token>> {
-		if (!TokensUtil.initialized) {
+		if (!(await TokensUtil.isInitialized())) {
 			await TokensUtil.loadTokensList()
 		}
-		const db: IDBPDatabase = await openDB('wBAN')
+		const db: IDBPDatabase = await openDB(Accounts.network.network)
 		const tokens: Array<Token> = (await db.getAll(TOKENS_STORE_NAME))
 			// sort by alphabetical order
 			.sort((a: Token, b: Token) =>

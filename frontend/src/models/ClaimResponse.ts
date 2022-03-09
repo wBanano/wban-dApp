@@ -1,5 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-enum ClaimResponse {
+type ClaimResponse = {
+	signature: string
+	result: ClaimResponseResult
+}
+
+enum ClaimResponseResult {
 	Ok,
 	Blacklisted,
 	AlreadyDone,
@@ -7,4 +12,4 @@ enum ClaimResponse {
 	Error,
 }
 
-export { ClaimResponse }
+export { ClaimResponse, ClaimResponseResult }

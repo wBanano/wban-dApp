@@ -121,9 +121,8 @@ import NftPicture from '@/components/nft/NftPicture.vue'
 import { NftData } from '@/models/nft/NftData'
 import { ClaimableNft } from '@/models/nft/ClaimableNft'
 import nft from '@/store/modules/nft'
-import accounts from '@/store/modules/accounts'
 import { WBANLPRewards } from 'wban-nfts'
-import { asyncFilter } from '@/utils/AsyncUtils'
+import { asyncFilter, sleep } from '@/utils/AsyncUtils'
 import { ethers } from 'ethers'
 import axios, { AxiosResponse } from 'axios'
 import { openURL } from 'quasar'
@@ -148,7 +147,7 @@ export default class NftRewardsPage extends Vue {
 	activeAccount!: string
 
 	@accountsStore.Getter('providerEthers')
-	provider!: ethers.providers.JsonRpcProvider | null
+	provider!: ethers.providers.Web3Provider | null
 
 	missingForGolden = 0
 	claimableForGolden = -1
@@ -286,10 +285,17 @@ export default class NftRewardsPage extends Vue {
 		console.info(`${this.claimableNfts.length} different NFT claimable`)
 	}
 
-	async mounted() {
-		await accounts.initWalletProvider()
+	async onProviderChange() {
 		await nft.initContract(this.provider)
 		await this.reload()
+	}
+
+	async mounted() {
+		while (!this.provider) {
+			await sleep(100)
+		}
+		this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
 	}
 }
 </script>

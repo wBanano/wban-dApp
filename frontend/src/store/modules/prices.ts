@@ -2,6 +2,7 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
+import { getBackendHost } from '@/config/constants/backend'
 import axios from 'axios'
 
 @Module({
@@ -13,7 +14,6 @@ import axios from 'axios'
 class PricesModule extends VuexModule {
 	private _lastUpdateTimestamp = 0
 	private _prices: Map<string, number> = new Map()
-	static BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
 
 	get lastUpdateTimeStamp(): number {
 		return this._lastUpdateTimestamp
@@ -38,7 +38,7 @@ class PricesModule extends VuexModule {
 		console.debug('in loadPrices')
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
 			const resp = await axios.request({
-				url: `${PricesModule.BACKEND_URL}/prices`,
+				url: `${getBackendHost()}/prices`,
 			})
 			const apiResponse = resp.data
 			const wbanPrice: number = apiResponse.ban

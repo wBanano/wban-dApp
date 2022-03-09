@@ -3,7 +3,7 @@
 		<div v-if="choiceMade === ''" class="q-pa-md row items-start justify-center q-gutter-md">
 			<q-card class="coming-from-card" flat>
 				<q-card-section class="currency-logo">
-					<img :src="require(`@/assets/wban-logo-${expectedBlockchain.network}.svg`)" width="128px" />
+					<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" width="128px" />
 				</q-card-section>
 				<q-card-section>
 					<div class="title">I'm new to wBAN</div>
@@ -123,7 +123,7 @@
 					Please verify that your Banano address is indeed <span class="banano-address">{{ banAddress }}</span>
 				</p>
 				<p>
-					This is important as we will <i>link</i> your Banano address with your {{ expectedBlockchain.chainName }} one.
+					This is important as we will <i>link</i> your Banano address with your {{ currentBlockchain.chainName }} one.
 				</p>
 				<q-stepper-navigation>
 					<q-btn @click="claimBananoWallet" color="primary" text-color="secondary" label="Continue" />
@@ -172,18 +172,17 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
-import { BigNumber } from 'ethers'
-import QRCode from 'qrcode'
-import { ClaimResponse } from '@/models/ClaimResponse'
+import { BigNumber, ethers } from 'ethers'
+import { ClaimResponse, ClaimResponseResult } from '@/models/ClaimResponse'
 import { copyToClipboard } from 'quasar'
-import { Network, Networks } from '@/utils/Networks'
 import { BananoWalletsBlacklist, BlacklistRecord } from '@/utils/BananoWalletsBlacklist'
+import { Network } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -191,11 +190,19 @@ const backendStore = namespace('backend')
 @Component
 export default class SetupPage extends Vue {
 	public choiceMade = ''
-	public banAddress = ''
 	public step = 1
+
+	@accountsStore.State('network')
+	currentBlockchain!: Network
+
+	@accountsStore.Getter('providerEthers')
+	provider!: ethers.providers.Web3Provider | null
 
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
+
+	@backendStore.Getter('setupDone')
+	setupDone!: boolean
 
 	@backendStore.Getter('banDeposited')
 	banDeposited!: BigNumber
@@ -206,11 +213,10 @@ export default class SetupPage extends Vue {
 	@backendStore.Getter('banWalletForDepositsLink')
 	banWalletForDepositsLink!: string
 
-	banWalletForDepositsQRCode = ''
+	@backendStore.Getter('banWalletForDepositsQRCode')
+	banWalletForDepositsQRCode!: string
 
-	get expectedBlockchain(): Network {
-		return new Networks().getExpectedNetworkData()
-	}
+	banAddress = ''
 
 	get activeColor(): string {
 		if (this.$q.dark.isActive) {
@@ -235,16 +241,19 @@ export default class SetupPage extends Vue {
 	}
 
 	async claimBananoWallet() {
+		if (!this.provider) {
+			throw Error('Missing Web3 provider')
+		}
 		const result: ClaimResponse = await backend.claimAddresses({
 			banAddress: this.banAddress,
 			blockchainAddress: accounts.activeAccount as string,
-			provider: accounts.providerEthers,
+			provider: this.provider,
 		})
-		switch (result) {
-			case ClaimResponse.Ok:
+		switch (result.result) {
+			case ClaimResponseResult.Ok:
 				this.step = 5
 				break
-			case ClaimResponse.AlreadyDone:
+			case ClaimResponseResult.AlreadyDone:
 				// skip step 5 and redirect to home if claim was previously done
 				ban.setBanAccount(this.banAddress)
 				router.push('/')
@@ -264,7 +273,12 @@ export default class SetupPage extends Vue {
 		}
 		console.log(`Found a balance of ${this.banDeposited}`)
 		ban.setBanAccount(this.banAddress)
-		router.push('/')
+		const result = await backend.checkSetupDone(this.banAddress)
+		if (result === true) {
+			router.push('/')
+		} else {
+			console.error("Setup didn't work")
+		}
 	}
 
 	async copyBanAddressForDepositsToClipboard() {
@@ -282,30 +296,34 @@ export default class SetupPage extends Vue {
 		}
 	}
 
-	async mounted() {
-		console.debug('in mounted')
-		ban.init()
-		await backend.initBackend(this.banAddress)
-		if (!this.isUserConnected) {
+	@Watch('setupDone')
+	redirect() {
+		if (this.setupDone === true) {
+			console.warn('Connected?', this.isUserConnected, 'Setup done?', this.setupDone)
 			router.push('/')
-		}
-		this.banAddress = ban.banAddress
-		try {
-			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
-				scale: 6,
-				color: {
-					dark: '2A2A2E',
-					light: 'FBDD11',
-				},
-			})
-			this.banWalletForDepositsQRCode = `img:${qrcode}`
-		} catch (err) {
-			console.error(err)
 		}
 	}
 
+	async onProviderChange() {
+		this.banAddress = ban.banAddress
+		if (this.banAddress) {
+			this.choiceMade = 'BAN'
+			this.step = 4
+		}
+		if (this.setupDone === true) {
+			console.warn('Connected?', this.isUserConnected, 'Setup done?', this.setupDone)
+			router.push('/')
+		}
+	}
+
+	async mounted() {
+		console.debug('in mounted')
+		this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
+	}
+
 	async unmounted() {
-		await backend.closeStreamConnection()
+		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 }
 </script>

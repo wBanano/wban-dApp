@@ -3,9 +3,9 @@ import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 import { Benis, Benis__factory } from '@artifacts/typechain'
-import { BigNumber } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { FarmConfig } from '@/config/constants/types'
-import FarmUtils from '@/utils/FarmUtils'
+import { getBenisAddress, getFarms } from '@/config/constants/farms'
 import BenisUtils from '@/utils/BenisUtils'
 
 @Module({
@@ -18,8 +18,6 @@ class BenisModule extends VuexModule {
 	private _benis: Benis | null = null
 	private _farms: Array<FarmConfig> = []
 	private _farmsCount: BigNumber = BigNumber.from(0)
-
-	static BENIS_CONTRACT_ADDRESS: string = process.env.VUE_APP_BENIS_CONTRACT || ''
 
 	get benisContract() {
 		return this._benis
@@ -50,15 +48,17 @@ class BenisModule extends VuexModule {
 
 	@Action
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async initContract(provider: any) {
+	async initContract(provider: ethers.providers.Web3Provider | null) {
 		console.debug('in initContract')
 		if (provider) {
+			const oldProvider = this._benis?.provider
 			// do not initialize contract if this was done earlier
-			if (!this._benis) {
-				const benis = Benis__factory.connect(BenisModule.BENIS_CONTRACT_ADDRESS, provider.getSigner())
+			if (!this._benis || provider !== oldProvider) {
+				console.debug(`Benis is available at ${getBenisAddress()}`)
+				const benis = Benis__factory.connect(getBenisAddress(), provider.getSigner())
 				this.context.commit('setBenis', benis)
 
-				const farms = FarmUtils.getFarms()
+				const farms = getFarms()
 				for (let i = 0; i < farms.length; i++) {
 					const farm = farms[i]
 					const endTime = (await BenisUtils.getEndTime(farm.pid, benis)) * 1_000

@@ -8,12 +8,12 @@
 				<q-card-section class="q-pt-xs">
 					<div class="text-white">
 						<p>You are requesting to wrap/unwrap a 🤏 amount of {{ amount }} BAN/wBAN.</p>
-						<p>{{ expectedBlockchain.chainName }} network fees may not be worth it for this wrap/unwrap.</p>
+						<p>{{ currentBlockchain.chainName }} network fees may not be worth it for this wrap/unwrap.</p>
 					</div>
 				</q-card-section>
 				<q-card-section class="col-5 flex flex-center">
 					<img
-						:src="require(`@/assets/${expectedBlockchain.nativeCurrency.symbol.toLowerCase()}-coin.png`)"
+						:src="require(`@/assets/${currentBlockchain.nativeCurrency.symbol.toLowerCase()}-coin.png`)"
 						width="128px"
 						height="128px"
 					/>
@@ -28,20 +28,22 @@
 </template>
 
 <script lang="ts">
+import { Network } from '@ethersproject/providers'
 import { Component, Ref, Prop, Vue } from 'vue-property-decorator'
-import { Network, Networks } from '../Networks'
+import { namespace } from 'vuex-class'
+
+const accountsStore = namespace('accounts')
 
 @Component
 export default class LowAmountToWrapDialog extends Vue {
 	@Prop({ type: Number, required: true }) amount!: number
 
+	@accountsStore.State('network')
+	currentBlockchain!: Network
+
 	@Ref('dialog')
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private dialog: any
-
-	get expectedBlockchain(): Network {
-		return new Networks().getExpectedNetworkData()
-	}
 
 	show() {
 		this.dialog.show()

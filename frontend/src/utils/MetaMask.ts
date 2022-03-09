@@ -1,9 +1,8 @@
 import { Networks } from '@/utils/Networks'
 import TokensUtil from './TokensUtil'
+import Accounts from '@/store/modules/accounts'
 
 class MetaMask {
-	static BLOCKCHAIN: string = process.env.VUE_APP_BLOCKCHAIN || ''
-
 	static isMetaMask(): boolean {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const ethereum = (window as any).ethereum
@@ -11,7 +10,8 @@ class MetaMask {
 	}
 
 	static async addWBANToWallet(): Promise<void> {
-		const logo = await import(`../assets/wban-logo-${MetaMask.BLOCKCHAIN}.svg`)
+		const chainName = Accounts.network?.network
+		const logo = await import(`../assets/wban-logo-${chainName}.svg`)
 		const logoUrl = `${window.location.origin}${logo.default}`
 		MetaMask.addTokenToWallet(TokensUtil.getWBANAddress(), 'wBAN', 18, logoUrl)
 	}
@@ -34,7 +34,7 @@ class MetaMask {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static async addCustomNetwork(chainId: number): Promise<any> {
+	static async addCustomNetwork(chainId: string): Promise<any> {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const ethereum = (window as any).ethereum
 		const network = new Networks().getNetworkData(chainId)

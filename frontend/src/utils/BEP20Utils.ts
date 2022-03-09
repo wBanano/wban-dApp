@@ -1,14 +1,13 @@
+import { getBenisAddress } from '@/config/constants/farms'
 import { IBEP20, IBEP20__factory, IApePair, IApePair__factory } from '@artifacts/typechain'
 import { BigNumber, ethers, Signer } from 'ethers'
 
 class BEP20Utils {
-	static BENIS_CONTRACT_ADDRESS: string = process.env.VUE_APP_BENIS_CONTRACT || ''
-
 	public async approve(stakingToken: string, signer: Signer) {
 		console.debug(`Should approve unlimited spending of "${stakingToken}" LP tokens`)
 		const token: IBEP20 = await IBEP20__factory.connect(stakingToken, signer)
 		const txn = await token.approve(
-			BEP20Utils.BENIS_CONTRACT_ADDRESS,
+			getBenisAddress(),
 			BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
 		)
 		await txn.wait()
@@ -16,7 +15,7 @@ class BEP20Utils {
 
 	public async allowance(account: string, tokenAddress: string, signer: Signer): Promise<BigNumber> {
 		const token: IBEP20 = await this.getBEP20Token(tokenAddress, signer)
-		return await token.allowance(account, BEP20Utils.BENIS_CONTRACT_ADDRESS)
+		return await token.allowance(account, getBenisAddress())
 	}
 
 	public async getLPBalance(account: string, lpAddress: string, signer: Signer): Promise<BigNumber> {

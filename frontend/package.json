@@ -11,8 +11,12 @@
 	},
 	"dependencies": {
 		"@quasar/extras": "^1.10.2",
+		"@web3-onboard/core": "^2.0.10",
+		"@web3-onboard/gnosis": "^2.0.1",
+		"@web3-onboard/injected-wallets": "^2.0.2",
+		"@web3-onboard/ledger": "^2.0.0",
+		"@web3-onboard/walletconnect": "^2.0.1",
 		"axios": "0.21.1",
-		"bnc-onboard": "^1.37.0",
 		"core-js": "^3.6.5",
 		"humanize-duration": "^3.26.0",
 		"idb": "^7.0.0",

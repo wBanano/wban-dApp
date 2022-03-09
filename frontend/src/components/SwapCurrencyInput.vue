@@ -38,10 +38,13 @@
 
 <script lang="ts">
 import { Component, Prop, PropSync, Ref, Vue } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
 import { BigNumber, ethers } from 'ethers'
 import { bnToStringFilter, banPriceFilter } from '@/utils/filters'
 import accounts from '@/store/modules/accounts'
-import { Network, Networks } from '@/utils/Networks'
+import { Network } from '@/utils/Networks'
+
+const accountsStore = namespace('accounts')
 
 @Component({
 	filters: {
@@ -59,6 +62,9 @@ export default class SwapCurrencyInput extends Vue {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	@Ref('amount') readonly amountField!: any
 
+	@accountsStore.State('network')
+	network!: Network
+
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	validationRules: Array<any> = [
 		(val: string) => val == '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
@@ -70,12 +76,8 @@ export default class SwapCurrencyInput extends Vue {
 		if (this.currency === 'BAN') {
 			return 'ban-logo.png'
 		} else {
-			return `wban-logo-${this.expectedBlockchain.network}.svg`
+			return `wban-logo-${this.network.network}.svg`
 		}
-	}
-
-	get expectedBlockchain(): Network {
-		return new Networks().getExpectedNetworkData()
 	}
 
 	setToMax() {

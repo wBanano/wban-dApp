@@ -55,7 +55,6 @@ import { namespace } from 'vuex-class'
 import { BigNumber, ethers } from 'ethers'
 import { bnToStringFilter, banPriceFilter } from '@/utils/filters'
 import accounts from '@/store/modules/accounts'
-import { Network, Networks } from '@/utils/Networks'
 import TokenChooser from '@/components/tokens/TokenChooser.vue'
 import MetaMask from '@/utils/MetaMask'
 import { TokenAmount } from '@/models/dex/TokenAmount'
@@ -112,10 +111,6 @@ export default class TokenInput extends Vue {
 				(val: string) => this.isLowerThanMax(val) || `Not enough ${this.value.token.symbol}!`,
 			]
 		}
-	}
-
-	get expectedBlockchain(): Network {
-		return new Networks().getExpectedNetworkData()
 	}
 
 	get error(): boolean | undefined {

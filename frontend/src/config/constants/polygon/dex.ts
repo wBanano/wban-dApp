@@ -1,4 +1,7 @@
 export default class DEX {
+	getDexUrl() {
+		return 'https://app.sushi.com'
+	}
 	get0xSwapAPI(): string {
 		return 'https://polygon.api.0x.org/swap/v1/quote'
 	}

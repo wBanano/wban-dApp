@@ -1,4 +1,7 @@
 export default class DEX {
+	getDexUrl() {
+		return 'https://pancakeswap.finance'
+	}
 	get0xSwapAPI(): string {
 		return 'https://bsc.api.0x.org/swap/v1/quote'
 	}

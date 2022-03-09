@@ -1,8 +1,9 @@
+import { ethers } from "ethers"
+
 type ClaimRequest = {
 	banAddress: string
 	blockchainAddress: string
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	provider: any
+	provider: ethers.providers.Web3Provider
 }
 
 export { ClaimRequest }

@@ -24,7 +24,7 @@
 				<div class="col-12 section-title">Transaction Settings</div>
 				<div class="col-6">Slippage Tolerance</div>
 				<div class="col-6 text-right">
-					0.5%
+					0.2%
 					<q-icon name="info" class="dictionary vertical-top">
 						<q-tooltip>
 							You will be able to specify the slippage later.<br />
@@ -149,8 +149,11 @@ export default class Swaps extends Vue {
 	@accountsStore.State('activeAccount')
 	user!: string
 
+	@accountsStore.State('network')
+	network!: Network
+
 	@accountsStore.Getter('providerEthers')
-	provider!: ethers.providers.JsonRpcProvider | null
+	provider!: ethers.providers.Web3Provider | null
 
 	@pricesStore.Getter('prices')
 	prices!: Map<string, number>
@@ -160,17 +163,13 @@ export default class Swaps extends Vue {
 	}
 
 	get estimatedFee(): string {
-		const cryptoPrice: number = this.prices.get(this.expectedBlockchain.nativeCurrency.symbol) || 0
+		const cryptoPrice: number = this.prices.get(this.network.nativeCurrency.symbol) || 0
 		if (cryptoPrice === 0 || this.quote.price === '') {
 			return ''
 		}
 		const gasFee: BigNumber = this.gas.mul(ethers.utils.parseUnits(this.gasPrice.toString(), 'wei'))
 		const usdFee = Number.parseFloat(ethers.utils.formatEther(gasFee).toString()) * cryptoPrice
 		return `$${usdFee.toFixed(2)}`
-	}
-
-	get expectedBlockchain(): Network {
-		return new Networks().getExpectedNetworkData()
 	}
 
 	onInputTokenChanged(token: Token) {
@@ -315,7 +314,7 @@ export default class Swaps extends Vue {
 			gasLimit: this.quote.gas,
 			gasPrice: this.quote.gasPrice,
 			data: this.quote.txnData,
-			chainId: this.expectedBlockchain.chainIdNumber,
+			// chainId: this.expectedBlockchain.chainIdNumber,
 		}
 		const signer: Signer = this.provider.getSigner()
 		SwapDialogs.startSwap()
@@ -323,7 +322,7 @@ export default class Swaps extends Vue {
 			const txnResponse = await signer.sendTransaction(txn)
 			await txnResponse.wait(2)
 			const txnHash = txnResponse.hash
-			const blockchainExplorerUrl = Accounts.blockExplorerUrl
+			const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 			const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
 			SwapDialogs.confirmSwap(txnHash, txnLink)
 			this.from.amount = ''
@@ -358,7 +357,7 @@ export default class Swaps extends Vue {
 		} else {
 			console.debug('Allowance is good enough for the swap')
 			// give feedback to the user
-			const blockchainExplorerUrl = Accounts.blockExplorerUrl
+			const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 			const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
 			SwapDialogs.confirmTokenApproval(txnHash, txnLink)
 			// update form
@@ -377,7 +376,8 @@ export default class Swaps extends Vue {
 		this.fromInput.resetValidation()
 	}
 
-	async mounted() {
+	async onProviderChange() {
+		await TokensUtil.loadTokensList()
 		// load tokens list
 		await TokensUtil.loadTokensList()
 		const wban = await TokensUtil.getTokenBySymbol('wBAN')
@@ -389,6 +389,16 @@ export default class Swaps extends Vue {
 			Object.assign(this.to.token, usdc)
 		}
 		this.fromInput.amountField.focus()
+		this.resetValidation()
+	}
+
+	async mounted() {
+		this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
+	}
+
+	unmounted() {
+		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 }
 </script>

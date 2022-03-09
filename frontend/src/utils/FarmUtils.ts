@@ -4,7 +4,6 @@ import { Benis } from '@artifacts/typechain'
 import { BigNumber, ethers, Signer } from 'ethers'
 import BenisUtils from './BenisUtils'
 import BEP20Utils from './BEP20Utils'
-import { bscFarms, fantomFarms, polygonFarms } from '@/config/constants/farms'
 
 const BN_ONE = ethers.utils.parseEther('1')
 
@@ -15,9 +14,6 @@ class FarmUtils {
 	private wbanAddress = ''
 	private banPriceInUSD = 0
 	private prices: Map<string, number> = new Map()
-
-	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
-	static BLOCKCHAIN: string = process.env.VUE_APP_BLOCKCHAIN || ''
 
 	public async computeData(
 		farmConfig: FarmConfig,
@@ -68,22 +64,6 @@ class FarmUtils {
 
 	public isStaking(): boolean {
 		return this.wbanAddress === this.farmConfig.lpAddresses[this.envName as keyof Address]
-	}
-
-	public static getFarms(): FarmConfig[] {
-		switch (FarmUtils.BLOCKCHAIN) {
-			// BSC farms
-			case 'bsc':
-				return bscFarms
-			// Polygon farms
-			case 'polygon':
-				return polygonFarms
-			// Fantom farms
-			case 'fantom':
-				return fantomFarms
-			default:
-				throw new Error('Unexpected network')
-		}
 	}
 
 	private async computeAPR(farmData: FarmData, envName: string, signer: Signer, benis: Benis): Promise<FarmData> {

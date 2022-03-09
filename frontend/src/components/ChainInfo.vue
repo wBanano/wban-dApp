@@ -121,10 +121,11 @@ import contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
 import { WithdrawRequest } from '@/models/WithdrawRequest'
 import { WBANToken } from '../../../artifacts/typechain/WBANToken'
-import { BigNumber } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import QRCode from 'qrcode'
 import { copyToClipboard } from 'quasar'
+import { sleep } from '@/utils/AsyncUtils'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -160,13 +161,14 @@ export default class ChainInfo extends Vue {
 	@backendStore.Getter('banWalletForDepositsLink')
 	banWalletForDepositsLink!: string
 
+	@accountsStore.Getter('providerEthers')
+	provider!: ethers.providers.Web3Provider | null
+
 	@contractsStore.Getter('wBanBalance')
 	wBanBalance!: BigNumber
 
 	@contractsStore.Getter('wbanAddress')
 	wbanAddress!: string
-
-	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
 
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
@@ -220,13 +222,6 @@ export default class ChainInfo extends Vue {
 
 	swap() {
 		this.$router.push('/swaps')
-		/*
-		if (ChainInfo.DEX_URL === 'https://app.sushi.com' || ChainInfo.DEX_URL === 'https://pancakeswap.finance') {
-			openURL(`${ChainInfo.DEX_URL}/swap?inputCurrency=${this.wbanAddress}`)
-		} else {
-			openURL(`${ChainInfo.DEX_URL}/#/swap?inputCurrency=${this.wbanAddress}`)
-		}
-		*/
 	}
 
 	async reloadBalances() {
@@ -236,8 +231,6 @@ export default class ChainInfo extends Vue {
 		await backend.loadBanDeposited(this.banAddress)
 
 		// reload data from the smart-contract
-		const provider = accounts.providerEthers
-		await contracts.initContract(provider)
 		const contract: WBANToken | null = contracts.wbanContract
 		if (contract && accounts.activeAccount) {
 			await contracts.loadBalances({ contract, account: accounts.activeAccount })
@@ -264,11 +257,9 @@ export default class ChainInfo extends Vue {
 		}
 	}
 
-	async mounted() {
-		console.debug('in mounted')
-		await ban.init()
-		this.banAddress = ban.banAddress
-		await backend.initBackend(this.banAddress)
+	async onProviderChange() {
+		console.warn('Web3 provider was changed to:', this.provider)
+		await contracts.initContract(this.provider)
 		await this.reloadBalances()
 		try {
 			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
@@ -282,14 +273,26 @@ export default class ChainInfo extends Vue {
 		} catch (err) {
 			console.error(err)
 		}
+	}
+
+	async mounted() {
+		console.debug('in mounted')
+		this.banAddress = ban.banAddress
+		// wait for Web3 provider to be ready
+		while (!this.provider) {
+			await sleep(100)
+		}
+		await this.onProviderChange()
 		document.addEventListener('deposit-ban', this.depositBAN)
 		document.addEventListener('withdraw-ban', this.askWithdrawalAmount)
 		document.addEventListener('reload-balances', this.reloadBalances)
 		document.addEventListener('swap', this.swap)
+		document.addEventListener('web3-connection', this.onProviderChange)
 	}
 
 	async unmounted() {
 		await backend.closeStreamConnection()
+		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 }
 </script>

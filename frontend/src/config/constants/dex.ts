@@ -1,16 +1,14 @@
+import Accounts from '@/store/modules/accounts'
 import BSCDEX from './bsc/dex'
 import PolygonDEX from './polygon/dex'
 import FantomDEX from './fantom/dex'
+import { getBackendHost } from './backend'
+import { BSC_MAINNET, FANTOM_MAINNET, POLYGON_MAINNET } from '@/utils/Networks'
 import axios from 'axios'
-import { Networks } from '@/utils/Networks'
 
-const networks = new Networks()
 const bsc = new BSCDEX()
 const polygon = new PolygonDEX()
 const fantom = new FantomDEX()
-
-const BLOCKCHAIN: string = process.env.VUE_APP_BLOCKCHAIN || ''
-const BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
 
 type Token = {
 	name: string
@@ -30,13 +28,26 @@ const EMPTY_TOKEN: Token = {
 	chainId: 0,
 }
 
+function getDexUrl() {
+	switch (Accounts.network.chainIdNumber) {
+		case BSC_MAINNET.chainIdNumber:
+			return bsc.getDexUrl()
+		case POLYGON_MAINNET.chainIdNumber:
+			return polygon.getDexUrl()
+		case FANTOM_MAINNET.chainIdNumber:
+			return fantom.getDexUrl()
+		default:
+			throw new Error('Unexpected network')
+	}
+}
+
 function get0xSwapAPI(): string {
-	switch (BLOCKCHAIN) {
-		case 'bsc':
+	switch (Accounts.network.chainIdNumber) {
+		case BSC_MAINNET.chainIdNumber:
 			return bsc.get0xSwapAPI()
-		case 'polygon':
+		case POLYGON_MAINNET.chainIdNumber:
 			return polygon.get0xSwapAPI()
-		case 'fantom':
+		case FANTOM_MAINNET.chainIdNumber:
 			return fantom.get0xSwapAPI()
 		default:
 			throw new Error('Unexpected network')
@@ -44,12 +55,12 @@ function get0xSwapAPI(): string {
 }
 
 function get0xExchangeRouterAddress(): string {
-	switch (BLOCKCHAIN) {
-		case 'bsc':
+	switch (Accounts.network.chainIdNumber) {
+		case BSC_MAINNET.chainIdNumber:
 			return bsc.get0xExchangeRouterAddress()
-		case 'polygon':
+		case POLYGON_MAINNET.chainIdNumber:
 			return polygon.get0xExchangeRouterAddress()
-		case 'fantom':
+		case FANTOM_MAINNET.chainIdNumber:
 			return fantom.get0xExchangeRouterAddress()
 		default:
 			throw new Error('Unexpected network')
@@ -57,13 +68,11 @@ function get0xExchangeRouterAddress(): string {
 }
 
 async function getTokensList(): Promise<Array<Token>> {
-	console.info(`Fetching tokens list from ${BACKEND_URL}/dex/tokens`)
-	const result = await axios.get(`${BACKEND_URL}/dex/tokens`)
-	const tokens = result.data.tokens.filter(
-		(token: Token) => token.chainId === networks.getExpectedNetworkData().chainIdNumber
-	)
+	console.info(`Fetching tokens list from ${getBackendHost()}/dex/tokens`)
+	const result = await axios.get(`${getBackendHost()}/dex/tokens`)
+	const tokens = result.data.tokens.filter((token: Token) => token.chainId === Accounts.network.chainIdNumber)
 	console.debug(`Found ${tokens.length} tokens`)
 	return tokens
 }
 
-export { get0xSwapAPI, get0xExchangeRouterAddress, getTokensList, Token, EMPTY_TOKEN }
+export { getDexUrl, get0xSwapAPI, get0xExchangeRouterAddress, getTokensList, Token, EMPTY_TOKEN }

@@ -18,7 +18,7 @@ class DEXUtils {
 				sellAmount: sellAmount,
 				takerAddress: user,
 				gasPrice: gasPrice.toNumber(),
-				slippagePercentage: 0.005, // 0.5% slippage
+				slippagePercentage: 0.002, // 0.2% slippage
 				affiliateAddress: '0xFD1Dc8Bf39Bc0e373068746787c1296a5aEF31Ee', // wBAN smart-contract deployer
 				skipValidation: skipValidation,
 			}

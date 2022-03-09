@@ -80,7 +80,7 @@ import backend from '@/store/modules/backend'
 import contracts from '@/store/modules/contracts'
 import { SwapToWBanRequest } from '@/models/SwapToWBanRequest'
 import { bnToStringFilter, banPriceFilter, timestampFilter, hashTrimmedFilter } from '@/utils/filters'
-import { BigNumber } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -100,6 +100,9 @@ const backendStore = namespace('backend')
 export default class HistoryPage extends Vue {
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
+
+	@accountsStore.Getter('providerEthers')
+	provider!: ethers.providers.Web3Provider | null
 
 	@accountsStore.State('activeAccount')
 	activeAccount!: string
@@ -191,6 +194,7 @@ export default class HistoryPage extends Vue {
 	}
 
 	async loadHistory() {
+		await contracts.initContract(this.provider)
 		backend.getHistory({
 			blockchainAddress: this.activeAccount,
 			banAddress: this.banAddress,
@@ -202,6 +206,11 @@ export default class HistoryPage extends Vue {
 			this.$router.push('/')
 		}
 		this.loadHistory()
+		document.addEventListener('web3-connection', this.loadHistory)
+	}
+
+	unmounted() {
+		document.removeEventListener('web3-connection', this.loadHistory)
 	}
 }
 </script>

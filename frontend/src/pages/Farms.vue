@@ -38,8 +38,15 @@
 				</q-btn-toggle>
 				<div class="col-md-1" />
 			</div>
-			<div class="row q-col-gutter-md justify-center">
+			<div v-if="selectedFarms.length > 0" class="row q-col-gutter-md justify-center">
 				<farm v-for="farm in selectedFarms" :key="farm.pid" :account="activeAccount" :value="farm" />
+				<div class="col-md-1" />
+			</div>
+			<div v-if="farmsSelected === 'active' && selectedFarms.length === 0 && !loading" class="row justify-center">
+				<div class="text-center">
+					No farm running on {{ currentBlockchain.chainName }}. Check on other blockchains.<br /><br />
+					<img src="/farms-gone.jpg" />
+				</div>
 				<div class="col-md-1" />
 			</div>
 		</div>
@@ -51,14 +58,14 @@ import { Vue, Component } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import Farm from '@/components/farms/Farm.vue'
 import benis from '@/store/modules/benis'
-import accounts from '@/store/modules/accounts'
-import prices from '@/store/modules/prices'
 import { FarmConfig } from '@/config/constants/types'
 import TokensUtil from '@/utils/TokensUtil'
 import { ethers } from 'ethers'
 import BenisUtils from '@/utils/BenisUtils'
 import { BN_ZERO } from '@/models/FarmData'
 import { Benis } from '@artifacts/typechain'
+import { sleep } from '@/utils/AsyncUtils'
+import { Network } from '@/utils/Networks'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -75,8 +82,11 @@ export default class FarmsPage extends Vue {
 	@accountsStore.State('activeAccount')
 	activeAccount!: string
 
+	@accountsStore.State('network')
+	currentBlockchain!: Network
+
 	@accountsStore.Getter('providerEthers')
-	provider!: ethers.providers.JsonRpcProvider | null
+	provider!: ethers.providers.Web3Provider | null
 
 	@benisStore.Getter('benisContract')
 	benis!: Benis
@@ -86,6 +96,8 @@ export default class FarmsPage extends Vue {
 	userHasDepositsInEndedFarms = false
 
 	wbanAddress: string = TokensUtil.getWBANAddress()
+
+	loading = true
 
 	benisUtils = new BenisUtils()
 
@@ -111,11 +123,10 @@ export default class FarmsPage extends Vue {
 		)
 	}
 
-	async mounted() {
-		await accounts.initWalletProvider()
-		await prices.loadPrices()
+	async onProviderChange() {
+		this.loading = true
 		await benis.initContract(this.provider)
-
+		this.loading = false
 		// find out if there are some user deposits in ended farms
 		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async (farm) => {
 			const deposits = await this.benisUtils.getStakedBalance(farm.pid, this.activeAccount, this.benis)
@@ -124,6 +135,19 @@ export default class FarmsPage extends Vue {
 		if (userNeedsWithdrawal) {
 			this.userHasDepositsInEndedFarms = true
 		}
+	}
+
+	async mounted() {
+		// wait for Web3 provider to be ready
+		while (!this.provider) {
+			await sleep(100)
+		}
+		await this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
+	}
+
+	unmounted() {
+		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

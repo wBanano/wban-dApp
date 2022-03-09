@@ -113,10 +113,20 @@ export default class TokenChooserDialog extends Vue {
 		this.hide()
 	}
 
-	async mounted() {
+	async onProviderChange() {
+		this.loading = true
 		this.allTokens = await TokensUtil.getAllTokens(this.user, this.provider)
 		this.tokens = this.allTokens
 		this.loading = false
+	}
+
+	async mounted() {
+		await this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
+	}
+
+	unmounted() {
+		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 }
 </script>

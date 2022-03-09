@@ -24,9 +24,9 @@
 		"node": ">=10"
 	},
 	"devDependencies": {
-		"@ethersproject/abi": "^5.4.7",
-		"@ethersproject/bytes": "^5.4.7",
-		"@ethersproject/providers": "^5.4.7",
+		"@ethersproject/abi": "^5.5.3",
+		"@ethersproject/bytes": "^5.5.0",
+		"@ethersproject/providers": "^5.5.3",
 		"@nomiclabs/hardhat-ethers": "^2.0.5",
 		"@nomiclabs/hardhat-etherscan": "^3.0.1",
 		"@nomiclabs/hardhat-solhint": "^2.0.0",
@@ -46,7 +46,7 @@
 		"copyfiles": "^2.4.1",
 		"dotenv": "^8.2.0",
 		"ethereum-waffle": "^3.3.0",
-		"ethers": "^5.4.7",
+		"ethers": "^5.5.3",
 		"hardhat": "^2.8.4",
 		"hardhat-abi-exporter": "^2.8.0",
 		"hardhat-dependency-compiler": "^1.1.2",

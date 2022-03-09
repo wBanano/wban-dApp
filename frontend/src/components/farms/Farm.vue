@@ -209,7 +209,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import TokenInput from '@/components/farms/TokenInput.vue'
 import ban from '@/store/modules/ban'
@@ -230,6 +230,7 @@ import {
 import Dialogs from '@/utils/Dialogs'
 import numeral from 'numeral'
 import { openURL } from 'quasar'
+import { getDexUrl } from '@/config/constants/dex'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -284,8 +285,6 @@ export default class Farm extends Vue {
 	private benisUtils = new BenisUtils()
 
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
-	static DEX_URL: string = process.env.VUE_APP_DEX_URL || ''
-	static BENIS_CONTRACT_ADDRESS: string = process.env.VUE_APP_BENIS_CONTRACT || ''
 
 	get symbol(): string {
 		return this.isStaking() ? 'wBAN' : 'LP'
@@ -333,19 +332,19 @@ export default class Farm extends Vue {
 		if (this.value.quoteToken.address) {
 			const otherToken = this.value.quoteToken.address[Farm.ENV_NAME as keyof Address]
 			if (
-				Farm.DEX_URL === 'https://app.sushi.com' ||
-				Farm.DEX_URL === 'https://pancakeswap.finance' ||
-				Farm.DEX_URL === 'https://spookyswap.finance'
+				getDexUrl() === 'https://app.sushi.com' ||
+				getDexUrl() === 'https://pancakeswap.finance' ||
+				getDexUrl() === 'https://spookyswap.finance'
 			) {
-				openURL(`${Farm.DEX_URL}/add/${this.wbanAddress}/${otherToken}`)
+				openURL(`${getDexUrl()}/add/${this.wbanAddress}/${otherToken}`)
 			} else {
-				openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/${otherToken}`)
+				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/${otherToken}`)
 			}
 		} else {
-			if (Farm.DEX_URL === 'https://spookyswap.finance') {
-				openURL(`${Farm.DEX_URL}/add/${this.wbanAddress}/FTM`)
+			if (getDexUrl() === 'https://spookyswap.finance') {
+				openURL(`${getDexUrl()}/add/${this.wbanAddress}/FTM`)
 			} else {
-				openURL(`${Farm.DEX_URL}/#/add/${this.wbanAddress}/ETH`)
+				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/ETH`)
 			}
 		}
 	}
@@ -392,11 +391,12 @@ export default class Farm extends Vue {
 		await this.reload()
 	}
 
-	async reload() {
+	@Watch('value')
+	async reload(): Promise<void> {
 		if (this.provider) {
+			this.isLoading = true
 			this.signer = this.provider.getSigner()
 
-			await ban.init()
 			this.farmUtils = new FarmUtils()
 			this.farmData = await this.farmUtils.computeData(
 				this.value,
@@ -416,12 +416,18 @@ export default class Farm extends Vue {
 				this.signer
 			)
 			this.lpTokenAllowance = allowance.gt(BigNumber.from('0'))
+
+			this.isLoading = false
 		}
 	}
 
 	mounted() {
-		this.isLoading = true
-		this.reload().then(() => (this.isLoading = false))
+		this.reload()
+		document.addEventListener('web3-connection', this.reload)
+	}
+
+	unmounted() {
+		document.removeEventListener('web3-connection', this.reload)
 	}
 }
 </script>

@@ -45,14 +45,24 @@ export default class TokenChooserItem extends Vue {
 		return numeral(this.balance).format('0,0[.]00000000')
 	}
 
-	async mounted() {
+	async onProviderChange() {
 		if (!this.provider) {
 			console.error('Missing Web3 provider')
 			return
 		}
+		this.loading = true
 		const rawBalance: BigNumber = await TokensUtil.getBalance(this.user, this.token, this.provider)
 		this.balance = ethers.utils.formatUnits(rawBalance, this.token.decimals)
 		this.loading = false
+	}
+
+	async mounted() {
+		this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
+	}
+
+	unmounted() {
+		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 }
 </script>

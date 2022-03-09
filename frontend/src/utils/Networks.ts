@@ -1,3 +1,4 @@
+import { getBackendHost } from '@/config/constants/backend'
 import axios from 'axios'
 import { BigNumber, ethers } from 'ethers'
 
@@ -92,7 +93,7 @@ const POLYGON_TESTNET: Network = {
 
 const FANTOM_MAINNET: Network = {
 	network: 'fantom',
-	chainId: '0xFA',
+	chainId: '0xfa',
 	chainIdNumber: 250,
 	chainName: 'Fantom',
 	chainUrl: 'https://fantom.foundation',
@@ -108,7 +109,7 @@ const FANTOM_MAINNET: Network = {
 
 const FANTOM_TESTNET: Network = {
 	network: 'fantom',
-	chainId: '0xFA2',
+	chainId: '0xfa2',
 	chainIdNumber: 4002,
 	chainName: 'Fantom Testnet',
 	chainUrl: 'https://fantom.foundation',
@@ -122,40 +123,31 @@ const FANTOM_TESTNET: Network = {
 	blockExplorerUrls: ['https://testnet.ftmscan.com'],
 }
 
-const BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
-
 class Networks {
-	private networks: Map<number, Network>
-
-	static EXPECTED_CHAIN_ID = Number.parseInt(process.env.VUE_APP_EXPECTED_CHAIN_ID || '')
+	private networks: Map<string, Network>
 
 	constructor() {
 		this.networks = new Map()
-		this.networks.set(BSC_MAINNET.chainIdNumber, BSC_MAINNET)
-		this.networks.set(BSC_TESTNET.chainIdNumber, BSC_TESTNET)
-		this.networks.set(POLYGON_MAINNET.chainIdNumber, POLYGON_MAINNET)
-		this.networks.set(POLYGON_TESTNET.chainIdNumber, POLYGON_TESTNET)
-		this.networks.set(FANTOM_MAINNET.chainIdNumber, FANTOM_MAINNET)
-		this.networks.set(FANTOM_TESTNET.chainIdNumber, FANTOM_TESTNET)
+		this.networks.set(BSC_MAINNET.chainId, BSC_MAINNET)
+		this.networks.set(BSC_TESTNET.chainId, BSC_TESTNET)
+		this.networks.set(POLYGON_MAINNET.chainId, POLYGON_MAINNET)
+		this.networks.set(POLYGON_TESTNET.chainId, POLYGON_TESTNET)
+		this.networks.set(FANTOM_MAINNET.chainId, FANTOM_MAINNET)
+		this.networks.set(FANTOM_TESTNET.chainId, FANTOM_TESTNET)
 	}
 
-	public getNetworkData(chainId: number): Network | undefined {
-		return this.networks.get(chainId)
+	public getMainnetSupportedNetworks(): Network[] {
+		return [BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET]
 	}
 
-	public getExpectedNetworkData(): Network {
-		const expectChain = this.getNetworkData(Networks.EXPECTED_CHAIN_ID)
-		if (!expectChain) {
-			throw new Error('Missing or misconfigured expected blockchain ID')
-		} else {
-			return expectChain
-		}
+	public getNetworkData(chainId: string): Network | undefined {
+		return this.networks.get(chainId.toLowerCase())
 	}
 
 	public static async getSuggestedTransactionGasPriceInGwei(): Promise<BigNumber> {
-		const resp = await axios.get(`${BACKEND_URL}/blockchain/gas-price`)
+		const resp = await axios.get(`${getBackendHost()}/blockchain/gas-price`)
 		return ethers.utils.parseUnits(resp.data.SafeGasPrice, 'gwei')
 	}
 }
 
-export { Networks, Network, BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET }
+export { Networks, Network, BSC_MAINNET, BSC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, FANTOM_MAINNET, FANTOM_TESTNET }

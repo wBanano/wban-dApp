@@ -1,4 +1,5 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
+import router from '@/router'
 import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
@@ -9,9 +10,13 @@ import { SwapRequest } from '@/models/SwapRequest'
 import { SwapResponse } from '@/models/SwapResponse'
 import { WithdrawRequest } from '@/models/WithdrawRequest'
 import { WithdrawResponse } from '@/models/WithdrawResponse'
-import { ClaimResponse } from '@/models/ClaimResponse'
+import { ClaimResponse, ClaimResponseResult } from '@/models/ClaimResponse'
 import Dialogs from '@/utils/Dialogs'
 import { HistoryRequest } from '@/models/HistoryRequest'
+import { getBackendHost } from '@/config/constants/backend'
+import ban from './ban'
+import accounts from '@/store/modules/accounts'
+import BackendUtils from '@/utils/BackendUtils'
 
 @Module({
 	namespaced: true,
@@ -22,6 +27,7 @@ import { HistoryRequest } from '@/models/HistoryRequest'
 class BackendModule extends VuexModule {
 	private _online = false
 	private _banWalletForDeposits = ''
+	private _banWalletForDepositsQRCode = ''
 	private _banDeposited: BigNumber = BigNumber.from(0)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _deposits: Array<any> = []
@@ -29,11 +35,13 @@ class BackendModule extends VuexModule {
 	private _withdrawals: Array<any> = []
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _swaps: Array<any> = []
+	private _setupDone: boolean | undefined = undefined
 	private _inError = false
 	private _errorMessage = ''
 	private _errorLink = ''
 	private _streamEventsSource: EventSource | null = null
-	static BACKEND_URL: string = process.env.VUE_APP_BACKEND_URL || ''
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private _web3listener: ((ev: Event) => any) | undefined = undefined
 
 	get online() {
 		return this._online
@@ -45,6 +53,10 @@ class BackendModule extends VuexModule {
 
 	get banWalletForDepositsLink() {
 		return `ban:${this._banWalletForDeposits}`
+	}
+
+	get banWalletForDepositsQRCode() {
+		return this._banWalletForDepositsQRCode
 	}
 
 	get banDeposited() {
@@ -61,6 +73,10 @@ class BackendModule extends VuexModule {
 
 	get swaps() {
 		return this._swaps
+	}
+
+	get setupDone() {
+		return this._setupDone
 	}
 
 	get inError() {
@@ -83,6 +99,11 @@ class BackendModule extends VuexModule {
 	@Mutation
 	setBanWalletForDeposits(address: string) {
 		this._banWalletForDeposits = address
+	}
+
+	@Mutation
+	setBanWalletForDepositsQRCode(qrCode: string) {
+		this._banWalletForDepositsQRCode = qrCode
 	}
 
 	@Mutation
@@ -109,6 +130,11 @@ class BackendModule extends VuexModule {
 	}
 
 	@Mutation
+	setSetupDone(setupDone: boolean) {
+		this._setupDone = setupDone
+	}
+
+	@Mutation
 	setInError(inError: boolean) {
 		this._inError = inError
 	}
@@ -128,18 +154,34 @@ class BackendModule extends VuexModule {
 		this._streamEventsSource = eventSource
 	}
 
+	@Mutation
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setWeb3Listener(listener: (ev: Event) => any) {
+		this._web3listener = listener
+	}
+
 	@Action
 	async initBackend(banWallet: string) {
 		console.log(`in initBackend`)
 		try {
-			const healthResponse = await axios.request({ url: `${BackendModule.BACKEND_URL}/health` })
+			const healthResponse = await axios.request({ url: `${getBackendHost()}/health` })
 			const healthStatus = healthResponse.data.status
 			this.context.commit('setOnline', healthStatus === 'OK')
+
+			if (!banWallet) {
+				const depositWalletResponse = await axios.request({ url: `${getBackendHost()}/deposits/ban/wallet` })
+				const depositWalletAddress = depositWalletResponse.data.address
+				this.context.commit('setBanWalletForDeposits', depositWalletAddress)
+				this.context.commit(
+					'setBanWalletForDepositsQRCode',
+					await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
+				)
+			}
 
 			if (!this._streamEventsSource && banWallet) {
 				console.debug(`Initiating connection to streams endpoint for ${banWallet}`)
 				/* eslint-disable @typescript-eslint/no-explicit-any */
-				const eventSource: EventSource = new EventSource(`${BackendModule.BACKEND_URL}/events/${banWallet}`)
+				const eventSource: EventSource = new EventSource(`${getBackendHost()}/events/${banWallet}`)
 				const withdrawalEvent = (e: any) => {
 					console.debug(e)
 					const { banWallet, withdrawal, balance, transaction } = JSON.parse(e.data)
@@ -160,6 +202,35 @@ class BackendModule extends VuexModule {
 							`Received banano pending withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN but this is put in a pending list`
 						)
 						Dialogs.showPendingWithdrawal(withdrawal)
+					}
+				}
+
+				const depositWalletResponse = await axios.request({ url: `${getBackendHost()}/deposits/ban/wallet` })
+				const depositWalletAddress = depositWalletResponse.data.address
+				this.context.commit('setBanWalletForDeposits', depositWalletAddress)
+				this.context.commit(
+					'setBanWalletForDepositsQRCode',
+					await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
+				)
+
+				const bcAddress = accounts.activeAccount
+				if (bcAddress) {
+					const setupDone = await BackendUtils.checkIfSetupDone(banWallet, bcAddress)
+					this.context.commit('setSetupDone', setupDone)
+					if (setupDone === false) {
+						if (router.currentRoute.path !== '/setup') {
+							router.push('/setup')
+						}
+						return
+					}
+					if (setupDone !== true) {
+						console.error('Unexpected error when checking if claim was already done')
+						this.context.commit('setSetupDone', false)
+						this.context.commit('setInError', true)
+						this.context.commit('setErrorMessage', setupDone)
+						if (router.currentRoute.path !== '/setup') {
+							router.push('/setup')
+						}
 					}
 				}
 
@@ -200,7 +271,7 @@ class BackendModule extends VuexModule {
 								account: blockchainWallet,
 								contract: Contracts.wbanContract,
 							})
-							const blockchainExplorerUrl = Accounts.blockExplorerUrl
+							const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 							const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
 							Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
 						} catch (err) {
@@ -235,11 +306,19 @@ class BackendModule extends VuexModule {
 					}
 				})
 				this.context.commit('setStreamEventsSource', eventSource)
-			}
 
-			const depositWalletResponse = await axios.request({ url: `${BackendModule.BACKEND_URL}/deposits/ban/wallet` })
-			const depositWalletAddress = depositWalletResponse.data.address
-			this.context.commit('setBanWalletForDeposits', depositWalletAddress)
+				// on Web3 provider change, check if the bridge setup was done
+				if (!this._web3listener) {
+					const listener = async () => {
+						// close current Server-Side Events connection
+						await this.closeStreamConnection()
+						// establish new Server-Side Events connection
+						await this.initBackend(ban.banAddress)
+					}
+					this.context.commit('setWeb3Listener', listener)
+					document.addEventListener('web3-connection', listener)
+				}
+			}
 		} catch (err) {
 			console.error(err)
 			this.context.commit('setOnline', false)
@@ -263,7 +342,7 @@ class BackendModule extends VuexModule {
 	async loadBanDeposited(account: string) {
 		if (account) {
 			console.debug('in loadBanDeposited')
-			const resp = await axios.get(`${BackendModule.BACKEND_URL}/deposits/ban/${account}`)
+			const resp = await axios.get(`${getBackendHost()}/deposits/ban/${account}`)
 			const { balance } = resp.data
 			this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 		} else {
@@ -281,7 +360,7 @@ class BackendModule extends VuexModule {
 					.getSigner()
 					.signMessage(`I hereby claim that the BAN address "${banAddress}" is mine`)
 				// call the backend for the swap
-				const resp = await axios.post(`${BackendModule.BACKEND_URL}/claim`, {
+				const resp = await axios.post(`${getBackendHost()}/claim`, {
 					banAddress,
 					blockchainAddress,
 					sig,
@@ -290,18 +369,22 @@ class BackendModule extends VuexModule {
 				this.context.commit('setErrorMessage', '')
 				switch (resp.status) {
 					case 200:
-						return ClaimResponse.Ok
+						// this.context.commit('setSetupDone', true)
+						return { signature: sig, result: ClaimResponseResult.Ok }
 					case 202:
-						return ClaimResponse.AlreadyDone
+						this.context.commit('setSetupDone', true)
+						return { signature: sig, result: ClaimResponseResult.AlreadyDone }
 					case 403:
-						return ClaimResponse.Blacklisted
+						this.context.commit('setSetupDone', false)
+						return { signature: sig, result: ClaimResponseResult.Blacklisted }
 					default:
-						return ClaimResponse.Error
+						this.context.commit('setSetupDone', false)
+						return { signature: sig, result: ClaimResponseResult.Error }
 				}
 			} catch (err) {
 				console.log(err)
-				this.context.commit('setInError', true)
 				if (err.response) {
+					this.context.commit('setInError', true)
 					const response: AxiosResponse = err.response
 					switch (response.status) {
 						case 403:
@@ -317,13 +400,16 @@ class BackendModule extends VuexModule {
 							this.context.commit('setErrorMessage', err)
 							break
 					}
-				} else {
-					this.context.commit('setErrorMessage', err)
 				}
-				return ClaimResponse.Error
+				return { signature: '', result: ClaimResponseResult.Error }
 			}
 		}
-		return ClaimResponse.Error
+		return { signature: '', result: ClaimResponseResult.Error }
+	}
+
+	@Action
+	async checkSetupDone(banAddress: string): Promise<string | boolean> {
+		return BackendUtils.checkIfSetupDone(banAddress, accounts.activeAccount ?? '')
 	}
 
 	@Action
@@ -336,7 +422,7 @@ class BackendModule extends VuexModule {
 				.signMessage(`Swap ${amount} BAN for wBAN with BAN I deposited from my wallet "${banAddress}"`)
 			// call the backend for the swap
 			try {
-				await axios.post(`${BackendModule.BACKEND_URL}/swap`, {
+				await axios.post(`${getBackendHost()}/swap`, {
 					ban: banAddress,
 					blockchain: blockchainAddress,
 					amount: amount,
@@ -384,7 +470,7 @@ class BackendModule extends VuexModule {
 			Dialogs.startWithdrawal()
 			// call the backend for the swap
 			try {
-				const resp = await axios.post(`${BackendModule.BACKEND_URL}/withdrawals/ban`, {
+				const resp = await axios.post(`${getBackendHost()}/withdrawals/ban`, {
 					ban: banAddress,
 					blockchain: blockchainAddress,
 					amount: amount,
@@ -429,18 +515,18 @@ class BackendModule extends VuexModule {
 	@Action
 	async getHistory(request: HistoryRequest) {
 		const { blockchainAddress, banAddress } = request
-		console.info(`About to fetch history for ${blockchainAddress} and ${banAddress}`)
 		if (banAddress && blockchainAddress) {
+			console.info(`About to fetch history for ${blockchainAddress} and ${banAddress}`)
 			try {
-				const resp = await axios.get(`${BackendModule.BACKEND_URL}/history/${blockchainAddress}/${banAddress}`)
+				const resp = await axios.get(`${getBackendHost()}/history/${blockchainAddress}/${banAddress}`)
 				const { deposits, withdrawals } = resp.data
 				const swaps = await Promise.all(
 					resp.data.swaps.map(async (swap: any) => {
 						if (swap.receipt && swap.uuid && Contracts.wbanContract) {
 							// swap.consumed = await Contracts.wbanContract.isReceiptConsumed(swap.receipt)
-							console.debug(`Blockchain address: ${blockchainAddress}`)
-							console.debug(`Amount: ${swap.amount}`)
-							console.debug(`UUID: ${swap.uuid}`)
+							// console.debug(`Blockchain address: ${blockchainAddress}`)
+							// console.debug(`Amount: ${swap.amount}`)
+							// console.debug(`UUID: ${swap.uuid}`)
 							swap.consumed = await Contracts.wbanContract.isReceiptConsumed(
 								blockchainAddress,
 								BigNumber.from(swap.amount),
@@ -469,7 +555,6 @@ class BackendModule extends VuexModule {
 				} else {
 					this.context.commit('setErrorMessage', err)
 				}
-				return ClaimResponse.Error
 			}
 		}
 	}

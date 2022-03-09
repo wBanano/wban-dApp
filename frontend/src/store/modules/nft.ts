@@ -72,6 +72,8 @@ class NftModule extends VuexModule {
 			}
 			// fetch metadata URI for images
 			this.context.commit('setUri', await this._rewards.uri(0))
+		} else {
+			console.error('Missing Web3 provider')
 		}
 	}
 
