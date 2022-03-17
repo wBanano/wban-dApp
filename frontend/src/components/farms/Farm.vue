@@ -308,7 +308,7 @@ export default class Farm extends Vue {
 	}
 
 	public isFinished(): boolean {
-		return this.farmData.timeLeft === 'Finished'
+		return this.value.ended ?? false
 	}
 
 	get depositValueToken0(): BigNumber {

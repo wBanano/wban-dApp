@@ -14,12 +14,6 @@ export interface Token {
 
 export type TokensList = Record<string, Token>
 
-export interface EndTime {
-	dev: number
-	staging: number
-	production: number
-}
-
 export interface FarmConfig {
 	pid: number
 	lpSymbol: string
@@ -27,7 +21,7 @@ export interface FarmConfig {
 	token: Token
 	quoteToken: Token
 	multiplier?: string
-	endTime: EndTime
+	ended?: boolean
 	dual?: {
 		rewardPerBlock: number
 		earnLabel: string

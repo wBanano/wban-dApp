@@ -31,7 +31,6 @@ export interface FarmData {
 
 	userGlobalBalance?: BigNumber // for wBAN staking only
 	userPendingRewards: BigNumber
-	timeLeft: string
 
 	apr: number
 	totalValue: BigNumber
@@ -70,7 +69,6 @@ export const EMPTY_FARM_DATA: FarmData = {
 	},
 	userGlobalBalance: BN_ZERO,
 	userPendingRewards: BN_ZERO,
-	timeLeft: '',
 	apr: 0,
 	totalValue: BN_ZERO,
 	stakedBalance: BN_ZERO,

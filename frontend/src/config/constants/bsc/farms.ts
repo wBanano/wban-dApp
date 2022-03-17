@@ -12,11 +12,6 @@ const farms: FarmConfig[] = [
 		},
 		token: tokens.wban,
 		quoteToken: tokens.wban,
-		endTime: {
-			dev: 1622142747,
-			staging: 1622323076,
-			production: 1627743600,
-		},
 	},
 	{
 		pid: 1,
@@ -28,11 +23,6 @@ const farms: FarmConfig[] = [
 		},
 		token: tokens.wban,
 		quoteToken: tokens.bnb,
-		endTime: {
-			dev: 1622142747,
-			staging: 1622323076,
-			production: 1632582000,
-		},
 	},
 	{
 		pid: 2,
@@ -44,11 +34,6 @@ const farms: FarmConfig[] = [
 		},
 		token: tokens.wban,
 		quoteToken: tokens.busd,
-		endTime: {
-			dev: 1622142747,
-			staging: 1622323076,
-			production: 1632582000,
-		},
 	},
 	{
 		pid: 3,
@@ -60,11 +45,6 @@ const farms: FarmConfig[] = [
 		},
 		token: tokens.wban,
 		quoteToken: tokens.busd,
-		endTime: {
-			dev: 0,
-			staging: 0,
-			production: 1637420400,
-		},
 	},
 ]
 

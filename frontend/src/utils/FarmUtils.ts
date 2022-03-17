@@ -36,16 +36,12 @@ class FarmUtils {
 		this.banPriceInUSD = banPriceInUSD
 		this.prices = prices
 
-		const benisUtils = new BenisUtils()
-
 		let farmData = JSON.parse(JSON.stringify(EMPTY_FARM_DATA))
 		farmData.pid = this.farmConfig.pid
 		farmData.poolData.address = this.farmConfig.lpAddresses
 		farmData.poolData.name = this.farmConfig.lpSymbol
 		farmData.poolData.symbolToken0 = this.farmConfig.token.symbol
 		farmData.poolData.symbolToken1 = this.farmConfig.quoteToken.symbol
-
-		farmData.timeLeft = await benisUtils.getFarmDurationLeft(farmData.pid, envName)
 
 		farmData = await this.computeAPR(farmData, envName, signer, benis)
 		if (this.isStaking()) {
@@ -162,7 +158,7 @@ class FarmUtils {
 		farmData.poolData.tvl = poolLiquidityUsd
 		console.debug(`Pool liquidity price: $${ethers.utils.formatEther(poolLiquidityUsd)}`)
 
-		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, envName, wbanPriceUsd, poolLiquidityUsd, benis)
+		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, wbanPriceUsd, poolLiquidityUsd, benis)
 		return farmData
 	}
 

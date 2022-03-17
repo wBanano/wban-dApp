@@ -6,6 +6,7 @@ import { Benis, Benis__factory } from '@artifacts/typechain'
 import { BigNumber } from 'ethers'
 import { FarmConfig } from '@/config/constants/types'
 import FarmUtils from '@/utils/FarmUtils'
+import BenisUtils from '@/utils/BenisUtils'
 
 @Module({
 	namespaced: true,
@@ -58,6 +59,11 @@ class BenisModule extends VuexModule {
 				this.context.commit('setBenis', benis)
 
 				const farms = FarmUtils.getFarms()
+				for (let i = 0; i < farms.length; i++) {
+					const farm = farms[i]
+					const endTime = (await BenisUtils.getEndTime(farm.pid, benis)) * 1_000
+					farm.ended = endTime <= Date.now()
+				}
 				this.context.commit('setFarms', farms)
 
 				const farmsCount = farms.length

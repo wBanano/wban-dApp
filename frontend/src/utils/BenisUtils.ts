@@ -1,9 +1,6 @@
 import { Benis } from '@artifacts/typechain'
 import { BigNumber, ethers } from 'ethers'
-import humanizeDuration from 'humanize-duration'
-import { EndTime, FarmConfig } from '@/config/constants/types'
 import Dialogs from './Dialogs'
-import FarmUtils from './FarmUtils'
 
 const ONE_UNIT = ethers.utils.parseEther('1')
 const ONE_YEAR = 365 * 24 * 60 * 60
@@ -18,7 +15,6 @@ class BenisUtils {
 	 */
 	public async getFarmAPR(
 		pid: number,
-		envName: string,
 		wbanPriceUsd: BigNumber,
 		poolLiquidityUsd: BigNumber,
 		benis: Benis
@@ -26,7 +22,7 @@ class BenisUtils {
 		if (poolLiquidityUsd.isZero()) {
 			return 0
 		}
-		if (this.getFarmDurationLeft(pid, envName) === 'Finished') {
+		if ((await BenisUtils.getEndTime(pid, benis)) * 1_000 <= Date.now()) {
 			return 0
 		}
 		const wbanPerSecond = await benis.wbanPerSecond()
@@ -41,17 +37,6 @@ class BenisUtils {
 		const totalAlloc = await benis.totalAllocPoint()
 		const pool = await benis.poolInfo(pid)
 		return pool.allocPoint / totalAlloc.toNumber()
-	}
-
-	public getFarmDurationLeft(pid: number, environment: string): string {
-		const now = Date.now()
-		const farmEndTime = this.getEndTime(pid, environment) * 1_000
-		if (farmEndTime && farmEndTime > now) {
-			return humanizeDuration(farmEndTime - now, { largest: 2 })
-		} else {
-			console.warn(`Pool (pid: ${pid}) is finished!`)
-			return 'Finished'
-		}
 	}
 
 	public async getStakedBalance(pid: number, account: string, benis: Benis): Promise<BigNumber> {
@@ -80,14 +65,9 @@ class BenisUtils {
 		return benis.pendingWBAN(pid, account)
 	}
 
-	private getEndTime(pid: number, environment: string): number {
-		const farms = FarmUtils.getFarms()
-		const farm: FarmConfig | undefined = farms.find((farm) => farm.pid === pid)
-		if (farm) {
-			return farm.endTime[environment as keyof EndTime]
-		} else {
-			throw new Error(`Farm with pid ${pid} is not properly configured`)
-		}
+	public static async getEndTime(pid: number, benis: Benis): Promise<number> {
+		const farm = await benis.poolInfo(pid)
+		return farm.allocPoint === 0 ? (Date.now() - 10_000) / 1_000 : benis.endTime()
 	}
 }
 

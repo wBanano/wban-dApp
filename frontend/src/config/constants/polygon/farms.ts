@@ -12,11 +12,6 @@ const farms: FarmConfig[] = [
 		},
 		token: tokens.wban,
 		quoteToken: tokens.weth,
-		endTime: {
-			dev: 0,
-			staging: 0,
-			production: 1648306800,
-		},
 	},
 ]
 

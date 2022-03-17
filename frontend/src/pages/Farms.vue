@@ -99,7 +99,7 @@ export default class FarmsPage extends Vue {
 		return (
 			this.allFarms
 				// only keep farms not ended
-				.filter((farm) => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) !== 'Finished')
+				.filter((farm) => !farm.ended)
 		)
 	}
 
@@ -107,7 +107,7 @@ export default class FarmsPage extends Vue {
 		return (
 			this.allFarms
 				// only keep farms ended
-				.filter((farm) => this.benisUtils.getFarmDurationLeft(farm.pid, Farm.ENV_NAME) === 'Finished')
+				.filter((farm) => farm.ended)
 		)
 	}
 
