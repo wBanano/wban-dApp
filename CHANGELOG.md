@@ -1,3 +1,7 @@
+# v1.5.2
+## Changes
+- no need to update the dApp when farms are extended
+
 # v1.5.1
 ## Bugs
 - Fix swap features on Fantom #90
