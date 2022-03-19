@@ -1,3 +1,7 @@
+# v2.0.0
+## New Features
+- one app to rule them all
+
 # v1.5.2
 ## Changes
 - no need to update the dApp when farms are extended
