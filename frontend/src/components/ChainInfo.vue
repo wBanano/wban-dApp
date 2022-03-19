@@ -63,7 +63,7 @@
 								Don't send amounts with more than 2 decimals and make sure there is no raw.<br />
 								Using "Max" link in Kalium is probably not going to work well.<br />
 								If you don't follow the previous rule, your BAN will be sent back to the wallet you sent them from.
-								<b>Make sure you don't withdraw from a CEX straight to this address or you may loose your BAN!</b>
+								<b>Make sure you don't withdraw from a CEX straight to this address or you may lose your BAN!</b>
 							</p>
 						</div>
 						<div class="gt-sm col-md-3 text-right">
