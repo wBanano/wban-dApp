@@ -1,3 +1,12 @@
+# v2.0.1
+## New Features
+- swap page: slippage can be edited
+## Improvements
+- better footer on mobile
+## Fixes
+- BSC logo as favicon
+- Typo
+
 # v2.0.0
 ## New Features
 - one app to rule them all
