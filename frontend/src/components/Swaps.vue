@@ -1,5 +1,5 @@
 <template>
-	<div class="swaps q-gutter-sm">
+	<div class="swaps q-pa-md q-gutter-sm">
 		<token-input
 			ref="from"
 			label="From"

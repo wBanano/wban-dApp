@@ -1,5 +1,5 @@
 <template>
-	<q-layout view="hHh lpR fFf">
+	<q-layout view="hHh lpR fff">
 		<q-header elevated>
 			<q-toolbar class="bg-toolbar text-white">
 				<q-btn v-if="drawerEnabled" dense flat round icon="menu" @click="drawerOpened = !drawerOpened" />
@@ -97,14 +97,19 @@
 			</span>
 			-
 			<span class="social">
-				<q-icon name="live_help" color="white" size="24px" style="margin-top: -3px; margin-right: -4px" />
-				<a href="https://wrap-that-potassium.gitbook.io/wban/introduction/quick-tour" target="_blank">Documentation</a>
+				<q-icon name="live_help" color="white" size="24px" />
+				<a
+					v-if="$q.screen.gt.xs"
+					href="https://wrap-that-potassium.gitbook.io/wban/introduction/quick-tour"
+					target="_blank"
+					>Documentation
+				</a>
 
-				<q-icon name="fab fa-discord" color="white" size="20px" style="margin-top: -3px" />
-				<a href="https://chat.banano.cc" target="_blank">Discord</a>
+				<q-icon name="fab fa-discord" color="white" size="20px" />
+				<a v-if="$q.screen.gt.xs" href="https://chat.banano.cc" target="_blank">Discord</a>
 
-				<q-icon name="fab fa-telegram" color="white" size="20px" style="margin-top: -3px" />
-				<a href="https://t.me/banano_official" target="_blank">Telegram</a>
+				<q-icon name="fab fa-telegram" color="white" size="20px" />
+				<a v-if="$q.screen.gt.xs" href="https://t.me/banano_official" target="_blank">Telegram</a>
 			</span>
 		</q-footer>
 	</q-layout>
@@ -285,11 +290,14 @@ export default class MainLayout extends Vue {
 	font-size: 1em
 	padding-top: 5px
 	padding-bottom: 5px
-.social a
-	font-weight: normal
-	color: white
-	margin-left: 5px
-	margin-right: 10px
+.social
+	.q-icon
+		margin-right: 5px
+	a
+		font-weight: normal
+		color: white
+		margin-left: 5px
+		margin-right: 10px
 
 .btn-disconnect
 	text-transform: none
