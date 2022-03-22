@@ -15,6 +15,7 @@ type SwapQuoteRequest = {
 	from: TokenAmount
 	to: Token
 	gasPrice: BigNumber
+	slippagePercentage: number
 }
 
 type SwapQuoteResponse = {

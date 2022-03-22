@@ -7,7 +7,7 @@ import qs from 'qs'
 
 class DEXUtils {
 	static async getQuote(request: SwapQuoteRequest, skipValidation = false): Promise<SwapQuoteResponse> {
-		const { user, from, to } = request
+		const { user, from, to, slippagePercentage } = request
 		let { gasPrice } = request
 		const sellAmount = ethers.utils.parseUnits(from.amount, from.token.decimals).toString()
 		try {
@@ -18,7 +18,8 @@ class DEXUtils {
 				sellAmount: sellAmount,
 				takerAddress: user,
 				gasPrice: gasPrice.toNumber(),
-				slippagePercentage: 0.002, // 0.2% slippage
+				slippagePercentage: slippagePercentage / 100,
+				//slippagePercentage: 0.005, // 0.5% slippage
 				affiliateAddress: '0xFD1Dc8Bf39Bc0e373068746787c1296a5aEF31Ee', // wBAN smart-contract deployer
 				skipValidation: skipValidation,
 			}

@@ -20,19 +20,35 @@
 			class="token-input"
 		/>
 		<q-card class="swap-details" bordered>
-			<div class="row q-pa-sm">
+			<div class="row q-pa-md q-gutter-y-md">
 				<div class="col-12 section-title">Transaction Settings</div>
-				<div class="col-6">Slippage Tolerance</div>
-				<div class="col-6 text-right">
-					0.2%
+				<div class="col-6">
+					Slippage Tolerance
 					<q-icon name="info" class="dictionary vertical-top">
 						<q-tooltip>
-							You will be able to specify the slippage later.<br />
-							Right now this is a very conservative value which may make swaps to fail.
+							This is maximum percentage you are willing to lose due to unfavorable price changes.
 						</q-tooltip>
 					</q-icon>
 				</div>
-				<div class="col-6">Allowance</div>
+				<div class="col-6 text-right">
+					{{ slippagePercentage }}%
+					<q-icon name="edit" class="dictionary vertical-top" />
+					<q-popup-edit v-model="slippagePercentage" auto-save v-slot="scope">
+						<q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set">
+							<template v-slot:append><span class="text-caption">%</span></template>
+						</q-input>
+					</q-popup-edit>
+				</div>
+				<div class="col-6">
+					Allowance
+					<q-icon name="info" class="dictionary vertical-top">
+						<q-tooltip>
+							Amount of {{ from.token.symbol }} the exchange can move on your behalf.<br /><br />
+							Exact Amount: Approve each time, safer but less convenient.<br />
+							Unlimited: Approve only once, more convenient but less safe.<br />
+						</q-tooltip>
+					</q-icon>
+				</div>
 				<div class="col-6 text-right">
 					<q-btn-toggle
 						v-model="allowanceSetting"
@@ -48,13 +64,6 @@
 							{ label: 'Unlimited', value: 'unlimited' },
 						]"
 					/>
-					<q-icon name="info" class="dictionary vertical-top">
-						<q-tooltip>
-							Amount of {{ from.token.symbol }} the exchange can move on your behalf.<br /><br />
-							Exact Amount: Approve each time, safer but less convenient.<br />
-							Unlimited: Approve only once, more convenient but less safe.<br />
-						</q-tooltip>
-					</q-icon>
 				</div>
 				<hr class="col-12" />
 				<div class="col-6">Estimated Gas Fee</div>
@@ -98,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import TokensUtil from '@/utils/TokensUtil'
 import { BigNumber, ethers, Signer } from 'ethers'
@@ -133,6 +142,7 @@ export default class Swaps extends Vue {
 
 	gas: BigNumber = BigNumber.from(0)
 	gasPrice: BigNumberish = BigNumber.from(0)
+	slippagePercentage = 0.5 // 0.5% slippage
 
 	quote: SwapQuoteResponse = EMPTY_QUOTE
 
@@ -185,6 +195,11 @@ export default class Swaps extends Vue {
 		this.getSwapQuote(this.from.amount)
 	}
 
+	@Watch('slippagePercentage')
+	onSlippageChanged() {
+		this.getSwapQuote(this.from.amount)
+	}
+
 	async switchCurrencyInputs() {
 		// switch tokens
 		const tempTokenAmount: TokenAmount = this.from
@@ -234,6 +249,7 @@ export default class Swaps extends Vue {
 					from: this.from,
 					to: this.to.token,
 					gasPrice: this.gasPrice,
+					slippagePercentage: this.slippagePercentage,
 				},
 				skipValidation
 			)
@@ -430,7 +446,7 @@ export default class Swaps extends Vue {
 	margin-left: 0
 	font-size: 14px !important
 	.section-title
-		font-weight: 300
+		font-weight: 500
 		margin-bottom: 0.5 * $space-base
 	.q-item
 		padding: 0
