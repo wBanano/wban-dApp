@@ -20,7 +20,7 @@
 				</q-card-section>
 				<q-card-section class="col-5 flex flex-center">
 					<img
-						:src="require(`@/assets/${currentBlockchainBlockchain.nativeCurrency.symbol.toLowerCase()}-coin.png`)"
+						:src="require(`@/assets/${currentBlockchain.nativeCurrency.symbol.toLowerCase()}-coin.png`)"
 						width="128px"
 						height="128px"
 					/>
