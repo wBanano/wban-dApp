@@ -1,3 +1,7 @@
+# v2.0.2
+## Bugs
+- fix dialog checking for enough crypto balance before wrapping
+
 # v2.0.1
 ## New Features
 - swap page: slippage can be edited
