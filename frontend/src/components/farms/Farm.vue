@@ -121,13 +121,19 @@
 							</div>
 							<div class="col-4 text-right" v-if="!isStaking()">${{ farmData.totalValue | bnToTwoDecimalsString }}</div>
 						</div>
-						<div class="row q-mt-md">
+						<div class="row q-mt-md" v-if="isStaking()">
 							<div class="col-2 text-right">TVL</div>
 							<div class="col-5 offset-1">
 								<span v-if="isStaking()">
 									{{ farmData.poolData.balanceToken0 | bnToZeroDecimalsStringFilter }} wBAN
 								</span>
 							</div>
+							<div class="col-4 text-right">${{ farmData.tvl | bnToTwoDecimalsStringFilter }}</div>
+						</div>
+						<div class="row q-mt-md" v-if="!isStaking()">
+							<div class="col-8 text-right">Farm TVL</div>
+							<div class="col-4 text-right">${{ farmData.tvl | bnToTwoDecimalsStringFilter }}</div>
+							<div class="col-8 text-right">Liquidity Pool TVL</div>
 							<div class="col-4 text-right">${{ farmData.poolData.tvl | bnToTwoDecimalsStringFilter }}</div>
 						</div>
 					</q-card-section>

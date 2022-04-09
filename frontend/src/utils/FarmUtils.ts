@@ -92,6 +92,7 @@ class FarmUtils {
 			farmData.poolData.balanceToken0 = wbanLiquidity
 			console.debug(`Benis is hodling ${ethers.utils.formatEther(wbanLiquidity)} wBAN`)
 			poolLiquidityUsd = wbanLiquidity.mul(wbanPriceUsd).div(BN_ONE)
+			farmData.tvl = poolLiquidityUsd
 		} else {
 			farmData.poolData.symbol = 'LP'
 			const userInfo = await benis.userInfo(farmData.pid, this.account)
@@ -133,12 +134,15 @@ class FarmUtils {
 				.mul(ethers.utils.parseEther(farmData.poolData.priceToken1.toString()))
 				.div(BN_ONE)
 			poolLiquidityUsd = liquidityUsdToken0.add(liquidityUsdToken1)
+
+			const pool = await benis.poolInfo(farmData.pid)
+			farmData.tvl = poolLiquidityUsd.mul(pool.stakingTokenTotalAmount).div(lpDetails.totalSupply)
+			farmData.poolData.tvl = poolLiquidityUsd
 		}
 
-		farmData.poolData.tvl = poolLiquidityUsd
 		console.debug(`Pool liquidity price: $${ethers.utils.formatEther(poolLiquidityUsd)}`)
 
-		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, wbanPriceUsd, poolLiquidityUsd, benis)
+		farmData.apr = await benisUtils.getFarmAPR(farmData.pid, wbanPriceUsd, farmData.tvl, benis)
 		return farmData
 	}
 

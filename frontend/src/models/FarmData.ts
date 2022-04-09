@@ -36,6 +36,7 @@ export interface FarmData {
 	totalValue: BigNumber
 	stakedBalance: BigNumber
 	stakedValue: BigNumber
+	tvl: BigNumber
 }
 
 export const BN_ZERO = BigNumber.from(0)
@@ -73,4 +74,5 @@ export const EMPTY_FARM_DATA: FarmData = {
 	totalValue: BN_ZERO,
 	stakedBalance: BN_ZERO,
 	stakedValue: BN_ZERO,
+	tvl: BN_ZERO,
 }

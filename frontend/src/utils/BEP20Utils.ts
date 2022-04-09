@@ -53,6 +53,7 @@ class BEP20Utils {
 				liquidity: liquidityToken1,
 				user: userLiquidityToken1,
 			},
+			totalSupply,
 		}
 	}
 
