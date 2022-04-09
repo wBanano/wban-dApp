@@ -1,3 +1,9 @@
+# v2.0.3
+## Bugs
+- fix APR computation
+## Improvements
+- display both farm and liquidity pool TVL in the details section
+
 # v2.0.2
 ## Bugs
 - fix dialog checking for enough crypto balance before wrapping
