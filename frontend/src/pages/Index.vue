@@ -8,32 +8,31 @@
 				<ChainInfo />
 			</div>
 		</div>
-		<div v-if="!isUserConnected" class="welcome-section q-pa-md row justify-center">
+		<div v-if="!isUserConnected" class="welcome-section row justify-center">
 			<div class="col-lg-5 col-md-8 col-sm-9 col-xs-12 text-center">
-				<div v-if="!$q.platform.is.mobile" class="love row justify-center items-center q-col-gutter-lg">
-					<div class="col text-right">
-						<q-img src="banano-logo-vertical.svg" />
+				<h3>wBAN is Wrapped Banano</h3>
+				<h5>It’s available on:</h5>
+				<div class="row items-top justify-center">
+					<div class="col-3 col-xs-4">
+						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('bsc')">
+							<img src="bsc-home-logo.svg" width="80px" height="80px" />
+							<q-card-section>BSC</q-card-section>
+						</q-card>
 					</div>
-					<div class="col-1">
-						<q-icon name="add_circle" color="positive" size="2em" />
+					<div class="col-3 col-xs-4">
+						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('polygon')">
+							<img src="polygon-home-logo.svg" width="80px" height="80px" />
+							<q-card-section>Polygon</q-card-section>
+						</q-card>
 					</div>
-					<div class="col">
-						<img :src="require(`@/assets/${currentBlockchain.network}-logo.svg`)" width="150px" />
-					</div>
-					<div class="col-1 text-positive" style="font-size: 2em; font-weight: bold">=</div>
-					<div class="col-3 text-left">
-						<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" width="150px" />
+					<div class="col-3 col-xs-4">
+						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('fantom')">
+							<img src="fantom-home-logo.svg" width="80px" height="80px" />
+							<q-card-section>Fantom</q-card-section>
+						</q-card>
 					</div>
 				</div>
-				<img
-					v-if="$q.platform.is.mobile"
-					:src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)"
-					width="150px"
-				/>
-				<h3>
-					wBAN is wrapped <a href="https://banano.cc">Banano</a> on
-					<a :href="currentBlockchain.chainUrl" target="_blank">{{ currentBlockchain.chainName }}</a>
-				</h3>
+				<br /><br />
 				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" label="connect" />
 				<div v-if="!$q.platform.is.mobile">
 					<h4>What can you do with wBAN?</h4>
@@ -82,7 +81,7 @@ import router from '@/router'
 import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
 import accounts from '@/store/modules/accounts'
-import { Network } from '@/utils/Networks'
+import { BSC_MAINNET, FANTOM_MAINNET, Network, POLYGON_MAINNET } from '@/utils/Networks'
 
 const banStore = namespace('ban')
 const accountsStore = namespace('accounts')
@@ -95,7 +94,7 @@ const accountsStore = namespace('accounts')
 })
 export default class PageIndex extends Vue {
 	@accountsStore.State('network')
-	currentBlockchain!: Network | undefined
+	currentBlockchain!: Network
 
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
@@ -115,8 +114,17 @@ export default class PageIndex extends Vue {
 		}
 	}
 
-	async connectWalletProvider() {
-		await accounts.connectWalletProvider()
+	async connectWalletProvider(wanted: 'bsc' | 'polygon' | 'fantom' | undefined) {
+		let wantedChain = undefined
+		if (wanted === 'bsc') {
+			wantedChain = BSC_MAINNET.chainId
+		} else if (wanted === 'polygon') {
+			wantedChain = POLYGON_MAINNET.chainId
+		} else if (wanted === 'fantom') {
+			wantedChain = FANTOM_MAINNET.chainId
+		}
+		console.warn('Wanted chain', wantedChain)
+		await accounts.connectWalletProvider(wantedChain)
 	}
 }
 </script>
@@ -129,12 +137,10 @@ body.body--dark
 		a
 			color: $primary
 
-.welcome-section
-	h4
-		line-height: 1rem
-
-.love col
-	width: 100%
+.selectable
+	padding-top: 1.5em
+	&:hover
+		background-color: lighten($secondary, 5%)
 
 body.body--light
 	.love

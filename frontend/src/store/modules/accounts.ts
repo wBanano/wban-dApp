@@ -10,6 +10,7 @@ import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import ledgerModule from '@web3-onboard/ledger'
 import gnosisModule from '@web3-onboard/gnosis'
+import Dialogs from '@/utils/Dialogs'
 
 @Module({
 	namespaced: true,
@@ -155,6 +156,11 @@ class AccountsModule extends VuexModule {
 						{ name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
 					],
 				},
+				accountCenter: {
+					desktop: {
+						enabled: false,
+					},
+				},
 			})
 
 			const state = this._onboard.state.select()
@@ -178,7 +184,7 @@ class AccountsModule extends VuexModule {
 	}
 
 	@Action
-	async connectWalletProvider() {
+	async connectWalletProvider(wantedChain?: string) {
 		console.debug('in connectWalletProvider')
 
 		if (!this._onboard) {
@@ -201,6 +207,24 @@ class AccountsModule extends VuexModule {
 		} else {
 			try {
 				const wallets = await this._onboard.connectWallet()
+				// check if the user is connected to a supported network
+				const chainId = wallets[0].chains[0].id
+				if (!new Networks().getMainnetSupportedNetworks().find((network) => network.chainId === chainId)) {
+					console.warn(`Unsupported blockchain network: ${chainId}. Asking for a switch to Polygon.`)
+					const switched = await this._onboard?.setChain({ chainId: POLYGON_MAINNET.chainId })
+					if (!switched) {
+						await Dialogs.showUnsupportedNetwork(chainId)
+						await this.disconnectWalletProvider()
+						return
+					}
+				}
+				// check if the user is connected to the wanted network
+				if (wantedChain) {
+					const switched = await this._onboard?.setChain({ chainId: wantedChain ?? POLYGON_MAINNET.chainId })
+					if (!switched) {
+						return
+					}
+				}
 				this.context.commit('setIsConnected', wallets.length > 0)
 			} catch (err) {
 				console.error('Unsupported blockchain?', err)

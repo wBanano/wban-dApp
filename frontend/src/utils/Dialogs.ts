@@ -310,9 +310,15 @@ class Dialogs {
 		}
 	}
 
-	static showWeb3Error() {
-		Dialog.create({
-			component: Web3ErrorDialog,
+	static showUnsupportedNetwork(chainId: string): Promise<void> {
+		return new Promise((resolve) => {
+			const networkName = chainId === '0x1' ? 'Ethereum' : chainId.toString()
+			Dialog.create({
+				component: Web3ErrorDialog,
+				title: `Unsupported network ${networkName}`,
+				message:
+					'<p>wBAN is only available on BSC, Polygon and Fantom.</p><p>Please switch to one of those networks.</p>',
+			}).onOk(() => resolve())
 		})
 	}
 

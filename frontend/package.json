@@ -11,10 +11,10 @@
 	},
 	"dependencies": {
 		"@quasar/extras": "^1.10.2",
-		"@web3-onboard/core": "^2.0.10",
+		"@web3-onboard/core": "^2.2.1",
 		"@web3-onboard/gnosis": "^2.0.1",
-		"@web3-onboard/injected-wallets": "^2.0.2",
-		"@web3-onboard/ledger": "^2.0.0",
+		"@web3-onboard/injected-wallets": "^2.0.5",
+		"@web3-onboard/ledger": "^2.0.1",
 		"@web3-onboard/walletconnect": "^2.0.1",
 		"axios": "0.21.1",
 		"core-js": "^3.6.5",
@@ -77,6 +77,6 @@
 		"handlebars": "^4.7.7",
 		"underscore": "^1.12.1",
 		"node-fetch": "^2.6.1",
-		"ethers": "^5.4.7"
+		"ethers": "^5.5.3"
 	}
 }

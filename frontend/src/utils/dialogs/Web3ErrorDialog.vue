@@ -2,14 +2,12 @@
 	<q-dialog ref="dialog" @hide="onDialogHide">
 		<q-card class="q-dialog-plugin">
 			<q-card-section>
-				<div class="text-h5 q-mt-sm q-mb-xs">Error connecting to Web3</div>
+				<div class="text-h5 q-mt-sm q-mb-xs">{{ title }}</div>
 			</q-card-section>
 			<q-card-section horizontal>
 				<q-card-section class="q-pt-xs">
 					<div class="text-white">
-						<p>You are probably missing some Web3 browser extension.</p>
-						<p><a href="https://metamask.io" target="blank">Install MetaMask extension</a> and try again.</p>
-						<p>Otherwise MetaMask and TrustWallet applications should work although they may require tweaks on iOS.</p>
+						<span v-html="message"></span>
 					</div>
 				</q-card-section>
 				<q-card-section class="col-5 flex flex-center">
@@ -24,10 +22,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Component, Prop, Ref, Vue } from 'vue-property-decorator'
 
 @Component
 export default class Web3ErrorDialog extends Vue {
+	@Prop({ type: String, required: true }) title!: string
+	@Prop({ type: String, required: true }) message!: string
+
 	@Ref('dialog')
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private dialog: any
