@@ -1,3 +1,9 @@
+# v2.0.4
+## Bugs
+- Link for View after a farm deposit transaction is broken #91
+## Improvements
+- new home page and better UX for connecting
+
 # v2.0.3
 ## Bugs
 - fix APR computation
