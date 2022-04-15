@@ -237,6 +237,7 @@ import Dialogs from '@/utils/Dialogs'
 import numeral from 'numeral'
 import { openURL } from 'quasar'
 import { getDexUrl } from '@/config/constants/dex'
+import Accounts from '@/store/modules/accounts'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -259,9 +260,6 @@ export default class Farm extends Vue {
 
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.JsonRpcProvider | null
-
-	@accountsStore.State('blockExplorerUrl')
-	blockExplorerUrl!: string
 
 	@benisStore.Getter('benisContract')
 	benis!: Benis
@@ -374,7 +372,8 @@ export default class Farm extends Vue {
 	async supply() {
 		const txnHash = await this.benisUtils.supply(this.value.pid, this.lpAmount, this.value.lpSymbol, this.benis)
 		await this.reload()
-		Dialogs.confirmFarmSupply(this.lpAmount, this.value.lpSymbol, txnHash, `${this.blockExplorerUrl}/tx/${txnHash}`)
+		const blockExplorerUrl = Accounts.network.blockExplorerUrls[0]
+		Dialogs.confirmFarmSupply(this.lpAmount, this.value.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
 		this.promptForSupply = false
 	}
 
@@ -388,7 +387,8 @@ export default class Farm extends Vue {
 	async withdraw() {
 		const txnHash = await this.benisUtils.withdraw(this.value.pid, this.lpAmount, this.value.lpSymbol, this.benis)
 		await this.reload()
-		Dialogs.confirmFarmWithdraw(this.lpAmount, this.value.lpSymbol, txnHash, `${this.blockExplorerUrl}/tx/${txnHash}`)
+		const blockExplorerUrl = Accounts.network.blockExplorerUrls[0]
+		Dialogs.confirmFarmWithdraw(this.lpAmount, this.value.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
 		this.promptForWithdraw = false
 	}
 

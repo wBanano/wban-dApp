@@ -149,9 +149,6 @@ export default class MainLayout extends Vue {
 	@accountsStore.State('network')
 	currentBlockchain!: Network
 
-	@accountsStore.State('blockExplorerUrl')
-	blockExplorerUrl!: string
-
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
 
