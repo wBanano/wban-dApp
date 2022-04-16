@@ -14,7 +14,7 @@
 		<div class="q-pa-md emphasis">
 			<div class="row">
 				<div class="col col-sm-4 col-xs-6">
-					<token-chooser v-if="value.token" v-model="value.token" @token-changed="onTokenChanged($event)" />
+					<token-chooser v-model="value.token" @token-changed="onTokenChanged($event)" />
 				</div>
 				<div class="col-input col col-sm-6 col-xs-12">
 					<q-input
@@ -153,7 +153,9 @@ export default class TokenInput extends Vue {
 			accounts.addWBANTokenToMetaMask()
 		} else {
 			const { token } = this.value
-			MetaMask.addTokenToWallet(token.address, token.symbol, token.decimals, token.logoURI)
+			if (token) {
+				MetaMask.addTokenToWallet(token.address, token.symbol, token.decimals, token.logoURI)
+			}
 		}
 	}
 
@@ -187,13 +189,11 @@ export default class TokenInput extends Vue {
 			return
 		}
 		// load balance if token chosen
-		if (this.value.token && this.value.token.address !== '') {
-			this.balanceAmount = await TokensUtil.getBalance(this.user, this.value.token, this.provider)
-			if (this.balanceAmount.isZero()) {
-				this.balance = '0'
-			} else {
-				this.balance = ethers.utils.formatUnits(this.balanceAmount, this.value.token.decimals)
-			}
+		this.balanceAmount = await TokensUtil.getBalance(this.user, this.value.token, this.provider)
+		if (this.balanceAmount.isZero()) {
+			this.balance = '0'
+		} else {
+			this.balance = ethers.utils.formatUnits(this.balanceAmount, this.value.token.decimals)
 		}
 	}
 

@@ -16,6 +16,7 @@ type SwapQuoteRequest = {
 	to: Token
 	gasPrice: BigNumber
 	slippagePercentage: number
+	nativeCurrency: string
 }
 
 type SwapQuoteResponse = {
@@ -23,6 +24,7 @@ type SwapQuoteResponse = {
 	guaranteedPrice: string
 	from: TokenAmount
 	to: TokenAmount
+	value: BigNumber
 	gas: BigNumber
 	gasPrice: BigNumber
 	txnTo: string
@@ -42,6 +44,7 @@ const EMPTY_QUOTE: SwapQuoteResponse = {
 		amount: '',
 		token: EMPTY_TOKEN,
 	},
+	value: BigNumber.from(0),
 	gas: BigNumber.from(0),
 	gasPrice: BigNumber.from(0),
 	txnTo: '',

@@ -227,18 +227,20 @@ export default class Swaps extends Vue {
 		}
 		try {
 			// check allowance for 0x Exchange Proxy
-			const token = IERC20__factory.connect(this.from.token.address, this.provider)
-			const allowance: BigNumber = await token.allowance(this.user, DEXUtils.get0xExchangeRouterAddress())
 			let skipValidation = false
-			if (allowance.lt(ethers.utils.parseUnits(this.from.amount, this.from.token.decimals))) {
-				this.approveLabel = `Approve ${this.from.token.symbol}`
-				this.swapEnabled = false
-				skipValidation = true
-				console.error(
-					`Allowance is not high enough: ${ethers.utils.formatUnits(allowance, this.from.token.decimals)} ${
-						this.from.token.symbol
-					} but ${this.from.amount} ${this.from.token.symbol} required`
-				)
+			if (this.from.token.address !== '') {
+				const token = IERC20__factory.connect(this.from.token.address, this.provider)
+				const allowance: BigNumber = await token.allowance(this.user, DEXUtils.get0xExchangeRouterAddress())
+				if (allowance.lt(ethers.utils.parseUnits(this.from.amount, this.from.token.decimals))) {
+					this.approveLabel = `Approve ${this.from.token.symbol}`
+					this.swapEnabled = false
+					skipValidation = true
+					console.error(
+						`Allowance is not high enough: ${ethers.utils.formatUnits(allowance, this.from.token.decimals)} ${
+							this.from.token.symbol
+						} but ${this.from.amount} ${this.from.token.symbol} required`
+					)
+				}
 			}
 			// get gas price from tracker
 			this.gasPrice = await Networks.getSuggestedTransactionGasPriceInGwei()
@@ -250,6 +252,7 @@ export default class Swaps extends Vue {
 					to: this.to.token,
 					gasPrice: this.gasPrice,
 					slippagePercentage: this.slippagePercentage,
+					nativeCurrency: this.network.nativeCurrency.symbol,
 				},
 				skipValidation
 			)
@@ -260,7 +263,7 @@ export default class Swaps extends Vue {
 			this.from.amount = amountIn
 			this.to.amount = this.quote.to.amount
 			// check if there is an allowance needed
-			if (skipValidation) {
+			if (skipValidation && this.from.token.address !== '') {
 				this.approveLabel = `Approve ${this.from.token.symbol}`
 				this.swapEnabled = false
 			} else {
@@ -284,6 +287,9 @@ export default class Swaps extends Vue {
 	async approve() {
 		if (!this.provider) {
 			throw new Error('Missing Web3 provider')
+		}
+		if (this.from.token.address === '') {
+			throw new Error('No need to approve native crypto')
 		}
 		// approve `allowanceTarget` to spend the tokens
 		const signer: Signer = this.provider.getSigner()
@@ -330,6 +336,7 @@ export default class Swaps extends Vue {
 			gasLimit: this.quote.gas,
 			gasPrice: this.quote.gasPrice,
 			data: this.quote.txnData,
+			value: this.quote.value,
 			// chainId: this.expectedBlockchain.chainIdNumber,
 		}
 		const signer: Signer = this.provider.getSigner()
@@ -361,6 +368,9 @@ export default class Swaps extends Vue {
 		token: IERC20,
 		amount: BigNumber
 	) {
+		if (this.from.token.address === '') {
+			throw new Error('No need to approve native crypto')
+		}
 		// check that allowance is enough now
 		const allowance: BigNumber = await token.allowance(owner, allowanceTarget)
 		if (allowance.lt(amount)) {
@@ -400,10 +410,8 @@ export default class Swaps extends Vue {
 		if (wban) {
 			Object.assign(this.from.token, wban)
 		}
-		const usdc = await TokensUtil.getTokenBySymbol('USDC')
-		if (usdc) {
-			Object.assign(this.to.token, usdc)
-		}
+		const nativeCryptoToken = await TokensUtil.getTokenBySymbol(this.network.nativeCurrency.symbol)
+		Object.assign(this.to.token, nativeCryptoToken)
 		this.fromInput.amountField.focus()
 		this.resetValidation()
 	}

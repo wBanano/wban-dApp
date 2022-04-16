@@ -7,19 +7,18 @@ import qs from 'qs'
 
 class DEXUtils {
 	static async getQuote(request: SwapQuoteRequest, skipValidation = false): Promise<SwapQuoteResponse> {
-		const { user, from, to, slippagePercentage } = request
+		const { user, from, to, slippagePercentage, nativeCurrency } = request
 		let { gasPrice } = request
 		const sellAmount = ethers.utils.parseUnits(from.amount, from.token.decimals).toString()
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const params: any = {
-				buyToken: to.address,
-				sellToken: from.token.address,
+				buyToken: to.address !== '' ? to.address : nativeCurrency,
+				sellToken: from.token.address !== '' ? from.token.address : nativeCurrency,
 				sellAmount: sellAmount,
 				takerAddress: user,
 				gasPrice: gasPrice.toNumber(),
 				slippagePercentage: slippagePercentage / 100,
-				//slippagePercentage: 0.005, // 0.5% slippage
 				affiliateAddress: '0xFD1Dc8Bf39Bc0e373068746787c1296a5aEF31Ee', // wBAN smart-contract deployer
 				skipValidation: skipValidation,
 			}
@@ -28,6 +27,7 @@ class DEXUtils {
 			console.debug('0x API request', apiUrl)
 			const result = await axios.get(apiUrl)
 			const { price, guaranteedPrice } = result.data
+			const value = BigNumber.from(result.data.value)
 			const gas = BigNumber.from(result.data.gas)
 			gasPrice = BigNumber.from(result.data.gasPrice)
 			const txnTo = result.data.to
@@ -60,6 +60,7 @@ class DEXUtils {
 				guaranteedPrice: guaranteedPrice,
 				from: from,
 				to: { token: to, amount: toAmount },
+				value: value,
 				gas: gas,
 				gasPrice: gasPrice,
 				txnTo: txnTo,
@@ -72,6 +73,7 @@ class DEXUtils {
 			throw new Error(error.response.data.values.message)
 		}
 	}
+
 	static get0xExchangeRouterAddress(): string {
 		return get0xExchangeRouterAddress()
 	}

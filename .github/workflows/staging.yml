@@ -41,11 +41,11 @@ jobs:
           yarn build
         #yarn test:unit
         working-directory: ${{env.working-directory}}
-      - name: Deploy to wban-universal-dapp.netlify.app
+      - name: Deploy to wban-testing.netlify.app
         uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_UNIVERSAL_DAPP_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_UNIVERSAL_TESTING_DAPP_SITE_ID }}
           NETLIFY_DEPLOY_MESSAGE: "Staging deploy v${{ github.ref }}"
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: frontend/dist

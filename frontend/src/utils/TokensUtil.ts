@@ -10,6 +10,7 @@ import { TokenAmount } from '@/models/dex/TokenAmount'
 import Accounts from '@/store/modules/accounts'
 
 const TOKENS_STORE_NAME = 'tokens'
+const DB_VERSION = 2
 
 class TokensUtil {
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
@@ -28,7 +29,15 @@ class TokensUtil {
 		const factory: any = window.indexedDB
 		const databases = await factory.databases()
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		return databases.map((db: any) => db.name).includes(Accounts.network.network)
+		const existingDatabase = databases.map((db: any) => db.name).includes(Accounts.network.network)
+		if (existingDatabase) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const db = databases.find((db: any) => db.name === Accounts.network.network)
+			const upgradeNotNeeded = db.version === DB_VERSION
+			return existingDatabase && upgradeNotNeeded
+		} else {
+			return false
+		}
 	}
 
 	static async loadTokensList(): Promise<void> {
@@ -37,7 +46,7 @@ class TokensUtil {
 			return
 		}
 		console.info('Initializing tokens database')
-		const db: IDBPDatabase = await openDB(Accounts.network.network, 1, {
+		const db: IDBPDatabase = await openDB(Accounts.network.network, DB_VERSION, {
 			upgrade(db) {
 				console.debug('in IndexDB database upgrade')
 				if (!db.objectStoreNames.contains(TOKENS_STORE_NAME)) {
@@ -128,23 +137,26 @@ class TokensUtil {
 					}
 				})
 			)
-			return tokenAmounts
-				.sort((a: TokenAmount, b: TokenAmount) => {
-					if (a.amount !== '0' && b.amount !== '0') {
-						return ethers.utils
-							.parseUnits(a.amount, a.token.decimals)
-							.gt(ethers.utils.parseUnits(b.amount, b.token.decimals))
-							? -1
-							: 1
-					} else if (a.amount !== '0') {
-						return -1
-					} else if (b.amount !== '0') {
-						return 1
-					} else {
-						return 0
-					}
-				})
-				.map((tokenAmount) => tokenAmount.token)
+			return (
+				tokenAmounts
+					.sort((a: TokenAmount, b: TokenAmount) => {
+						if (a.amount !== '0' && b.amount !== '0') {
+							return ethers.utils
+								.parseUnits(a.amount, a.token.decimals)
+								.gt(ethers.utils.parseUnits(b.amount, b.token.decimals))
+								? -1
+								: 1
+						} else if (a.amount !== '0') {
+							return -1
+						} else if (b.amount !== '0') {
+							return 1
+						} else {
+							return 0
+						}
+					})
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					.map((tokenAmount) => tokenAmount.token!)
+			)
 		} else {
 			// fallback to non sorted list
 			return tokens
@@ -152,7 +164,11 @@ class TokensUtil {
 	}
 
 	static async getBalance(owner: string, token: Token, provider: Provider): Promise<BigNumber> {
-		return IERC20__factory.connect(token.address, provider).balanceOf(owner)
+		if (token.address) {
+			return IERC20__factory.connect(token.address, provider).balanceOf(owner)
+		} else {
+			return provider.getBalance(owner)
+		}
 	}
 }
 
