@@ -1,3 +1,7 @@
+# v2.1.0
+## Improvements
+- swaps also work with native crypto
+
 # v2.0.4
 ## Bugs
 - Link for View after a farm deposit transaction is broken #91
