@@ -56,10 +56,9 @@ class TokensUtil {
 			},
 		})
 		const tokens: Array<Token> = await getTokensList()
-		for (let i = 0; i < tokens.length; i++) {
-			const token = tokens[i]
-			await db.put(TOKENS_STORE_NAME, token, token.address.toLowerCase())
-		}
+		const tx = db.transaction(TOKENS_STORE_NAME, 'readwrite')
+		await Promise.all(tokens.map((token) => tx.store.put(token, token.address.toLowerCase())))
+		await tx.done
 		// check if wBAN is whitelisted
 		const wban = tokens.find((token) => token.symbol === 'wBAN')
 		// add it
