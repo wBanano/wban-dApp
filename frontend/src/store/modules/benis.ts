@@ -2,8 +2,9 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
+import Accounts from '@/store/modules/accounts'
 import { Benis, Benis__factory } from '@artifacts/typechain'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, Contract, ethers } from 'ethers'
 import { FarmConfig } from '@/config/constants/types'
 import { getBenisAddress, getFarms } from '@/config/constants/farms'
 import BenisUtils from '@/utils/BenisUtils'
@@ -50,17 +51,20 @@ class BenisModule extends VuexModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async initContract(provider: ethers.providers.Web3Provider | null) {
 		console.debug('in initContract')
-		if (provider) {
+		if (provider && Accounts.multicallWrapper) {
 			const oldProvider = this._benis?.provider
 			// do not initialize contract if this was done earlier
 			if (!this._benis || provider !== oldProvider) {
 				console.debug(`Benis is available at ${getBenisAddress()}`)
-				const benis = Benis__factory.connect(getBenisAddress(), provider.getSigner())
+				const benis: Benis = await Accounts.multicallWrapper.wrap<Benis>(
+					new Contract(getBenisAddress(), Benis__factory.abi)
+				)
 				this.context.commit('setBenis', benis)
 
 				const farms = getFarms()
 				for (let i = 0; i < farms.length; i++) {
 					const farm = farms[i]
+					console.warn(`Gathering farm data for ${farm.pid}`)
 					const endTime = (await BenisUtils.getEndTime(farm.pid, benis)) * 1_000
 					farm.ended = endTime <= Date.now()
 				}

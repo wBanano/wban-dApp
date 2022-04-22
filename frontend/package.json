@@ -20,6 +20,7 @@
 		"core-js": "^3.6.5",
 		"humanize-duration": "^3.26.0",
 		"idb": "^7.0.0",
+		"kasumah-multicall": "^0.0.45",
 		"numeral": "^2.0.6",
 		"qrcode": "^1.4.4",
 		"qs": "^6.10.3",

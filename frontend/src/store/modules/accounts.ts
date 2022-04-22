@@ -11,6 +11,8 @@ import walletConnectModule from '@web3-onboard/walletconnect'
 import ledgerModule from '@web3-onboard/ledger'
 import gnosisModule from '@web3-onboard/gnosis'
 import Dialogs from '@/utils/Dialogs'
+import MulticallWrapper from 'kasumah-multicall'
+import { setMulticallAddress } from 'ethers-multicall'
 
 @Module({
 	namespaced: true,
@@ -23,6 +25,7 @@ class AccountsModule extends VuexModule {
 	public activeBalance = 0
 	public network: Network = POLYGON_MAINNET
 	private _providerEthers: ethers.providers.Web3Provider | null = null // this is "provider" for Ethers.js
+	private _multicallWrapper: MulticallWrapper | undefined
 	public isConnected = false
 	private _onboard: OnboardAPI | undefined = undefined
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,6 +44,10 @@ class AccountsModule extends VuexModule {
 
 	get providerEthers() {
 		return this._providerEthers
+	}
+
+	get multicallWrapper(): MulticallWrapper | undefined {
+		return this._multicallWrapper
 	}
 
 	get isInitialized(): boolean {
@@ -85,10 +92,18 @@ class AccountsModule extends VuexModule {
 
 		const wallet = update.wallets[0]
 		this.activeAccount = wallet.accounts[0].address
-		this._providerEthers = new ethers.providers.Web3Provider(wallet.provider)
+		const provider = new ethers.providers.Web3Provider(wallet.provider)
+		this._providerEthers = provider
 		const chainId = wallet.chains[0].id
+
+		// only emit event if network or connected address was changed
+		if (this.activeAccount === oldAccount && oldNetworkChainId === chainId) {
+			return
+		}
+
 		console.debug(`Switched to chain ${chainId}`)
 		this.network = new Networks().getNetworkData(chainId) ?? POLYGON_MAINNET
+		this._multicallWrapper = new MulticallWrapper(provider, this.network.chainIdNumber, { cache: false })
 		window.localStorage.setItem(
 			'selectedWallet',
 			JSON.stringify(update.wallets.map((wallet: WalletState) => wallet.label))
@@ -97,6 +112,7 @@ class AccountsModule extends VuexModule {
 
 		// only emit event if network or connected address was changed
 		if (this.activeAccount !== oldAccount || oldNetworkChainId !== chainId) {
+			console.debug('Dispatching web3 network change')
 			document.dispatchEvent(new CustomEvent('web3-connection'))
 		}
 	}
@@ -162,6 +178,10 @@ class AccountsModule extends VuexModule {
 					},
 				},
 			})
+
+			setMulticallAddress(BSC_MAINNET.chainIdNumber, '0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb')
+			setMulticallAddress(POLYGON_MAINNET.chainIdNumber, '0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507')
+			setMulticallAddress(FANTOM_MAINNET.chainIdNumber, '0x0118EF741097D0d3cc88e46233Da1e407d9ac139')
 
 			const state = this._onboard.state.select()
 			const subscription = state.subscribe((update) => {

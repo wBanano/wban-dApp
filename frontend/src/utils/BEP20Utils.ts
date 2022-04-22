@@ -1,8 +1,16 @@
 import { getBenisAddress } from '@/config/constants/farms'
 import { IBEP20, IBEP20__factory, IApePair, IApePair__factory } from '@artifacts/typechain'
+import { MulticallWrapper } from 'kasumah-multicall'
 import { BigNumber, ethers, Signer } from 'ethers'
+import { Contract } from 'ethers'
 
 class BEP20Utils {
+	private wrapper: MulticallWrapper
+
+	constructor(wrapper: MulticallWrapper) {
+		this.wrapper = wrapper
+	}
+
 	public async approve(stakingToken: string, signer: Signer) {
 		console.debug(`Should approve unlimited spending of "${stakingToken}" LP tokens`)
 		const token: IBEP20 = await IBEP20__factory.connect(stakingToken, signer)
@@ -25,14 +33,15 @@ class BEP20Utils {
 		return balance
 	}
 
-	public async getLPDetails(account: string, lpStakedBalance: BigNumber, lpAddress: string, signer: Signer) {
-		const lp: IApePair = await IApePair__factory.connect(lpAddress, signer)
+	public async getLPDetails(lpStakedBalance: BigNumber, lpAddress: string) {
+		const lp: IApePair = await this.wrapper.wrap<IApePair>(new Contract(lpAddress, IApePair__factory.abi))
 		const addressToken0 = await lp.token0()
 		const addressToken1 = await lp.token1()
-		const token0 = await IBEP20__factory.connect(addressToken0, signer)
+
+		const token0: IBEP20 = await this.wrapper.wrap<IBEP20>(new Contract(addressToken0, IBEP20__factory.abi))
+		const token1: IBEP20 = await this.wrapper.wrap<IBEP20>(new Contract(addressToken1, IBEP20__factory.abi))
 		const token0decimals = await token0.decimals()
 		const liquidityToken0 = await token0.balanceOf(lpAddress)
-		const token1 = await IBEP20__factory.connect(addressToken1, signer)
 		const token1decimals = await token1.decimals()
 		const liquidityToken1 = await token1.balanceOf(lpAddress)
 		// pool total supply

@@ -238,6 +238,7 @@ import numeral from 'numeral'
 import { openURL } from 'quasar'
 import { getDexUrl } from '@/config/constants/dex'
 import Accounts from '@/store/modules/accounts'
+import MulticallWrapper from 'kasumah-multicall'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -260,6 +261,9 @@ export default class Farm extends Vue {
 
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.JsonRpcProvider | null
+
+	@accountsStore.Getter('multicallWrapper')
+	multicallWrapper!: MulticallWrapper | null
 
 	@benisStore.Getter('benisContract')
 	benis!: Benis
@@ -285,7 +289,7 @@ export default class Farm extends Vue {
 	wbanAddress: string = TokensUtil.getWBANAddress()
 
 	private farmUtils!: FarmUtils
-	private bep20 = new BEP20Utils()
+	private bep20!: BEP20Utils
 	private benisUtils = new BenisUtils()
 
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
@@ -399,10 +403,11 @@ export default class Farm extends Vue {
 
 	@Watch('value')
 	async reload(): Promise<void> {
-		if (this.provider) {
+		if (this.provider && this.multicallWrapper) {
 			this.isLoading = true
 			this.signer = this.provider.getSigner()
 
+			this.bep20 = new BEP20Utils(this.multicallWrapper)
 			this.farmUtils = new FarmUtils()
 			this.farmData = await this.farmUtils.computeData(
 				this.value,
@@ -412,7 +417,8 @@ export default class Farm extends Vue {
 				ban.banPriceInUSD,
 				this.prices,
 				this.signer,
-				this.benis
+				this.benis,
+				this.multicallWrapper
 			)
 			this.emptyRewards = this.farmData.userPendingRewards.isZero()
 
@@ -427,7 +433,7 @@ export default class Farm extends Vue {
 		}
 	}
 
-	mounted() {
+	async mounted() {
 		this.reload()
 		document.addEventListener('web3-connection', this.reload)
 	}

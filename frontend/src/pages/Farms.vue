@@ -126,7 +126,6 @@ export default class FarmsPage extends Vue {
 	async onProviderChange() {
 		this.loading = true
 		await benis.initContract(this.provider)
-		this.loading = false
 		// find out if there are some user deposits in ended farms
 		const userNeedsWithdrawal = await this.findAsyncSequential(this.endedFarms, async (farm) => {
 			const deposits = await this.benisUtils.getStakedBalance(farm.pid, this.activeAccount, this.benis)
@@ -135,6 +134,7 @@ export default class FarmsPage extends Vue {
 		if (userNeedsWithdrawal) {
 			this.userHasDepositsInEndedFarms = true
 		}
+		this.loading = false
 	}
 
 	async mounted() {

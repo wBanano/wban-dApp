@@ -15,7 +15,6 @@ import Dialogs from '@/utils/Dialogs'
 import { HistoryRequest } from '@/models/HistoryRequest'
 import { getBackendHost } from '@/config/constants/backend'
 import ban from './ban'
-import accounts from '@/store/modules/accounts'
 import BackendUtils from '@/utils/BackendUtils'
 
 @Module({
@@ -213,7 +212,7 @@ class BackendModule extends VuexModule {
 					await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
 				)
 
-				const bcAddress = accounts.activeAccount
+				const bcAddress = Accounts.activeAccount
 				if (bcAddress) {
 					const setupDone = await BackendUtils.checkIfSetupDone(banWallet, bcAddress)
 					this.context.commit('setSetupDone', setupDone)
@@ -409,7 +408,7 @@ class BackendModule extends VuexModule {
 
 	@Action
 	async checkSetupDone(banAddress: string): Promise<string | boolean> {
-		return BackendUtils.checkIfSetupDone(banAddress, accounts.activeAccount ?? '')
+		return BackendUtils.checkIfSetupDone(banAddress, Accounts.activeAccount ?? '')
 	}
 
 	@Action

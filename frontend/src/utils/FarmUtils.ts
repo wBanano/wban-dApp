@@ -2,6 +2,7 @@ import { Address, FarmConfig } from '@/config/constants/types'
 import { FarmData, EMPTY_FARM_DATA, BN_ZERO } from '@/models/FarmData'
 import { Benis } from '@artifacts/typechain'
 import { BigNumber, ethers, Signer } from 'ethers'
+import MulticallWrapper from 'kasumah-multicall'
 import BenisUtils from './BenisUtils'
 import BEP20Utils from './BEP20Utils'
 
@@ -23,7 +24,8 @@ class FarmUtils {
 		banPriceInUSD: number,
 		prices: Map<string, number>,
 		signer: Signer,
-		benis: Benis
+		benis: Benis,
+		wrapper: MulticallWrapper
 	): Promise<FarmData> {
 		this.farmConfig = farmConfig
 		this.envName = envName
@@ -39,7 +41,7 @@ class FarmUtils {
 		farmData.poolData.symbolToken0 = this.farmConfig.token.symbol
 		farmData.poolData.symbolToken1 = this.farmConfig.quoteToken.symbol
 
-		farmData = await this.computeAPR(farmData, envName, signer, benis)
+		farmData = await this.computeAPR(farmData, signer, benis, wrapper)
 		if (this.isStaking()) {
 			farmData.userGlobalBalance = farmData.stakedBalance.add(farmData.userPendingRewards)
 			farmData.stakedValue = farmData.stakedBalance.mul(ethers.utils.parseEther(banPriceInUSD.toString())).div(BN_ONE)
@@ -66,10 +68,15 @@ class FarmUtils {
 		return this.wbanAddress === this.farmConfig.lpAddresses[this.envName as keyof Address]
 	}
 
-	private async computeAPR(farmData: FarmData, envName: string, signer: Signer, benis: Benis): Promise<FarmData> {
+	private async computeAPR(
+		farmData: FarmData,
+		signer: Signer,
+		benis: Benis,
+		wrapper: MulticallWrapper
+	): Promise<FarmData> {
 		console.info(`Computing APR for ${farmData.poolData.name}`)
 
-		const bep20 = new BEP20Utils()
+		const bep20 = new BEP20Utils(wrapper)
 		const benisUtils = new BenisUtils()
 
 		const wbanPriceUsd = ethers.utils.parseEther(this.banPriceInUSD.toString())
@@ -98,10 +105,8 @@ class FarmUtils {
 			const userInfo = await benis.userInfo(farmData.pid, this.account)
 			farmData.stakedBalance = userInfo.amount
 			const lpDetails = await bep20.getLPDetails(
-				this.account,
 				farmData.stakedBalance,
-				farmData.poolData.address[this.envName as keyof Address],
-				signer
+				farmData.poolData.address[this.envName as keyof Address]
 			)
 			farmData.poolData.priceToken0 = await this.getTokenPriceUsd(lpDetails.token0.address, signer, bep20)
 			farmData.poolData.priceToken1 = await this.getTokenPriceUsd(lpDetails.token1.address, signer, bep20)
