@@ -1,3 +1,7 @@
+# v2.1.1
+## Improvements
+- Updated Fantom 'Add Liquidity' button to use new SpookySwap URL
+
 # v2.1.0
 ## Improvements
 - swaps also work with native crypto
