@@ -533,6 +533,9 @@ class BackendModule extends VuexModule {
 								swap.uuid
 							)
 						}
+						if (swap.type === 'swap-to-ban') {
+							swap.timestamp = swap.timestamp / 1_000
+						}
 						return swap
 					})
 				)

@@ -47,19 +47,17 @@
 									<a :href="event.link" class="hash" target="_blank">{{ event.hash | hash_trimmed }}</a>
 								</div>
 								<div v-if="event.type === 'swap-to-wban'">
-									<p v-if="event.consumed == true">
-										You made a swap of {{ event.amount | bnToStringFilter }} BAN to wBAN.
-									</p>
+									<p v-if="event.consumed == true">You wrapped {{ event.amount | bnToStringFilter }} BAN.</p>
 									<div v-if="event.consumed == false">
 										<p>
-											You asked for a swap of {{ event.amount | bnToStringFilter }} BAN to wBAN, but either you did not
-											claim it or it did not work.
+											You asked to wrap {{ event.amount | bnToStringFilter }} BAN, but either you did not claim it or it
+											did not work.
 										</p>
 										<q-btn @click="claim(event)" label="Claim" icon="restore" color="primary" text-color="secondary" />
 									</div>
 								</div>
 								<div v-if="event.type === 'swap-to-ban'">
-									You made a swap of {{ event.amount | bnToStringFilter }} wBAN to BAN.<br />
+									You unwrapped {{ event.amount | bnToStringFilter }} wBAN.<br />
 									Transaction:
 									<a :href="event.link" class="hash" target="_blank">{{ event.hash | hash_trimmed }}</a>
 								</div>
@@ -143,9 +141,9 @@ export default class HistoryPage extends Vue {
 			case 'withdrawal':
 				return 'Withdrawal'
 			case 'swap-to-wban':
-				return 'Swap BAN -> wBAN'
+				return 'Wrap'
 			case 'swap-to-ban':
-				return 'Swap wBAN -> BAN'
+				return 'Unwrap'
 			default:
 				return '??'
 		}
