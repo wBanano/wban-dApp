@@ -338,14 +338,14 @@ export default class Farm extends Vue {
 			if (
 				getDexUrl() === 'https://app.sushi.com' ||
 				getDexUrl() === 'https://pancakeswap.finance' ||
-				getDexUrl() === 'https://spookyswap.finance'
+				getDexUrl() === 'https://spooky.fi'
 			) {
 				openURL(`${getDexUrl()}/add/${this.wbanAddress}/${otherToken}`)
 			} else {
 				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/${otherToken}`)
 			}
 		} else {
-			if (getDexUrl() === 'https://spookyswap.finance') {
+			if (getDexUrl() === 'https://spooky.fi') {
 				openURL(`${getDexUrl()}/add/${this.wbanAddress}/FTM`)
 			} else {
 				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/ETH`)
