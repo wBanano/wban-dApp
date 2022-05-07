@@ -1,3 +1,10 @@
+# v2.1.1
+## Bugs
+- History page: wrong dates for unwraps #95
+- Updated SpookySwap URL #96
+## Improvements
+- Swaps page: load tokens list faster
+
 # v2.1.0
 ## Improvements
 - swaps also work with native crypto
