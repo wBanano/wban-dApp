@@ -13,14 +13,14 @@ describe('WBANToken', () => {
 	let token: WBANToken;
 	let owner: SignerWithAddress;
 	let user1: SignerWithAddress;
+	let user2: SignerWithAddress;
 
   beforeEach(async () => {
-		const signers = await ethers.getSigners();
-		[owner, user1] = signers;
+		[owner, user1, user2] = await ethers.getSigners();
 
 		const wBANTokenFactory = await ethers.getContractFactory(
       "WBANToken",
-      signers[0]
+      owner
     );
 		token = (await upgrades.deployProxy(wBANTokenFactory)) as WBANToken;
 		await token.deployed();
@@ -28,7 +28,7 @@ describe('WBANToken', () => {
 		expect(token.address).to.properAddress;
 	});
 
-	describe('Swaps: BAN -> wBAN', () => {
+	describe('Wrap', () => {
 
 		it('Refuses to mint if the parameters do not match the receipt', async () => {
 			const wBanToMint = ethers.utils.parseEther("123");
@@ -108,7 +108,7 @@ describe('WBANToken', () => {
 
 	});
 
-	describe('Swaps: wBAN -> BAN', () => {
+	describe('Unwrap', () => {
 
 		it('Refuses to swap if user has NOT enough wBAN', async () => {
 			// mint some wBAN, first
