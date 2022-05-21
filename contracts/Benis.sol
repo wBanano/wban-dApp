@@ -2,10 +2,10 @@
 
 pragma solidity 0.6.12;
 
-import '@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
-import '@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol';
+import "@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol";
+import "@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol";
+import "@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol";
+import "@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol";
 
 contract Benis is Ownable {
     using SafeMath for uint256;
@@ -198,7 +198,7 @@ contract Benis is Ownable {
     function withdraw(uint256 _pid, uint256 _amount) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
-        require(user.amount >= _amount, 'Benis: not enough LP');
+        require(user.amount >= _amount, "Benis: not enough LP");
         updatePool(_pid);
         uint256 pending =
             user.amount.mul(pool.accWBANPerShare).div(1e12).sub(user.rewardDebt).add(user.remainingWBANReward);

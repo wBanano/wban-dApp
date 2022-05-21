@@ -62,7 +62,7 @@ task("wban:deploy", "Deploy wBAN")
 
 task("wban:verify", "Verify wBAN source code on blockchain explorer")
 	.setAction(async (args, hre) => {
-		const WBANToken = await hre.ethers.getContractFactory("WBANToken");
+		const WBANToken = await hre.ethers.getContractFactory("WBANTokenWithPermit");
 
 		// peer into OpenZeppelin manifest to extract the implementation address
 		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
@@ -99,6 +99,32 @@ task("wban:upgrade", "Upgrade wBAN")
 		// verify implementation contract
 		if (implementationContract) {
 			console.log(`wBAN impl deployed at: "${implementationContract.address}"`);
+			await hre.run("verify:verify", {
+				address: implementationContract.address
+			});
+		}
+	});
+
+task("wban:upgrade-permit", "Upgrade wBAN to enable permit feature")
+	.addParam("contract", "The smart-contract address", '', types.string)
+	.setAction(async (args, hre) => {
+		const accounts = await hre.ethers.getSigners();
+		console.info(`Upgrading wBAN with permit feature from owner "${accounts[0].address}"`)
+
+		// deploy upgradeable contract
+		const WBANToken = await hre.ethers.getContractFactory("WBANTokenWithPermit");
+		const wban = WBANToken.attach(args.contract);
+		await hre.upgrades.upgradeProxy(wban, WBANToken, { call: "initializeWithPermit" });
+
+		// peer into OpenZeppelin manifest to extract the implementation address
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
+		const manifest = await ozUpgradesManifestClient.read();
+		const bytecodeHash = hashBytecodeWithoutMetadata(WBANToken.bytecode);
+		const implementationContract = manifest.impls[bytecodeHash];
+
+		// verify implementation contract
+		if (implementationContract) {
+			console.log(`wBAN upgraded with permit feature, deployed at: "${implementationContract.address}"`);
 			await hre.run("verify:verify", {
 				address: implementationContract.address
 			});
@@ -302,11 +328,11 @@ const config: HardhatUserConfig = {
 		},
 		*/
 		polygontestnet: {
-			url: 'https://rpc-mumbai.maticvigil.com',
+			url: 'https://matic-mumbai.chainstacklabs.com',
 			accounts,
 			chainId: 80001,
-			gasMultiplier: 1.1,
-			gasPrice: 45000000000,
+			gasMultiplier: 1.5,
+			gasPrice: 50000000000,
 		},
 		polygon: {
 			url: 'https://polygon-rpc.com',
