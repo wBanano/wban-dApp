@@ -8,7 +8,7 @@ import { BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, Network, Networks } from 
 import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
-import ledgerModule from '@web3-onboard/ledger'
+// import ledgerModule from '@web3-onboard/ledger'
 import gnosisModule from '@web3-onboard/gnosis'
 import Dialogs from '@/utils/Dialogs'
 
@@ -122,10 +122,10 @@ class AccountsModule extends VuexModule {
 			this.context.commit('setInitialized', true)
 			const injected = injectedModule()
 			const walletConnect = walletConnectModule()
-			const ledger = ledgerModule()
+			// const ledger = ledgerModule()
 			const gnosis = gnosisModule()
 			this._onboard = Onboard({
-				wallets: [injected, walletConnect, ledger, gnosis],
+				wallets: [injected, walletConnect, /*ledger,*/ gnosis],
 				chains: [
 					{
 						id: BSC_MAINNET.chainId,
