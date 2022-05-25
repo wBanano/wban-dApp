@@ -97,19 +97,18 @@
 			</span>
 			-
 			<span class="social">
-				<q-icon name="live_help" color="white" size="24px" />
-				<a
-					v-if="$q.screen.gt.xs"
-					href="https://wrap-that-potassium.gitbook.io/wban/introduction/quick-tour"
-					target="_blank"
-					>Documentation
+				<a href="https://wrap-that-potassium.gitbook.io/wban/introduction/quick-tour" target="_blank">
+					<q-icon name="live_help" color="white" size="24px" />
+					<span v-if="$q.screen.gt.xs">Documentation</span>
 				</a>
-
-				<q-icon name="fab fa-discord" color="white" size="20px" />
-				<a v-if="$q.screen.gt.xs" href="https://chat.banano.cc" target="_blank">Discord</a>
-
-				<q-icon name="fab fa-telegram" color="white" size="20px" />
-				<a v-if="$q.screen.gt.xs" href="https://t.me/banano_official" target="_blank">Telegram</a>
+				<a href="https://chat.banano.cc" target="_blank">
+					<q-icon name="fab fa-discord" color="white" size="20px" />
+					<span v-if="$q.screen.gt.xs">Discord</span>
+				</a>
+				<a href="https://t.me/banano_official" target="_blank">
+					<q-icon name="fab fa-telegram" color="white" size="20px" />
+					<span v-if="$q.screen.gt.xs">Telegram</span>
+				</a>
 			</span>
 		</q-footer>
 	</q-layout>
@@ -288,13 +287,16 @@ export default class MainLayout extends Vue {
 	padding-top: 5px
 	padding-bottom: 5px
 .social
-	.q-icon
-		margin-right: 5px
 	a
 		font-weight: normal
 		color: white
 		margin-left: 5px
 		margin-right: 10px
+		text-decoration: none
+		span
+			text-decoration: underline
+		.q-icon
+			margin-right: 5px
 
 .btn-disconnect
 	text-transform: none
