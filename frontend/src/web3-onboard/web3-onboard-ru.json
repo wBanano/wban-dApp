@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Доступные кошельки",
+			"sidebar": {
+				"heading": "Начало работы",
+				"subheading": "Подключите ваш кошелек",
+				"paragraph": "Подключение вашего кошелька как «Вход» к Web3. Выберите кошелек для начала."
+			},
+			"recommendedWalletsPart1": "{app} поддерживает только",
+			"recommendedWalletsPart2": "на этой платформе. Пожалуйста, используйте или установите один из поддерживаемых кошельков, чтобы продолжить",
+			"installWallet": "У вас нет кошельков, которые поддерживают {app} . Пожалуйста, используйте поддерживаемый кошелек",
+			"agreement": {
+				"agree": "Я согласен с",
+				"terms": "Условия использования",
+				"and": "и",
+				"privacy": "Политика конфиденциальности"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Подключение к {wallet}} other {Соединение отклонено}}",
+			"sidebar": {
+				"subheading": "Подтвердить подключение",
+				"paragraph": "Пожалуйста, подтвердите подключение в вашем кошельке и авторизуйте доступ для продолжения."
+			},
+			"mainText": "Подключение...",
+			"paragraph": "Не забудьте выбрать все учетные записи, к которым вы хотите предоставить доступ.",
+			"rejectedText": "Соединение отклонено!",
+			"rejectedCTA": "Нажмите здесь, чтобы попробовать снова",
+			"primaryButton": "Назад к кошелькам"
+		},
+		"connectedWallet": {
+			"header": "Соединение выполнено",
+			"sidebar": {
+				"subheading": "Успешное подключение!",
+				"paragraph": "Ваш кошелек теперь подключен к {app}"
+			},
+			"mainText": "Подключено"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Требуется действие в {wallet}",
+			"paragraph": "Пожалуйста, переключите активный аккаунт в вашем кошельке.",
+			"linkText": "Узнать больше.",
+			"buttonText": "Окей"
+		},
+		"switchChain": {
+			"heading": "Переключить сеть",
+			"paragraph1": "{app} требует переключения вашего кошелька на сеть {nextNetworkName} , чтобы продолжить.",
+			"paragraph2": "*Некоторые кошельки могут не поддерживать изменение сетей. Если вы не можете изменить сеть в вашем кошельке, вы можете перейти на другой кошелек."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Отключить все кошельки",
+			"description": "Вы уверены, что хотите отключить все ваши кошельки?",
+			"confirm": "Подтвердить",
+			"cancel": "Отменить"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Подключить другой кошелек",
+		"disconnectAllWallets": "Отключить все кошельки",
+		"currentNetwork": "Текущая сеть",
+		"appInfo": "Информация о приложении",
+		"learnMore": "Узнать больше",
+		"gettingStartedGuide": "Руководство по началу работы",
+		"smartContracts": "Смарт-контракт(ы)",
+		"explore": "Исследовать",
+		"backToApp": "Назад к dapp",
+		"poweredBy": "при поддержке",
+		"addAccount": "Добавить Аккаунт",
+		"setPrimaryAccount": "Установить основной аккаунт",
+		"disconnectWallet": "Отключить кошелек"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Ваша транзакция ожидает подтверждения",
+			"nsfFail": "У вас недостаточно средств для завершения этой транзакции",
+			"txUnderpriced": "Стоимость газа для транзакции слишком низкая, попробуйте еще раз с более высокой ценой на газ",
+			"txRepeat": "Это может быть повторная транзакция",
+			"txAwaitingApproval": "У вас есть предыдущая транзакция, ожидающая подтверждения",
+			"txConfirmReminder": "Пожалуйста, подтвердите транзакцию для продолжения, окно транзакций может находиться за вашим браузером",
+			"txSendFail": "Вы отклонили транзакцию",
+			"txSent": "Ваша транзакция была отправлена в сеть",
+			"txStallPending": "Ваша транзакция остановлена и не вошла в пул транзакций",
+			"txStuck": "Ваша транзакция застряла из-за разрыва nonce",
+			"txPool": "Ваша транзакция запущена",
+			"txStallConfirmed": "Ваша транзакция прервана и не была подтверждена",
+			"txSpeedUp": "Ваша транзакция активирована",
+			"txCancel": "Транзакция отменена",
+			"txFailed": "Не удалось выполнить транзакцию",
+			"txConfirmed": "Ваша транзакция успешно завершена",
+			"txError": "Ой, что-то пошло не так, попробуйте еще раз"
+		},
+		"watched": {
+			"txPool": "Ваша учётная запись {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "Ускорена транзакция для {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txCancel": "Транзакция для {formattedValue} {asset} {preposition} {counterpartyShortened} отменена",
+			"txConfirmed": "Ваша учетная запись успешно {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Ваша учетная запись не удалась {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "мин",
+			"seconds": "сек"
+		}
+	}
+}

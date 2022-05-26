@@ -12,12 +12,15 @@ import { SwapResponse } from '@/models/SwapResponse'
 import { WithdrawRequest } from '@/models/WithdrawRequest'
 import { WithdrawResponse } from '@/models/WithdrawResponse'
 import { ClaimResponse, ClaimResponseResult } from '@/models/ClaimResponse'
-import Dialogs from '@/utils/Dialogs'
 import { HistoryRequest } from '@/models/HistoryRequest'
+import { GaslessSettings } from '@/models/GaslessSettings'
 import { getBackendHost } from '@/config/constants/backend'
+import Dialogs from '@/utils/Dialogs'
 import ban from './ban'
 import accounts from '@/store/modules/accounts'
 import BackendUtils from '@/utils/BackendUtils'
+import { GaslessSwapRequest } from '@/models/GaslessSwapRequest'
+import SwapDialogs from '@/utils/SwapDialogs'
 
 @Module({
 	namespaced: true,
@@ -27,6 +30,7 @@ import BackendUtils from '@/utils/BackendUtils'
 })
 class BackendModule extends VuexModule {
 	private _online = false
+	private _gaslessSettings: GaslessSettings = { enabled: false, swapAllowed: true, banThreshold: 0, cryptoThreshold: 0 }
 	private _banWalletForDeposits = ''
 	private _banWalletForDepositsQRCode = ''
 	private _banDeposited: BigNumber = BigNumber.from(0)
@@ -44,8 +48,14 @@ class BackendModule extends VuexModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _web3listener: ((ev: Event) => any) | undefined = undefined
 
+	static WBAN_GASSLESS_SWAP_ADDRESS: string = process.env.VUE_APP_WBAN_GASSLESS_SWAP_ADDRESS || ''
+
 	get online() {
 		return this._online
+	}
+
+	get gaslessSettings() {
+		return this._gaslessSettings
 	}
 
 	get banWalletForDeposits() {
@@ -95,6 +105,11 @@ class BackendModule extends VuexModule {
 	@Mutation
 	setOnline(online: boolean) {
 		this._online = online
+	}
+
+	@Mutation
+	setGaslessSettings(settings: GaslessSettings) {
+		this._gaslessSettings = settings
 	}
 
 	@Mutation
@@ -169,14 +184,16 @@ class BackendModule extends VuexModule {
 			const healthStatus = healthResponse.data.status
 			this.context.commit('setOnline', healthStatus === 'OK')
 
-			if (!banWallet) {
-				const depositWalletResponse = await axios.request({ url: `${getBackendHost()}/deposits/ban/wallet` })
-				const depositWalletAddress = depositWalletResponse.data.address
-				this.context.commit('setBanWalletForDeposits', depositWalletAddress)
-				this.context.commit(
-					'setBanWalletForDepositsQRCode',
-					await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
-				)
+			const depositWalletResponse = await axios.request({ url: `${getBackendHost()}/deposits/ban/wallet` })
+			const depositWalletAddress = depositWalletResponse.data.address
+			this.context.commit('setBanWalletForDeposits', depositWalletAddress)
+			this.context.commit(
+				'setBanWalletForDepositsQRCode',
+				await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
+			)
+
+			if (banWallet) {
+				await this.loadGaslessSettings(banWallet)
 			}
 
 			if (!this._streamEventsSource && banWallet) {
@@ -198,7 +215,7 @@ class BackendModule extends VuexModule {
 							})
 						}
 						Dialogs.showWithdrawalSuccess(withdrawal, transaction)
-						this.trackEventInPlausible('Withdrawal: Pending')
+						BackendModule.trackEventInPlausible('Withdrawal: Pending')
 					} else {
 						console.log(
 							`Received banano pending withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN but this is put in a pending list`
@@ -242,47 +259,57 @@ class BackendModule extends VuexModule {
 					if (rejected) {
 						console.log(`Received ${deposit} BAN which were sent back.`)
 						Dialogs.declineUserDeposit(deposit)
-						this.trackEventInPlausible('Deposit: Rejected')
+						BackendModule.trackEventInPlausible('Deposit: Rejected')
 					} else {
 						console.log(
 							`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
 						)
 						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 						Dialogs.confirmUserDeposit(deposit)
-						this.trackEventInPlausible('Deposit')
+						BackendModule.trackEventInPlausible('Deposit')
 					}
 				})
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('pending-withdrawal', withdrawalEvent)
 				eventSource.addEventListener('swap-ban-to-wban', async (e: any) => {
-					const { banWallet, blockchainWallet, swapped, receipt, uuid, balance, wbanBalance } = JSON.parse(e.data)
+					const { banWallet, blockchainWallet, swapped, receipt, uuid, gasless, balance, wbanBalance, txnHash } =
+						JSON.parse(e.data)
 					console.info(`Received swap BAN to wBAN event. Wallet "${banWallet}" swapped ${swapped} BAN to WBAN.`)
-					console.info(`Receipt is "${receipt}".`)
-					console.info(`Balance is: ${balance} BAN, ${wbanBalance} wBAN.`)
-					const signature: Signature = ethers.utils.splitSignature(receipt)
-					console.log(`Signature is ${JSON.stringify(signature)}`)
+					console.debug(`Receipt is "${receipt}".`)
+					console.debug('Gasless wrap?', gasless)
+					console.debug(`Balance is: ${balance} BAN, ${wbanBalance} wBAN.`)
 					if (Contracts.wbanContract && Accounts.activeAccount) {
 						try {
-							const txnHash = await Contracts.mint({
-								amount: ethers.utils.parseEther(swapped.toString()),
-								blockchainWallet,
-								receipt,
-								uuid,
-								contract: Contracts.wbanContract,
-							})
+							if (gasless) {
+								const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
+								const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
+								Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+								BackendModule.trackEventInPlausible('Wrap: Gasless')
+							} else {
+								const signature: Signature = ethers.utils.splitSignature(receipt)
+								console.debug(`Signature is ${JSON.stringify(signature)}`)
+								const txnHash = await Contracts.mint({
+									amount: ethers.utils.parseEther(swapped.toString()),
+									blockchainWallet,
+									receipt,
+									uuid,
+									contract: Contracts.wbanContract,
+								})
+								const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
+								const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
+								Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+								BackendModule.trackEventInPlausible('Wrap')
+							}
 							this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 							Contracts.reloadWBANBalance({
 								account: blockchainWallet,
 								contract: Contracts.wbanContract,
 							})
-							const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
-							const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
-							Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
-							this.trackEventInPlausible('Wrap')
+							this.loadGaslessSettings(banWallet)
 						} catch (err) {
 							console.error(err)
 							Dialogs.errorSwapToWBan(swapped)
-							this.trackEventInPlausible('Wrap: Error')
+							BackendModule.trackEventInPlausible('Wrap: Error')
 						}
 					} else {
 						console.error("Can't make the call to the smart-contract to mint")
@@ -296,7 +323,14 @@ class BackendModule extends VuexModule {
 					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
 					Dialogs.confirmSwapToBan(swapped)
-					this.trackEventInPlausible('Unwrap')
+					BackendModule.trackEventInPlausible('Unwrap')
+				})
+				eventSource.addEventListener('gasless-swap', async (e: any) => {
+					const { txnId, txnHash, txnLink } = JSON.parse(e.data)
+					console.log(`Received gasless swap for txnId ${txnId}`)
+					this.loadGaslessSettings(banWallet)
+					SwapDialogs.confirmSwap(txnHash, txnLink)
+					BackendModule.trackEventInPlausible('Swaps: Gasless')
 				})
 				eventSource.addEventListener('ping', () => console.debug('Ping received from the server'))
 				eventSource.addEventListener('message', (e: any) => {
@@ -309,7 +343,9 @@ class BackendModule extends VuexModule {
 				eventSource.addEventListener('error', (e: any) => {
 					console.error(`Streams error`, e)
 					if (e.readyState == EventSource.CLOSED) {
-						console.log('Connection to stream endpoint was closed.')
+						console.warn('Connection to stream endpoint was closed.')
+					} else {
+						console.error('Connection to stream endpoint with unexpected error state:', e.readyState)
 					}
 				})
 				this.context.commit('setStreamEventsSource', eventSource)
@@ -333,6 +369,29 @@ class BackendModule extends VuexModule {
 				'setErrorMessage',
 				'wBAN bridge is under maintenance. You can still use the farms while we work on this.'
 			)
+		}
+	}
+
+	@Action
+	async loadGaslessSettings(banWallet: string) {
+		try {
+			const gaslessSettingsResponse = await axios.request({ url: `${getBackendHost()}/gasless/settings` })
+			const swapAllowedResponse = await axios.request({ url: `${getBackendHost()}/gasless/settings/${banWallet}` })
+			const gaslessSettings: GaslessSettings = {
+				enabled: gaslessSettingsResponse.data.enabled,
+				swapAllowed: swapAllowedResponse.data.gaslessSwapAllowed,
+				banThreshold: gaslessSettingsResponse.data.banThreshold,
+				cryptoThreshold: gaslessSettingsResponse.data.cryptoThreshold,
+			}
+			this.context.commit('setGaslessSettings', gaslessSettings)
+		} catch (err) {
+			console.error("Couldn't load gasless settings")
+			this.context.commit('setGaslessSettings', {
+				enabled: false,
+				swapAllowed: false,
+				banThreshold: 420,
+				cryptoThreshold: 42,
+			})
 		}
 	}
 
@@ -388,7 +447,7 @@ class BackendModule extends VuexModule {
 						this.context.commit('setSetupDone', false)
 						return { signature: sig, result: ClaimResponseResult.Error }
 				}
-			} catch (err) {
+			} catch (err: any) {
 				console.log(err)
 				if (err.response) {
 					this.context.commit('setInError', true)
@@ -436,7 +495,7 @@ class BackendModule extends VuexModule {
 					sig: sig,
 				})
 				Dialogs.startSwapToWBan(amount.toString())
-			} catch (err) {
+			} catch (err: any) {
 				this.context.commit('setInError', true)
 				if (err.response) {
 					const response: AxiosResponse = err.response
@@ -490,7 +549,7 @@ class BackendModule extends VuexModule {
 				this.context.commit('setErrorLink', '')
 				*/
 				return result
-			} catch (err) {
+			} catch (err: any) {
 				this.context.commit('setInError', true)
 				if (err.response) {
 					const response: AxiosResponse = err.response
@@ -517,6 +576,36 @@ class BackendModule extends VuexModule {
 			transaction: '',
 			link: '',
 		}
+	}
+
+	@Action
+	async gaslessSwap(swap: GaslessSwapRequest): Promise<string> {
+		const permit = {
+			amount: swap.permit.amount,
+			spender: BackendModule.WBAN_GASSLESS_SWAP_ADDRESS,
+			deadline: swap.permit.deadline,
+			provider: swap.provider,
+		}
+		const sig = await Contracts.signPermitAllowance({
+			amount: ethers.utils.parseEther(swap.permit.amount),
+			spender: permit.spender,
+			deadline: BigNumber.from(swap.permit.deadline),
+			provider: swap.provider,
+		})
+		// call the backend for the gasless swap
+		const req = {
+			recipient: swap.recipient,
+			permit: {
+				amount: swap.permit.amount,
+				deadline: swap.permit.deadline,
+				signature: sig,
+			},
+			gasLimit: swap.gasLimit,
+			swapCallData: swap.swapCallData,
+		}
+		SwapDialogs.startSwap()
+		await axios.post(`${getBackendHost()}/gasless/swap/${swap.banWallet}`, req)
+		return ''
 	}
 
 	@Action
@@ -549,7 +638,7 @@ class BackendModule extends VuexModule {
 				this.context.commit('setDeposits', deposits)
 				this.context.commit('setWithdrawals', withdrawals)
 				this.context.commit('setSwaps', swaps)
-			} catch (err) {
+			} catch (err: any) {
 				console.log(err)
 				this.context.commit('setInError', true)
 				if (err.response) {
@@ -569,7 +658,7 @@ class BackendModule extends VuexModule {
 		}
 	}
 
-	private trackEventInPlausible(name: string) {
+	private static trackEventInPlausible(name: string) {
 		plausible.trackEvent(name, {
 			props: {
 				network: Accounts.network.chainName,

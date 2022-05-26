@@ -1,5 +1,5 @@
 import { getBackendHost } from '@/config/constants/backend'
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosResponse, AxiosError } from 'axios'
 import QRCode from 'qrcode'
 
 class BackendUtils {
@@ -9,9 +9,10 @@ class BackendUtils {
 			await axios.get(`${getBackendHost()}/claim/${banWallet}/${bcWallet}`)
 			console.debug('Bridge setup already done')
 			return true
-		} catch (err) {
-			if (err.response) {
-				const response: AxiosResponse = err.response
+		} catch (err: unknown | AxiosError) {
+			if (axios.isAxiosError(err)) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				const response: AxiosResponse = (err as AxiosError).response!
 				switch (response.status) {
 					case 404:
 						console.warn('Bridge setup has to be done')

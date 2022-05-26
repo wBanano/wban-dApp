@@ -3,14 +3,38 @@
 		<div class="q-pa-md q-gutter-sm">
 			<div class="column items-end">
 				<div class="col">
-					<q-btn to="/history" flat icon="history" label="History" color="primary" size="md">
-						<q-tooltip>History: see your past transactions and claim previously rejected transactions</q-tooltip>
+					<q-btn to="/history" flat icon="history" :label="$t('pages.history.title')" color="primary" size="md">
+						<q-tooltip>{{ $t('pages.history.title-tooltip') }}</q-tooltip>
 					</q-btn>
+				</div>
+			</div>
+			<div class="warnings row justify-center" v-if="warningCode !== ''">
+				<div class="col-12">
+					<q-banner v-if="warningCode !== ''" inline-actions rounded class="bg-primary text-secondary text-center">
+						<span v-if="warningCode === 'gasless-wrap-lacking-ban'">
+							{{ $t('components.wrap-form.gasless-wrap-lacking-ban', [missingBANForGaslessWrap]) }}
+						</span>
+						<span v-if="warningCode === 'gasless-wrap'">
+							{{ $t('components.wrap-form.gasless-wrap', [gaslessSettings.banThreshold]) }}
+						</span>
+						<template v-slot:action>
+							<q-btn
+								v-if="warningCode === 'gasless-wrap'"
+								color="secondary"
+								textColor="primary"
+								:label="$t('components.wrap-form.button-gasless-wrap')"
+								@click="
+									setToMax()
+									swap()
+								"
+							/>
+						</template>
+					</q-banner>
 				</div>
 			</div>
 			<swap-currency-input
 				ref="from"
-				label="From"
+				:label="$t('components.wrap-form.from')"
 				:amount.sync="amount"
 				:balance="fromBalance"
 				:currency="fromCurrency"
@@ -19,7 +43,13 @@
 			<div id="swap-icon" class="text-center">
 				<q-icon @click="switchCurrencyInputs" name="swap_vert" class="cursor-pointer arrow-down text-center" />
 			</div>
-			<swap-currency-input ref="to" label="To" :amount="amount" :balance="toBalance" :currency="toCurrency" />
+			<swap-currency-input
+				ref="to"
+				:label="$t('components.wrap-form.to')"
+				:amount="amount"
+				:balance="toBalance"
+				:currency="toCurrency"
+			/>
 			<div class="text-right">
 				<q-btn :label="swapLabel" type="submit" :disable="!swapEnabled" color="primary" text-color="text-black" />
 			</div>
@@ -36,12 +66,14 @@ import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import contracts from '@/store/modules/contracts'
-import { WBANToken } from '../../../artifacts/typechain'
+import { WBANTokenWithPermit } from '@artifacts/typechain'
 import Dialogs from '@/utils/Dialogs'
 import { Network } from '@/utils/Networks'
+import { GaslessSettings } from '@/models/GaslessSettings'
 
 const banStore = namespace('ban')
 const accountsStore = namespace('accounts')
+const backendStore = namespace('backend')
 
 @Component({
 	components: {
@@ -60,11 +92,21 @@ export default class SwapInput extends Vue {
 	@banStore.Getter('banAddress')
 	banAddress!: string
 
+	@accountsStore.State('activeBalance')
+	activeCryptoBalance!: BigNumber
+
 	@accountsStore.Getter('activeCryptoBalance')
 	cryptoBalance!: string
 
 	@accountsStore.State('network')
 	network!: Network
+
+	@backendStore.Getter('gaslessSettings')
+	gaslessSettings!: GaslessSettings
+
+	@backendStore.Getter('swaps')
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	swaps!: Array<any>
 
 	amount = ''
 	swapInProgress = false
@@ -87,9 +129,11 @@ export default class SwapInput extends Vue {
 
 	get swapLabel() {
 		if (this.toCurrency === 'BAN') {
-			return 'Unwrap'
+			return this.$t('components.wrap-form.button-unwrap')
+		} else if (this.isAmountEligibleForGaslessWrap) {
+			return this.$t('components.wrap-form.button-gasless-wrap')
 		} else {
-			return 'Wrap'
+			return this.$t('components.wrap-form.button-wrap')
 		}
 	}
 
@@ -100,6 +144,49 @@ export default class SwapInput extends Vue {
 			this.fromBalance.gte(ethers.utils.parseEther(this.amount)) &&
 			!this.swapInProgress
 		)
+	}
+
+	get wrapAlreadyDone() {
+		return this.swaps.length > 0
+	}
+
+	get banBalanceMatches(): boolean {
+		return this.banBalance.gte(ethers.utils.parseEther(this.gaslessSettings.banThreshold.toString()))
+	}
+
+	get cryptoBalanceMatches(): boolean {
+		return this.activeCryptoBalance.lte(ethers.utils.parseEther(this.gaslessSettings.cryptoThreshold.toString()))
+	}
+
+	get isEligibleForGaslessWrap(): boolean {
+		return !this.wrapAlreadyDone && this.gaslessSettings.enabled && this.banBalanceMatches && this.cryptoBalanceMatches
+	}
+
+	get isAmountEligibleForGaslessWrap(): boolean {
+		const banAmountMatches = Number.parseFloat(this.amount) >= this.gaslessSettings.banThreshold
+		return !this.wrapAlreadyDone && banAmountMatches && this.cryptoBalanceMatches && this.gaslessSettings.enabled
+	}
+
+	get missingBANForGaslessWrap(): number {
+		const banBalanceStr = ethers.utils.formatEther(this.banBalance)
+		const amount = this.gaslessSettings.banThreshold - Number.parseFloat(banBalanceStr)
+		return Math.max(0, Math.ceil(amount * 100) / 100)
+	}
+
+	get warningCode(): string {
+		if (this.wrapAlreadyDone) {
+			console.debug('User already made a wrap')
+			return ''
+		} else if (this.isEligibleForGaslessWrap) {
+			return 'gasless-wrap'
+		} else if (this.gaslessSettings.enabled && this.missingBANForGaslessWrap > 0) {
+			return 'gasless-wrap-lacking-ban'
+		}
+		return ''
+	}
+
+	setToMax() {
+		this.amount = ethers.utils.formatEther(this.fromBalance)
 	}
 
 	switchCurrencyInputs() {
@@ -119,9 +206,13 @@ export default class SwapInput extends Vue {
 			return
 		}
 
-		// check that the user as at sufficient crypto available for wrapping costs
+		// check that the user as at sufficient crypto available for wrapping costs if this isn't a gasless wrap
 		console.debug(`Required crypto balance: ${this.network.minimumNeededForWrap} ${this.network.nativeCurrency.symbol}`)
-		if (this.fromCurrency === 'BAN' && Number.parseFloat(this.cryptoBalance) < this.network.minimumNeededForWrap) {
+		if (
+			!this.isAmountEligibleForGaslessWrap &&
+			this.fromCurrency === 'BAN' &&
+			Number.parseFloat(this.cryptoBalance) < this.network.minimumNeededForWrap
+		) {
 			Dialogs.showGasNeededError(Number.parseFloat(this.cryptoBalance))
 			return
 		} else {
@@ -145,8 +236,12 @@ export default class SwapInput extends Vue {
 					blockchainAddress: accounts.activeAccount,
 					provider: accounts.providerEthers,
 				})
+				await backend.getHistory({
+					blockchainAddress: accounts.activeAccount,
+					banAddress: this.banAddress,
+				})
 			} else {
-				const contract: WBANToken | null = contracts.wbanContract
+				const contract: WBANTokenWithPermit | null = contracts.wbanContract
 				if (contract) {
 					console.info(`Swap from wBAN to BAN requested for ${this.amount} BAN to ${this.banAddress}`)
 					await contracts.swap({
@@ -162,6 +257,15 @@ export default class SwapInput extends Vue {
 		}
 	}
 
+	async mounted() {
+		if (accounts.activeAccount) {
+			await backend.getHistory({
+				blockchainAddress: accounts.activeAccount,
+				banAddress: this.banAddress,
+			})
+		}
+	}
+
 	created() {
 		this.fromCurrency = 'BAN'
 		this.toCurrency = 'wBAN'
@@ -171,6 +275,9 @@ export default class SwapInput extends Vue {
 
 <style lang="sass" scoped>
 @import '@/styles/quasar.sass'
+
+.warnings
+	padding-bottom: 1rem
 
 .arrow-down
 	font-size: 32px

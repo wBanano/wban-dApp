@@ -5,7 +5,7 @@
 				<q-item-label>{{ label }}</q-item-label>
 			</q-item-section>
 			<q-item-section side>
-				<q-item-label>Balance: {{ balance | bnToExactString }}</q-item-label>
+				<q-item-label>{{ $t('components.token-input.balance') }} {{ balance | bnToExactString }}</q-item-label>
 			</q-item-section>
 		</q-item>
 		<q-card-section>
@@ -20,7 +20,7 @@
 				:rules="validationRules"
 			>
 				<template v-slot:append>
-					<a v-if="editable" @click="setToMax" class="max">Max</a>
+					<a v-if="editable" @click="setToMax" class="max">{{ $t('components.token-input.max') }}</a>
 				</template>
 			</q-input>
 		</q-card-section>

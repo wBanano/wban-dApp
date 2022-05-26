@@ -1,0 +1,283 @@
+{
+	"title": "Embrulhe seu BAN",
+	"connect": "Conectar",
+	"cancel": "cancelar",
+	"home": "Início",
+	"ok": "OK",
+	"withdraw": "Sacar",
+	"refresh": "Atualizar",
+	"pages": {
+		"index": {
+			"title": "wBAN é Wrapped Banano",
+			"available-on": "Está disponivel nas redes:",
+			"what-can-you-do": "O que você pode fazer com wBAN?",
+			"swap-with-other-crypto": "Trocar por outras cripto",
+			"swap-with-other-crypto-description": "Transforme BAN em wBAN para trocar com sua cripto de preferência ou vice-versa",
+			"earn-some-wban": "Ganhe wBAN",
+			"earn-some-wban-description": "Ganhe wBAN extra fornecendo liquidez para pools de liquidez",
+			"learn-defi": "Aprenda DeFi",
+			"learn-defi-description": "Sem arriscar perder seus preciosos BANs"
+		},
+		"setup": {
+			"continue": "Continuar",
+			"back": "Anterior",
+			"banano-address": "Endereço Banano",
+			"from-ban": "Sou novo no wBAN",
+			"from-ban-description": "Tenho Bananos e quero começar a aprender DeFi com wBAN.",
+			"from-wban": "Sou novo no Banano",
+			"from-wban-description": "Tenho wBAN e quero usar a rede do Banano.",
+			"verify-ban-address": "Precisamos verificar o seu endereço BAN!",
+			"verify-ban-address-explanation": "Esse passo é importante, pois garante que você controle a carteira BAN interagindo com o wBAN.",
+			"step1": {
+				"title": "Configurar uma carteira Banano",
+				"phrase1": "Para a melhor experiência do usuário, recomendamos o uso da carteira Kalium no celular:",
+				"phrase2": "Caso você prefira usar uma carteira web, então {0} é a melhor escolha.",
+				"phrase3": "Clique no botão \"Continuar\" quando você criar sua carteira."
+			},
+			"step2": {
+				"title": "Ganhe Banano grátis",
+				"phrase1": "Você precisa de um pouco de BAN para configurar a bridge.",
+				"phrase2": "Banano tem várias faucets que dão um pouco de BAN de graça, como:",
+				"phrase3": "Clique no botão \"Continuar\" após ter pelo menos 0.01 BAN na sua carteira."
+			},
+			"step3": {
+				"error-banano-address-required": "Endereço Banano é necessário",
+				"error-invalid-banano-address": "Endereço Banano inválido",
+				"error-blacklisted-address": "Endereço na lista negra"
+			},
+			"step4": {
+				"title": "Verifique seu endereço",
+				"phrase1": "Por favor, verifique se o seu endereço Banano é de fato",
+				"phrase2": "Isso é importante pois vamos vincular seu endereço Banano ao seu endereço {network}."
+			},
+			"step5": {
+				"title": "Faça um depósito de Banano",
+				"phrase1": "Nos próximos 5 minutos",
+				"phrase2": "você precisa efetuar um depósito BAN da sua carteira para o endereço abaixo, de modo a vincular as carteiras",
+				"phrase3": "ou escanear o QRCode:",
+				"phrase4": "Apesar de qualquer valor ser suficiente, por precaução, é recomendado transferir apenas 0.01 BAN.",
+				"phrase5": "Não se preocupe, esse depósito estará disponível para sacar quando você quiser.",
+				"button-copy-deposit-address": "Copiar endereço do Depósito",
+				"button-check-deposit": "Verificar Depósito"
+			}
+		},
+		"bridge": {
+			"button-deposit-ban": "Depositar BAN",
+			"button-deposit-ban-tooltip": "Depositar BAN para swaps",
+			"button-withdraw-ban": "Sacar BAN",
+			"button-withdraw-ban-tooltip": "Enviar BAN de volta para a sua carteira",
+			"button-swap": "Trocar",
+			"button-stake-and-farm": "Stake & Farm",
+			"button-stake-and-farm-tooltip": "Farms dos Pools de Liquidez"
+		},
+		"history": {
+			"title": "Histórico",
+			"title-tooltip": "Histórico: veja suas transações anteriores e resgate transações rejeitadas anteriormente"
+		},
+		"farms": {
+			"farms-active": "Ativo",
+			"farms-ended": "Encerrado",
+			"farms-active-tooltip": "Farms ainda distribuindo recompensas",
+			"farms-ended-tooltip": "Farms antigas que não distribuem recompensas mais!",
+			"warning-no-farm-running-on-network": "Nenhuma farm em execução na {network}. Verifique em outras redes.",
+			"warning-deposits-left-in-ended-farm": "Você tem alguns depósitos restantes nas farms encerradas. Por favor, saque-as!"
+		},
+		"nft-rewards": {
+			"buy": "Comprar",
+			"grab": "Resgate-os",
+			"claim": "Resgatar",
+			"airdrop-claim": "Você recebeu um airdrop e pode resgatar algumas NFTs gratuitas.",
+			"golden-missing": "Só falta uma NFT para resgatar uma moeda de ouro.",
+			"claim-golden": "Você tem NFTs suficientes para reivindicar uma NFT dourada.",
+			"warning1": "As NFTs do wBAN estão disponíveis apenas na rede Polygon.",
+			"warning2": "Por favor, mude para a rede adequada."
+		}
+	},
+	"components": {
+		"wrap-form": {
+			"from": "De:",
+			"to": "Para:",
+			"gasless-wrap-lacking-ban": "Se você depositar mais {0} BAN, você pode obter um embrulho sem taxa de gas.",
+			"gasless-wrap": "Você pode embrulhar sem taxa de transação se pelo menos {0} BAN.",
+			"button-wrap": "Embrulhar",
+			"button-gasless-wrap": "Embrulho sem gas",
+			"button-unwrap": "Desembrulhar"
+		},
+		"wrap-input": {
+			"balance": "Saldo:",
+			"max": "Máximo",
+			"add-wban-to-metatmask": "Adicione wBAN à MetaMask",
+			"error-amount-more-than-zero": "O valor deve ser superior a zero",
+			"error-no-more-than-two-decimals": "Não mais do que 2 casas decimais",
+			"error-not-enough-token-available": "Não tem BAN suficiente!"
+		},
+		"settings": {
+			"title": "Configurações",
+			"dark-mode": "Modo Noturno",
+			"language": "Idioma",
+			"disconnect": "Desconectar",
+			"about": "Sobre"
+		},
+		"swap-form": {
+			"from": "De:",
+			"to": "Para:",
+			"transaction-settings": "Configurações de transação",
+			"slippage-tolerance": "Tolerância do slippage",
+			"slippage-tolerance-tooltip": "Esta é a porcentagem máxima que você está disposto a perder devido a alterações de preço.",
+			"allowance": "Permissão",
+			"allowance-exact-amount": "Valor exato",
+			"allowance-unlimited-amount": "Ilimitado",
+			"allowance-tooltip": "Quantidade de {fromSymbol} que a exchange pode mover em seu nome.<br /><br />Valor exato: Aprovar cada vez, mas mais seguro, menos conveniente.<br />Ilimitado: Aprovar apenas uma vez, mais conveniente, mas menos seguro.",
+			"estimated-gas-fee": "Taxa de Gás Estimada",
+			"exchange-route": "Rota de Troca",
+			"gasless-swap": "Se você trocar pelo menos <strong>{amount} wBAN para {crypto}</strong>, não haverá taxa de transação.",
+			"button-swap": "Trocar",
+			"button-gasless-swap": "Troca sem Gas",
+			"button-approve": "Aprovar {fromSymbol}"
+		},
+		"token-input": {
+			"balance": "Saldo:",
+			"max": "Máximo",
+			"error-amount-more-than-zero": "O valor deve ser superior a zero",
+			"error-too-many-decimals": "Não mais do que {0} casas decimais",
+			"error-not-enough-token-available": "Não há {symbol} suficiente!"
+		},
+		"statistics": {
+			"title": "Dados wBAN",
+			"from": "pelo Benis",
+			"total-supply": "Quantia Total",
+			"total-supply-tooltip": "Número de wBAN criados a partir de depósitos BAN realizados"
+		},
+		"nft-rewards": {
+			"quantity": "Qtd",
+			"buy-sell": "Comprar/Vender"
+		},
+		"farm": {
+			"wban-earned": "wBAN ganho",
+			"wban-earned-farm-ended": "(sacar para a colheita)",
+			"farm-ended": "Farm Encerrada!",
+			"harvest": "Colheita",
+			"deposit": "Depósito",
+			"details": "Detalhes",
+			"yield": "Rendimento",
+			"total": "Total",
+			"farm-tvl": "Valor bloqueado na Farm",
+			"liquidity-pool-tvl": "Valor bloqueado na Pool de Liquidez",
+			"button-approve": "Aprovar",
+			"button-add-liquidity": "Adicionar Liquidez",
+			"button-supply": "Fornecer",
+			"button-supply-tooltip": "Ao adicionar seus tokens de liquidez na farm, você automaticamente colhe seu wBAN ganho!",
+			"button-withdraw-tooltip": "Ao retirar seus tokens de liquidez da farm, você automaticamente colhe seu wBAN ganho!"
+		}
+	},
+	"dialogs": {
+		"waiting-for-blockchain": "Aguardando confirmações da blockchain",
+		"ban-deposit": {
+			"title": "Depósitos BAN",
+			"phrase1": "Caso queira trocar mais BAN, basta enviar um pouco de BAN da sua carteira {0} para esta carteira:",
+			"phrase2": "Não envie valores com mais de 2 casas decimais para garantir que não haja erros (valor raw).<br />Usar o botão \"Max\" na Kalium provavelmente não vai funcionar muito bem.<br />Se você não segue a regra anterior, sua BAN será enviada de volta para a carteira de onde você os enviou. <b>Certifique-se de que você não se retirará de um CEX direto para este endereço, ou você poderá perder a sua BAN!</b>",
+			"button-copy-address": "Copiar Endereço"
+		},
+		"ban-withdrawal": {
+			"title": "Saque de Bananos"
+		},
+		"swap-in-progress": "Troca em andamento...",
+		"token-approval": "Aprovação de token em andamento...",
+		"token-chooser": {
+			"title": "Selecione um token",
+			"placeholder": "Filtrar por token"
+		},
+		"gas-needed": {
+			"title": "Ficando sem {crypto} para pagar taxas",
+			"phrase1": "O seu saldo atual de {balance} {crypto} é muito baixo para o embrulho.",
+			"phrase2": "{network} não precisa de muito {crypto} para taxas de transação, mas é melhor comprar pelo menos {minimumNeededForWrap} {crypto} e enviá-lo para essa carteira."
+		},
+		"low-amount-to-wrap": {
+			"are-you-sure": "Você tem certeza?",
+			"phrase1": "Você está solicitando embrulhar/desembrulhar uma quantia 🤏 de {amount} BAN/wBAN.",
+			"phrase2": "As taxas da rede {network} podem não valer a pena para este embrulho/desembrulho.",
+			"proceed-anyway": "Continuar mesmo assim"
+		},
+		"nft": {
+			"title": "Resgate suas NFTs",
+			"proceed": "Você tem {count} NFT para resgatar. Prosseguir?",
+			"claiming": "Resgatando NFT {count} de {total}..."
+		},
+		"nft-rewards": {
+			"title": "Resgatar NFT dourada",
+			"phrase1": "Você tem as NFTs necessárias para resgatar uma NFT <strong>Dourada {name}</strong>.",
+			"phrase2": "Fazer isso irá <strong>queimar/destruir</strong> as suas três NFTs {name} e te dar a NFT Dourada {name}."
+		},
+		"withdrawal": {
+			"title": "Saque em andamento...",
+			"message": "Trabalhando para processar o seu saque!"
+		},
+		"pending-withdrawal": {
+			"title": "Saque pendente",
+			"message": "O seu saque de {amount} BAN não pode ser processado agora.<br /><br /><strong>Foi colocado em uma lista pendente e será processado mais tarde!</strong><br /><br />Enquanto isso, o valor do saque não será reduzido do seu saldo de BAN depositado."
+		},
+		"wrap": {
+			"title": "Embrulho de {amount} BAN em andamento...",
+			"message": "Trabalhando para processar o seu pedido de embrulho!"
+		},
+		"unwrap": {
+			"title": "Desembrulho de {amount} wBAN em andamento...",
+			"message": "Trabalhando para processar o seu pedido de desembrulho!"
+		},
+		"farm-supply": {
+			"title": "Fornecimento de {amount} {symbol} em andamento...",
+			"message": "Trabalhando para processar a sua solicitação de fornecimento!"
+		},
+		"farm-withdraw": {
+			"title": "Saque de {amount} {symbol} em andamento...",
+			"message": "Trabalhando para processar a sua solicitação de saque!"
+		},
+		"unsupported-network": {
+			"title": "Rede não suportada {network}",
+			"message": "<p>wBAN só está disponível no BSC, Polygon e Fantom.</p><p>Por favor, mude para uma dessas redes.</p>"
+		}
+	},
+	"notifications": {
+		"view": "Visualizar",
+		"close": "Fechar",
+		"token-approval-success": "Sua aprovação de token foi processada com sucesso.",
+		"token-approval-error": "Sua aprovação de token não pôde ser processada.",
+		"swap-success": "Sua troca foi processada com sucesso.",
+		"swap-error": "Sua troca não pôde ser processado.",
+		"ban-deposit-confirmed": {
+			"message": "O seu depósito de {amount} BAN foi recebido.",
+			"caption": "Você pode trocá-lo para wBAN."
+		},
+		"ban-deposit-declined": {
+			"message": "O seu depósito de {amount} BAN foi rejeitado.",
+			"caption": "Certifique-se de não enviar valores com mais de 2 casas decimais ou com valores brutos."
+		},
+		"withdrawal": "{amount} BAN foram enviados de volta para sua carteira.",
+		"pending-withdrawal": {
+			"message": "O seu saque de {amount} BAN está pendente.",
+			"caption": "Assim que a hot wallet do wBAN for reabastecida pela cold wallet da wBAN, seu saque será feito!"
+		},
+		"wrap": "Sua troca de {amount} BAN foi processada com sucesso.",
+		"wrap-error": {
+			"message": "O seu embrulho de {amount} BAN não pôde ser processado.",
+			"caption": "Vá para a página de histórico e clique no botão resgatar associado à solicitação do embrulho."
+		},
+		"unwrap": {
+			"message": "O seu desembrulho de {amount} wBAN foi processado com sucesso.",
+			"caption": "Seu saldo de Banano depositado foi atualizado."
+		},
+		"farm-supply": "A sua quantia de {amount} {symbol} foi processado com sucesso.",
+		"farm-withdraw": "Seu saque de {amount} {symbol} foi processada com sucesso."
+	},
+	"menu": {
+		"donations": {
+			"title": "Doações",
+			"aside": "Me pague um cafézinho:",
+			"phrase1": "Trabalhando neste app tem sido uma grande jornada, e ainda está em andamento!",
+			"phrase2": "Gorjetas são sempre apreciadas, se você apoia meus esforços, pode me ajudar enviando gorjetas de Banano em:"
+		}
+	},
+	"footer": {
+		"documentation": "Documentação"
+	}
+}

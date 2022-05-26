@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Verfügbare Wallets",
+			"sidebar": {
+				"heading": "Erste Schritte",
+				"subheading": "Wallet verbinden",
+				"paragraph": "Das Verbinden eines Wallets ist wie „Anmelden“ bei Web3. Wähle ein Wallet aus den Optionen aus, um loszulegen."
+			},
+			"recommendedWalletsPart1": "{app} unterstützt nur",
+			"recommendedWalletsPart2": "auf dieser Plattform. Bitte verwende oder installiere eines der unterstützten Wallets um fortzufahren",
+			"installWallet": "Sie haben keine Wallets installiert, die {app} unterstützt, bitte verwende ein unterstütztes Wallet.",
+			"agreement": {
+				"agree": "Ich willige ein",
+				"terms": "Nutzungsbedingungen",
+				"and": "und",
+				"privacy": "Datenschutzerklärung"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Verbinde mit {wallet}...} other {Verbindung abgelehnt}}",
+			"sidebar": {
+				"subheading": "Verbindung freigeben",
+				"paragraph": "Bitte genehmige die Verbindung mit dem Wallet und autorisiere den Zugriff um fortzufahren."
+			},
+			"mainText": "Verbinde...",
+			"paragraph": "Stelle sicher, alle Konten auszuwählen, auf die Zugriff gewährt werden soll.",
+			"rejectedText": "Verbindung abgelehnt!",
+			"rejectedCTA": "Klicke hier, um es erneut zu versuchen",
+			"primaryButton": "Zurück zum Wallet"
+		},
+		"connectedWallet": {
+			"header": "Verbindung erfolgreich",
+			"sidebar": {
+				"subheading": "Verbindung erfolgreich!",
+				"paragraph": "Dein Wallet ist jetzt mit {app} verbunden"
+			},
+			"mainText": "Verbunden"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Aktion erforderlich in {wallet}",
+			"paragraph": "Bitte wechsel das aktive Konto deines Wallets.",
+			"linkText": "Mehr erfahren.",
+			"buttonText": "Okay"
+		},
+		"switchChain": {
+			"heading": "Chain wechseln",
+			"paragraph1": "{app} erfordert, dein Wallet zum Netzwerk {nextNetworkName} zu wechseln, um fortzufahren.",
+			"paragraph2": "*Einige Wallets unterstützen möglicherweise nicht das Ändern von Netzwerken. Wenn du die Netzwerke in deinem Wallet nicht ändern kannst, solltest du erwägen, auf ein anderes Wallet zu wechseln."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Alle Wallets trennen",
+			"description": "Bist du sicher, dass du alle deine Wallets trennen möchten?",
+			"confirm": "Bestätigen",
+			"cancel": "Abbrechen"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Ein anderes Wallet verbinden",
+		"disconnectAllWallets": "Alle Wallets trennen",
+		"currentNetwork": "Aktuelles Netzwerk",
+		"appInfo": "App-Info",
+		"learnMore": "Mehr erfahren",
+		"gettingStartedGuide": "Einsteiger-Anleitung",
+		"smartContracts": "Smart Contract(s)",
+		"explore": "Erkunden",
+		"backToApp": "Zurück zur dapp",
+		"poweredBy": "powered by",
+		"addAccount": "Konto hinzufügen",
+		"setPrimaryAccount": "Hauptkonto festlegen",
+		"disconnectWallet": "Wallet trennen"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Deine Transaktion wartet auf deine Bestätigung",
+			"nsfFail": "Du hast nicht genügend Guthaben, um diese Transaktion abzuschließen",
+			"txUnderpriced": "Die Gebühren für deine Transaktion sind zu niedrig, versuche es erneut mit höheren Gebühren",
+			"txRepeat": "Dies könnte eine wiederholte Transaktion sein",
+			"txAwaitingApproval": "Du hast eine vorherige Transaktion mit ausstehender Bestätigung",
+			"txConfirmReminder": "Bitte bestätige deine Transaktion, um fortzufahren, das Transaktionsfenster könnte hinter deine Browser versteckt sein",
+			"txSendFail": "Du hast die Transaktion abgelehnt",
+			"txSent": "Deine Transaktion wurde an das Netzwerk gesendet",
+			"txStallPending": "Deine Transaktion ist blockiert und hat den Transaktionspool nicht erreicht",
+			"txStuck": "Deine Transaktion wird aufgrund einer Nonce Lücke blockiert",
+			"txPool": "Deine Transaktion wurde gestartet",
+			"txStallConfirmed": "Deine Transaktion wird blockiert und wurde nicht bestätigt",
+			"txSpeedUp": "Deine Transaktion wurde beschleunigt",
+			"txCancel": "Deine Transaktion wird abgebrochen",
+			"txFailed": "Deine Transaktion ist fehlgeschlagen",
+			"txConfirmed": "Deine Transaktion wurde erfolgreich abgeschlossen",
+			"txError": "Hoppla, etwas ist schief gelaufen. Bitte versuche es erneut"
+		},
+		"watched": {
+			"txPool": "Ihr Konto ist {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "Transaktion für {formattedValue} {asset} {preposition} {counterpartyShortened} wurde beschleunigt",
+			"txCancel": "Transaktion für {formattedValue} {asset} {preposition} {counterpartyShortened} wurde storniert",
+			"txConfirmed": "Ihr Konto {verb} erfolgreich {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Ihr Konto konnte {verb} {formattedValue} {asset} {preposition} {counterpartyShortened} nicht erhalten"
+		},
+		"time": {
+			"minutes": "min",
+			"seconds": "s"
+		}
+	}
+}

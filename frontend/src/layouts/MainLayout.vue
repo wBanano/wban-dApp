@@ -6,7 +6,7 @@
 				<a @click="home" class="gt-xs">
 					<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" class="currency-logo" />
 				</a>
-				<q-toolbar-title @click="home">{{ appTitle }}</q-toolbar-title>
+				<q-toolbar-title @click="home">wBAN - {{ $t('title') }}</q-toolbar-title>
 				<blockchain-chooser />
 				<q-avatar v-if="banAddress" class="gt-xs">
 					<img @click="openBan(banAddress)" :src="banAddressPicture" :alt="banAddress" />
@@ -20,19 +20,24 @@
 					<q-menu id="donations">
 						<div class="row no-wrap q-pa-md">
 							<div class="column">
-								<div class="text-h6 q-mb-md">Donations</div>
-								<p>Working on this app has been quite a journey, and still going on!</p>
+								<div class="text-h6 q-mb-md">{{ $t('menu.donations.title') }}</div>
+								<p>{{ $t('menu.donations.phrase1') }}</p>
 								<p>
-									Tips are always appreciated and if you would like to support my efforts, you can always help me by
-									sending Banano tips at: <span class="banano-address">{{ banWalletForTips }}</span>
+									{{ $t('menu.donations.phrase2') }} <span class="banano-address">{{ banWalletForTips }}</span>
 								</p>
 							</div>
 							<q-separator vertical inset class="q-mx-lg" />
 							<div class="column items-center" v-if="$q.platform.is.desktop">
-								<div class="text-subtitle1 q-mt-md q-mb-xs">Tip me at:</div>
+								<div class="text-subtitle1 q-mt-md q-mb-xs">{{ $t('menu.donations.aside') }}</div>
 								<q-icon :name="banWalletForTipsQRCode" size="200px" />
 							</div>
-							<q-btn v-if="$q.platform.is.mobile" color="primary" text-color="secondary" label="OK" v-close-popup />
+							<q-btn
+								v-if="$q.platform.is.mobile"
+								color="primary"
+								text-color="secondary"
+								:label="$t('ok')"
+								v-close-popup
+							/>
 						</div>
 					</q-menu>
 				</q-btn>
@@ -57,28 +62,28 @@
 						<q-icon name="img:ban-deposit.svg" size="3em" />
 					</q-item-section>
 					<q-separator vertical inset />
-					<q-item-section>Deposit BAN</q-item-section>
+					<q-item-section>{{ $t('pages.bridge.button-deposit-ban') }}</q-item-section>
 				</q-item>
 				<q-item clickable v-ripple @click="withdrawBAN">
 					<q-item-section avatar>
 						<q-icon name="img:ban-withdraw.svg" size="3em" />
 					</q-item-section>
 					<q-separator vertical inset />
-					<q-item-section>Withdraw BAN</q-item-section>
+					<q-item-section>{{ $t('pages.bridge.button-withdraw-ban') }}</q-item-section>
 				</q-item>
 				<q-item clickable v-ripple @click="swap">
 					<q-item-section avatar>
 						<q-icon name="img:wban-swap.svg" size="3em" />
 					</q-item-section>
 					<q-separator vertical inset />
-					<q-item-section>Swap</q-item-section>
+					<q-item-section>{{ $t('pages.bridge.button-swap') }}</q-item-section>
 				</q-item>
 				<q-item clickable v-ripple to="/farms">
 					<q-item-section avatar>
 						<q-icon name="img:wban-farming.svg" size="3em" />
 					</q-item-section>
 					<q-separator vertical inset />
-					<q-item-section>Stake &amp; Farm</q-item-section>
+					<q-item-section>{{ $t('pages.bridge.button-stake-and-farm') }}</q-item-section>
 				</q-item>
 			</q-list>
 		</q-drawer>
@@ -99,7 +104,7 @@
 			<span class="social">
 				<a href="https://wrap-that-potassium.gitbook.io/wban/introduction/quick-tour" target="_blank">
 					<q-icon name="live_help" color="white" size="24px" />
-					<span v-if="$q.screen.gt.xs">Documentation</span>
+					<span v-if="$q.screen.gt.xs">{{ $t('footer.documentation') }}</span>
 				</a>
 				<a href="https://chat.banano.cc" target="_blank">
 					<q-icon name="fab fa-discord" color="white" size="20px" />
@@ -115,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import { Screen } from 'quasar'
 import router from '@/router'
@@ -179,7 +184,6 @@ export default class MainLayout extends Vue {
 	@contractsStore.Getter('wbanAddress')
 	wbanAddress!: string
 
-	appTitle: string = process.env.VUE_APP_TITLE || 'wBAN -- Broken Release!!!'
 	appVersion: string = process.env.VUE_APP_VERSION || '0'
 
 	banWalletForTips = 'ban_1wban1mwe1ywc7dtknaqdbog5g3ah333acmq8qxo5anibjqe4fqz9x3xz6ky'
@@ -228,6 +232,7 @@ export default class MainLayout extends Vue {
 		}
 	}
 
+	@Watch('$i18n.locale')
 	async onProviderChange() {
 		plausible.init()
 		await ban.init()
@@ -256,6 +261,17 @@ export default class MainLayout extends Vue {
 	}
 
 	async mounted() {
+		console.debug('lookup locale for local storage setting')
+		if (localStorage.locale) {
+			this.$i18n.locale = localStorage.locale
+		} else {
+			const browserLocale = this.$q.lang.getLocale()
+			if (browserLocale) {
+				console.warn('Browser locale:', browserLocale)
+				this.$i18n.locale = browserLocale
+			}
+		}
+
 		await this.onProviderChange()
 		document.addEventListener('web3-connection', this.onProviderChange)
 	}

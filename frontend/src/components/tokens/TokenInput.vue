@@ -6,7 +6,7 @@
 			</q-item-section>
 			<q-item-section top class="col-9 text-right" v-if="value.token">
 				<q-item-label>
-					Balance: {{ balanceFormatted }} {{ value.token.symbol }}
+					{{ $t('components.token-input.balance') }} {{ balanceFormatted }} {{ value.token.symbol }}
 					<span v-if="value.token.symbol === 'wBAN'">({{ balance | banPrice }})</span>
 				</q-item-label>
 			</q-item-section>
@@ -34,7 +34,9 @@
 					/>
 				</div>
 				<div v-if="!disable" class="col-sm-2 col-xs-6 text-right max">
-					<q-btn v-if="value.token" @click="setToMax" flat dense text-color="primary" class="emphasis">Max</q-btn>
+					<q-btn v-if="value.token" @click="setToMax" flat dense text-color="primary" class="emphasis">{{
+						$t('components.token-input.max')
+					}}</q-btn>
 				</div>
 			</div>
 		</div>
@@ -106,9 +108,14 @@ export default class TokenInput extends Vue {
 			return []
 		} else {
 			return [
-				(val: string) => val === '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
-				(val: string) => this.hasNotTooManyDecimals(val) || `No more than ${this.value.token.decimals} decimals`,
-				(val: string) => this.isLowerThanMax(val) || `Not enough ${this.value.token.symbol}!`,
+				(val: string) =>
+					val === '' || Number.parseFloat(val) > 0 || this.$t('components.token-input.error-amount-more-than-zero'),
+				(val: string) =>
+					this.hasNotTooManyDecimals(val) ||
+					this.$t('components.token-input.error-too-many-decimals', [this.value.token.decimals]),
+				(val: string) =>
+					this.isLowerThanMax(val) ||
+					this.$t('components.token-input.error-not-enough-token-available', { symbol: this.value.token.symbol }),
 			]
 		}
 	}

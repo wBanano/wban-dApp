@@ -2,7 +2,7 @@
 	<q-dialog ref="dialog" @hide="onDialogHide">
 		<q-card class="q-dialog-plugin">
 			<q-card-section class="row items-center">
-				<div class="text-h5 q-mt-sm q-mb-xs">Select a token</div>
+				<div class="text-h5 q-mt-sm q-mb-xs">{{ $t('dialogs.token-chooser.title') }}</div>
 				<q-space />
 				<q-btn icon="close" flat round dense v-close-popup class="text-white" />
 			</q-card-section>
@@ -14,7 +14,7 @@
 					dense
 					outlined
 					v-model="search"
-					placeholder="Filter by token"
+					:placeholder="$t('dialogs.token-chooser.placeholder')"
 					debounce="500"
 					@input="filterTokens($event)"
 				>

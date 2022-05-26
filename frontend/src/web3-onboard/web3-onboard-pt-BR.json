@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Carteiras Disponíveis",
+			"sidebar": {
+				"heading": "Comece Agora",
+				"subheading": "Conecte sua carteira",
+				"paragraph": "Conectar sua carteira é como \"entrar\" na Web3. Selecione sua carteira entre as opções para começar."
+			},
+			"recommendedWalletsPart1": "{app} só suporta",
+			"recommendedWalletsPart2": "nesta plataforma. Por favor, use ou instale uma das carteiras suportadas para continuar",
+			"installWallet": "Você não tem nenhuma carteira instalada com suporte a {app} , por favor, use uma carteira suportada",
+			"agreement": {
+				"agree": "Eu concordo com os",
+				"terms": "Termos & Condições",
+				"and": "e",
+				"privacy": "Política de Privacidade"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Conectando-se a {wallet}...} other {Conexão rejeitada}}",
+			"sidebar": {
+				"subheading": "Aprovar conexão",
+				"paragraph": "Por favor, aprove a conexão em sua carteira e autorize o acesso para continuar."
+			},
+			"mainText": "Conectando...",
+			"paragraph": "Certifique-se de selecionar todas as contas que você deseja conceder acesso.",
+			"rejectedText": "Conexão rejeitada!",
+			"rejectedCTA": "Clique aqui para tentar novamente",
+			"primaryButton": "Voltar para carteiras"
+		},
+		"connectedWallet": {
+			"header": "Conectado com sucesso",
+			"sidebar": {
+				"subheading": "Conexão bem-sucedida!",
+				"paragraph": "Sua carteira agora está conectada a {app}"
+			},
+			"mainText": "Conectado"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Ação necessária em {wallet}",
+			"paragraph": "Por favor, troque a conta ativa na sua carteira.",
+			"linkText": "Saiba mais.",
+			"buttonText": "OK"
+		},
+		"switchChain": {
+			"heading": "Trocar Blockchain",
+			"paragraph1": "{app} requer que você troque sua carteira para a rede {nextNetworkName} para continuar.",
+			"paragraph2": "*Algumas carteiras podem não suportar a mudança de redes. Se você não puder alterar redes em sua carteira, considere mudar para uma carteira diferente."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Desconectar todas as Carteiras",
+			"description": "Você tem certeza que deseja desconectar todas as suas carteiras?",
+			"confirm": "Confirmar",
+			"cancel": "Cancelar"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Conectar outra Carteira",
+		"disconnectAllWallets": "Desconectar todas as Carteiras",
+		"currentNetwork": "Rede atual",
+		"appInfo": "Informações do aplicativo",
+		"learnMore": "Saber mais",
+		"gettingStartedGuide": "Guia de Introdução",
+		"smartContracts": "Contrato(s) Inteligente(s)",
+		"explore": "Explorar",
+		"backToApp": "Voltar ao dapp",
+		"poweredBy": "desenvolvido por",
+		"addAccount": "Adicionar conta",
+		"setPrimaryAccount": "Definir conta principal",
+		"disconnectWallet": "Desconectar Carteira"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Sua transação está aguardando confirmação",
+			"nsfFail": "Você não tem fundos suficientes para concluir esta transação",
+			"txUnderpriced": "O preço de gás da sua transação está muito baixo, tente novamente com um preço de gás mais alto",
+			"txRepeat": "Isso pode ser uma transação repetida",
+			"txAwaitingApproval": "Você tem uma transação anterior aguardando sua confirmação",
+			"txConfirmReminder": "Confirme sua transação para continuar, a janela de transação pode estar atrás do seu navegador",
+			"txSendFail": "Você rejeitou a transação",
+			"txSent": "Sua transação foi enviada para a rede",
+			"txStallPending": "Sua transação estagnou e não entrou no pool de transações",
+			"txStuck": "Sua transação está bloqueada devido a uma falha do nonce",
+			"txPool": "Sua transação começou",
+			"txStallConfirmed": "Sua transação está parada e não foi confirmada",
+			"txSpeedUp": "Sua transação foi priorizada",
+			"txCancel": "Sua transação está sendo cancelada",
+			"txFailed": "Sua transação falhou",
+			"txConfirmed": "Sua transação foi bem-sucedida",
+			"txError": "Ops, algo deu errado. Por favor, tente novamente"
+		},
+		"watched": {
+			"txPool": "Sua conta é {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "A transação para {formattedValue} {asset} {preposition} {counterpartyShortened} foi priorizada",
+			"txCancel": "A transação para {formattedValue} {asset} {preposition} {counterpartyShortened} foi cancelada",
+			"txConfirmed": "A sua conta conseguiu {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Sua conta falhou em {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "min",
+			"seconds": "seg"
+		}
+	}
+}

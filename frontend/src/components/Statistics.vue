@@ -1,15 +1,15 @@
 <template>
 	<q-card class="statistics-card">
 		<q-card-section>
-			<div class="text-h6">wBAN Statistics</div>
-			<div class="text-subtitle2">by Benis</div>
+			<div class="text-h6">{{ $t('components.statistics.title') }}</div>
+			<div class="text-subtitle2">{{ $t('components.statistics.from') }}</div>
 		</q-card-section>
 		<q-card-section>
 			<p>
 				<strong>
-					Total Supply
+					{{ $t('components.statistics.total-supply') }}
 					<q-icon name="info" class="dictionary vertical-top">
-						<q-tooltip>Number of wBAN that have been created from associated BAN deposits</q-tooltip>
+						<q-tooltip>{{ $t('components.statistics.total-supply-tooltip') }}</q-tooltip>
 					</q-icon>
 					:
 				</strong>

@@ -5,9 +5,6 @@ import "@nomiclabs/hardhat-waffle";
 import '@typechain/hardhat';
 import 'hardhat-dependency-compiler';
 import "hardhat-spdx-license-identifier";
-import "hardhat-preprocessor";
-import { removeConsoleLog } from 'hardhat-preprocessor';
-import "hardhat-log-remover";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 // import "hardhat-gas-reporter";
@@ -17,7 +14,7 @@ import {
   hashBytecodeWithoutMetadata,
   Manifest,
 } from "@openzeppelin/upgrades-core";
-import "hardhat-abi-exporter";
+// import "hardhat-abi-exporter";
 
 let mnemonic = process.env.MNEMONIC;
 if (!mnemonic) {
@@ -37,7 +34,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 task("wban:deploy", "Deploy wBAN")
 	.setAction(async (args, hre) => {
 		const accounts = await hre.ethers.getSigners();
-		console.info(`Deploying wBAN with owner "${accounts[0].address}"`)
+		console.info(`Deploying wBAN with owner "${accounts[0].address}"`);
 
 		// deploy upgradeable contract
 		const WBANToken = await hre.ethers.getContractFactory("WBANToken");
@@ -137,6 +134,38 @@ task("wban:pause", "Pause wBAN -- [EMERGENCY ONLY]")
 		const wbanAddress = args.wban;
 		const wban = await hre.ethers.getContractAt("WBANToken", wbanAddress)
 		await wban.pause()
+	});
+
+task("wban:gasless-swap", "Deploy wBAN gasless swap contract")
+	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
+	.addParam("zeroEx", "The address of 0x exchange proxy", '', types.string)
+	.addParam("relayer", "The address of the relayer allowed to call this the gasless swap contract", '', types.string)
+	.setAction(async (args, hre) => {
+		const accounts = await hre.ethers.getSigners();
+		const wbanAddress = args.wban;
+		const zeroExAddress = args.zeroEx;
+		const relayerAddress = args.relayer;
+
+		console.info(`Deploying wBAN gasless swap with owner "${accounts[0].address}"`);
+		const gaslessSwapFactory = await hre.ethers.getContractFactory("WBANGaslessSwap");
+		const swap = (await hre.upgrades.deployProxy(gaslessSwapFactory, [wbanAddress, zeroExAddress]));
+		await swap.deployed();
+		await swap.grantRole(await swap.MINTER_ROLE(), relayerAddress);
+		console.log(`wBAN gasless swap proxy deployed at: "${swap.address}"`);
+
+		// peer into OpenZeppelin manifest to extract the implementation address
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
+		const manifest = await ozUpgradesManifestClient.read();
+		const bytecodeHash = hashBytecodeWithoutMetadata(gaslessSwapFactory.bytecode);
+		const implementationContract = manifest.impls[bytecodeHash];
+
+		// verify implementation contract
+		if (implementationContract) {
+			console.log(`wBAN gasless swap impl deployed at: "${implementationContract.address}"`);
+			await hre.run("verify:verify", {
+				address: implementationContract.address
+			});
+		}
 	});
 
 task("benis:deploy", "Deploy Benis")
@@ -369,9 +398,6 @@ const config: HardhatUserConfig = {
 		overwrite: true,
 		runOnCompile: true,
 	},
-	preprocess: {
-		eachLine: removeConsoleLog((bre) => bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'),
-	},
 	/*
 	gasReporter: {
 		currency: 'EUR',
@@ -384,13 +410,15 @@ const config: HardhatUserConfig = {
 		// Obtain one at https://etherscan.io/
 		apiKey: process.env.ETHERSCAN_API_KEY
 	},
+	/*
 	abiExporter: {
 		path: './abi',
 		clear: true,
 		flat: true,
 		// only: ['WBANToken', 'Benis'],
 		spacing: 2
-	}
+	},
+	*/
 };
 
 export default config;

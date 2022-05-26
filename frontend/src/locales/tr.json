@@ -1,0 +1,283 @@
+{
+	"title": "BAN'ınızı \"Wrap\"leyin",
+	"connect": "Bağlan",
+	"cancel": "İptal Et",
+	"home": "Ana Sayfa",
+	"ok": "Tamam",
+	"withdraw": "Çek",
+	"refresh": "Yenile",
+	"pages": {
+		"index": {
+			"title": "wBAN \"Wrap\"lenmiş Banano'dur",
+			"available-on": "Şurada mevcut:",
+			"what-can-you-do": "wBAN ile neler yapabilirsiniz?",
+			"swap-with-other-crypto": "Diğer kriptolar ile takas edin",
+			"swap-with-other-crypto-description": "BAN'dan wBAN'a, ondan da istediğiniz kriptoya geçin, ya da tam tersi",
+			"earn-some-wban": "Biraz wBAN kazanın",
+			"earn-some-wban-description": "Havuzlara likidite sağlayarak ekstra wBAN kazanın",
+			"learn-defi": "DeFi'ı öğrenin",
+			"learn-defi-description": "Zor kazanılmış BAN'ınızı çok riske atmadan"
+		},
+		"setup": {
+			"continue": "Devam",
+			"back": "Geri",
+			"banano-address": "Banano Adresi",
+			"from-ban": "wBAN konusunda yeniyim",
+			"from-ban-description": "Elimde Banano var ve wBAN ile DeFi hakkında bilgi sahibi olmak istiyorum.",
+			"from-wban": "Banano konusunda yeniyim",
+			"from-wban-description": "Elimde wBAN var ve Banano ağını kullanmak istiyorum.",
+			"verify-ban-address": "BAN adresinizi doğrulamamız gerek!",
+			"verify-ban-address-explanation": "Bu aşama wBAN ile etkileşeceğiniz BAN cüzdanının kontrolünün sizde olduğunu doğrulamak açısından önemlidir.",
+			"step1": {
+				"title": "Banano Cüzdanınızı Kurun",
+				"phrase1": "En iyi deneyim için tavsiyemiz Kalium mobil cüzdanının kullanılmasıdır:",
+				"phrase2": "Web cüzdanlarını tercih ediyorsanız {0} cüzdanı en iyi seçenektir.",
+				"phrase3": "Cüzdanınızı oluşturduktan sonra \"Devam\" tuşuna basınız."
+			},
+			"step2": {
+				"title": "Biraz bedava Banano alın",
+				"phrase1": "Köprü kurulumunu tamamlayabilmek için biraz BAN'a ihtiyacınız var.",
+				"phrase2": "Banano, bedava BAN elde edebileceğiniz pek çok musluğa sahiptir. İşte bazı örnekler:",
+				"phrase3": "Cüzdanınızda en az 0.01 BAN bulundurduktan sonra \"Devam\" tuşuna basınız."
+			},
+			"step3": {
+				"error-banano-address-required": "Banano adresi gerekmektedir",
+				"error-invalid-banano-address": "Geçersiz Banano adresi",
+				"error-blacklisted-address": "Kara listeye alınmış adres"
+			},
+			"step4": {
+				"title": "Adresinizi talep edin",
+				"phrase1": "Lütfen bu adresin sizin Banano adresiniz olduğunu doğrulayın:",
+				"phrase2": "Bu, Banano adresinizi {network} adresiniz ile eşleştireceğimiz için önemlidir."
+			},
+			"step5": {
+				"title": "Banano yatırın",
+				"phrase1": "Önümüzdeki 5 dakika içinde",
+				"phrase2": "Banano adresinizden verilen adrese BAN göndererek talebinizi onaylamanız gerekmektedir",
+				"phrase3": "veya QR kodu tarayın:",
+				"phrase4": "Herhangi bir meblağ iş görecektir ama riske girmeyelim ve 0.01 BAN transfer edelim.",
+				"phrase5": "Merak etmeyin, bu yatırım istemeniz halinde geri çekilebilir.",
+				"button-copy-deposit-address": "Yatırma Adresini Kopyala",
+				"button-check-deposit": "Yatırımı Kontrol Et"
+			}
+		},
+		"bridge": {
+			"button-deposit-ban": "BAN Yatır",
+			"button-deposit-ban-tooltip": "Takas işlemi için biraz BAN yatır",
+			"button-withdraw-ban": "BAN Çek",
+			"button-withdraw-ban-tooltip": "BAN'ı cüzdanınıza geri çekin",
+			"button-swap": "Takas",
+			"button-stake-and-farm": "Stake & Farm",
+			"button-stake-and-farm-tooltip": "Likidite Havuzu Farmları"
+		},
+		"history": {
+			"title": "Geçmiş",
+			"title-tooltip": "Geçmiş: geçmiş işlemlerinizi görün ve daha önce reddedilen işlemleri talep edin"
+		},
+		"farms": {
+			"farms-active": "Aktif",
+			"farms-ended": "Bitmiş",
+			"farms-active-tooltip": "Hala ödül dağıtan çiftlikler",
+			"farms-ended-tooltip": "Eski çiftlikler artık ödül dağıtmıyor!",
+			"warning-no-farm-running-on-network": "{network} ağında çalışan çiftlik yok. Diğer ağları kontrol edin.",
+			"warning-deposits-left-in-ended-farm": "Biten çiftliklerde kalan bazı mevduatlarınız var. Lütfen çekin!"
+		},
+		"nft-rewards": {
+			"buy": "Satın Al",
+			"grab": "Yakala",
+			"claim": "Topla",
+			"airdrop-claim": "Bir airdrop kazandınız ve bazı ücretsiz NFT'leri toplayabilirsiniz.",
+			"golden-missing": "Altın bir NFT toplayabilmek için yalnızca tek bir NFT'niz eksik.",
+			"claim-golden": "Altın bir NFT toplamak için yeterli NFT'niz var.",
+			"warning1": "wBAN NFT'leri yalnızca Polygon ağında kullanılabilir.",
+			"warning2": "Lütfen uygun ağa geçin."
+		}
+	},
+	"components": {
+		"wrap-form": {
+			"from": "Buradan:",
+			"to": "Buraya:",
+			"gasless-wrap-lacking-ban": "{0} BAN daha yatırırsanız, gazsız wrap alabilirsiniz.",
+			"gasless-wrap": "En az {0} BAN ise işlem ücreti ödemeden wrapleyebilirsiniz.",
+			"button-wrap": "Wrapleme",
+			"button-gasless-wrap": "Gazsız Wrap",
+			"button-unwrap": "Wrapi Kaldır"
+		},
+		"wrap-input": {
+			"balance": "Bakiye:",
+			"max": "Maks",
+			"add-wban-to-metatmask": "wBAN'ı Metamask'e ekleyin",
+			"error-amount-more-than-zero": "Tutar sıfırdan fazla olmalıdır",
+			"error-no-more-than-two-decimals": "En fazla 2 ondalık sayı basamağı",
+			"error-not-enough-token-available": "Yeterince mevcut değil!"
+		},
+		"settings": {
+			"title": "Ayarlar",
+			"dark-mode": "Karanlık Mod",
+			"language": "Dil",
+			"disconnect": "Bağlantıyı Kes",
+			"about": "Hakkında"
+		},
+		"swap-form": {
+			"from": "Nereden:",
+			"to": "Nereye:",
+			"transaction-settings": "İşlem Ayarları",
+			"slippage-tolerance": "Slipaj Toleransı",
+			"slippage-tolerance-tooltip": "Bu, olumsuz fiyat değişiklikleri nedeniyle kaybetmeye hazır olduğunuz maksimum yüzdedir.",
+			"allowance": "Harcama İzni",
+			"allowance-exact-amount": "Tam Tutar",
+			"allowance-unlimited-amount": "Sınırsız",
+			"allowance-tooltip": "Borsanın sizin adınıza hareket edebileceği {fromSymbol} miktarı.<br /><br />Tam Tutar: Her seferinde onaylayın, daha güvenli ancak daha az uygun.<br />Sınırsız: Yalnızca bir kez onaylayın, daha uygun ancak daha az güvenli.",
+			"estimated-gas-fee": "Tahmini Gaz Ücreti",
+			"exchange-route": "Borsa Rotası",
+			"gasless-swap": "En az <strong>{amount} wBAN'ı {crypto}</strong> ile değiştirirseniz, işlem ücreti alınmaz.",
+			"button-swap": "Takas",
+			"button-gasless-swap": "Gaz Olmadan Takas",
+			"button-approve": "{fromSymbol} Onayı"
+		},
+		"token-input": {
+			"balance": "Bakiye:",
+			"max": "Maks",
+			"error-amount-more-than-zero": "Tutar sıfırdan fazla olmalıdır",
+			"error-too-many-decimals": "En fazla {0} ondalık sayı basamağı",
+			"error-not-enough-token-available": "Yeterli {symbol} mevcut değil!"
+		},
+		"statistics": {
+			"title": "wBAN İstatistikleri",
+			"from": "Benis tarafından",
+			"total-supply": "Toplam Arz",
+			"total-supply-tooltip": "İlişkili BAN yatırımları göz önünde bulundurulduğunda oluşturulan wBAN miktarı"
+		},
+		"nft-rewards": {
+			"quantity": "Adet",
+			"buy-sell": "Al/Sat"
+		},
+		"farm": {
+			"wban-earned": "Kazanılmış wBAN",
+			"wban-earned-farm-ended": "(hasat için çekim yapın)",
+			"farm-ended": "Çiftlik Bitti!",
+			"harvest": "Hasat",
+			"deposit": "Yatırılan",
+			"details": "Ayrıntılar",
+			"yield": "Mahsül",
+			"total": "Toplam",
+			"farm-tvl": "Çiftlik TVL",
+			"liquidity-pool-tvl": "Likidite Havuzu TVL",
+			"button-approve": "Onayla",
+			"button-add-liquidity": "Likidite Ekle",
+			"button-supply": "Tedarik",
+			"button-supply-tooltip": "Likidite tokenlerinizi çiftliğe eklerken, kazandığınız wBAN'ınızı da hasat edersiniz!",
+			"button-withdraw-tooltip": "Likidite tokenlerinizi çiftlikten çekerken, kazandığınız wBAN'ınızı da hasat edersiniz!"
+		}
+	},
+	"dialogs": {
+		"waiting-for-blockchain": "Blockchain onayı bekleniyor",
+		"ban-deposit": {
+			"title": "BAN Yatırımları",
+			"phrase1": "Daha fazla BAN takas etmek istiyorsanız, {0} cüzdanınızdan bu cüzdana biraz BAN göndermeniz yeterlidir:",
+			"phrase2": "2'den fazla ondalık basamaklı miktarlar göndermeyin ve işlenmemiş olmadığından emin olun.<br />Kalium'da \"Maks\" bağlantısını kullanmak muhtemelen iyi çalışmayacaktır.<br />Önceki kuralı takip etmezseniz BAN'ınız, onları gönderdiğiniz cüzdana geri gönderilecektir. <b>Bir CEX'ten doğrudan bu adrese çekmediğinizden emin olun, aksi takdirde BAN'ınızı kaybedebilirsiniz!</b>",
+			"button-copy-address": "Adresi Kopyala"
+		},
+		"ban-withdrawal": {
+			"title": "BAN Çekimleri"
+		},
+		"swap-in-progress": "Takas devam ediyor...",
+		"token-approval": "Token onayı devam ediyor...",
+		"token-chooser": {
+			"title": "Bir token seçin",
+			"placeholder": "Tokene göre filtrele"
+		},
+		"gas-needed": {
+			"title": "Ücret için gerekli olan {crypto} bitmek üzere",
+			"phrase1": "Şu anki mevcut olan {balance} {crypto} bakiyeniz wrap işlemi için çok yetersiz.",
+			"phrase2": "{network}, işlem ücretleri için çok fazla {crypto} ihtiyacı duymaz, ancak en az {minimumNeededForWrap} {crypto} satın almak ve bunları bu cüzdana göndermek en iyisidir."
+		},
+		"low-amount-to-wrap": {
+			"are-you-sure": "Emin misiniz?",
+			"phrase1": "{amount} BAN/wBAN'lık 🤏 bir wrapleme/wrap kaldırma talep ettiniz.",
+			"phrase2": "Bu wrapleme/wrap kaldırma işlemi için {network} ağ ücretleri buna değmeyebilir.",
+			"proceed-anyway": "Yine de devam et"
+		},
+		"nft": {
+			"title": "NFTlerinizi toplayın",
+			"proceed": "Toplayabileceğiniz {count} NFT'niz var. Onaylıyor musunuz?",
+			"claiming": "{total} NFTler içinden {count} kadarı toplanıyor..."
+		},
+		"nft-rewards": {
+			"title": "Altın NFT'yi Topla",
+			"phrase1": "Bir <strong>Altın {name}</strong> NFT toplamak için gerekli NFT'lere sahipsiniz.",
+			"phrase2": "Bunu yapmak, üç {name} NFT'nizi <strong>yakacak/yok edecek</strong> ve bunun yerine size Altın {name} NFT'yi verecektir."
+		},
+		"withdrawal": {
+			"title": "Çekim işlemi devam ediyor...",
+			"message": "Çekim işleminizi gerçekleştirmek için çok çalışıyoruz!"
+		},
+		"pending-withdrawal": {
+			"title": "Bekleyen Çekim",
+			"message": "{amount} BAN çekme işleminiz şu anda işlenemiyor.<br /><br /><strong>Bekleme listesine alındı ve daha sonra işlenecek!</strong><br /><br />Bu arada yatırılan BAN bakiyeniz bu çekimden düşmeyecektir."
+		},
+		"wrap": {
+			"title": "{amount} BAN wrapleme işlemi devam ediyor...",
+			"message": "Wrapleme talebinizi işleme koymak için çok çalışıyoruz!"
+		},
+		"unwrap": {
+			"title": "{amount} wBAN wrap kaldırma işlemi devam ediyor...",
+			"message": "Wrap kaldırma talebinizi işleme koymak için çok çalışıyoruz!"
+		},
+		"farm-supply": {
+			"title": "{amount} {symbol} tedariği devam ediyor...",
+			"message": "Tedarik talebinizi işleme koymak için çok çalışıyoruz!"
+		},
+		"farm-withdraw": {
+			"title": "{amount} {symbol} çekim işlemi devam ediyor...",
+			"message": "Çekim talebinizi işleme koymak için çok çalışıyoruz!"
+		},
+		"unsupported-network": {
+			"title": "Desteklenmeyen ağ {network}",
+			"message": "<p>wBAN yalnızca BSC, Polygon ve Fantom'da kullanılabilir.</p><p>Lütfen bu ağlardan birine geçin.</p>"
+		}
+	},
+	"notifications": {
+		"view": "İncele",
+		"close": "Kapat",
+		"token-approval-success": "Token onayınız başarıyla gerçekleşti.",
+		"token-approval-error": "Token onayınız işlenemedi.",
+		"swap-success": "Takas işleminiz başarıyla gerçekleşti.",
+		"swap-error": "Takas işleminiz işlenemedi.",
+		"ban-deposit-confirmed": {
+			"message": "{amount} BAN tutarındaki yatırımınız alındı.",
+			"caption": "Bunu wBAN ile takas edebilirsiniz."
+		},
+		"ban-deposit-declined": {
+			"message": "{amount} BAN tutarındaki yatırımınız reddedildi.",
+			"caption": "2'den fazla ondalık basamak veya raw değerler içeren tutarlar göndermediğinizden emin olun."
+		},
+		"withdrawal": "{amount} BAN, cüzdanınıza geri gönderildi.",
+		"pending-withdrawal": {
+			"message": "{amount} BAN çekim işleminiz beklemede.",
+			"caption": "wBAN sıcak cüzdanı soğuk cüzdanından yeniden doldurulur doldurulmaz para çekme işleminiz yapılacaktır!"
+		},
+		"wrap": "{amount} BAN takasınız başarıyla işlendi.",
+		"wrap-error": {
+			"message": "{amount} BAN wrapiniz işlenemedi.",
+			"caption": "Geçmiş sayfasına gidin ve wrap talebinizle ilişkili toplama düğmesine tıklayın."
+		},
+		"unwrap": {
+			"message": "{amount} wrap kaldırmanız başarıyla işlendi.",
+			"caption": "Yatırılan Banano bakiyeniz güncellendi."
+		},
+		"farm-supply": "{amount} {symbol} tedariğiniz başarıyla işlendi.",
+		"farm-withdraw": "{amount} {symbol} tutarındaki çekim işleminiz başarıyla işlendi."
+	},
+	"menu": {
+		"donations": {
+			"title": "Bağışlar",
+			"aside": "Bana buradan bağış yapabilirsiniz:",
+			"phrase1": "Bu uygulama üzerinde çalışmak oldukça uzun bir yolculuk oldu ve hala devam ediyor!",
+			"phrase2": "Bağışlarınız için müteşekkirim ve çabalarımı desteklemek isterseniz, Banano bağışlarını şu adrese göndererek bana her zaman yardımcı olabilirsiniz:"
+		}
+	},
+	"footer": {
+		"documentation": "Dokümantasyon"
+	}
+}

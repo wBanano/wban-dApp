@@ -13,6 +13,7 @@ const TOKENS_STORE_NAME = 'tokens'
 const DB_VERSION = 2
 
 class TokensUtil {
+	static initialized = false
 	static ENV_NAME: string = process.env.VUE_APP_ENV_NAME || ''
 
 	static getWBANAddress(): string {
@@ -24,24 +25,8 @@ class TokensUtil {
 		}
 	}
 
-	static async isInitialized(): Promise<boolean> {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const factory: any = window.indexedDB
-		const databases = await factory.databases()
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const existingDatabase = databases.map((db: any) => db.name).includes(Accounts.network.network)
-		if (existingDatabase) {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const db = databases.find((db: any) => db.name === Accounts.network.network)
-			const upgradeNotNeeded = db.version === DB_VERSION
-			return existingDatabase && upgradeNotNeeded
-		} else {
-			return false
-		}
-	}
-
 	static async loadTokensList(): Promise<void> {
-		if (await this.isInitialized()) {
+		if (TokensUtil.initialized) {
 			console.info('IndexDB database already initialized')
 			return
 		}
@@ -82,10 +67,11 @@ class TokensUtil {
 			)
 		}
 		db.close()
+		TokensUtil.initialized = true
 	}
 
 	static async getToken(address: string): Promise<Token | undefined> {
-		if (!(await TokensUtil.isInitialized())) {
+		if (!TokensUtil.initialized) {
 			await TokensUtil.loadTokensList()
 		}
 		console.info(`Searching for token "${address.toLowerCase()}"`)
@@ -96,7 +82,7 @@ class TokensUtil {
 	}
 
 	static async getTokenBySymbol(symbol: string): Promise<Token | undefined> {
-		if (!(await TokensUtil.isInitialized())) {
+		if (!TokensUtil.initialized) {
 			await TokensUtil.loadTokensList()
 		}
 		console.info(`Searching for token "${symbol.toLowerCase()}"`)
@@ -112,7 +98,7 @@ class TokensUtil {
 	}
 
 	static async getAllTokens(owner: string, provider: Provider | null): Promise<Array<Token>> {
-		if (!(await TokensUtil.isInitialized())) {
+		if (!TokensUtil.initialized) {
 			await TokensUtil.loadTokensList()
 		}
 		const db: IDBPDatabase = await openDB(Accounts.network.network)

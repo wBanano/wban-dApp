@@ -11,6 +11,20 @@ import walletConnectModule from '@web3-onboard/walletconnect'
 // import ledgerModule from '@web3-onboard/ledger'
 import gnosisModule from '@web3-onboard/gnosis'
 import Dialogs from '@/utils/Dialogs'
+import i18n from '@/i18n'
+import translationDE from '@/web3-onboard/web3-onboard-de.json'
+import translationEN from '@/web3-onboard/web3-onboard-en.json'
+import translationES from '@/web3-onboard/web3-onboard-es.json'
+import translationFR from '@/web3-onboard/web3-onboard-fr.json'
+// import translationHI from '@/web3-onboard/web3-onboard-hi.json'
+import translationID from '@/web3-onboard/web3-onboard-id.json'
+// import translationIT from '@/web3-onboard/web3-onboard-it.json'
+import translationNL from '@/web3-onboard/web3-onboard-nl.json'
+import translationPTBR from '@/web3-onboard/web3-onboard-pt-BR.json'
+import translationRU from '@/web3-onboard/web3-onboard-ru.json'
+import translationTR from '@/web3-onboard/web3-onboard-tr.json'
+import translationUK from '@/web3-onboard/web3-onboard-uk.json'
+import translationVI from '@/web3-onboard/web3-onboard-vi.json'
 
 @Module({
 	namespaced: true,
@@ -20,7 +34,7 @@ import Dialogs from '@/utils/Dialogs'
 })
 class AccountsModule extends VuexModule {
 	public activeAccount: string | null = null
-	public activeBalance = 0
+	public activeBalance = BigNumber.from(0)
 	public network: Network = POLYGON_MAINNET
 	private _providerEthers: ethers.providers.Web3Provider | null = null // this is "provider" for Ethers.js
 	public isConnected = false
@@ -28,6 +42,7 @@ class AccountsModule extends VuexModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _subscription: any
 	private _isInitialized = false
+	private _language = 'en'
 
 	static EXPECTED_CHAIN_ID = Number.parseInt(process.env.VUE_APP_EXPECTED_CHAIN_ID || '')
 
@@ -48,7 +63,7 @@ class AccountsModule extends VuexModule {
 	}
 
 	@Mutation
-	setActiveBalance(balance: number) {
+	setActiveBalance(balance: BigNumber) {
 		this.activeBalance = balance
 	}
 
@@ -73,6 +88,11 @@ class AccountsModule extends VuexModule {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setSubscription(subscription: any) {
 		this._subscription = subscription
+	}
+
+	@Mutation
+	setLanguage(language: string) {
+		this._language = language
 	}
 
 	@Mutation
@@ -108,7 +128,7 @@ class AccountsModule extends VuexModule {
 		// const [primaryWallet] = this._onboard?.state.get().wallets
 		// await this._onboard?.disconnectWallet({ label: primaryWallet.label })
 		this.activeAccount = null
-		this.activeBalance = 0
+		this.activeBalance = BigNumber.from(0)
 		this._providerEthers = null
 		// unsubscribe when updates are no longer needed
 		this._subscription.unsubscribe()
@@ -118,34 +138,101 @@ class AccountsModule extends VuexModule {
 	@Action
 	async initWalletProvider() {
 		console.debug('in initWalletProvider')
-		if (!this._isInitialized) {
+		if (!this._isInitialized || this._language != i18n.locale) {
 			this.context.commit('setInitialized', true)
 			const injected = injectedModule()
 			const walletConnect = walletConnectModule()
 			// const ledger = ledgerModule()
 			const gnosis = gnosisModule()
+			const mainnetChains = [
+				{
+					id: BSC_MAINNET.chainId,
+					token: BSC_MAINNET.nativeCurrency.symbol,
+					label: BSC_MAINNET.chainName,
+					rpcUrl: BSC_MAINNET.rpcUrls[0],
+					blockExplorerUrl: BSC_MAINNET.blockExplorerUrls[0],
+				},
+				{
+					id: POLYGON_MAINNET.chainId,
+					token: POLYGON_MAINNET.nativeCurrency.symbol,
+					label: POLYGON_MAINNET.chainName,
+					rpcUrl: POLYGON_MAINNET.rpcUrls[0],
+					blockExplorerUrl: POLYGON_MAINNET.blockExplorerUrls[0],
+				},
+				{
+					id: FANTOM_MAINNET.chainId,
+					token: FANTOM_MAINNET.nativeCurrency.symbol,
+					label: FANTOM_MAINNET.chainName,
+					rpcUrl: FANTOM_MAINNET.rpcUrls[0],
+					blockExplorerUrl: FANTOM_MAINNET.blockExplorerUrls[0],
+				},
+			]
+			const testnetSelected = process.env.VUE_APP_TESTNET
+			let testnet = undefined
+			if (testnetSelected) {
+				const networks = new Networks()
+				const selected = networks.getNetworkData(testnetSelected)
+				if (selected) {
+					testnet = {
+						id: selected.chainId,
+						token: selected.nativeCurrency.symbol,
+						label: selected.chainName,
+						rpcUrl: selected.rpcUrls[0],
+					}
+				}
+			}
+			let translation = translationEN
+			switch (i18n.locale) {
+				case 'de':
+					translation = translationDE
+					break
+				case 'en':
+					translation = translationEN
+					break
+				case 'es':
+					translation = translationES
+					break
+				case 'fr':
+					translation = translationFR
+					break
+				/*
+				case 'hi':
+					translation = translationHI
+					break
+				*/
+				case 'id':
+					translation = translationID
+					break
+				/*
+				case 'it':
+					translation = translationIT
+					break
+				*/
+				case 'nl':
+					translation = translationNL
+					break
+				case 'pt-BR':
+					translation = translationPTBR
+					break
+				case 'ru':
+					translation = translationRU
+					break
+				case 'tr':
+					translation = translationTR
+					break
+				case 'uk':
+					translation = translationUK
+					break
+				case 'vi':
+					translation = translationVI
+					break
+			}
+			if (this._onboard) {
+				this.disconnectWalletProvider()
+			}
 			this._onboard = Onboard({
 				wallets: [injected, walletConnect, /*ledger,*/ gnosis],
-				chains: [
-					{
-						id: BSC_MAINNET.chainId,
-						token: BSC_MAINNET.nativeCurrency.symbol,
-						label: BSC_MAINNET.chainName,
-						rpcUrl: BSC_MAINNET.rpcUrls[0],
-					},
-					{
-						id: POLYGON_MAINNET.chainId,
-						token: POLYGON_MAINNET.nativeCurrency.symbol,
-						label: POLYGON_MAINNET.chainName,
-						rpcUrl: POLYGON_MAINNET.rpcUrls[0],
-					},
-					{
-						id: FANTOM_MAINNET.chainId,
-						token: FANTOM_MAINNET.nativeCurrency.symbol,
-						label: FANTOM_MAINNET.chainName,
-						rpcUrl: FANTOM_MAINNET.rpcUrls[0],
-					},
-				],
+				chains: testnet ? [...mainnetChains, testnet] : mainnetChains,
 				appMetadata: {
 					name: 'Wrapped Banano',
 					icon: require(`@/assets/wban-logo-${this.network.network}.svg`),
@@ -156,12 +243,19 @@ class AccountsModule extends VuexModule {
 						{ name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
 					],
 				},
+				i18n: {
+					en: translation,
+				},
 				accountCenter: {
 					desktop: {
 						enabled: false,
 					},
+					mobile: {
+						enabled: false,
+					},
 				},
 			})
+			this.context.commit('setLanguage', i18n.locale)
 
 			const state = this._onboard.state.select()
 			const subscription = state.subscribe((update) => {
@@ -209,7 +303,7 @@ class AccountsModule extends VuexModule {
 				const wallets = await this._onboard.connectWallet()
 				// check if the user is connected to a supported network
 				const chainId = wallets[0].chains[0].id
-				if (!new Networks().getMainnetSupportedNetworks().find((network) => network.chainId === chainId)) {
+				if (!new Networks().getSupportedNetworks().find((network) => network.chainId === chainId)) {
 					console.warn(`Unsupported blockchain network: ${chainId}. Asking for a switch to Polygon.`)
 					const switched = await this._onboard?.setChain({ chainId: POLYGON_MAINNET.chainId })
 					if (!switched) {

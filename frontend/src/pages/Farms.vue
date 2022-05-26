@@ -3,15 +3,15 @@
 		<div class="row items-center">
 			<h6 class="subtitle justify-center offset-md-1">
 				<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
-				Home
+				{{ $t('home') }}
 			</h6>
 		</div>
 		<div class="q-pa-md">
 			<div v-if="userHasDepositsInEndedFarms" class="row justify-center q-pb-md">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
-					<span>You have some deposits left in ended farms. Please withdraw!</span>
+					<span>{{ $t('pages.farms.warning-deposits-left-in-ended-farm') }}</span>
 					<template v-slot:action>
-						<q-btn flat label="Withdraw" @click="farmsSelected = 'ended'" />
+						<q-btn flat :label="$t('withdraw')" @click="farmsSelected = 'ended'" />
 					</template>
 				</q-banner>
 				<div class="col-md-1" />
@@ -25,15 +25,15 @@
 					toggle-color="primary"
 					toggle-text-color="secondary"
 					:options="[
-						{ label: 'Active', value: 'active', slot: 'active' },
-						{ label: 'Ended', value: 'ended', slot: 'ended' },
+						{ label: $t('pages.farms.farms-active'), value: 'active', slot: 'active' },
+						{ label: $t('pages.farms.farms-ended'), value: 'ended', slot: 'ended' },
 					]"
 				>
 					<template v-slot:active>
-						<q-tooltip>Farms still distributing rewards</q-tooltip>
+						<q-tooltip>{{ $t('pages.farms.farms-active-tooltip') }}</q-tooltip>
 					</template>
 					<template v-slot:ended>
-						<q-tooltip>Old farms not distributing rewards anymore!</q-tooltip>
+						<q-tooltip>{{ $t('pages.farms.farms-ended-tooltip') }}</q-tooltip>
 					</template>
 				</q-btn-toggle>
 				<div class="col-md-1" />
@@ -44,7 +44,8 @@
 			</div>
 			<div v-if="farmsSelected === 'active' && selectedFarms.length === 0 && !loading" class="row justify-center">
 				<div class="text-center">
-					No farm running on {{ currentBlockchain.chainName }}. Check on other blockchains.<br /><br />
+					{{ $t('pages.farms.warning-no-farm-running-on-network', { network: currentBlockchain.chainName })
+					}}<br /><br />
 					<img src="/farms-gone.jpg" />
 				</div>
 				<div class="col-md-1" />

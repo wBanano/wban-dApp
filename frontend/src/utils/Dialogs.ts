@@ -1,4 +1,5 @@
 import { Dialog, Notify, openURL } from 'quasar'
+import i18n from '@/i18n'
 import Web3ErrorDialog from '@/utils/dialogs/Web3ErrorDialog.vue'
 import GasNeededDialog from '@/utils/dialogs/GasNeededDialog.vue'
 import LowAmountToWrapDialog from '@/utils/dialogs/LowAmountToWrapDialog.vue'
@@ -21,13 +22,13 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your deposit of ${deposit} BAN was received.`,
-			caption: 'You can swap it to wBAN.',
+			message: i18n.t('notifications.ban-deposit-confirmed.message', { amount: deposit }).toString(),
+			caption: i18n.t('notifications.ban-deposit-confirmed.caption').toString(),
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -39,12 +40,12 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'warning',
 			html: true,
-			message: `Your deposit of ${deposit} BAN was rejected.`,
-			caption: "Make sure you don't send amounts with more than 2 decimals or with raw values",
+			message: i18n.t('notifications.ban-deposit-declined.message', { amount: deposit }).toString(),
+			caption: i18n.t('notifications.ban-deposit-declined.caption').toString(),
 			timeout: 0,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'secondary',
 					handler: () => dismiss(),
 				},
@@ -55,8 +56,8 @@ class Dialogs {
 	static startWithdrawal(): void {
 		Dialogs.withdrawalDialog = Dialog.create({
 			dark: true,
-			title: 'Withdrawal in progress...',
-			message: `Working hard to process your withdrawal!`,
+			title: i18n.t('dialogs.withdrawal.title').toString(),
+			message: i18n.t('dialogs.withdrawal.message').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -66,8 +67,8 @@ class Dialogs {
 
 	static showWithdrawalAsPending(withdrawal: number): void {
 		Dialogs.withdrawalDialog.update({
-			title: 'Pending Withdrawal',
-			message: `Your withdrawal of ${withdrawal} BAN can't be processed right now.<br /><br /><strong>It has been put in a pending list and will be processed later!</strong><br /><br />Meanwhile your deposited BAN balance won't be reduced from this withdrawal.`,
+			title: i18n.t('dialogs.pending-withdrawal.title').toString(),
+			message: i18n.t('dialogs.pending-withdrawal.title', { amount: withdrawal }).toString(),
 			progress: false,
 			ok: {
 				color: 'primary',
@@ -82,13 +83,13 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `${withdrawal} BAN were sent back to your wallet.`,
+			message: i18n.t('notifications.withdrawal', { amount: withdrawal }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'View',
+					label: i18n.t('notifications.view').toString(),
 					color: 'white',
 					noDismiss: true,
 					handler: () => {
@@ -96,7 +97,7 @@ class Dialogs {
 					},
 				},
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -112,12 +113,12 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'warning',
 			html: true,
-			message: `Your withdrawal of ${withdrawal} BAN is in pending state.`,
-			caption: 'As soon as wBAN hot wallet is refilled from its cold wallet your withdrawal will be done!',
+			message: i18n.t('notifications.pending-withdrawal.message', { amount: withdrawal }).toString(),
+			caption: i18n.t('notifications.pending-withdrawal.caption').toString(),
 			timeout: 0,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -132,8 +133,8 @@ class Dialogs {
 	static startSwapToWBan(amount: string): void {
 		Dialogs.swapToWBanDialog = Dialog.create({
 			dark: true,
-			title: `Swap of ${amount} BAN in progress...`,
-			message: 'Working hard to process your swap request!',
+			title: i18n.t('dialogs.wrap.title', { amount }).toString(),
+			message: i18n.t('dialogs.wrap.message').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -145,13 +146,13 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your swap of ${deposit} BAN was processed succesfully.`,
+			message: i18n.t('notifications.wrap', { amount: deposit }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'View',
+					label: i18n.t('notifications.view').toString(),
 					color: 'white',
 					noDismiss: true,
 					handler: () => {
@@ -159,7 +160,7 @@ class Dialogs {
 					},
 				},
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -175,12 +176,12 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'negative',
 			html: true,
-			message: `Your swap of ${deposit} BAN couldn't be processed.`,
-			caption: `Go to the history page and click on the claim button associated to the wrap request.`,
+			message: i18n.t('notifications.wrap-error.message', { amount: deposit }).toString(),
+			caption: i18n.t('notifications.wrap-error.caption').toString(),
 			timeout: 0,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -195,8 +196,8 @@ class Dialogs {
 	static startSwapToBan(amount: string): void {
 		Dialogs.swapToBanDialog = Dialog.create({
 			dark: true,
-			title: `Swap of ${amount} wBAN in progress...`,
-			message: 'Working hard to process your swap request!',
+			title: i18n.t('dialogs.unwrap.title', { amount }).toString(),
+			message: i18n.t('dialogs.unwrap.message').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -208,13 +209,13 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your swap of ${deposit} wBAN was processed succesfully.`,
-			caption: 'Your balance of deposited Banano has been updated.',
+			message: i18n.t('notifications.unwrap.message', { amount: deposit }).toString(),
+			caption: i18n.t('notifications.unwrap.caption').toString(),
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -229,8 +230,8 @@ class Dialogs {
 	static startFarmSupply(amount: string, symbol: string): void {
 		Dialogs.swapFarmSupplyDialog = Dialog.create({
 			dark: true,
-			title: `Supply of ${amount} ${symbol} in progress...`,
-			message: 'Working hard to process your supply request!',
+			title: i18n.t('dialogs.farm-supply.title', { amount, symbol }).toString(),
+			message: i18n.t('dialogs.farm-supply.message').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -242,13 +243,13 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your supply of ${amount} ${symbol} was processed succesfully.`,
+			message: i18n.t('notifications.farm-supply.message', { amount, symbol }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'View',
+					label: i18n.t('notifications.view').toString(),
 					color: 'white',
 					noDismiss: true,
 					handler: () => {
@@ -256,7 +257,7 @@ class Dialogs {
 					},
 				},
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -271,8 +272,8 @@ class Dialogs {
 	static startFarmWithdraw(amount: string, symbol: string): void {
 		Dialogs.swapFarmWithdrawDialog = Dialog.create({
 			dark: true,
-			title: `Withdrawal of ${amount} ${symbol} in progress...`,
-			message: 'Working hard to process your withdrawal request!',
+			title: i18n.t('dialogs.farm-withdraw.title', { amount, symbol }).toString(),
+			message: i18n.t('dialogs.farm-withdraw.message').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -284,13 +285,13 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your withdrawal of ${amount} ${symbol} was processed succesfully.`,
+			message: i18n.t('notifications.farm-withdraw.message', { amount, symbol }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'View',
+					label: i18n.t('notifications.view').toString(),
 					color: 'white',
 					noDismiss: true,
 					handler: () => {
@@ -298,7 +299,7 @@ class Dialogs {
 					},
 				},
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -315,9 +316,9 @@ class Dialogs {
 			const networkName = chainId === '0x1' ? 'Ethereum' : chainId.toString()
 			Dialog.create({
 				component: Web3ErrorDialog,
-				title: `Unsupported network ${networkName}`,
-				message:
-					'<p>wBAN is only available on BSC, Polygon and Fantom.</p><p>Please switch to one of those networks.</p>',
+				title: i18n.t('dialogs.unsupported-network.title', { network: networkName }).toString(),
+				message: i18n.t('dialogs.unsupported-network.message').toString(),
+				html: true,
 			}).onOk(() => resolve())
 		})
 	}

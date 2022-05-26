@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Các ví khả dụng",
+			"sidebar": {
+				"heading": "Bắt đầu",
+				"subheading": "Kết nối ví của bạn",
+				"paragraph": "Kêt nối ví cũng như \"đăng nhập\" Web3. Chọn ví từ danh sách để bắt đầu."
+			},
+			"recommendedWalletsPart1": "Chỉ hỗ trợ {app}",
+			"recommendedWalletsPart2": "trên nền tảng này. Xin dùng hoặc cài đặt một trong những ví được hỗ trợ để tiếp tục",
+			"installWallet": "Các ví đã cài đặt của bạn không hỗ trợ {app}, xin vui lòng dùng ví được hỗ trợ",
+			"agreement": {
+				"agree": "Tôi đồng ý với",
+				"terms": "Điều khoản & Điều kiện",
+				"and": "và",
+				"privacy": "Chính sach quyền riêng tư"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Đang kết nối tới {ví}...} other {Kết nối bị từ chối}}",
+			"sidebar": {
+				"subheading": "Chấp nhận kết nối",
+				"paragraph": "Xin chấp nhận kết nối từ ví của bạn và cấp phép để tiếp tục."
+			},
+			"mainText": "Đang kết nối...",
+			"paragraph": "Hãy chắc chắn rằng bạn đã chọn toàn bộ tài khoản mà bạn muốn cấp quyền.",
+			"rejectedText": "Kết nối đã bị từ chối!",
+			"rejectedCTA": "Bấm để thử lại",
+			"primaryButton": "Quay về ví"
+		},
+		"connectedWallet": {
+			"header": "Kết nối thành công",
+			"sidebar": {
+				"subheading": "Kết nối thành công!",
+				"paragraph": "Ví của bạn đã được kết nối với {app}"
+			},
+			"mainText": "Đã kết nối"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Yêu cầu hành động trong {wallet}",
+			"paragraph": "Xin hãy chuyển tài khoản hoạt động trong ví của bạn.",
+			"linkText": "Tìm hiểu thêm.",
+			"buttonText": "Đồng ý"
+		},
+		"switchChain": {
+			"heading": "Đổi mạng lưới",
+			"paragraph1": "{app} cần bạn chuyển mạng lưới của ví sang {nextNetworkName} để tiếp tục.",
+			"paragraph2": "*Một số ví không hỗ trợ chuyển mạng lưới. Nếu bạn không thể chuyển mạng lưới của ví, hãy cân nhắc sử dụng ví khác."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Ngắt kết nối toàn bộ ví",
+			"description": "Bác có chắc rằng bạn muốn ngắt kết nối toàn bộ ví?",
+			"confirm": "Xác nhận",
+			"cancel": "Huỷ"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Kết nối ví khác",
+		"disconnectAllWallets": "Ngắt kết nối toàn bộ ví",
+		"currentNetwork": "Mạng lưới hiện tại",
+		"appInfo": "Thông tin ứng dụng",
+		"learnMore": "Tìm hiểu thêm",
+		"gettingStartedGuide": "Hướng dẫn bắt đầu",
+		"smartContracts": "Hợp đồng thông minh",
+		"explore": "Khám phá",
+		"backToApp": "Quay lại dApp",
+		"poweredBy": "bởi",
+		"addAccount": "Thêm tài khoản",
+		"setPrimaryAccount": "Đặt tài khoản chính",
+		"disconnectWallet": "Ngắt kết nối ví"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Giao dịch của bạn đang chờ xác nhận",
+			"nsfFail": "Số dư của bạn không đủ để hoàn tất giao dịch này",
+			"txUnderpriced": "Phí gas cho giao dịch của bạn quá thấp, xin hãy thử một lượng phí cao hơn",
+			"txRepeat": "Đây có thể là một giao dịch lặp lại",
+			"txAwaitingApproval": "Bạn có một giao dịch từ trước đang chờ xác nhận",
+			"txConfirmReminder": "Xin hãy xác nhận giao dịch của bạn để tiếp tục, cửa sổ giao dịch có thể bị đặt sau màn hình trình duyệt",
+			"txSendFail": "Đã từ chối giao dịch",
+			"txSent": "Gao dịch của bạn đã được gửi vào mạng lưới",
+			"txStallPending": "Giao dịch của bạn bị đình trệ và chưa được đưa vào vể giao dịch",
+			"txStuck": "Giao dịch của bạn bị nghẽn vì khảng cách nonce",
+			"txPool": "Giao dịch đã bắt đầu",
+			"txStallConfirmed": "Giao dịch bị đình trệ và chưa được xác nhận",
+			"txSpeedUp": "Giao dịch đã được tăng tốc",
+			"txCancel": "Giao dịch đang bị huỷ",
+			"txFailed": "Giao dịch thất bại",
+			"txConfirmed": "Giao dịch thành công",
+			"txError": "Có gì đó đã xảy ra, xin hãy thử lại"
+		},
+		"watched": {
+			"txPool": "Your account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "Transaction for {formattedValue} {asset} {preposition} {counterpartyShortened} has been sped up",
+			"txCancel": "Transaction for {formattedValue} {asset} {preposition} {counterpartyShortened} has been canceled",
+			"txConfirmed": "Your account successfully {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Your account failed to {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "phút",
+			"seconds": "giây"
+		}
+	}
+}

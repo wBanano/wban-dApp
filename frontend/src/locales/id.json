@@ -1,0 +1,283 @@
+{
+	"title": "Bungkus BAN anda",
+	"connect": "Hubungkan",
+	"cancel": "Batal",
+	"home": "Beranda",
+	"ok": "OK",
+	"withdraw": "Tarik",
+	"refresh": "Segarkan",
+	"pages": {
+		"index": {
+			"title": "wBAN adalah Wrapped Banano",
+			"available-on": "Tersedia pada:",
+			"what-can-you-do": "Apa yang dapat anda lakukan dg wBAN?",
+			"swap-with-other-crypto": "Tukar dengan crypto lainnya",
+			"swap-with-other-crypto-description": "Tukar dari BAN ke wBAN ke Kripto pilihan anda atau sebaliknya",
+			"earn-some-wban": "Dapatkan beberapa wBAN",
+			"earn-some-wban-description": "Hasilkan wBAN dg menambahkan likuiditas ke kolam",
+			"learn-defi": "Pelajari DeFi",
+			"learn-defi-description": "Tanpa mempertaruhkan banyak BAN yang anda hasilkan dengan susah payah"
+		},
+		"setup": {
+			"continue": "Lanjutkan",
+			"back": "Kembali",
+			"banano-address": "Alamat Banano",
+			"from-ban": "Saya baru tau wBAN",
+			"from-ban-description": "Saya punya Banano dan ingin mulai belajar DeFi dengan wBAN.",
+			"from-wban": "Saya baru tau Banano",
+			"from-wban-description": "Saya punya wBAN dan ingin gunakan jaringan Banano.",
+			"verify-ban-address": "Kami perlu memverifikasi alamat BAN anda!",
+			"verify-ban-address-explanation": "Langkah ini penting untuk memastikan bahwa anda mengendalikan dompet BAN yang berinteraksi dengan wBAN.",
+			"step1": {
+				"title": "Mengatur dompet Banano",
+				"phrase1": "Untuk pengalaman pengguna terbaik, kami sarankan menggunakan Kalium Mobile Wallet:",
+				"phrase2": "Jika anda lebih suka menggunakan dompet web, maka dompet web {0} adalah pilihan terbaik berikutnya.",
+				"phrase3": "Klik tombol \"Lanjutkan\" saat anda telah membuat dompet anda."
+			},
+			"step2": {
+				"title": "Dapatkan beberapa Banano gratis",
+				"phrase1": "Anda perlu beberapa BAN untuk pengaturan jembatan.",
+				"phrase2": "Banano memiliki beberapa faucet BAN gratis, seperti:",
+				"phrase3": "Klik tombol \"Lanjutkan\" saat anda memiliki setidaknya 0.01 BAN di dompet anda."
+			},
+			"step3": {
+				"error-banano-address-required": "Alamat Banano diperlukan",
+				"error-invalid-banano-address": "Alamat Banano tidak valid",
+				"error-blacklisted-address": "Alamat daftar hitam"
+			},
+			"step4": {
+				"title": "Klaim alamat anda",
+				"phrase1": "Harap memverifikasi bahwa alamat Banano anda adalah",
+				"phrase2": "Ini penting karena kami akan menautkan alamat Banano anda dengan {network} anda."
+			},
+			"step5": {
+				"title": "Membuat setoran Banano",
+				"phrase1": "Dalam 5 menit berikutnya",
+				"phrase2": "anda perlu mengkonfirmasi klaim anda dengan mengirimkan deposit BAN dari alamat Banano ini ke alamat berikut",
+				"phrase3": "atau scan kode QR:",
+				"phrase4": "Walau jumlah berapapun tidak masalah, Mari mulai dg aman dan transfer 0.01 BAN.",
+				"phrase5": "Jangan khawatir setoran ini akan tersedia untuk penarikan jika anda mau.",
+				"button-copy-deposit-address": "Salin Alamat Setoran",
+				"button-check-deposit": "Cek Setoran"
+			}
+		},
+		"bridge": {
+			"button-deposit-ban": "Setoran BAN",
+			"button-deposit-ban-tooltip": "Setor BAN untuk pertukaran",
+			"button-withdraw-ban": "Menarik BAN",
+			"button-withdraw-ban-tooltip": "Tarik BAN kembali ke dompet anda",
+			"button-swap": "Tukar",
+			"button-stake-and-farm": "Bertaruh & Berternak",
+			"button-stake-and-farm-tooltip": "Peternakan Kolam Likuiditas"
+		},
+		"history": {
+			"title": "Riwayat",
+			"title-tooltip": "Riwayat: Lihat transaksi masa lalu anda dan klaim transaksi yang ditolak sebelumnya"
+		},
+		"farms": {
+			"farms-active": "Aktif",
+			"farms-ended": "Selesai",
+			"farms-active-tooltip": "Peternakan masih menyalurkan hadiah",
+			"farms-ended-tooltip": "Peternakan lama sudah tidak menyalurkan hadiah!",
+			"warning-no-farm-running-on-network": "Tidak ada peternakan yang sedang berjalan di {network}. Periksa jaringan lain.",
+			"warning-deposits-left-in-ended-farm": "Anda memiliki saldo tersisa di peternakan yang sudah selesai. Silakan tarik!"
+		},
+		"nft-rewards": {
+			"buy": "Beli",
+			"grab": "Ambil mereka",
+			"claim": "Klaim",
+			"airdrop-claim": "Anda telah mendapatkan bonus dan anda dapat mengklaim beberapa NFT gratis.",
+			"golden-missing": "Anda hanya kurang satu NFT untuk mengklaim yang emas.",
+			"claim-golden": "Anda punya cukup NFTs untuk mengklaim NFT emas.",
+			"warning1": "wBAN NFTs hanya tersedia di jaringan Polygon.",
+			"warning2": "Mohon mengganti ke jaringan yang sesuai."
+		}
+	},
+	"components": {
+		"wrap-form": {
+			"from": "Dari:",
+			"to": "Kepada:",
+			"gasless-wrap-lacking-ban": "Jika anda deposit lebih dari {0} BAN, anda dapat membungkus tanpa biaya.",
+			"gasless-wrap": "Anda dapat membungkus tanpa biaya untuk jumlah paling sedikit {0} BAN.",
+			"button-wrap": "Bungkus",
+			"button-gasless-wrap": "Membungkus Tanpa Biaya",
+			"button-unwrap": "Membuka"
+		},
+		"wrap-input": {
+			"balance": "Saldo:",
+			"max": "Maks",
+			"add-wban-to-metatmask": "Tambahkan wBAN ke MetaMask",
+			"error-amount-more-than-zero": "Jumlah harus lebih dari nol",
+			"error-no-more-than-two-decimals": "Tidak boleh lebih dari 2 desimal",
+			"error-not-enough-token-available": "Tidak cukup tersedia!"
+		},
+		"settings": {
+			"title": "Pengaturan",
+			"dark-mode": "Mode Gelap",
+			"language": "Bahasa",
+			"disconnect": "Memutuskan",
+			"about": "Tentang"
+		},
+		"swap-form": {
+			"from": "Dari:",
+			"to": "Kepada:",
+			"transaction-settings": "Pengaturan Transaksi",
+			"slippage-tolerance": "Toleransi Selisih Nominal",
+			"slippage-tolerance-tooltip": "Ini adalah persentase maksimum yang ingin anda hilangkan jika ada perubahan harga yang tidak menguntungkan.",
+			"allowance": "Batas Kelonggaran",
+			"allowance-exact-amount": "Jumlah Tepat",
+			"allowance-unlimited-amount": "Tak Terbatas",
+			"allowance-tooltip": "Jumlah {fromSymbol} dari pertukaran dapat bergerak atas nama Anda.<br /><br />Jumlah yang tepat: menyetujui setiap kali, lebih aman tetapi kurang nyaman.<br />Tidak terbatas: menyetujui hanya sekali, lebih nyaman tetapi kurang aman.",
+			"estimated-gas-fee": "Estimasi Biaya Gas",
+			"exchange-route": "Rute Pertukaran",
+			"gasless-swap": "Jika anda menukar setidaknya <strong>{amount} wBAN ke {crypto}</strong>, maka tidak ada biaya transaksi.",
+			"button-swap": "Menukar",
+			"button-gasless-swap": "Penukaran Tanpa Gas",
+			"button-approve": "Menyetujui {fromSymbol}"
+		},
+		"token-input": {
+			"balance": "Saldo:",
+			"max": "Maks",
+			"error-amount-more-than-zero": "Jumlah harus lebih dari nol",
+			"error-too-many-decimals": "Tidak boleh lebih dari {0} desimal",
+			"error-not-enough-token-available": "Tidak cukup {symbol} tersedia!"
+		},
+		"statistics": {
+			"title": "Statistik wBAN",
+			"from": "oleh Benis",
+			"total-supply": "Total Supply",
+			"total-supply-tooltip": "Jumlah wBAN yang telah dibuat dari setoran BAN terkait"
+		},
+		"nft-rewards": {
+			"quantity": "Jumlah",
+			"buy-sell": "Beli/Jual"
+		},
+		"farm": {
+			"wban-earned": "wBAN diterima",
+			"wban-earned-farm-ended": "(tarik untuk memanen)",
+			"farm-ended": "Peternakan Selesai!",
+			"harvest": "Panen",
+			"deposit": "Deposit",
+			"details": "Rincian",
+			"yield": "Hasil",
+			"total": "Total",
+			"farm-tvl": "Nilai TVL Peternakan",
+			"liquidity-pool-tvl": "Nilai TVL Kolam Likuiditas",
+			"button-approve": "Setujui",
+			"button-add-liquidity": "Tambahkan Likuiditas",
+			"button-supply": "Suplai",
+			"button-supply-tooltip": "Saat menambahkan token likuiditas ke dalam peternakan, anda juga memanen wBAN yang sudah diperoleh!",
+			"button-withdraw-tooltip": "Saat menarik token likuiditas dari peternakan, anda juga memanen wBAN yang sudah diterima!"
+		}
+	},
+	"dialogs": {
+		"waiting-for-blockchain": "Menunggu konfirmasi blockchain",
+		"ban-deposit": {
+			"title": "Setoran BAN",
+			"phrase1": "Jika anda ingin menukar lebih banyak BAN, cukup kirimkan BAN dari dompet {0} anda ke dompet ini:",
+			"phrase2": "Jangan mengirimkan dengan lebih dari 2 desimal dan pastikan tidak ada raw.<br />Menggunakan tombol \"Maks\" di Kalium mungkin tidak akan berfungsi dengan baik.<br />Jika anda tidak mengikuti aturan sebelumnya, BAN anda akan dikirimkan kembali ke dompet pengirim.<b>Pastikan anda tidak menarik dari CEX langsung ke alamat ini atau anda akan kehilangan BAN!</b>",
+			"button-copy-address": "Salin Alamat"
+		},
+		"ban-withdrawal": {
+			"title": "Menarik BAN"
+		},
+		"swap-in-progress": "Penukaran dalam proses...",
+		"token-approval": "Persetujuan Token dalam proses...",
+		"token-chooser": {
+			"title": "Pilih token",
+			"placeholder": "Filter berdasarkan token"
+		},
+		"gas-needed": {
+			"title": "Kekurangan {crypto} untuk biaya",
+			"phrase1": "Saldo anda saat ini {balance} {crypto} terlalu sedikit untuk dibungkus.",
+			"phrase2": "{network} tidak membutuhkan banyak {crypto} untuk biaya transaksi, tetapi lebih baik membeli setidaknya {minimumNeededForWrap} {crypto} dan mengirimnya ke dompet ini."
+		},
+		"low-amount-to-wrap": {
+			"are-you-sure": "Apakah anda yakin?",
+			"phrase1": "Anda meminta untuk membungkus/membuka dengan jumlah 🤏 {amount} BAN/wBAN.",
+			"phrase2": "{network} biaya jaringan mungkin tidak berharga untuk membungkus/membuka ini.",
+			"proceed-anyway": "Tetap melanjutkan"
+		},
+		"nft": {
+			"title": "Klaim NFTs anda",
+			"proceed": "Anda memiliki {count} NFT untuk di klaim. Proses?",
+			"claiming": "Mengklaim NFT {count} dari {total}..."
+		},
+		"nft-rewards": {
+			"title": "Klaim NFT Emas",
+			"phrase1": "Anda diharuskan memiliki NFTs tertentu untuk klaim NFT <strong>{name} Emas</strong>.",
+			"phrase2": "Melakukan ini akan <strong>membakar/menghancurkan</strong> tiga NFTs {name} anda dan memberikan anda NFT Emas {name}."
+		},
+		"withdrawal": {
+			"title": "Penarikan sedang berlangsung...",
+			"message": "Bekerja keras memproses penarikan anda!"
+		},
+		"pending-withdrawal": {
+			"title": "Penarikan Tertunda",
+			"message": "Penarikan anda sejumlah {amount} BAN belum dapat diproses.<br /><br /><strong>Jumlah tersebut masuk daftar tertunda dan akan diproses kemudian!</strong><br /><br />Sementara itu saldo BAN pada deposit anda tidak dikurangi penarikan ini."
+		},
+		"wrap": {
+			"title": "Pembungkusan {amount} BAN sedang berlangsung...",
+			"message": "Bekerja keras memproses pembungkusan anda!"
+		},
+		"unwrap": {
+			"title": "Pembukaan {amount} wBAN sedang berlangsung...",
+			"message": "Bekerja keras memproses pembukaan anda!"
+		},
+		"farm-supply": {
+			"title": "Suplai {amount} {symbol} sedang berlangsung...",
+			"message": "Bekerja keras memproses suplai anda!"
+		},
+		"farm-withdraw": {
+			"title": "Penarikan sejumlah {amount} {symbol} sedang berlangsung...",
+			"message": "Bekerja keras memproses penarikan anda!"
+		},
+		"unsupported-network": {
+			"title": "Jaringan tidak didukung {network}",
+			"message": "<p>wBAN hanya tersedia di BSC, Polygon, dan Fantom.</p><p>Silakan beralih ke salah satu jaringan tersebut.</p>"
+		}
+	},
+	"notifications": {
+		"view": "Lihat",
+		"close": "Tutup",
+		"token-approval-success": "Persetujuan token anda telah berhasil diproses.",
+		"token-approval-error": "Persetujuan token anda tidak dapat diproses.",
+		"swap-success": "Pertukaran anda telah berhasil diproses.",
+		"swap-error": "Pertukaran anda tidak dapat diproses.",
+		"ban-deposit-confirmed": {
+			"message": "Deposit anda senilai {amount} BAN telah diterima.",
+			"caption": "Anda bisa menukarnya ke wBAN."
+		},
+		"ban-deposit-declined": {
+			"message": "Deposit anda senilai {amount} BAN ditolak.",
+			"caption": "Pastikan anda tidak mengirim jumlah yang diakhiri lebih dari 2 desimal atau nilai mentah."
+		},
+		"withdrawal": "{amount} BAN telah dikirimkan kembali ke dompet anda.",
+		"pending-withdrawal": {
+			"message": "Penarikan anda sejumlah {amount} BAN masih tertunda.",
+			"caption": "Setelah hot wallet wBAN terisi dari cold wallet, penarikan anda akan segera diselesaikan!"
+		},
+		"wrap": "Penukaran anda sejumlah {amount} BAN telah berhasil diproses.",
+		"wrap-error": {
+			"message": "Pembungkusan anda sejumlah {amount} BAN tidak dapat diproses.",
+			"caption": "Kunjungi halaman riwayat dan klik tombol klaim pada permintaan penarikan yang sesuai."
+		},
+		"unwrap": {
+			"message": "Pembukaan anda sejumlah {amount} wBAN telah berhasil diproses.",
+			"caption": "Saldo deposit Banano anda telah diperbaharui."
+		},
+		"farm-supply": "Suplai anda sejumlah {amount} {symbol} telah berhasil diproses.",
+		"farm-withdraw": "Penarikan anda sejumlah {amount} {symbol} telah berhasil diproses."
+	},
+	"menu": {
+		"donations": {
+			"title": "Donasi",
+			"aside": "Kirim Tip ke:",
+			"phrase1": "Bekerja pada aplikasi ini telah menjadi perjalanan yang cukup, dan masih berlangsung!",
+			"phrase2": "Tips selalu diapresiasi dan jika anda ingin mendukung upaya saya, Anda selalu dapat membantu saya dengan mengirimkan tips Banano di:"
+		}
+	},
+	"footer": {
+		"documentation": "Dokumentasi"
+	}
+}

@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Доступні гаманці",
+			"sidebar": {
+				"heading": "Початок роботи",
+				"subheading": "Підключіть свій гаманець",
+				"paragraph": "Прив'язка вашого гаманця схожа на \"авторизацію\" в Web3. Виберіть свій гаманець з опцій для запуску."
+			},
+			"recommendedWalletsPart1": "{app} підтримує тільки",
+			"recommendedWalletsPart2": "на цій платформі. Будь ласка, використовуйте або встановіть один із підтримуваних гаманців, щоб продовжити",
+			"installWallet": "У вас немає жодного гаманця, встановленого для {app} підтримки, будь ласка, використовуйте гаманець з підтримкою",
+			"agreement": {
+				"agree": "Я згоден з",
+				"terms": "Правила та Умови",
+				"and": "та",
+				"privacy": "Політика конфіденційності"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Підключення до {wallet}...} other {Підключення відхилено}}",
+			"sidebar": {
+				"subheading": "Підтвердити з'єднання",
+				"paragraph": "Будь ласка, підтвердіть з'єднання у вашому гаманці та авторизуйте доступ, щоб продовжити."
+			},
+			"mainText": "З’єднання...",
+			"paragraph": "Оберіть всі облікові записи, до яких ви хочете надати доступ.",
+			"rejectedText": "З'єднання відхилено!",
+			"rejectedCTA": "Натисніть тут, щоб спробувати знову",
+			"primaryButton": "Назад до гаманців"
+		},
+		"connectedWallet": {
+			"header": "Вдале з'єднання",
+			"sidebar": {
+				"subheading": "Вдале підключення!",
+				"paragraph": "Ваш гаманець тепер під'єднано до {app}"
+			},
+			"mainText": "З'єднано"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Дія необхідна в {wallet}",
+			"paragraph": "Будь ласка, переключіть активний обліковий запис у вашому гаманці.",
+			"linkText": "Дізнатися більше.",
+			"buttonText": "Ок"
+		},
+		"switchChain": {
+			"heading": "Змінити мережу",
+			"paragraph1": "{app} вимагає, щоб ви змінили ваш гаманець на {nextNetworkName} мережу для продовження.",
+			"paragraph2": "* Деякі гаманці можуть не підтримувати зміну мережі. Якщо ви не можете змінити мережу у вашому гаманці, ви можете розглянути можливість переходу на інший гаманець."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Відключити всі гаманці",
+			"description": "Ви впевнені, що хочете відключити всі свої гаманці?",
+			"confirm": "Підтвердити",
+			"cancel": "Скасувати"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Підключіть інший гаманець",
+		"disconnectAllWallets": "Відключити всі гаманці",
+		"currentNetwork": "Поточна мережа",
+		"appInfo": "Про додаток",
+		"learnMore": "Дізнатися більше",
+		"gettingStartedGuide": "Посібник",
+		"smartContracts": "Розумний контракт(и)",
+		"explore": "Досліджуйте",
+		"backToApp": "Повернутися до dapp",
+		"poweredBy": "працює на",
+		"addAccount": "Додати акаунт",
+		"setPrimaryAccount": "Встановіть основний обліковий запис",
+		"disconnectWallet": "Від'єднати гаманець"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Ваша операція очікує на підтвердження",
+			"nsfFail": "У вас недостатньо коштів для завершення цієї транзакції",
+			"txUnderpriced": "Вартість газу для вашої транзакції занадто мала, спробуйте ще раз з більшою ціною газу",
+			"txRepeat": "Це може бути повторення транзакції",
+			"txAwaitingApproval": "У вас є попередня транзакція, яка очікує на підтвердження",
+			"txConfirmReminder": "Будь ласка, підтвердіть транзакцію, щоб продовжити, вікно транзакції може бути за вашим браузером",
+			"txSendFail": "Ви відхилили транзакцію",
+			"txSent": "Вашу транзакцію було надіслано в мережу",
+			"txStallPending": "Ваша транзакція зупинилася і не увійшла в пул транзакцій",
+			"txStuck": "Ваша транзакція застрягла через инший проміжок",
+			"txPool": "Ваша транзакція розпочалась",
+			"txStallConfirmed": "Вашу транзакцію зупинено і не підтверджено",
+			"txSpeedUp": "Ваша транзакція була пришвидшена",
+			"txCancel": "Вашу транзакцію скасовано",
+			"txFailed": "Ваша транзакція не вдалася",
+			"txConfirmed": "Ваші операції успішні",
+			"txError": "Ой, щось пішло не так, спробуйте ще раз"
+		},
+		"watched": {
+			"txPool": "Ваш обліковий запис {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "Транзакція для {formattedValue} {asset} {preposition} {counterpartyShortened} була пришвидшена",
+			"txCancel": "Транзакція для {formattedValue} {asset} {preposition} {counterpartyShortened} була скасована",
+			"txConfirmed": "Ваш обліковий запис успішно {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Ваш обліковий запис не вдалося {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "хв",
+			"seconds": "сек"
+		}
+	}
+}

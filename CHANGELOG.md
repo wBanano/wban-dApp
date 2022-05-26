@@ -1,3 +1,10 @@
+# v2.2.0
+## New Features
+- gasless onboarding
+- translations for 10 more languages
+## Improvements
+- website metadata/preview image for Twitter, Discord, etc
+
 # v2.1.5
 - NFT for first wBANniversary
 

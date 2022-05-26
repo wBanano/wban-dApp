@@ -1,10 +1,10 @@
-import { WBANToken } from '@artifacts/typechain'
+import { WBANTokenWithPermit } from '@artifacts/typechain'
 import { BigNumber } from 'ethers'
 
 type SwapToBanRequest = {
 	amount: BigNumber
 	toBanAddress: string
-	contract: WBANToken
+	contract: WBANTokenWithPermit
 }
 
 export { SwapToBanRequest }

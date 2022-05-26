@@ -6,7 +6,9 @@
 			</q-item-section>
 			<q-item-section class="col-8 text-right">
 				<q-item-label>
-					Balance: {{ balance | bnToString }} {{ currency }} ({{ balance | bnToString | banPrice }})
+					{{ $t('components.wrap-input.balance') }} {{ balance | bnToString }} {{ currency }} ({{
+						balance | bnToString | banPrice
+					}})
 				</q-item-label>
 			</q-item-section>
 		</q-item>
@@ -22,14 +24,14 @@
 				:rules="validationRules"
 			>
 				<template v-slot:append>
-					<a v-if="editable" @click="setToMax" class="max">Max</a>
+					<a v-if="editable" @click="setToMax" class="max">{{ $t('components.wrap-input.max') }}</a>
 					<img :src="require(`@/assets/${logoUrl}`)" class="currency-logo" />
 				</template>
 			</q-input>
 		</q-card-section>
 		<q-card-actions vertical align="right" v-if="currency === 'wBAN'">
 			<a id="add-wban-to-metamask" @click="addWBANToMetaMask">
-				Add wBAN to MetaMask
+				{{ $t('components.wrap-input.add-wban-to-metatmask') }}
 				<q-icon name="img:metamask.svg" size="24px" />
 			</a>
 		</q-card-actions>
@@ -67,9 +69,11 @@ export default class SwapCurrencyInput extends Vue {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	validationRules: Array<any> = [
-		(val: string) => val == '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
-		(val: string) => this.hasNoMoreThanTwoDecimals(val) || 'No more than 2 decimals',
-		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`,
+		(val: string) =>
+			val == '' || Number.parseFloat(val) > 0 || this.$t('components.wrap-input.error-amount-more-than-zero'),
+		(val: string) =>
+			this.hasNoMoreThanTwoDecimals(val) || this.$t('components.wrap-input.error-no-more-than-two-decimals'),
+		(val: string) => this.isLowerThanMax(val) || this.$t('components.wrap-input.error-not-enough-token-available'),
 	]
 
 	get logoUrl() {

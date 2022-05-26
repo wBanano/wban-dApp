@@ -2,7 +2,7 @@ import { SwapPath, SwapQuoteRequest, SwapQuoteResponse, SwapRoute } from '@/mode
 import { get0xSwapAPI, get0xExchangeRouterAddress } from '@/config/constants/dex'
 import TokensUtil from './TokensUtil'
 import { BigNumber, ethers } from 'ethers'
-import axios from 'axios'
+import axios, { AxiosResponse, AxiosError } from 'axios'
 import qs from 'qs'
 
 class DEXUtils {
@@ -68,9 +68,14 @@ class DEXUtils {
 				route: route,
 				allowanceTarget: allowanceTarget,
 			}
-		} catch (error) {
-			console.error(error)
-			throw new Error(error.response.data.values.message)
+		} catch (err: unknown | AxiosError) {
+			console.error(err)
+			if (axios.isAxiosError(err)) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				const response: AxiosResponse = (err as AxiosError).response!
+				throw new Error(response.data.values.message)
+			}
+			throw new Error('Unexpected error')
 		}
 	}
 

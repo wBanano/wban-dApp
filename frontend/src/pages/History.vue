@@ -24,7 +24,7 @@
 						<q-timeline :layout="layout" :side="side" color="primary">
 							<q-timeline-entry heading>
 								<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
-								History
+								{{ $t('pages.history.title') }}
 							</q-timeline-entry>
 
 							<q-timeline-entry

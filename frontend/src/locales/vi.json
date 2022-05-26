@@ -1,0 +1,283 @@
+{
+	"title": "Wrap BAN",
+	"connect": "Kết nối",
+	"cancel": "Huỷ",
+	"home": "Trang chủ",
+	"ok": "Đồng ý",
+	"withdraw": "Rút",
+	"refresh": "Làm mới",
+	"pages": {
+		"index": {
+			"title": "wBAN là Wrapped Banano",
+			"available-on": "Có trên:",
+			"what-can-you-do": "Bạn có thể làm gì với wBAN?",
+			"swap-with-other-crypto": "Trao đổi với những đồng tiền số khác",
+			"swap-with-other-crypto-description": "Swap từ BAN sang wBAN tới đồng bạn muốn hoặc ngược lại",
+			"earn-some-wban": "Kiếm wBAN",
+			"earn-some-wban-description": "Kiếm thêm wBAN qua tạo thanh khoản",
+			"learn-defi": "Học DeFi",
+			"learn-defi-description": "Mà không tạo rủi ro cho lượng BAN mà bạn nỗ lực mới có được"
+		},
+		"setup": {
+			"continue": "Tiếp tục",
+			"back": "Quay lại",
+			"banano-address": "Địa chỉ Banano",
+			"from-ban": "Tôi chưa quen với wBAN",
+			"from-ban-description": "Tôi có Banano và muốn bắt đầu học DeFi với wBAN.",
+			"from-wban": "Tôi chưa quen với Banano",
+			"from-wban-description": "Tôi có wBAN và muốn sử dụng mạng lưới Banano.",
+			"verify-ban-address": "Chung tôi cần xác minh địa chỉ BAN của bạn!",
+			"verify-ban-address-explanation": "Bước này rất quan trọng vì nó có tác dụng khẳng định việc bạn đang kiểm soát ví BAN dùng để thao tac với wBAN.",
+			"step1": {
+				"title": "Thiết lập ví Banano",
+				"phrase1": "Để có trải nghiệm tốt nhất, bạn nên dùng ví di động Kalium:",
+				"phrase2": "Nếu bạn muốn dùng ví web, {0} là lựa chọn tốt nhất.",
+				"phrase3": "Bấm \"Tiếp tục\" khi bạn đã tạo xong ví."
+			},
+			"step2": {
+				"title": "Nhận Banano miễn phí",
+				"phrase1": "Bạn cần có BAN để thực hiện thiết lập bridge (cầu nối).",
+				"phrase2": "Có một số vòi Banano miễn phí, chẳng hạn như:",
+				"phrase3": "Bấm \"Tiếp tục\" khi bạn đã có ít nhất 0.01 BAN trong ví."
+			},
+			"step3": {
+				"error-banano-address-required": "Bắt buộc phải điền địa chỉ Banano",
+				"error-invalid-banano-address": "Địa chỉ Banano không hợp lệ",
+				"error-blacklisted-address": "Địa chỉ có trong danh sách đen"
+			},
+			"step4": {
+				"title": "Xác minh địa chỉ của bạn",
+				"phrase1": "Vui lòng đảm bảo rằng địa chỉ Banano của bạn là",
+				"phrase2": "Điều này rất quan trọng vì địa chỉ Banano của bạn sẽ được liên kết với địa chỉ {network}."
+			},
+			"step5": {
+				"title": "Nạp Banano",
+				"phrase1": "Trong vòng 5 phút",
+				"phrase2": "bạn cần xác nhận bằng cách gửi BAN từ ví Banano trên tới địa chỉ này",
+				"phrase3": "hoặc quét mã QR:",
+				"phrase4": "Bạn có thể chuyển một lượng bất kỳ, nhưng hãy chỉ chuyển 0.01 BAN để tránh rủi ro.",
+				"phrase5": "Đừng lo lắng vì bạn có thể lấy lại khoản này nếu muốn.",
+				"button-copy-deposit-address": "Sao chép địa chỉ nạp tiền",
+				"button-check-deposit": "Kiểm tra"
+			}
+		},
+		"bridge": {
+			"button-deposit-ban": "Nạp BAN",
+			"button-deposit-ban-tooltip": "Nạp BAN để swap",
+			"button-withdraw-ban": "Rút BAN",
+			"button-withdraw-ban-tooltip": "Rút BAN về ví của bạn",
+			"button-swap": "Swap",
+			"button-stake-and-farm": "Stake & farm",
+			"button-stake-and-farm-tooltip": "Farm thanh khoản"
+		},
+		"history": {
+			"title": "Lịch sử",
+			"title-tooltip": "Lịch sử: xem lại các giao dịch của bạn và xác nhận các giao dịch bị từ chối"
+		},
+		"farms": {
+			"farms-active": "Đang hoạt động",
+			"farms-ended": "Đã dừng",
+			"farms-active-tooltip": "Farm vẫn đang phát thưởng",
+			"farms-ended-tooltip": "Farm cũ không phát thưởng nữa!",
+			"warning-no-farm-running-on-network": "{network} không có farm nào đang hoạt động. Xem các mạng lưới khác.",
+			"warning-deposits-left-in-ended-farm": "Nếu bạn vẫn còn tiền trong farm đã dừng hoạt động, vui lòng rút về!"
+		},
+		"nft-rewards": {
+			"buy": "Mua",
+			"grab": "Nhận",
+			"claim": "Nhận",
+			"airdrop-claim": "Bạn đã nhận được airdrop và có thể nhận NFT miễn phí.",
+			"golden-missing": "Còn thiếu một NFT để có thể nhận NFT Golden.",
+			"claim-golden": "Bạn có đủ NFT để nhận một NFT Golden.",
+			"warning1": "NFT wBAN chỉ khả dụng trên mạng lưới Polygon.",
+			"warning2": "Xin vui lòng chuyển sang đúng mạng lưới."
+		}
+	},
+	"components": {
+		"wrap-form": {
+			"from": "Từ:",
+			"to": "Sang:",
+			"gasless-wrap-lacking-ban": "Nếu bạn nạp thêm {0} BAN, bạn được một lần wrap miễn phí.",
+			"gasless-wrap": "Bạn sẽ được hỗ trợ toàn bộ phí giao dịch nếu wrap ít nhất {0} BAN.",
+			"button-wrap": "Wrap",
+			"button-gasless-wrap": "Swap không phí",
+			"button-unwrap": "Unwrap"
+		},
+		"wrap-input": {
+			"balance": "Số dư:",
+			"max": "Tối đa",
+			"add-wban-to-metatmask": "Thêm wBAN vào MetaMask",
+			"error-amount-more-than-zero": "Khối lượng phải lớn hơn 0",
+			"error-no-more-than-two-decimals": "Không nhiều hơn 2 chữ số hàng thập phân",
+			"error-not-enough-token-available": "Số dư không đủ!"
+		},
+		"settings": {
+			"title": "Cài đặt",
+			"dark-mode": "Chế độ nền tối",
+			"language": "Ngôn ngữ",
+			"disconnect": "Ngắt kết nối",
+			"about": "Thông tin"
+		},
+		"swap-form": {
+			"from": "Từ:",
+			"to": "Sang:",
+			"transaction-settings": "Cài đặt giao dịch",
+			"slippage-tolerance": "Độ trượt giá",
+			"slippage-tolerance-tooltip": "Đây là phần trăm tối đa bạn có thể mất do sự thay đổi giá ngoài ý muốn.",
+			"allowance": "Giới hạn chi",
+			"allowance-exact-amount": "Có hạn mức",
+			"allowance-unlimited-amount": "Không giới hạn",
+			"allowance-tooltip": "Khoản {fromSymbol} mà sàn giao dịch được phép dịch chuyển cho bạn.<br /><br />Có hạn mức: Phê duyệt mỗi lần dùng, an toàn hơn nhưng không tiện dụng.<br />Không giới hạn: Chỉ cần phê duyệt một lần, tiện hơn nhưng kém an toàn.",
+			"estimated-gas-fee": "Phí gas ước tính",
+			"exchange-route": "Hướng giao dịch",
+			"gasless-swap": "Bạn sẽ không mất phí giao dịch nếu swap ít nhất <strong>{amount} wBAN sang {crypto}</strong>.",
+			"button-swap": "Swap",
+			"button-gasless-swap": "Swap không phí",
+			"button-approve": "Xác nhận swap {fromSymbol}"
+		},
+		"token-input": {
+			"balance": "Số dư:",
+			"max": "Tối đa",
+			"error-amount-more-than-zero": "Khối lượng phải lớn hơn 0",
+			"error-too-many-decimals": "Không nhiều hơn {0} chữ số hàng thập phân",
+			"error-not-enough-token-available": "Không đủ {symbol}!"
+		},
+		"statistics": {
+			"title": "Thống kê wBAN",
+			"from": "bởi Benis",
+			"total-supply": "Tổng nguồn cung",
+			"total-supply-tooltip": "Tổng lượng wBAN được tạo từ BAN đã nạp"
+		},
+		"nft-rewards": {
+			"quantity": "S.lượng",
+			"buy-sell": "Mua/Bán"
+		},
+		"farm": {
+			"wban-earned": "wBAN đã được",
+			"wban-earned-farm-ended": "(rút để thu hoạch)",
+			"farm-ended": "Farm đã dừng hoạt động!",
+			"harvest": "Thu hoạch",
+			"deposit": "Nạp",
+			"details": "Chi tiết",
+			"yield": "Lợi suất",
+			"total": "Tổng",
+			"farm-tvl": "Tổng giá trị bị khóa của farm",
+			"liquidity-pool-tvl": "Tổng giá trị bị khóa của bể thanh khoản",
+			"button-approve": "Đồng ý",
+			"button-add-liquidity": "Tạo thanh khoản",
+			"button-supply": "Cung cấp",
+			"button-supply-tooltip": "Khi bạn thêm token để tạo thanh khoản vào farm, bạn cùng lúc cũng nhận wBAN được thưởng!",
+			"button-withdraw-tooltip": "Khi bạn rút token để tạo thanh khoản từ farm, bạn cùng lúc cũng nhận wBAN được thưởng!"
+		}
+	},
+	"dialogs": {
+		"waiting-for-blockchain": "Đang đợi xác minh mạng lưới",
+		"ban-deposit": {
+			"title": "Nạp BAN",
+			"phrase1": "Nếu bạn muốn swap thêm BAN, vui lòng gửi BAN từ ví {0} của bạn tới địa chỉ:",
+			"phrase2": "Đừng gửi những lượng có nhiều hơn hai con số trong phần thập phân, vã hãy đảm bảo không có raw. <br />Không nên dùng nút \"Max\" (gửi tất cả) có sẵn trong Kalium hoặc Vault.<br />Nếu bạn không làm theo những lưu ý trên, BAN sẽ bị gửi ngươc lại ví bạn đã dùng để gửi đi. <b>Tuyệt đối không rút Banano thẳng từ sàn giao dịch về địa chỉ này, bạn sẽ mất BAN!</b>",
+			"button-copy-address": "Sao chép địa chỉ"
+		},
+		"ban-withdrawal": {
+			"title": "Rút BAN"
+		},
+		"swap-in-progress": "Đang swap...",
+		"token-approval": "Đang phê duyệt token...",
+		"token-chooser": {
+			"title": "Chọn token",
+			"placeholder": "Lọc theo token"
+		},
+		"gas-needed": {
+			"title": "Còn quá ít {crypto} để trả phí",
+			"phrase1": "Số dư {balance} {crypto} của bạn không đủ để wrap.",
+			"phrase2": "{network} không yêu cầu nhiều {crypto} cho phí giao dịch, nhưng bạn nên mua ít nhất {minimumNeededForWrap} {crypto} và chuyển vào ví này."
+		},
+		"low-amount-to-wrap": {
+			"are-you-sure": "Bạn có chắc không?",
+			"phrase1": "Bạn đang yêu cầu wrap/unwrap 🤏một lượng {amount} BAN/wBAN.",
+			"phrase2": "Lượng wrap/unwrap này có lẽ không đáng phí giao dịch {network}.",
+			"proceed-anyway": "Vẫn tiếp tục"
+		},
+		"nft": {
+			"title": "Nhận NFT của bạn",
+			"proceed": "Bạn có thể nhận {count} NFT. Tiếp tục?",
+			"claiming": "Đang nhận NFT thứ {count} trong số {total} NFT..."
+		},
+		"nft-rewards": {
+			"title": "Nhận NFT Golden",
+			"phrase1": "Bạn có đủ nhũng NFT yêu cầu để nhận một NFT <strong>Golden {name}</strong>.",
+			"phrase2": "Điều đó sẽ <strong>đốt/huỷ</strong> ba NFT {name} của bạn và bạn sẽ nhận được NFT {name} Golden."
+		},
+		"withdrawal": {
+			"title": "Đang rút...",
+			"message": "Đang căng sức thực hiện yêu cầu rút của bạn!"
+		},
+		"pending-withdrawal": {
+			"title": "Lệnh rút đang xử lý",
+			"message": "Yêu cầu rút {amount} BAN của bạn không thể được thực hiện ngay lúc này.<br /><br /><strong>Yêu cầu đã được thêm vào hàng chờ và sẽ được xử lý sau!</strong><br /><br />Trong lúc này, số dư BAN đã nạp sẽ không bị giảm bởi lệnh rút này."
+		},
+		"wrap": {
+			"title": "Đang wrap {amount} BAN...",
+			"message": "Đang căng sức thực hiện yêu cầu wrap của bạn!"
+		},
+		"unwrap": {
+			"title": "Đang unwrap {amount} wBAN...",
+			"message": "Đang căng sức thực hiện yêu cầu unwrap của bạn!"
+		},
+		"farm-supply": {
+			"title": "Đang xử lý yêu cầu tạo thanh khoản {amount} {symbol}...",
+			"message": "Đang căng sức thực hiện yêu cầu của bạn!"
+		},
+		"farm-withdraw": {
+			"title": "Đang xử lý yêu cầu rút {amount}{symbol}...",
+			"message": "Đang căng sức thực hiện yêu cầu rút của bạn!"
+		},
+		"unsupported-network": {
+			"title": "{network} không được hỗ trợ",
+			"message": "<p>wBAN chỉ có trên BSC, Polygon và Fantom.</p><p>Xin chuyển sang một trong các mạng lưới này.</p>"
+		}
+	},
+	"notifications": {
+		"view": "Xem",
+		"close": "Đóng",
+		"token-approval-success": "Phê duyệt token đã hoàn tất.",
+		"token-approval-error": "Không thể phê duyệt token.",
+		"swap-success": "Đã hoàn tất swap.",
+		"swap-error": "Không thể xử lý giao dịch swap.",
+		"ban-deposit-confirmed": {
+			"message": "{amount} BAN bạn nạp đã được nhận.",
+			"caption": "Bạn có thể đổi lấy wBAN."
+		},
+		"ban-deposit-declined": {
+			"message": "{amount} BAN bạn nạp đã bị từ chối.",
+			"caption": "Hãy chắc rằng bạn không gửi những khoản có nhiều hai chữ số hàng thập phân hoặc có giá trị raw."
+		},
+		"withdrawal": "{amount} BAN đã được gửi về ví của bạn.",
+		"pending-withdrawal": {
+			"message": "Yêu cầu rút {amount} BAN đang trong trạng thái chờ.",
+			"caption": "Yêu cầu rút của bạn sẽ được thực hiện ngay khi tiền được chuyển từ ví lạnh sang ví nóng wBAN!"
+		},
+		"wrap": "Đã thực hiện swap {amount} BAN thành công.",
+		"wrap-error": {
+			"message": "Không thể thực hiện yêu cầu wrap {amount} BAN.",
+			"caption": "Vào trang lịch sử và bấm nút nhận tương ứng với yêu cầu wrap."
+		},
+		"unwrap": {
+			"message": "Đã thực hiện unwrap {amount} wBAN thành công.",
+			"caption": "Số dư Banano đã nạp của bạn đã được cập nhật."
+		},
+		"farm-supply": "Đã thực hiện tạo thanh khoản với {amount} {symbol} thành công.",
+		"farm-withdraw": "Đã thực hiện yêu cầu rút {amount} {symbol} thành công."
+	},
+	"menu": {
+		"donations": {
+			"title": "Đóng góp",
+			"aside": "Tôi tôi qua:",
+			"phrase1": "Xây dựng ứng dụng này là cả một hành trình, và vẫn đang tiếp tục!",
+			"phrase2": "Tip luôn được đón nhận và nếu bạn muốn ủng hộ những nỗ lực của tôi, bạn luôn có thể giúp bằng cách gửi tip Banano tới:"
+		}
+	},
+	"footer": {
+		"documentation": "Tài liệu"
+	}
+}

@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Dompet Tersedia",
+			"sidebar": {
+				"heading": "Memulai",
+				"subheading": "Hubungkan dompet anda",
+				"paragraph": "Menghubungkan dompet adalah seperti \"login\" ke Web3. Pilih dompet anda dari pilihan untuk memulai."
+			},
+			"recommendedWalletsPart1": "hanya mendukung {app}",
+			"recommendedWalletsPart2": "pada platform ini. Harap gunakan atau pasang salah satu dompet yang didukung untuk melanjutkan",
+			"installWallet": "Anda tidak memiliki dompet apa pun yang diinstal mendukung {app}, silahkan gunakan dompet yang didukung",
+			"agreement": {
+				"agree": "Saya setuju kepada",
+				"terms": "Syarat & Ketentuan",
+				"and": "dan",
+				"privacy": "Kebijakan Pribadi"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Menghubungkan ke {wallet}...} other {Koneksi Ditolak}}",
+			"sidebar": {
+				"subheading": "Menyetujui Koneksi",
+				"paragraph": "Harap setujui koneksi di dompet anda dan izinkan akses untuk melanjutkan."
+			},
+			"mainText": "Menghubungkan...",
+			"paragraph": "Pastikan memilih semua akun yang ingin anda berikan akses.",
+			"rejectedText": "Koneksi Ditolak!",
+			"rejectedCTA": "Klik disini untuk mencoba kembali",
+			"primaryButton": "Kembali ke dompet"
+		},
+		"connectedWallet": {
+			"header": "Berhasil Menghubungkan",
+			"sidebar": {
+				"subheading": "Berhasil Menghubungkan!",
+				"paragraph": "Dompet anda kini terhubung ke {app}"
+			},
+			"mainText": "Terhubung"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Aksi diperlukan pada {wallet}",
+			"paragraph": "Mohon mengubah akun aktif pada dompet anda.",
+			"linkText": "Pelajari Selengkapnya.",
+			"buttonText": "Oke"
+		},
+		"switchChain": {
+			"heading": "Ganti Jaringan",
+			"paragraph1": "{app} membutuhkan anda mengganti jaringan dompet ke {nextNetworkName} untuk melanjutkan.",
+			"paragraph2": "*Beberapa dompet mungkin tidak mendukung pengganti jaringan. Jika anda tidak dapat mengubah jaringan pada dompet anda bisa memikirkan untuk mengganti wallet lain."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Memutuskan semua Dompet",
+			"description": "Apakah anda yakin akan memutuskan semua dompet?",
+			"confirm": "Konfirmasi",
+			"cancel": "Batalkan"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Hubungkan Dompet lain",
+		"disconnectAllWallets": "Memutuskan semua Dompet",
+		"currentNetwork": "Jaringan Saat Ini",
+		"appInfo": "Informasi Aplikasi",
+		"learnMore": "Pelajari Selengkapnya",
+		"gettingStartedGuide": "Panduan Memulai",
+		"smartContracts": "Kontrak(s) Pintar",
+		"explore": "Menjelajah",
+		"backToApp": "Kembali ke dapp",
+		"poweredBy": "dipersembahkan oleh",
+		"addAccount": "Tambahkan Akun",
+		"setPrimaryAccount": "Tentukan Akun Utama",
+		"disconnectWallet": "Memutuskan Dompet"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Transaksi anda menunggu konfirmasi",
+			"nsfFail": "Anda kekurangan dana untuk menyelesaikan transaksi ini",
+			"txUnderpriced": "Harga gas untuk transaksi anda terlalu rendah, ulangi dengan harga gas lebih tinggi",
+			"txRepeat": "Ini akan menjadi transaksi berulang",
+			"txAwaitingApproval": "Anda mempunyai transaksi sebelumnya yang membutuhkan konfirmasi",
+			"txConfirmReminder": "Mohon konfirmasikan transaksi anda untuk melanjutkan, jendela transaksi mungkin dibelakang browser anda",
+			"txSendFail": "Anda menolak transaksi",
+			"txSent": "Transaksi anda telah dikirim ke jaringan",
+			"txStallPending": "Transaksi anda telah macet dan belum memasuki kumpulan transaksi",
+			"txStuck": "Transaksi anda macet karena celah nonce",
+			"txPool": "Transaksi anda telah dimulai",
+			"txStallConfirmed": "Transaksi anda terhenti dan belum dikonfirmasi",
+			"txSpeedUp": "Transaksi anda telah dipercepat",
+			"txCancel": "Transaksi anda sedang dibatalkan",
+			"txFailed": "Transaksi anda telah gagal",
+			"txConfirmed": "Transaksi anda telah berhasil",
+			"txError": "Ups ada yang salah, mohon coba lagi"
+		},
+		"watched": {
+			"txPool": "Akun anda sedang {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "Transaksi untuk {formattedValue} {asset} {preposition} {counterpartyShortened} telah dipercepat",
+			"txCancel": "Transaksi untuk {formattedValue} {asset} {preposition} {counterpartyShortened} telah dibatalkan",
+			"txConfirmed": "Akun anda telah berhasil {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Akun anda gagal untuk {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "menit",
+			"seconds": "detik"
+		}
+	}
+}

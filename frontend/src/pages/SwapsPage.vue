@@ -3,7 +3,7 @@
 		<div class="row items-center">
 			<h6 class="subtitle justify-center offset-md-1">
 				<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
-				Home
+				{{ $t('home') }}
 			</h6>
 		</div>
 		<swaps class="swaps" />

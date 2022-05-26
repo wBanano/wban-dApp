@@ -9,23 +9,23 @@
 			</div>
 		</div>
 		<div v-if="!isUserConnected" class="welcome-section row justify-center">
-			<div class="col-lg-5 col-md-8 col-sm-9 col-xs-12 text-center">
-				<h3>wBAN is Wrapped Banano</h3>
-				<h5>It’s available on:</h5>
+			<div class="col-lg-8 col-md-11 col-sm-10 col-xs-12 text-center">
+				<h3>{{ $t('pages.index.title') }}</h3>
+				<h5>{{ $t('pages.index.available-on') }}</h5>
 				<div class="row items-top justify-center">
-					<div class="col-3 col-xs-4">
+					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
 						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('bsc')">
 							<img src="bsc-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>BSC</q-card-section>
 						</q-card>
 					</div>
-					<div class="col-3 col-xs-4">
+					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
 						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('polygon')">
 							<img src="polygon-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>Polygon</q-card-section>
 						</q-card>
 					</div>
-					<div class="col-3 col-xs-4">
+					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
 						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('fantom')">
 							<img src="fantom-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>Fantom</q-card-section>
@@ -33,37 +33,37 @@
 					</div>
 				</div>
 				<br /><br />
-				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" label="connect" />
+				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" :label="$t('connect')" />
 				<div v-if="!$q.platform.is.mobile">
-					<h4>What can you do with wBAN?</h4>
+					<h4>{{ $t('pages.index.what-can-you-do') }}</h4>
 					<div class="use-cases row items-stretch q-col-gutter-md">
 						<div class="col">
 							<q-card>
 								<q-card-section>
-									<div class="text-h5">Swap with other crypto</div>
+									<div class="text-h5">{{ $t('pages.index.swap-with-other-crypto') }}</div>
 								</q-card-section>
 								<q-card-section>
-									<p>Swap from BAN to wBAN to your preferred crypto or vice-versa</p>
-								</q-card-section>
-							</q-card>
-						</div>
-						<div class="col">
-							<q-card>
-								<q-card-section>
-									<div class="text-h5">Earn some wBAN</div>
-								</q-card-section>
-								<q-card-section>
-									<p>Earn extra wBAN by providing liquidity to pools</p>
+									<p>{{ $t('pages.index.swap-with-other-crypto-description') }}</p>
 								</q-card-section>
 							</q-card>
 						</div>
 						<div class="col">
 							<q-card>
 								<q-card-section>
-									<div class="text-h5">Learn DeFi</div>
+									<div class="text-h5">{{ $t('pages.index.earn-some-wban') }}</div>
 								</q-card-section>
 								<q-card-section>
-									<p>Without risking much of your hard earned BAN</p>
+									<p>{{ $t('pages.index.earn-some-wban-description') }}</p>
+								</q-card-section>
+							</q-card>
+						</div>
+						<div class="col">
+							<q-card>
+								<q-card-section>
+									<div class="text-h5">{{ $t('pages.index.learn-defi') }}</div>
+								</q-card-section>
+								<q-card-section>
+									<p>{{ $t('pages.index.learn-defi-description') }}</p>
 								</q-card-section>
 							</q-card>
 						</div>

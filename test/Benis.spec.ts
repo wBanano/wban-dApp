@@ -1,11 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { Benis } from "../artifacts/typechain/Benis";
-import { WBANToken } from "../artifacts/typechain/WBANToken";
-import { MockBEP20 } from "../artifacts/typechain/MockBEP20";
-import { ApeFactory } from "../artifacts/typechain/ApeFactory";
-import { ApePair } from "../artifacts/typechain/ApePair";
+import { Benis, WBANToken, MockBEP20, ApeFactory, ApePair } from "../artifacts/typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Signature } from "ethers";
 import ReceiptsUtil from "./ReceiptsUtil";
@@ -36,7 +32,6 @@ describe('Benis', () => {
 		wban = (await upgrades.deployProxy(wBANTokenFactory)) as WBANToken;
 		await wban.deployed();
 		expect(wban.address).to.properAddress;
-		console.log(`wBAN deployed at "${wban.address}"`);
 
 		// deploy fake WBNB contract
 		const MockBEP20 = await ethers.getContractFactory("MockBEP20", signers[0]);
@@ -44,19 +39,16 @@ describe('Benis', () => {
 		wbnb = (await MockBEP20.deploy("BNB", "BNB", MINTED_WBNB)) as MockBEP20;
 		await wbnb.deployed();
 		expect(wbnb.address).to.properAddress;
-		console.log(`WBNB deployed at "${wbnb.address}"`);
 
 		// deploy fake wBAN-WBNB pair
 		const ApeFactory = await ethers.getContractFactory("ApeFactory", signers[0]);
 		const apeFactory = (await ApeFactory.deploy("0x0000000000000000000000000000000000000000")) as ApeFactory; // no fees
 		await apeFactory.deployed();
 		expect(apeFactory.address).to.properAddress;
-		console.log(`ApeFactory deployed at "${apeFactory.address}"`);
 
 		await apeFactory.createPair(wbnb.address, wban.address);
 		const pairAddress = await apeFactory.getPair(wban.address, wbnb.address);
 		lpToken = await ethers.getContractAt("ApePair", pairAddress, signers[0]) as ApePair;
-		console.log(`ApePair wBAN-WBNB deployed at "${lpToken.address}"`);
 
 		// deploy `Benis` contract
 		const Benis = await ethers.getContractFactory("Benis", signers[0]);
@@ -65,12 +57,10 @@ describe('Benis', () => {
 		benis = await Benis.deploy(wban.address, rewardsPerSecond, rewardsStartTime) as Benis;
 		await benis.deployed();
 		expect(benis.address).to.properAddress;
-		console.log(`Benis deployed at "${benis.address}"`);
 
 		// mint some wBAN rewards
 		const ONE_WEEK = BigNumber.from(7 * 24 * 60 * 60);
 		const wBanRewards = rewardsPerSecond.mul(ONE_WEEK);
-		console.debug(`Minting ${ethers.utils.formatEther(wBanRewards)} wBAN for rewards over 7 days`);
 		const uuid = BigNumber.from(await owner.getTransactionCount());
 		const sig: Signature = await ReceiptsUtil.createReceipt(owner, rewarder.address, wBanRewards, uuid, await owner.getChainId());
 		const rewarder_wban = wban.connect(rewarder);
@@ -99,7 +89,6 @@ describe('Benis', () => {
 
 		// provide liquidity
 		let [wbnbReserve, wbanReserve, blockTimestampLast] = await lpToken.getReserves();
-		console.debug(`Reserves: ${ethers.utils.formatEther(wbanReserve)} wBAN, ${ethers.utils.formatEther(wbnbReserve)} WBNB`);
 		user1_wban.transfer(lpToken.address, wBanToMint);
 		user1_wbnb.transfer(lpToken.address, wbnbToMint);
 		const user1_lpToken = lpToken.connect(user1);
@@ -107,12 +96,9 @@ describe('Benis', () => {
 		await user1_lpToken.mint(user1.address);
 		const liquidity: BigNumber = await lpToken.balanceOf(user1.address);
 		expect(liquidity.gt(BigNumber.from(0)));
-		console.debug(`Liquidity: ${ethers.utils.formatEther(liquidity)} LP tokens`);
 		const wbanBalance = ethers.utils.formatEther(await wban.balanceOf(lpToken.address));
 		const wbnbBalance = ethers.utils.formatEther(await wbnb.balanceOf(lpToken.address));
-		console.debug(`Liquidity pool balances: ${wbanBalance} wBAN, ${wbnbBalance} WBNB`);
 		[wbnbReserve, wbanReserve, blockTimestampLast] = await lpToken.getReserves();
-		console.debug(`Reserves: ${ethers.utils.formatEther(wbanReserve)} wBAN, ${ethers.utils.formatEther(wbnbReserve)} WBNB`);
 
 		// create farm pool
 		await benis.add(1_000, lpToken.address, true);
@@ -123,16 +109,11 @@ describe('Benis', () => {
 		await user1_lpToken.approve(user1_benis.address, liquidity);
 		await user1_benis.deposit(0, liquidity);
 		await increaseTo(rewardsStartTime);
-		console.debug(`Current timestamp: ${(await ethers.provider.getBlock('latest')).timestamp}`);
-		console.debug(`Rewards balance: ${ethers.utils.formatEther(await user1_benis.pendingWBAN(0, user1.address))} wBAN`);
 
 		await increaseTo(rewardsStartTime + 7 * 24 * 60 * 60);
-		console.debug(`Current timestamp: ${(await ethers.provider.getBlock('latest')).timestamp}`);
-		console.debug(`Rewards balance: ${ethers.utils.formatEther(await user1_benis.pendingWBAN(0, user1.address))} wBAN`);
 
 		// unstake liquidity
 		await user1_benis.withdraw(0, liquidity);
-		console.log(`Balance after unstaking: ${ethers.utils.formatEther(await wban.balanceOf(user1.address))} wBAN`);
 	});
 
 });

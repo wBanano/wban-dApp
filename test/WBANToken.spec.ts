@@ -1,7 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { WBANToken } from '../artifacts/typechain/WBANToken';
+import { WBANToken } from '../artifacts/typechain';
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Signature } from "ethers";
 import ReceiptsUtil from "./ReceiptsUtil";

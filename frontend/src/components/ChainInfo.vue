@@ -4,70 +4,56 @@
 			<div class="col-3 flex">
 				<q-btn @click="depositBAN" color="primary" class="fit" stack>
 					<q-icon name="img:ban-deposit.svg" size="3em" />
-					<div class="text-button">Deposit BAN</div>
-					<q-tooltip content-class="bg-positive">Deposit some BAN for swaps</q-tooltip>
+					<div class="text-button">{{ $t('pages.bridge.button-deposit-ban') }}</div>
+					<q-tooltip content-class="bg-positive">{{ $t('pages.bridge.button-deposit-ban-tooltip') }}</q-tooltip>
 				</q-btn>
 			</div>
 			<div class="col-3 flex">
 				<q-btn @click="askWithdrawalAmount" :disable="withdrawalDisabled" color="primary" class="fit" stack>
 					<q-icon name="img:ban-withdraw.svg" size="3em" />
-					<div class="text-button">Withdraw BAN</div>
-					<q-tooltip content-class="bg-positive">Withdraw BAN back to your wallet</q-tooltip>
+					<div class="text-button">{{ $t('pages.bridge.button-withdraw-ban') }}</div>
+					<q-tooltip content-class="bg-positive">{{ $t('pages.bridge.button-withdraw-ban-tooltip') }}</q-tooltip>
 				</q-btn>
 			</div>
 			<div class="col-3 flex">
 				<q-btn @click="swap" color="primary" class="fit" stack>
 					<q-icon name="img:wban-swap.svg" size="3em" style="width: 100px" />
-					<div class="text-button">Swap</div>
-					<q-tooltip content-class="bg-positive">Swap</q-tooltip>
+					<div class="text-button">{{ $t('pages.bridge.button-swap') }}</div>
+					<q-tooltip content-class="bg-positive">{{ $t('pages.bridge.button-swap') }}</q-tooltip>
 				</q-btn>
 			</div>
 			<div class="col-3 flex">
 				<q-btn to="/farms" color="primary" class="fit" stack>
 					<q-icon name="img:wban-farming.svg" size="3em" />
-					<div class="text-button">Stake &amp; Farm</div>
-					<q-tooltip content-class="bg-positive">Liquidity Pools Farms</q-tooltip>
+					<div class="text-button">{{ $t('pages.bridge.button-stake-and-farm') }}</div>
+					<q-tooltip content-class="bg-positive">{{ $t('pages.bridge.button-stake-and-farm-tooltip') }}</q-tooltip>
 				</q-btn>
 			</div>
 		</div>
-		<div class="warnings row justify-center" v-if="warningCode !== ''">
-			<div class="col-md-8 col-xs-12">
-				<q-banner inline-actions rounded class="bg-primary text-secondary">
-					<span v-if="warningCode == 'out-of-ban-and-wban'">You need to deposit more BAN!</span>
-					<template v-slot:action>
-						<q-btn flat label="Deposit BAN" @click="depositBAN" v-if="warningCode == 'out-of-ban-and-wban'" />
-					</template>
-				</q-banner>
-			</div>
-		</div>
 		<div class="row justify-center">
-			<div class="col-md-7 col-sm-9 col-xs-12">
+			<div class="col-xl-7 col-lg-9 col-md-11 col-sm-10 col-xs-12">
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 			</div>
 		</div>
 		<q-dialog v-model="promptForBanDeposit" persistent>
 			<q-card class="ban-deposits-dialog">
 				<q-card-section>
-					<div class="text-h6">BAN Deposits</div>
+					<div class="text-h6">{{ $t('dialogs.ban-deposit.title') }}</div>
 				</q-card-section>
 				<q-card-section class="q-gutter-sm">
 					<div class="row">
-						<div class="col-md-9 col-xs-12">
+						<div class="col-sm-9 col-xs-12">
 							<p>
-								If you want to swap more BAN, simply send some BAN from your
-								<span class="banano-address gt-sm">{{ banAddress }}</span> wallet to this wallet:
-								<strong class="banano-address gt-sm">{{ banWalletForDeposits }}</strong>
+								<i18n path="dialogs.ban-deposit.phrase1">
+									<span class="banano-address gt-sm">{{ banAddress }}</span>
+								</i18n>
+								&nbsp;<strong class="banano-address gt-sm">{{ banWalletForDeposits }}</strong>
 								<a class="lt-md banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
 							</p>
-							<p>
-								Don't send amounts with more than 2 decimals and make sure there is no raw.<br />
-								Using "Max" link in Kalium is probably not going to work well.<br />
-								If you don't follow the previous rule, your BAN will be sent back to the wallet you sent them from.
-								<b>Make sure you don't withdraw from a CEX straight to this address or you may lose your BAN!</b>
-							</p>
+							<p v-html="$t('dialogs.ban-deposit.phrase2')" />
 						</div>
-						<div class="gt-sm col-md-3 text-right">
-							<q-icon :name="banWalletForDepositsQRCode" size="200px" />
+						<div class="col-sm-3 col-xs-12 text-right">
+							<q-icon :name="banWalletForDepositsQRCode" v:if="!$q.platform.is.mobile" size="200px" />
 						</div>
 					</div>
 				</q-card-section>
@@ -77,9 +63,9 @@
 						v-if="!$q.platform.is.mobile"
 						color="primary"
 						text-color="secondary"
-						label="Copy Address"
+						:label="$t('dialogs.ban-deposit.button-copy-address')"
 					/>
-					<q-btn color="primary" text-color="secondary" label="OK" v-close-popup />
+					<q-btn color="primary" text-color="secondary" :label="$t('ok')" v-close-popup />
 				</q-card-actions>
 			</q-card>
 		</q-dialog>
@@ -87,7 +73,7 @@
 			<q-card class="ban-withdrawal-dialog">
 				<form @submit.prevent.stop="withdrawBAN">
 					<q-card-section>
-						<div class="text-h6">BAN Withdrawals</div>
+						<div class="text-h6">{{ $t('dialogs.ban-withdrawal.title') }}</div>
 					</q-card-section>
 					<q-card-section class="q-gutter-sm">
 						<swap-currency-input
@@ -100,8 +86,8 @@
 						/>
 					</q-card-section>
 					<q-card-actions align="right">
-						<q-btn flat label="Cancel" color="primary" v-close-popup />
-						<q-btn type="submit" color="primary" text-color="secondary" label="Withdraw" />
+						<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
+						<q-btn type="submit" color="primary" text-color="secondary" :label="$t('withdraw')" />
 					</q-card-actions>
 				</form>
 			</q-card>
@@ -120,12 +106,13 @@ import accounts from '@/store/modules/accounts'
 import contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
 import { WithdrawRequest } from '@/models/WithdrawRequest'
-import { WBANToken } from '../../../artifacts/typechain/WBANToken'
+import { WBANTokenWithPermit } from '@artifacts/typechain'
 import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import QRCode from 'qrcode'
 import { copyToClipboard } from 'quasar'
 import { sleep } from '@/utils/AsyncUtils'
+import { Network } from '@/utils/Networks'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -170,19 +157,14 @@ export default class ChainInfo extends Vue {
 	@contractsStore.Getter('wbanAddress')
 	wbanAddress!: string
 
+	@accountsStore.State('network')
+	network!: Network
+
 	get isOwner() {
 		if (accounts.activeAccount && contracts.owner) {
 			return getAddress(accounts.activeAccount as string) === getAddress(contracts.owner as string)
 		} else {
 			return false
-		}
-	}
-
-	get warningCode() {
-		if (this.banBalance.eq(BigNumber.from(0)) && this.wBanBalance.eq(BigNumber.from(0))) {
-			return 'out-of-ban-and-wban'
-		} else {
-			return ''
 		}
 	}
 
@@ -231,7 +213,7 @@ export default class ChainInfo extends Vue {
 		await backend.loadBanDeposited(this.banAddress)
 
 		// reload data from the smart-contract
-		const contract: WBANToken | null = contracts.wbanContract
+		const contract: WBANTokenWithPermit | null = contracts.wbanContract
 		if (contract && accounts.activeAccount) {
 			await contracts.loadBalances({ contract, account: accounts.activeAccount })
 		} else {
@@ -315,12 +297,10 @@ export default class ChainInfo extends Vue {
 .text-button
 	color: $secondary
 	text-align: center
+	font-weight: normal
 
 #balances
 	margin-top: 10px
-
-.warnings
-	padding-top: 30px
 
 @media (min-width: 900px)
 	.ban-deposits-dialog

@@ -1,0 +1,283 @@
+{
+	"title": "Wrap je BAN",
+	"connect": "Verbinden",
+	"cancel": "Annuleer",
+	"home": "Startpagina",
+	"ok": "Ok",
+	"withdraw": "Opnemen",
+	"refresh": "Vernieuwen",
+	"pages": {
+		"index": {
+			"title": "wBAN betekent wrapped Banano",
+			"available-on": "Het is beschikbaar op:",
+			"what-can-you-do": "Wat kun je met wBAN doen?",
+			"swap-with-other-crypto": "Verhandel voor andere crypto",
+			"swap-with-other-crypto-description": "Wissel van BAN naar wBAN naar je favoriete crypto of vice versa",
+			"earn-some-wban": "Verdien wat wBAN",
+			"earn-some-wban-description": "Verdien extra wBAN door liquiditeit te verstrekken aan pools",
+			"learn-defi": "Leer DeFi",
+			"learn-defi-description": "Zonder veel van je zuurverdiende BAN te riskeren"
+		},
+		"setup": {
+			"continue": "Doorgaan",
+			"back": "Terug",
+			"banano-address": "Banano adres",
+			"from-ban": "Ik ben nieuw bij wBAN",
+			"from-ban-description": "Ik heb Banano en wil DeFi leren met wBAN.",
+			"from-wban": "Ik ben nieuw bij Banano",
+			"from-wban-description": "Ik heb wBAN en wil gebruik maken van het Bananonetwerk.",
+			"verify-ban-address": "We moeten je BAN adres verifiëren!",
+			"verify-ban-address-explanation": "Deze stap is belangrijk omdat het ervoor zorgt dat u de interactie tussen de BAN wallet en wBAN controleert.",
+			"step1": {
+				"title": "Open een Banano Wallet",
+				"phrase1": "Voor de beste gebruikerservaring, raden we het gebruik van de Kalium mobiele wallet aan:",
+				"phrase2": "Als u liever een web wallet gebruikt, dan is {0} de volgende beste keus.",
+				"phrase3": "Klik op de knop \"Doorgaan\" wanneer u uw wallet hebt aangemaakt."
+			},
+			"step2": {
+				"title": "Krijg wat gratis Banano",
+				"phrase1": "Je hebt wat BAN nodig om de bridge setup te kunnen uitvoeren.",
+				"phrase2": "Banano heeft meerdere giveaways die gratis wat BAN geven, zoals:",
+				"phrase3": "Klik op de \"Doorgaan\" knop als je tenminste 0,01 BAN in je wallet hebt."
+			},
+			"step3": {
+				"error-banano-address-required": "Banano adres is vereist",
+				"error-invalid-banano-address": "Ongeldig Banano adres",
+				"error-blacklisted-address": "Geblokkeerd adres"
+			},
+			"step4": {
+				"title": "Claim je adres",
+				"phrase1": "Controleer of dit uw Banano adres inderdaad is",
+				"phrase2": "Dit is belangrijk omdat we uw Banano adres aan uw {network} zullen koppelen."
+			},
+			"step5": {
+				"title": "Stort Banano",
+				"phrase1": "Binnen de komende 5 minuten",
+				"phrase2": "U moet uw claim bevestigen door een BAN storting vanaf deze Banano wallet te verzenden naar deze",
+				"phrase3": "of scan QR-Code:",
+				"phrase4": "Hoewel elk bedrag prima is, laten we veilig zijn en 0,01 BAN overdragen.",
+				"phrase5": "Maak je geen zorgen, deze storting zal beschikbaar zijn voor opname zodra je dit wilt.",
+				"button-copy-deposit-address": "Kopieer Storting Adres",
+				"button-check-deposit": "Controleer Storting"
+			}
+		},
+		"bridge": {
+			"button-deposit-ban": "Stort BAN",
+			"button-deposit-ban-tooltip": "Stort wat BAN voor swaps",
+			"button-withdraw-ban": "BAN opnemen",
+			"button-withdraw-ban-tooltip": "Stuur BAN terug naar je wallet",
+			"button-swap": "Swap",
+			"button-stake-and-farm": "Stake & Fram",
+			"button-stake-and-farm-tooltip": "Liquidity Pools Farms"
+		},
+		"history": {
+			"title": "Geschiedenis",
+			"title-tooltip": "Geschiedenis: bekijk je voorgaande transacties en claim eerder afgewezen transacties"
+		},
+		"farms": {
+			"farms-active": "actief",
+			"farms-ended": "Beëindigd",
+			"farms-active-tooltip": "Frams die nog steeds beloningen verdelen",
+			"farms-ended-tooltip": "Oude farms delen geen beloningen meer uit!",
+			"warning-no-farm-running-on-network": "Er loopt geen Farm op {network}. Bekijk andere netwerken.",
+			"warning-deposits-left-in-ended-farm": "Je hebt nog wat stortingen over in de farm. Gelieve deze op te nemen!"
+		},
+		"nft-rewards": {
+			"buy": "Kopen",
+			"grab": "Pak ze",
+			"claim": "Claim",
+			"airdrop-claim": "Je hebt een airdrop ontvangen en je kunt wat gratis NFT's claimen.",
+			"golden-missing": "U mist slechts één NFT om een gouden te claimen.",
+			"claim-golden": "U heeft genoeg NFT's om een gouden NFT te claimen.",
+			"warning1": "wBAN NFT's zijn alleen beschikbaar op het Polygon netwerk.",
+			"warning2": "Schakel over naar het juiste netwerk."
+		}
+	},
+	"components": {
+		"wrap-form": {
+			"from": "Van:",
+			"to": "Naar:",
+			"gasless-wrap-lacking-ban": "Als u {0} meer BAN stort, kunt u een gasloze wrap krijgen.",
+			"gasless-wrap": "Je kan zonder transactiekosten wrappen bij ten minste {0} BAN.",
+			"button-wrap": "Wrap",
+			"button-gasless-wrap": "Gasloze Wrap",
+			"button-unwrap": "Unwrap"
+		},
+		"wrap-input": {
+			"balance": "Saldo:",
+			"max": "Max.",
+			"add-wban-to-metatmask": "Voeg wBAN toe aan MetaMask",
+			"error-amount-more-than-zero": "Bedrag moet meer dan nul zijn",
+			"error-no-more-than-two-decimals": "Niet meer dan 2 decimalen",
+			"error-not-enough-token-available": "Niet genoeg beschikbaar!"
+		},
+		"settings": {
+			"title": "Instellingen",
+			"dark-mode": "Donkere modus",
+			"language": "Taal",
+			"disconnect": "Verbreek",
+			"about": "Informatie"
+		},
+		"swap-form": {
+			"from": "Van:",
+			"to": "Naar:",
+			"transaction-settings": "Transactie instellingen",
+			"slippage-tolerance": "Slippage Tolerantie",
+			"slippage-tolerance-tooltip": "Dit is het maximale percentage dat u wilt verliezen als gevolg van ongunstige prijswijzigingen.",
+			"allowance": "Toestaan",
+			"allowance-exact-amount": "Exacte bedrag",
+			"allowance-unlimited-amount": "Onbeperkt",
+			"allowance-tooltip": "Hoeveelheid {fromSymbol} die de exchnge namens u kan bewegen.<br /><br />Exact Bedrag: Keur elke keer goed, veiliger maar minder handig.<br />Onbeperkt: slechts één keer goedkeuren, handiger maar minder veilig.",
+			"estimated-gas-fee": "Geschatte Gasprijs",
+			"exchange-route": "Exchange route",
+			"gasless-swap": "Als u tenminste <strong>{amount} wBAN naar {crypto}</strong>wisselt, zullen er geen transactiekosten zijn.",
+			"button-swap": "Wisselen",
+			"button-gasless-swap": "Gasloze Swap",
+			"button-approve": "Goedkeuren {fromSymbol}"
+		},
+		"token-input": {
+			"balance": "Saldo:",
+			"max": "Max.",
+			"error-amount-more-than-zero": "Bedrag moet meer dan nul zijn",
+			"error-too-many-decimals": "Niet meer dan {0} decimalen",
+			"error-not-enough-token-available": "Niet genoeg {symbol} beschikbaar!"
+		},
+		"statistics": {
+			"title": "wBAN Statistieken",
+			"from": "door Benis",
+			"total-supply": "Totale Voorraad",
+			"total-supply-tooltip": "Aantal wBAN dat is aangemaakt door bijbehorende BAN stortingen"
+		},
+		"nft-rewards": {
+			"quantity": "Aantal",
+			"buy-sell": "Kopen/verkopen"
+		},
+		"farm": {
+			"wban-earned": "wBAN verdiend",
+			"wban-earned-farm-ended": "(opnemen om te harvesten)",
+			"farm-ended": "Farm Beëindigd!",
+			"harvest": "Oogst",
+			"deposit": "Storting",
+			"details": "Details",
+			"yield": "Opbrengst",
+			"total": "Totaal",
+			"farm-tvl": "Farm TVL",
+			"liquidity-pool-tvl": "Liquidity Pool TVL",
+			"button-approve": "Goedkeuren",
+			"button-add-liquidity": "Liquidity toevoegen",
+			"button-supply": "Beschikbaarheid",
+			"button-supply-tooltip": "Bij het toevoegen van je liquiditeitstokens in de farm, oogst je ook je verdiende wBAN!",
+			"button-withdraw-tooltip": "Wanneer je je liquiditeitstokens van de farm verwijdert, oogst je ook je verdiende wBAN!"
+		}
+	},
+	"dialogs": {
+		"waiting-for-blockchain": "Wachten op blockchain-bevestigingen",
+		"ban-deposit": {
+			"title": "BAN stortingen",
+			"phrase1": "Als u meer BAN wilt swappen, stuur dan wat BAN vanuit uw {0} wallet naar deze wallet:",
+			"phrase2": "Stuur geen bedragen met meer dan 2 decimalen en zorg ervoor dat er geen raw is.<br />Het gebruik van de \"Max\" link in Kalium zal waarschijnlijk niet goed werken.<br />Als u de vorige regel niet volgt, zal uw BAN worden teruggestuurd naar de wallet waar u ze naartoe heeft gestuurd. <b>Zorg ervoor dat u ze niet uit een CEX direct naar dit adres stuurt anders kunt u uw BAN verliezen!</b>",
+			"button-copy-address": "Adres kopiëren"
+		},
+		"ban-withdrawal": {
+			"title": "BAN Opnames"
+		},
+		"swap-in-progress": "Bezig met swappen...",
+		"token-approval": "Token goedkeuring in behandeling...",
+		"token-chooser": {
+			"title": "Selecteer een token",
+			"placeholder": "Filter op token"
+		},
+		"gas-needed": {
+			"title": "Laag saldo op {crypto} om kosten te dekken",
+			"phrase1": "Uw huidige saldo van {balance} {crypto} is te laag voor wrapping.",
+			"phrase2": "{network} heeft niet veel {crypto} nodig voor transactiekosten maar het is het beste om ten minste {minimumNeededForWrap} {crypto} te kopen en naar deze wallet te sturen."
+		},
+		"low-amount-to-wrap": {
+			"are-you-sure": "Weet je het zeker?",
+			"phrase1": "Je vraagt een 🤏 aantal {amount} BAN/wBAN om te wrappen.",
+			"phrase2": "{network} netwerkkosten zijn het misschien niet waard voor deze wrap/unwrap.",
+			"proceed-anyway": "Toch doorgaan"
+		},
+		"nft": {
+			"title": "Claim je NFT's",
+			"proceed": "Je hebt {count} NFT om op te claimen. Doorgaan?",
+			"claiming": "Claimen NFT {count} van {total}..."
+		},
+		"nft-rewards": {
+			"title": "Claim Gouden NFT",
+			"phrase1": "Je hebt de vereiste NFT's om een <strong>gouden {name}</strong> NFT te claimen.",
+			"phrase2": "Dit zal <strong>je drie {name} NFT's verbranden/vernietigen</strong> en je in plaats daarvan de Gouden {name} NFT geven."
+		},
+		"withdrawal": {
+			"title": "Bezig met opnemen...",
+			"message": "Hard aan het werken om je opname te verwerken!"
+		},
+		"pending-withdrawal": {
+			"title": "Wachtende opname",
+			"message": "Uw opname van {amount} BAN kan nu niet worden verwerkt.<br /><br /><strong>Het is in een wachtlijst geplaatst en zal later verwerkt worden!</strong><br /><br />Ondertussen wordt je BAN-saldo niet verlaagd van deze opname."
+		},
+		"wrap": {
+			"title": "Wrappen van {amount} BAN is bezig...",
+			"message": "Hard aan het werk om je wrap-verzoek te verwerken!"
+		},
+		"unwrap": {
+			"title": "Unwrappen van {amount} wBAN in uitvoering...",
+			"message": "Hard aan het werk om je unwrap verzoek te verwerken!"
+		},
+		"farm-supply": {
+			"title": "Levering van {amount} {symbol} in behandeling...",
+			"message": "Hard aan het werk om je hoeveelheids verzoek te verwerken!"
+		},
+		"farm-withdraw": {
+			"title": "Opname van {amount} {symbol} in behandeling...",
+			"message": "Hard aan het werk om uw opnameverzoek te verwerken!"
+		},
+		"unsupported-network": {
+			"title": "Niet-ondersteund netwerk {network}",
+			"message": "<p>wBAN is alleen beschikbaar op BSC, Polygon en Fantom.</p><p>Schakel over naar een van deze netwerken.</p>"
+		}
+	},
+	"notifications": {
+		"view": "Bekijken",
+		"close": "Afsluiten",
+		"token-approval-success": "Je token goedkeuring is met succes verwerkt.",
+		"token-approval-error": "De goedkeuring van je token kon niet worden verwerkt.",
+		"swap-success": "Uw swap is met succes verwerkt.",
+		"swap-error": "Uw swap kon niet worden verwerkt.",
+		"ban-deposit-confirmed": {
+			"message": "Uw storting van {amount} BAN werd ontvangen.",
+			"caption": "U kunt het omwisselen naar wBAN."
+		},
+		"ban-deposit-declined": {
+			"message": "Uw storting van {amount} BAN werd geweigerd.",
+			"caption": "Zorg ervoor dat u geen bedragen verzendt met meer dan 2 decimalen of met onbewerkte waarden."
+		},
+		"withdrawal": "{amount} BAN is teruggestuurd naar uw wallet.",
+		"pending-withdrawal": {
+			"message": "Uw opname van {amount} BAN is in afwachtende status.",
+			"caption": "Zodra de wBAN hot wallet wordt bijgevuld vanuit de cold wallet zal uw opname worden voltooid!"
+		},
+		"wrap": "Uw swap van {amount} BAN is succesvol verwerkt.",
+		"wrap-error": {
+			"message": "Je wrap van {amount} BAN kon niet worden verwerkt.",
+			"caption": "Ga naar de geschiedenispagina en klik op de claimknop die is gekoppeld aan het wrap verzoek."
+		},
+		"unwrap": {
+			"message": "Je unwrap van {amount} wBAN is succesvol verwerkt.",
+			"caption": "Je saldo van gestorte Banano is bijgewerkt."
+		},
+		"farm-supply": "Uw voorraad van {amount} {symbol} is met succes verwerkt.",
+		"farm-withdraw": "Uw opname van {amount} {symbol} is met succes verwerkt."
+	},
+	"menu": {
+		"donations": {
+			"title": "Donaties",
+			"aside": "Tip me op:",
+			"phrase1": "Het werken aan deze app is een hele reis geweest en gaat nog steeds door!",
+			"phrase2": "Tips worden altijd op prijs gesteld en als u mijn inspanningen wilt steunen, kunt u mij helpen door Bananotips te sturen naar:"
+		}
+	},
+	"footer": {
+		"documentation": "Documentatie"
+	}
+}

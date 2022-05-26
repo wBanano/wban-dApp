@@ -2,13 +2,15 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
-import { WBANToken, WBANToken__factory } from '@artifacts/typechain'
+import { WBANTokenWithPermit, WBANTokenWithPermit__factory } from '@artifacts/typechain'
 import { ethers, BigNumber, Signature } from 'ethers'
 import { SwapToBanRequest } from '@/models/SwapToBanRequest'
 import { LoadBalancesFromContractRequest } from '@/models/LoadBalancesFromContractRequest'
 import Dialogs from '@/utils/Dialogs'
 import { SwapToWBanRequest } from '@/models/SwapToWBanRequest'
+import { PermitSignatureRequest } from '@/models/PermitSignatureRequest'
 import TokensUtil from '@/utils/TokensUtil'
+import PermitUtil from '@/utils/PermitUtil'
 
 @Module({
 	namespaced: true,
@@ -17,7 +19,7 @@ import TokensUtil from '@/utils/TokensUtil'
 	dynamic: true,
 })
 class ContractsModule extends VuexModule {
-	private _wBanToken: WBANToken | null = null
+	private _wBanToken: WBANTokenWithPermit | null = null
 	private _owner = ''
 	private _totalSupply: BigNumber = BigNumber.from(0)
 	private _wBanBalance: BigNumber = BigNumber.from(0)
@@ -43,7 +45,7 @@ class ContractsModule extends VuexModule {
 	}
 
 	@Mutation
-	setWBANToken(contract: WBANToken) {
+	setWBANToken(contract: WBANTokenWithPermit) {
 		this._wBanToken = contract
 	}
 
@@ -71,7 +73,7 @@ class ContractsModule extends VuexModule {
 			// do not initialize contract if this was done earlier
 			if (!this._wBanToken || provider !== oldProvider) {
 				console.debug('Connecting to wBAN contract...')
-				const contract = WBANToken__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
+				const contract = WBANTokenWithPermit__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
 				this.context.commit('setWBANToken', contract)
 
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -139,6 +141,7 @@ class ContractsModule extends VuexModule {
 		const txn = await contract.mintWithReceipt(blockchainWallet, amount, uuid, signature.v, signature.r, signature.s)
 		await txn.wait()
 		console.debug(`wBAN minted in transaction ${txn.hash}`)
+		await this.reloadWBANBalance({ contract, account: blockchainWallet })
 		return txn.hash
 	}
 
@@ -150,16 +153,32 @@ class ContractsModule extends VuexModule {
 		const signature: Signature = ethers.utils.splitSignature(receipt)
 		const txn = await contract.mintWithReceipt(blockchainWallet, amount, uuid, signature.v, signature.r, signature.s)
 		await txn.wait()
+		await this.reloadWBANBalance({ contract, account: blockchainWallet })
 		return txn.hash
 	}
 
 	@Action
 	async swap(swapRequest: SwapToBanRequest) {
 		const { amount, toBanAddress, contract } = swapRequest
-		console.log(`Should swap ${ethers.utils.formatEther(amount)} wBAN to BAN for "${toBanAddress}"`)
+		console.debug(`Should swap ${ethers.utils.formatEther(amount)} wBAN to BAN for "${toBanAddress}"`)
 		const txn = await contract.swapToBan(toBanAddress, amount)
 		Dialogs.startSwapToBan(ethers.utils.formatEther(amount))
 		await txn.wait()
+	}
+
+	@Action
+	async signPermitAllowance(permitRequest: PermitSignatureRequest): Promise<string> {
+		const { amount, spender, deadline, provider } = permitRequest
+		const chainId = await provider.getSigner().getChainId()
+		return await PermitUtil.createPermitSignature(
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			this.wbanContract!,
+			provider.getSigner(),
+			spender,
+			amount,
+			deadline,
+			chainId
+		)
 	}
 }
 

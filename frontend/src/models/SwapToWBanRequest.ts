@@ -1,4 +1,4 @@
-import { WBANToken } from '@artifacts/typechain'
+import { WBANTokenWithPermit } from '@artifacts/typechain'
 import { BigNumber } from 'ethers'
 
 type SwapToWBanRequest = {
@@ -6,7 +6,7 @@ type SwapToWBanRequest = {
 	blockchainWallet: string
 	receipt: string
 	uuid: string
-	contract: WBANToken
+	contract: WBANTokenWithPermit
 }
 
 export { SwapToWBanRequest }

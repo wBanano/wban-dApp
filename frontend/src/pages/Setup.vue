@@ -6,8 +6,8 @@
 					<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" width="128px" />
 				</q-card-section>
 				<q-card-section>
-					<div class="title">I'm new to wBAN</div>
-					<div class="subtitle">I have Banano and want to start learning DeFi with wBAN.</div>
+					<div class="title">{{ $t('pages.setup.from-ban') }}</div>
+					<div class="subtitle">{{ $t('pages.setup.from-ban-description') }}</div>
 				</q-card-section>
 				<q-card-section class="text-center">
 					<q-btn
@@ -17,7 +17,7 @@
 						"
 						color="primary"
 						text-color="black"
-						label="Continue"
+						:label="$t('pages.setup.continue')"
 					/>
 				</q-card-section>
 			</q-card>
@@ -26,18 +26,18 @@
 					<img :src="require('@/assets/banano-logo-big.png')" />
 				</q-card-section>
 				<q-card-section>
-					<div class="title">I'm new to Banano</div>
-					<div class="subtitle">I have wBAN and want to use the Banano network.</div>
+					<div class="title">{{ $t('pages.setup.from-wban') }}</div>
+					<div class="subtitle">{{ $t('pages.setup.from-wban-description') }}</div>
 				</q-card-section>
 				<q-card-section class="text-center">
-					<q-btn @click="choiceMade = 'wBAN'" color="primary" text-color="black" label="Continue" />
+					<q-btn @click="choiceMade = 'wBAN'" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
 				</q-card-section>
 			</q-card>
 		</div>
 
 		<q-banner v-if="choiceMade !== ''" inline-actions rounded class="bg-primary text-secondary text-center">
-			<p>We need to verify your BAN address!</p>
-			<p>This step is important as it ensures that you control the BAN wallet interacting with wBAN.</p>
+			<p>{{ $t('pages.setup.verify-ban-address') }}</p>
+			<p>{{ $t('pages.setup.verify-ban-address-explanation') }}</p>
 		</q-banner>
 
 		<q-stepper
@@ -49,8 +49,14 @@
 			done-color="positive"
 			animated
 		>
-			<q-step :name="1" title="Setup a Banano Wallet" icon="settings" :done="step > 1" v-if="choiceMade === 'wBAN'">
-				For the best user experience, we recommend using the Kalium mobile wallet:
+			<q-step
+				:name="1"
+				:title="$t('pages.setup.step1.title')"
+				icon="settings"
+				:done="step > 1"
+				v-if="choiceMade === 'wBAN'"
+			>
+				{{ $t('pages.setup.step1.phrase1') }}
 				<div class="row">
 					<div class="col-sm-auto col-xs-12">
 						<a href="https://itunes.apple.com/us/app/kalium/id1449623414?ls=1&mt=8" target="_blank">
@@ -64,52 +70,59 @@
 					</div>
 				</div>
 				<p>
-					If you prefer to use a web wallet, then
-					<a href="https://vault.banano.cc/" target="_blank" style="color: $primary">BananoVault</a> web wallet is the
-					next best choice.
+					<i18n path="pages.setup.step1.phrase2">
+						<a href="https://vault.banano.cc/" target="_blank" style="color: $primary">BananoVault</a>
+					</i18n>
 				</p>
-				<p>Click "Continue" button when you have created your wallet.</p>
+				<p>{{ $t('pages.setup.step1.phrase3') }}</p>
 				<q-stepper-navigation>
-					<q-btn @click="step = 2" color="primary" text-color="black" label="Continue" />
+					<q-btn @click="step = 2" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
 				</q-stepper-navigation>
 			</q-step>
 
-			<q-step :name="2" title="Get some free Banano" icon="settings" :done="step > 2" v-if="choiceMade === 'wBAN'">
-				<p>You need some BAN to do the bridge setup.</p>
+			<q-step
+				:name="2"
+				:title="$t('pages.setup.step2.title')"
+				icon="settings"
+				:done="step > 2"
+				v-if="choiceMade === 'wBAN'"
+			>
+				<p>{{ $t('pages.setup.step2.phrase1') }}</p>
 				<div>
-					Banano has multiple faucets giving some BAN for free, like:
+					{{ $t('pages.setup.step2.phrase2') }}
 					<ul>
 						<li><a href="https://getbanano.cc" target="_blank">iMalFect's Banano Faucet</a></li>
 						<li><a href="https://faucet.prussia.dev" target="_blank">Prussia's Banano Faucet</a></li>
 					</ul>
 				</div>
-				<p>Click "Continue" button when you have at least 0.01 BAN in your wallet.</p>
+				<p>{{ $t('pages.setup.step2.phrase3') }}</p>
 				<q-stepper-navigation>
-					<q-btn @click="step = 3" color="primary" text-color="black" label="Continue" />
-					<q-btn @click="step = 1" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
+					<q-btn @click="step = 3" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
+					<q-btn @click="step = 1" :text-color="activeColor" :label="$t('pages.setup.back')" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 
-			<q-step :name="3" title="Banano Address" icon="settings" :done="step > 3">
+			<q-step :name="3" :title="$t('pages.setup.banano-address')" icon="settings" :done="step > 3">
 				<q-form @submit="step = 4">
 					<q-input
 						v-model="banAddress"
-						label="Banano Address"
+						:label="$t('pages.setup.banano-address')"
 						class="banano-address"
 						dense
 						autofocus
 						:rules="[
-							(val) => !!val || 'Banano address is required',
-							(val) => val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || 'Invalid Banano address',
-							(val) => this.isNotBlacklisted(val) || 'Blacklisted address',
+							(val) => !!val || $t('pages.setup.step3.error-banano-address-required'),
+							(val) =>
+								val.match(/^ban_[13][0-13-9a-km-uw-z]{59}$/) || $t('pages.setup.step3.error-invalid-banano-address'),
+							(val) => isNotBlacklisted(val) || $t('pages.setup.step3.error-blacklisted-address'),
 						]"
 					/>
 					<q-stepper-navigation>
-						<q-btn type="submit" color="primary" text-color="black" label="Continue" />
+						<q-btn type="submit" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
 						<q-btn
 							@click="step = 2"
 							:text-color="activeColor"
-							label="Back"
+							:label="$t('pages.setup.back')"
 							flat
 							class="q-ml-sm"
 							v-if="choiceMade === 'wBAN'"
@@ -118,25 +131,30 @@
 				</q-form>
 			</q-step>
 
-			<q-step :name="4" title="Claim your address" icon="create_new_folder" :done="step > 4">
+			<q-step :name="4" :title="$t('pages.setup.step4.title')" icon="create_new_folder" :done="step > 4">
 				<p>
-					Please verify that your Banano address is indeed <span class="banano-address">{{ banAddress }}</span>
+					{{ $t('pages.setup.step4.phrase1') }} <span class="banano-address">{{ banAddress }}</span>
 				</p>
 				<p>
-					This is important as we will <i>link</i> your Banano address with your {{ currentBlockchain.chainName }} one.
+					{{ $t('pages.setup.step4.phrase2', { network: currentBlockchain.chainName }) }}
 				</p>
 				<q-stepper-navigation>
-					<q-btn @click="claimBananoWallet" color="primary" text-color="secondary" label="Continue" />
-					<q-btn @click="step = 3" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
+					<q-btn
+						@click="claimBananoWallet"
+						color="primary"
+						text-color="secondary"
+						:label="$t('pages.setup.continue')"
+					/>
+					<q-btn @click="step = 3" :text-color="activeColor" :label="$t('pages.setup.back')" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 
-			<q-step :name="5" title="Make a Banano deposit" icon="add_comment">
+			<q-step :name="5" :title="$t('pages.setup.step5.title')" icon="add_comment">
 				<div class="row">
 					<div class="col-8 col-xs-12">
 						<p>
-							<strong>Within the next 5 minutes</strong>, you need to confirm your claim by sending a BAN deposit from
-							this Banano wallet to this one
+							<strong>{{ $t('pages.setup.step5.phrase1') }}</strong
+							>, {{ $t('pages.setup.step5.phrase2') }}
 							<a class="banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
 						</p>
 						<div v-if="$q.platform.is.desktop" class="row justify-start items-center q-gutter-md">
@@ -145,10 +163,10 @@
 									@click="copyBanAddressForDepositsToClipboard"
 									color="primary"
 									text-color="secondary"
-									label="Copy Deposit Address"
+									:label="$t('pages.setup.step5.button-copy-deposit-address')"
 								/>
 								<br />
-								or scan QRCode:
+								{{ $t('pages.setup.step5.phrase3') }}
 							</div>
 							<div class="col">
 								<q-icon :name="banWalletForDepositsQRCode" size="200px" />
@@ -156,15 +174,20 @@
 							</div>
 						</div>
 						<p>
-							Although any amount would be fine, let's be safe and transfer 0.01 BAN.
+							{{ $t('pages.setup.step5.phrase4') }}
 							<br />
-							Don't worry this deposit will be available for withdrawal if you want so.
+							{{ $t('pages.setup.step5.phrase5') }}
 						</p>
 					</div>
 				</div>
 				<q-stepper-navigation>
-					<q-btn @click="checkBananoDeposit" color="primary" text-color="secondary" label="Check Deposit" />
-					<q-btn @click="step = 4" :text-color="activeColor" label="Back" flat class="q-ml-sm" />
+					<q-btn
+						@click="checkBananoDeposit"
+						color="primary"
+						text-color="secondary"
+						:label="$t('pages.setup.step5.button-check-deposit')"
+					/>
+					<q-btn @click="step = 4" :text-color="activeColor" :label="$t('pages.setup.back')" flat class="q-ml-sm" />
 				</q-stepper-navigation>
 			</q-step>
 		</q-stepper>
@@ -259,6 +282,7 @@ export default class SetupPage extends Vue {
 			case ClaimResponseResult.AlreadyDone:
 				// skip step 5 and redirect to home if claim was previously done
 				ban.setBanAccount(this.banAddress)
+				await backend.initBackend(this.banAddress)
 				// track event in Plausible
 				this.trackEventInPlausible('Bridge Setup: Linked Again')
 				router.push('/')
@@ -280,6 +304,7 @@ export default class SetupPage extends Vue {
 		ban.setBanAccount(this.banAddress)
 		const result = await backend.checkSetupDone(this.banAddress)
 		if (result === true) {
+			await backend.initBackend(this.banAddress)
 			this.trackEventInPlausible('Bridge Setup: Completed')
 			// redirect to home
 			router.push('/')
@@ -349,7 +374,7 @@ export default class SetupPage extends Vue {
 
 .coming-from-card
 	background-color: lighten($secondary, 5%)
-	max-width: 400px
+	max-width: 500px
 	padding: 20px
 	.currency-logo
 		padding-bottom: 0

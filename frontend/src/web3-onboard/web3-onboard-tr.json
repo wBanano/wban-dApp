@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Mevcut Cüzdanlar",
+			"sidebar": {
+				"heading": "Başlarken",
+				"subheading": "Cüzdanınızı bağlayın",
+				"paragraph": "Cüzdanızı bağlamak Web3 içinde oturum açmak gibidir. Başlamak için seçeneklerden kendi cüzdanınızı seçin."
+			},
+			"recommendedWalletsPart1": "{app} bu platformda sadece şunları destekler",
+			"recommendedWalletsPart2": "Devam etmek için lütfen desteklenen cüzdanlardan birini kullanın veya yükleyin",
+			"installWallet": "{app} tarafından desteklenen yüklü bir cüzdanınız bulunmamaktadır, lütfen desteklenen bir cüzdan kullanın",
+			"agreement": {
+				"agree": "Şunları onaylıyorum:",
+				"terms": "Şartlar & Koşullar",
+				"and": "ve",
+				"privacy": "Gizlilik Politikası"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select,false {{wallet} ile bağlanılıyor...}other {Bağlantı Reddedildi}}",
+			"sidebar": {
+				"subheading": "Bağlantıyı Onaylayın",
+				"paragraph": "Devam etmek için lütfen bağlantıyı cüzdanınızdan onaylayın ve erişim yetkisi verin."
+			},
+			"mainText": "Bağlanılıyor...",
+			"paragraph": "Erişim vereceğiniz bütün hesaplarınızı seçtiğinizden emin olun.",
+			"rejectedText": "Bağlantı Reddedildi!",
+			"rejectedCTA": "Buraya tıklayarak tekrar deneyin",
+			"primaryButton": "Cüzdanlara geri dönün"
+		},
+		"connectedWallet": {
+			"header": "Bağlantı Başarılı",
+			"sidebar": {
+				"subheading": "Bağlantı Başarılı!",
+				"paragraph": "Cüzdanınız şu an {app} ile bağlandı"
+			},
+			"mainText": "Bağlandı"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "{wallet} içerisinden işlem gerekli",
+			"paragraph": "Lütfen cüzdanınız içerisinden aktif hesabınıza geçiş yapın.",
+			"linkText": "Daha fazla bilgi edin.",
+			"buttonText": "Tamam"
+		},
+		"switchChain": {
+			"heading": "Zinciri değiştir",
+			"paragraph1": "{app} devam edebilmek için cüzdanınızı {nextNetworkName} ağına geçirmenize ihtiyaç duyuyor.",
+			"paragraph2": "*Bazı cüzdanlar ağ değişimini desteklemez. Eğer cüzdanınız içerisinden ağ değişimi yapamıyorsanız cüzdanınızı değiştirmeyi düşünebilirsiniz."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Bütün cüzdanların bağlantısını kes",
+			"description": "Bütün cüzdanlarınızın bağlantısını kesmek istediğinizden emin misiniz?",
+			"confirm": "Onayla",
+			"cancel": "İptal Et"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Başka bir cüzdana bağlan",
+		"disconnectAllWallets": "Bütün cüzdanların bağlantısını kes",
+		"currentNetwork": "Güncel Ağ",
+		"appInfo": "Uygulama Bilgisi",
+		"learnMore": "Daha fazla bilgi edin",
+		"gettingStartedGuide": "Başlangıç Rehberi",
+		"smartContracts": "Akıllı Sözleşme(ler)",
+		"explore": "Keşfet",
+		"backToApp": "dapp'e geri dön",
+		"poweredBy": "güç kaynağımız",
+		"addAccount": "Hesap Ekle",
+		"setPrimaryAccount": "Birincil Hesap Belirle",
+		"disconnectWallet": "Cüzdan Bağlantısını Kes"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "İşleminiz onaylamanız için sizi bekliyor",
+			"nsfFail": "Bu işlemi tamamlayacak bakiyeniz bulunmamaktadır",
+			"txUnderpriced": "Bu işlem için belirlenmiş gaz ücreti fazla düşük, daha yüksek bir gas ücreti ile tekrar deneyin",
+			"txRepeat": "Bu tekrarlanan bir işlem olabilir",
+			"txAwaitingApproval": "Önceki işleminiz onaylamanız için sizi bekliyor",
+			"txConfirmReminder": "Devam etmek için lütfen işleminizi onaylayın, işlem penceresi tarayıcınızın arkasında olabilir",
+			"txSendFail": "İşlemi reddettiniz",
+			"txSent": "İşleminiz ağa gönderildi",
+			"txStallPending": "İşleminiz durdu ve işlem havuzuna girmedi",
+			"txStuck": "İşleminiz nonce açığı nedeniyle takıldı",
+			"txPool": "İşleminiz başladı",
+			"txStallConfirmed": "İşleminiz durdu ve onaylanmadı",
+			"txSpeedUp": "İşleminiz hızlandırıldı",
+			"txCancel": "İşleminiz iptal ediliyor",
+			"txFailed": "İşleminiz başarısız oldu",
+			"txConfirmed": "İşleminiz başarılı oldu",
+			"txError": "Hay aksi, bir şeyler ters gitti, lütfen tekrar deneyin"
+		},
+		"watched": {
+			"txPool": "Hesabınız {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "İşlem için {formattedValue} {asset} {preposition} {counterpartyShortened} hızlandırıldı",
+			"txCancel": "İşlem için {formattedValue} {asset} {preposition} {counterpartyShortened} iptal edildi",
+			"txConfirmed": "Hesabınız başarıyla {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Hesabınız başaramadı {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "dak",
+			"seconds": "sn"
+		}
+	}
+}

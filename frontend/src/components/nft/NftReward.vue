@@ -7,7 +7,9 @@
 				</q-item-label>
 			</q-item-section>
 			<q-item-section side>
-				<q-item-label class="text-right text-bold">Qty: {{ data.balance }}</q-item-label>
+				<q-item-label class="text-right text-bold">
+					{{ $t('components.nft-rewards.quantity') }}: {{ data.balance }}
+				</q-item-label>
 			</q-item-section>
 		</q-item>
 		<q-separator class="bg-secondary" />
@@ -17,7 +19,7 @@
 		<q-separator class="bg-secondary" />
 		<q-card-actions class="nft-actions">
 			<q-btn-group outline spread class="fit">
-				<q-btn @click="buyOrSell()" color="primary" class="fit" flat>Buy/Sell</q-btn>
+				<q-btn @click="buyOrSell()" color="primary" class="fit" flat>{{ $t('components.nft-rewards.buy-sell') }}</q-btn>
 			</q-btn-group>
 		</q-card-actions>
 	</q-card>

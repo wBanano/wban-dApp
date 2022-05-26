@@ -68,7 +68,7 @@ function get0xExchangeRouterAddress(): string {
 }
 
 async function getTokensList(): Promise<Array<Token>> {
-	console.info(`Fetching tokens list from ${getBackendHost()}/dex/tokens`)
+	console.info(`Fetching tokens list for ${Accounts.network.network} from ${getBackendHost()}/dex/tokens`)
 	const result = await axios.get(`${getBackendHost()}/dex/tokens`)
 	const tokens: Token[] = result.data.tokens.filter((token: Token) => token.chainId === Accounts.network.chainIdNumber)
 	const nativeCrypto = Accounts.network.nativeCurrency

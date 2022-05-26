@@ -1,9 +1,6 @@
 <template>
 	<span>
-		<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>Connect</q-btn>
-		<q-chip v-if="isUserConnected && !isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">
-			You're not on the mainnet but {{ currentBlockchain.chainName }}!
-		</q-chip>
+		<q-btn v-if="!isUserConnected" @click="connectWalletProvider" flat dense>{{ $t('connect') }}</q-btn>
 		<q-select
 			v-if="isUserConnected"
 			borderless
@@ -14,6 +11,7 @@
 			emit-value
 		>
 			<template v-slot:prepend>
+				<q-chip v-if="!isMainnet" square color="red" text-color="white" icon="warning" class="gt-xs">Testnet</q-chip>
 				<q-icon :name="selectedBlockchainIcon">
 					<q-tooltip>{{ activeAccount }}</q-tooltip>
 				</q-icon>
@@ -62,7 +60,7 @@ export default class BlockchainChooser extends Vue {
 	}
 
 	get supportedBlockchains(): Network[] {
-		return this.networks.getMainnetSupportedNetworks()
+		return this.networks.getSupportedNetworks()
 	}
 
 	get selectedBlockchain(): Network {

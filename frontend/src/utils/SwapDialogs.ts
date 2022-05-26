@@ -1,5 +1,6 @@
 import { Dialog, Notify, openURL } from 'quasar'
 import TokenChooserDialog from '@/utils/dialogs/TokenChooserDialog.vue'
+import i18n from '@/i18n'
 
 class SwapDialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,8 +13,8 @@ class SwapDialogs {
 	static startTokenApproval(): void {
 		SwapDialogs.approvalDialog = Dialog.create({
 			dark: true,
-			title: `Token approval in progress...`,
-			message: 'Waiting for blockchain confirmations',
+			title: i18n.t('dialogs.token-approval').toString(),
+			message: i18n.t('dialogs.waiting-for-blockchain').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -25,13 +26,13 @@ class SwapDialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your token approval was processed succesfully.`,
+			message: i18n.t('notifications.token-approval-success').toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: SwapDialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'View',
+					label: i18n.t('notifications.view').toString(),
 					color: 'white',
 					noDismiss: true,
 					handler: () => {
@@ -39,7 +40,7 @@ class SwapDialogs {
 					},
 				},
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -55,11 +56,11 @@ class SwapDialogs {
 		const dismiss = Notify.create({
 			type: 'negative',
 			html: true,
-			message: `Your token approval couldn't be processed.`,
+			message: i18n.t('notifications.token-approval-error').toString(),
 			timeout: 0,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -74,8 +75,8 @@ class SwapDialogs {
 	static startSwap(): void {
 		SwapDialogs.swapDialog = Dialog.create({
 			dark: true,
-			title: `Swap in progress...`,
-			message: 'Waiting for blockchain confirmations',
+			title: i18n.t('dialogs.swap-in-progress').toString(),
+			message: i18n.t('dialogs.waiting-for-blockchain').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -87,13 +88,13 @@ class SwapDialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: `Your swap was processed succesfully.`,
+			message: i18n.t('notifications.swap-success').toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: SwapDialogs.TIMEOUT,
 			progress: true,
 			actions: [
 				{
-					label: 'View',
+					label: i18n.t('notifications.view').toString(),
 					color: 'white',
 					noDismiss: true,
 					handler: () => {
@@ -101,7 +102,7 @@ class SwapDialogs {
 					},
 				},
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},
@@ -117,11 +118,11 @@ class SwapDialogs {
 		const dismiss = Notify.create({
 			type: 'negative',
 			html: true,
-			message: `Your swap couldn't be processed.`,
+			message: i18n.t('notifications.swap-error').toString(),
 			timeout: 0,
 			actions: [
 				{
-					label: 'Close',
+					label: i18n.t('notifications.close').toString(),
 					color: 'white',
 					handler: () => dismiss(),
 				},

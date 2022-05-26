@@ -15,7 +15,7 @@
 				</q-card-section>
 			</q-card-section>
 			<q-card-actions align="right">
-				<q-btn color="primary" text-color="secondary" label="OK" @click="onOKClick" />
+				<q-btn color="primary" text-color="secondary" :label="$t('ok')" @click="onOKClick" />
 			</q-card-actions>
 		</q-card>
 	</q-dialog>

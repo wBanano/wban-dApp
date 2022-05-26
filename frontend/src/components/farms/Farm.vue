@@ -11,7 +11,7 @@
 			<q-separator class="bg-secondary" />
 			<q-card-section>
 				<div class="rewards">
-					<div class="title">wBAN Earned</div>
+					<div class="title">{{ $t('components.farm.wban-earned') }}</div>
 					<div class="row items-center">
 						<div class="col-7">
 							<q-skeleton type="rect" />
@@ -44,19 +44,24 @@
 					<q-item-label class="text-bold">
 						{{ value.lpSymbol }}
 						<q-btn @click="reload" avatar flat dense icon="refresh" color="primary" size="xs" class="reload">
-							<q-tooltip>Refresh</q-tooltip>
+							<q-tooltip>{{ $t('refresh') }}</q-tooltip>
 						</q-btn>
 					</q-item-label>
 				</q-item-section>
 				<q-item-section side>
 					<q-item-label v-if="isActive()" class="text-right text-bold">APR: {{ apr }}&nbsp;%</q-item-label>
-					<q-item-label v-if="isFinished()" class="text-right text-primary">Farm Ended!</q-item-label>
+					<q-item-label v-if="isFinished()" class="text-right text-primary">
+						{{ $t('components.farm.farm-ended') }}
+					</q-item-label>
 				</q-item-section>
 			</q-item>
 			<q-separator class="bg-secondary" />
 			<q-card-section>
 				<div class="rewards">
-					<div class="title">wBAN Earned<span v-if="isFinished()"> (withdraw to harvest)</span></div>
+					<div class="title">
+						{{ $t('components.farm.wban-earned') }}
+						<span v-if="isFinished()"> {{ $t('components.farm.wban-earned-farm-ended') }}</span>
+					</div>
 					<div class="row items-center">
 						<div class="col-8 row items-center q-gutter-xs">
 							<div class="col-auto">
@@ -67,7 +72,7 @@
 						</div>
 						<div class="col-4 text-right">
 							<q-btn
-								label="Harvest"
+								:label="$t('components.farm.harvest')"
 								@click="harvest"
 								v-if="isActive()"
 								:disable="emptyRewards"
@@ -80,16 +85,16 @@
 			</q-card-section>
 			<q-card-section>
 				<div class="row">
-					<div class="col-2 text-right">Deposit</div>
+					<div class="col-2 text-right">{{ $t('components.farm.deposit') }}</div>
 					<div class="col-5 offset-1">{{ farmData.stakedBalance | bnToSixDecimalsString }} {{ symbol }}</div>
 					<div class="col-4 text-right">${{ farmData.stakedValue | bnToTwoDecimalsString }}</div>
 				</div>
 			</q-card-section>
-			<q-expansion-item label="Details" class="text-right">
+			<q-expansion-item :label="$t('components.farm.details')" class="text-right">
 				<q-card class="farm-details">
 					<q-card-section class="text-right">
 						<div class="row">
-							<div class="col-2 text-right">Deposit</div>
+							<div class="col-2 text-right">{{ $t('components.farm.deposit') }}</div>
 							<div class="col-5 offset-1">{{ farmData.stakedBalance | bnToSixDecimalsString }} {{ symbol }}</div>
 							<div class="col-4 text-right">${{ farmData.stakedValue | bnToTwoDecimalsString }}</div>
 						</div>
@@ -108,11 +113,11 @@
 						</div>
 
 						<div class="row">
-							<div class="col-2 text-right">Yield</div>
+							<div class="col-2 text-right">{{ $t('components.farm.yield') }}</div>
 							<div class="col-5 offset-1">{{ farmData.userPendingRewards | bnToSixDecimalsString }} wBAN</div>
 							<div class="col-4 text-right">{{ farmData.userPendingRewards | bnToExactString | banPrice }}</div>
 
-							<div class="col-2 text-right">Total</div>
+							<div class="col-2 text-right">{{ $t('components.farm.total') }}</div>
 							<div class="col-5 offset-1">
 								<span v-if="isStaking()">{{ farmData.userGlobalBalance | bnToSixDecimalsString }} wBAN</span>
 							</div>
@@ -131,9 +136,9 @@
 							<div class="col-4 text-right">${{ farmData.tvl | bnToTwoDecimalsStringFilter }}</div>
 						</div>
 						<div class="row q-mt-md" v-if="!isStaking()">
-							<div class="col-8 text-right">Farm TVL</div>
+							<div class="col-8 text-right">{{ $t('components.farm.farm-tvl') }}</div>
 							<div class="col-4 text-right">${{ farmData.tvl | bnToTwoDecimalsStringFilter }}</div>
-							<div class="col-8 text-right">Liquidity Pool TVL</div>
+							<div class="col-8 text-right">{{ $t('components.farm.liquidity-pool-tvl') }}</div>
 							<div class="col-4 text-right">${{ farmData.poolData.tvl | bnToTwoDecimalsStringFilter }}</div>
 						</div>
 					</q-card-section>
@@ -141,14 +146,16 @@
 			</q-expansion-item>
 			<q-separator class="bg-secondary" />
 			<q-card-actions class="farm-actions">
-				<q-btn @click="approve" v-if="!lpTokenAllowance" color="primary" class="fit" flat>Approve</q-btn>
+				<q-btn @click="approve" v-if="!lpTokenAllowance" color="primary" class="fit" flat>
+					{{ $t('components.farm.button-approve') }}
+				</q-btn>
 				<q-btn-group outline spread class="fit">
-					<q-btn @click="addLiquidity" v-if="!isStaking()" color="primary" class="fit" flat>Add Liquidity</q-btn>
+					<q-btn @click="addLiquidity" v-if="!isStaking()" color="primary" class="fit" flat>
+						{{ $t('components.farm.button-add-liquidity') }}
+					</q-btn>
 					<q-btn @click="beginSupply" v-if="lpTokenAllowance && isActive()" color="primary" flat>
-						<div class="text-button">Supply</div>
-						<q-tooltip>
-							When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!
-						</q-tooltip>
+						<div class="text-button">{{ $t('components.farm.button-supply') }}</div>
+						<q-tooltip>{{ $t('components.farm.button-supply-tooltip') }}</q-tooltip>
 					</q-btn>
 					<q-btn
 						@click="beginWithdraw"
@@ -157,10 +164,10 @@
 						color="primary"
 						flat
 					>
-						<div class="text-button"><span v-if="isFinished()">Harvest &amp; </span>Withdraw</div>
-						<q-tooltip>
-							When withdrawing your liquidity tokens from the farm, you harvest your wBAN earned as well!
-						</q-tooltip>
+						<div class="text-button">
+							<span v-if="isFinished()">{{ $t('components.farm.harvest') }} &amp; </span>{{ $t('withdraw') }}
+						</div>
+						<q-tooltip>{{ $t('components.farm.button-withdraw-tooltip') }}</q-tooltip>
 					</q-btn>
 				</q-btn-group>
 			</q-card-actions>
@@ -168,7 +175,7 @@
 		<q-dialog v-model="promptForSupply" persistent>
 			<q-card>
 				<q-card-section>
-					<div class="text-h6">Supply</div>
+					<div class="text-h6">{{ $t('components.farm.button-supply') }}</div>
 				</q-card-section>
 				<q-card-section>
 					<token-input
@@ -179,19 +186,23 @@
 						editable
 					/>
 				</q-card-section>
-				<q-card-section>
-					When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!
-				</q-card-section>
+				<q-card-section>{{ $t('components.farm.button-supply-tooltip') }}</q-card-section>
 				<q-card-actions align="right">
-					<q-btn flat label="Cancel" color="primary" v-close-popup />
-					<q-btn @click="supply" color="primary" text-color="secondary" label="Supply" v-close-popup />
+					<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
+					<q-btn
+						@click="supply"
+						color="primary"
+						text-color="secondary"
+						:label="$t('components.farm.button-supply')"
+						v-close-popup
+					/>
 				</q-card-actions>
 			</q-card>
 		</q-dialog>
 		<q-dialog v-model="promptForWithdraw" persistent>
 			<q-card>
 				<q-card-section>
-					<div class="text-h6">Withdraw</div>
+					<div class="text-h6">{{ $t('withdraw') }}</div>
 				</q-card-section>
 				<q-card-section>
 					<token-input
@@ -202,12 +213,10 @@
 						editable
 					/>
 				</q-card-section>
-				<q-card-section>
-					When withdrawing your liquidity tokens from the farm, you harvest your wBAN earned as well!
-				</q-card-section>
+				<q-card-section>{{ $t('components.farm.button-withdraw-tooltip') }}</q-card-section>
 				<q-card-actions align="right">
-					<q-btn flat label="Cancel" color="primary" v-close-popup />
-					<q-btn @click="withdraw" color="primary" text-color="secondary" label="Withdraw" v-close-popup />
+					<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
+					<q-btn @click="withdraw" color="primary" text-color="secondary" :label="$t('withdraw')" v-close-popup />
 				</q-card-actions>
 			</q-card>
 		</q-dialog>

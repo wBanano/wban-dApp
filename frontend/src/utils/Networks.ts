@@ -87,7 +87,7 @@ const POLYGON_TESTNET: Network = {
 		decimals: 18,
 	},
 	minimumNeededForWrap: 0.004,
-	rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+	rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
 	blockExplorerUrls: ['https://mumbai.polygonscan.com'],
 }
 
@@ -125,6 +125,7 @@ const FANTOM_TESTNET: Network = {
 
 class Networks {
 	private networks: Map<string, Network>
+	private testnet: Network | undefined
 
 	constructor() {
 		this.networks = new Map()
@@ -134,9 +135,22 @@ class Networks {
 		this.networks.set(POLYGON_TESTNET.chainId, POLYGON_TESTNET)
 		this.networks.set(FANTOM_MAINNET.chainId, FANTOM_MAINNET)
 		this.networks.set(FANTOM_TESTNET.chainId, FANTOM_TESTNET)
+
+		const testnetSelected = process.env.VUE_APP_TESTNET
+		if (testnetSelected) {
+			this.testnet = this.networks.get(testnetSelected)
+		}
 	}
 
-	public getMainnetSupportedNetworks(): Network[] {
+	public getSupportedNetworks(): Network[] {
+		const mainnet = this.getMainnetSupportedNetworks()
+		if (!this.testnet) {
+			return mainnet
+		}
+		return [...mainnet, this.testnet]
+	}
+
+	private getMainnetSupportedNetworks(): Network[] {
 		return [BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET]
 	}
 

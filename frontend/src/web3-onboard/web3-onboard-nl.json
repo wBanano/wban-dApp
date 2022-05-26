@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Beschikbare wallets",
+			"sidebar": {
+				"heading": "Beginnen",
+				"subheading": "Verbind uw wallet",
+				"paragraph": "Het verbinden van uw wallet is als \"inloggen\" op Web3. Selecteer uw wallet in de opties om te beginnen."
+			},
+			"recommendedWalletsPart1": "{app} ondersteunt alleen",
+			"recommendedWalletsPart2": "op dit platform. Gebruik of installeer een van de ondersteunde wallets om door te gaan",
+			"installWallet": "U heeft geen wallet geïnstalleerd die {app} ondersteunt, gebruik een ondersteunde wallet",
+			"agreement": {
+				"agree": "Ik ga akkoord met de",
+				"terms": "Algemene Voorwaarden",
+				"and": "en",
+				"privacy": "Privacy Beleid"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Verbinding maken met {wallet}...} other {Verbinding afgewezen}}",
+			"sidebar": {
+				"subheading": "Verbinding goedkeuren",
+				"paragraph": "Bevestig de verbinding in uw wallet en geef toegang om door te gaan."
+			},
+			"mainText": "Verbinden...",
+			"paragraph": "Zorg ervoor dat u alle accounts wilt selecteren waartoe u toegang wilt geven.",
+			"rejectedText": "Verbinding Geweigerd!",
+			"rejectedCTA": "Klik hier om het opnieuw te proberen",
+			"primaryButton": "Terug naar wallets"
+		},
+		"connectedWallet": {
+			"header": "Verbinding Succesvol",
+			"sidebar": {
+				"subheading": "Verbinding Succesvol!",
+				"paragraph": "Uw wallet is nu verbonden met {app}"
+			},
+			"mainText": "Verbonden"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Actie vereist in {wallet}",
+			"paragraph": "Verander het actieve account in uw wallet.",
+			"linkText": "Meer informatie.",
+			"buttonText": "OK"
+		},
+		"switchChain": {
+			"heading": "Chain wijzigen",
+			"paragraph1": "{app} vereist dat u uw wallet overschakelt naar het {nextNetworkName} netwerk om door te gaan.",
+			"paragraph2": "*Sommige wallets ondersteunen mogelijk het veranderen van netwerken. Als u de netwerken in uw wallet niet kunt veranderen, kunt u overwegen over te schakelen naar een andere wallet."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Verbreek alle wallets",
+			"description": "Weet u zeker dat u alle portemonnees wilt loskoppelen?",
+			"confirm": "Bevestigen",
+			"cancel": "annuleren"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Verbind een andere wallet",
+		"disconnectAllWallets": "Koppel alle wallets los",
+		"currentNetwork": "Huidig netwerk",
+		"appInfo": "App informatie",
+		"learnMore": "Meer informatie",
+		"gettingStartedGuide": "Handleiding om aan de slag te gaan",
+		"smartContracts": "Smart Contract(s)",
+		"explore": "Verken",
+		"backToApp": "Terug naar dapp",
+		"poweredBy": "mogelijk gemaakt door",
+		"addAccount": "Account toevoegen",
+		"setPrimaryAccount": "Stel primair account in",
+		"disconnectWallet": "Wallet ontkoppelen"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Uw transactie wacht op bevestiging",
+			"nsfFail": "U heeft onvoldoende saldo om deze transactie te voltooien",
+			"txUnderpriced": "De gasprijs voor uw transactie is te laag, probeer het opnieuw met een hogere gasprijs",
+			"txRepeat": "Dit kan een herhaal transactie zijn",
+			"txAwaitingApproval": "U heeft een eerdere transactie in afwachting van uw bevestiging",
+			"txConfirmReminder": "Bevestig uw transactie om door te gaan, het transactievenster staat mogelijk achter uw browser",
+			"txSendFail": "Je hebt de transactie geweigerd",
+			"txSent": "Uw transactie is verzonden naar het netwerk",
+			"txStallPending": "Uw transactie is geblokkeerd en is niet in de transactiepool terecht gekomen",
+			"txStuck": "Uw transactie is vastgelopen door een nonce gat",
+			"txPool": "Uw transactie is begonnen",
+			"txStallConfirmed": "Uw transactie is geblokkeerd en is niet bevestigd",
+			"txSpeedUp": "Uw transactie is versneld",
+			"txCancel": "Uw transactie wordt geannuleerd",
+			"txFailed": "Uw transactie is mislukt",
+			"txConfirmed": "Uw transactie is gelukt",
+			"txError": "Oeps, er is iets fout gegaan, probeer het opnieuw"
+		},
+		"watched": {
+			"txPool": "Je account is {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "Transactie voor {formattedValue} {asset} {preposition} {counterpartyShortened} is versneld",
+			"txCancel": "Transactie van {formattedValue} {asset} {preposition} {counterpartyShortened} is geannuleerd",
+			"txConfirmed": "Uw account is succesvol {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Uw account is mislukt naar {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "min.",
+			"seconds": "sec."
+		}
+	}
+}

@@ -4,36 +4,36 @@
 			<div class="row items-center">
 				<h6 class="subtitle justify-center offset-md-1">
 					<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
-					Home
+					{{ $t('home') }}
 				</h6>
 			</div>
 			<div v-if="claimableNfts.length > 0" class="row justify-center q-pb-md">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
-					<span>You have been airdropped and you can claim some free NFTs.</span>
+					<span>{{ $t('pages.nft-rewards.airdrop-claim') }}</span>
 					<template v-slot:action>
-						<q-btn flat label="Grab them" @click="claimAirdroppedNFTs()" />
+						<q-btn flat :label="$t('pages.nft-rewards.grab')" @click="claimAirdroppedNFTs()" />
 					</template>
 				</q-banner>
 			</div>
 			<div v-if="missingForGolden !== 0" class="row justify-center q-pb-md">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
-					<span>You are missing only a single NFT in order to claim a golden one.</span>
+					<span>{{ $t('pages.nft-rewards.golden-missing') }}</span>
 					<template v-slot:action>
-						<q-btn flat label="Buy" @click="buy(missingForGolden)" />
+						<q-btn flat :label="$t('pages.nft-rewards.buy')" @click="buy(missingForGolden)" />
 					</template>
 				</q-banner>
 			</div>
 			<div v-if="claimableForGolden !== -1" class="row justify-center q-pb-md">
 				<q-banner inline-actions rounded class="bg-primary text-secondary">
-					<span>You have enough NFTs in order to claim a golden NFT.</span>
+					<span>{{ $t('pages.nft-rewards.claim-golden') }}</span>
 					<template v-slot:action>
-						<q-btn flat label="Claim" @click="promptForGoldenNFT = true" />
+						<q-btn flat :label="$t('pages.nft-rewards.claim')" @click="promptForGoldenNFT = true" />
 					</template>
 				</q-banner>
 			</div>
 			<div v-if="wrongNetwork" class="col-12 text-center">
-				<p>wBAN NFTs are only available on Polygon network.</p>
-				<p>Please switch to the proper network.</p>
+				<p>{{ $t('pages.nft-rewards.warning1') }}</p>
+				<p>{{ $t('pages.nft-rewards.warning2') }}</p>
 			</div>
 			<div v-if="loading" class="nfts row q-col-gutter-md justify-center">
 				<div class="col-xs-12 col-md-4" v-for="n in 12" :key="`nft-${n}`">
@@ -72,17 +72,15 @@
 		<q-dialog v-model="promptForGoldenNFT" persistent>
 			<q-card class="claim-golden-nft-dialog">
 				<q-card-section>
-					<div class="text-h6">Claim Golden NFT</div>
+					<div class="text-h6">{{ $t('dialogs.nft-rewards.title') }}</div>
 				</q-card-section>
 				<q-card-section>
 					<div class="row">
 						<p>
-							You have the required NFTs in order to claim a
-							<strong>Golden {{ nameForLevel(claimableForGolden) }}</strong> NFT.
+							{{ $t('dialogs.nft-rewards.phrase1', { name: nameForLevel(claimableForGolden) }) }}
 						</p>
 						<p>
-							Doing so will <strong>burn/destroy</strong> your three {{ nameForLevel(claimableForGolden) }} NFTs and
-							give you the Golden {{ nameForLevel(claimableForGolden) }} NFT instead.
+							{{ $t('dialogs.nft-rewards.phrase2', { name: nameForLevel(claimableForGolden) }) }}
 						</p>
 					</div>
 					<div class="row justify-center items-center">
@@ -131,12 +129,12 @@
 					</div>
 				</q-card-section>
 				<q-card-actions align="right">
-					<q-btn flat label="Cancel" color="primary" v-close-popup />
+					<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
 					<q-btn
 						@click="claim(claimableForGolden)"
 						color="primary"
 						text-color="secondary"
-						label="Claim"
+						:label="$t('pages.nft-rewards.claim')"
 						v-close-popup
 					/>
 				</q-card-actions>

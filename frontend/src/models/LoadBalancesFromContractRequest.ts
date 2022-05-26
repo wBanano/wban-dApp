@@ -1,7 +1,7 @@
-import { WBANToken } from '@artifacts/typechain'
+import { WBANTokenWithPermit } from '@artifacts/typechain'
 
 type LoadBalancesFromContractRequest = {
-	contract: WBANToken
+	contract: WBANTokenWithPermit
 	account: string
 }
 

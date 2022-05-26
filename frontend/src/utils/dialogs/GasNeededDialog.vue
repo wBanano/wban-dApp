@@ -2,19 +2,26 @@
 	<q-dialog ref="dialog" @hide="onDialogHide">
 		<q-card class="q-dialog-plugin">
 			<q-card-section>
-				<div class="text-h5 q-mt-sm q-mb-xs">Running low on {{ currentBlockchain.nativeCurrency.symbol }} for fees</div>
+				<div class="text-h5 q-mt-sm q-mb-xs">
+					{{ $t('dialogs.gas-needed.title', { crypto: currentBlockchain.nativeCurrency.symbol }) }}
+				</div>
 			</q-card-section>
 			<q-card-section horizontal>
 				<q-card-section class="q-pt-xs">
 					<div class="text-white">
 						<p>
-							Your current balance of {{ balance }} {{ currentBlockchain.nativeCurrency.symbol }} is too low for
-							wrapping.
+							{{
+								$t('dialogs.gas-needed.phrase1', { balance: balance, crypto: currentBlockchain.nativeCurrency.symbol })
+							}}
 						</p>
 						<p>
-							{{ currentBlockchain.chainName }} does not need a lot of {{ currentBlockchain.nativeCurrency.symbol }} for
-							transaction fees, but it is best to buy at least {{ currentBlockchain.minimumNeededForWrap }}
-							{{ currentBlockchain.nativeCurrency.symbol }} and send them to this wallet.
+							{{
+								$t('dialogs.gas-needed.phrase2', {
+									network: currentBlockchain.chainName,
+									crypto: currentBlockchain.nativeCurrency.symbol,
+									minimumNeededForWrap: currentBlockchain.minimumNeededForWrap,
+								})
+							}}
 						</p>
 					</div>
 				</q-card-section>
@@ -27,16 +34,16 @@
 				</q-card-section>
 			</q-card-section>
 			<q-card-actions align="right">
-				<q-btn color="primary" text-color="secondary" label="OK" @click="onOKClick" />
+				<q-btn color="primary" text-color="secondary" :label="$t('ok')" @click="onOKClick" />
 			</q-card-actions>
 		</q-card>
 	</q-dialog>
 </template>
 
 <script lang="ts">
-import { Network } from '@ethersproject/providers'
 import { Component, Ref, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import { Network } from '../Networks'
 
 const accountsStore = namespace('accounts')
 

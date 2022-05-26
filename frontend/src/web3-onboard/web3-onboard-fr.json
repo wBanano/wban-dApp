@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Portefeuilles disponibles",
+			"sidebar": {
+				"heading": "Commencer",
+				"subheading": "Connectez votre portefeuille",
+				"paragraph": "La connexion de votre portefeuille est comme « se connecter » à Web3. Sélectionnez votre portefeuille parmi les options pour commencer."
+			},
+			"recommendedWalletsPart1": "{app} prend uniquement en charge",
+			"recommendedWalletsPart2": "sur cette plateforme. Veuillez utiliser ou installer l'un des portefeuilles pris en charge pour continuer",
+			"installWallet": "Vous n'avez aucun portefeuille installé que {app} supporte, veuillez utiliser un portefeuille pris en charge",
+			"agreement": {
+				"agree": "J'accepte les",
+				"terms": "Termes et Conditions",
+				"and": "et",
+				"privacy": "Politique de confidentialité"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Connexion à {wallet}...} other {Connexion rejetée}}",
+			"sidebar": {
+				"subheading": "Approuver la connexion",
+				"paragraph": "Veuillez approuver la connexion dans votre portefeuille et autoriser l'accès pour continuer."
+			},
+			"mainText": "Connexion en cours...",
+			"paragraph": "Assurez-vous de sélectionner tous les comptes auxquels vous voulez accorder l'accès.",
+			"rejectedText": "Connexion rejetée !",
+			"rejectedCTA": "Cliquez ici pour réessayer",
+			"primaryButton": "Retour aux portefeuilles"
+		},
+		"connectedWallet": {
+			"header": "Connexion Réussie",
+			"sidebar": {
+				"subheading": "Connexion réussie !",
+				"paragraph": "Votre portefeuille est maintenant connecté à {app}"
+			},
+			"mainText": "Connecté"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Action requise dans {wallet}",
+			"paragraph": "Veuillez changer le compte actif dans votre portefeuille.",
+			"linkText": "En savoir plus.",
+			"buttonText": "Ok"
+		},
+		"switchChain": {
+			"heading": "Changer de réseau",
+			"paragraph1": "{app} nécessite que vous changiez de portefeuille vers le réseau {nextNetworkName} pour continuer.",
+			"paragraph2": "* Certains portefeuilles peuvent ne pas prendre en charge les changements de réseaux. Si vous ne pouvez pas changer de réseau dans votre portefeuille, vous pouvez envisager de passer à un autre portefeuille."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Déconnecter tous les portefeuilles",
+			"description": "Êtes-vous sûr de vouloir déconnecter tous vos portefeuilles ?",
+			"confirm": "Valider",
+			"cancel": "Abandonner"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Connecter un autre portefeuille",
+		"disconnectAllWallets": "Déconnecter tous les portefeuilles",
+		"currentNetwork": "Réseau actuel",
+		"appInfo": "Infos sur l'application",
+		"learnMore": "En savoir plus",
+		"gettingStartedGuide": "Guide de démarrage",
+		"smartContracts": "Smart Contract(s)",
+		"explore": "Explorer",
+		"backToApp": "Retour à la dApp",
+		"poweredBy": "propulsé par",
+		"addAccount": "Ajouter un compte",
+		"setPrimaryAccount": "Définir le compte principal",
+		"disconnectWallet": "Déconnecter le portefeuille"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "Votre transaction est en attente de confirmation",
+			"nsfFail": "Vous n'avez pas assez de fonds pour compléter cette transaction",
+			"txUnderpriced": "Le prix du gaz pour votre transaction est trop bas, essayez à nouveau avec un prix de gaz plus élevé",
+			"txRepeat": "Cela pourrait être une opération répétitive",
+			"txAwaitingApproval": "Vous avez une transaction précédente en attente de confirmation",
+			"txConfirmReminder": "Veuillez confirmer votre transaction pour continuer, la fenêtre de transaction peut être derrière votre navigateur",
+			"txSendFail": "Vous avez rejeté la transaction",
+			"txSent": "Votre transaction a été envoyée au réseau",
+			"txStallPending": "Votre transaction a été bloquée et n'a pas saisi le pool de transactions",
+			"txStuck": "Votre transaction est bloquée en raison d'un écart de nonce",
+			"txPool": "Votre transaction a commencé",
+			"txStallConfirmed": "Votre transaction a été bloquée et n'a pas été confirmée",
+			"txSpeedUp": "Votre transaction a été accélérée",
+			"txCancel": "Votre transaction est en cours d'annulation",
+			"txFailed": "Votre transaction a échoué",
+			"txConfirmed": "Votre transaction a réussi",
+			"txError": "Une erreur est survenue, veuillez réessayer"
+		},
+		"watched": {
+			"txPool": "Votre compte est {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "La transaction pour {formattedValue} {asset} {preposition} {counterpartyShortened} a été accélérée",
+			"txCancel": "La transaction pour {formattedValue} {asset} {preposition} {counterpartyShortened} a été annulée",
+			"txConfirmed": "Votre compte {verb} {formattedValue} {asset} {preposition} {counterpartyShortened} avec succès",
+			"txFailed": "Votre compte a échoué sur {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "minutes",
+			"seconds": "s"
+		}
+	}
+}

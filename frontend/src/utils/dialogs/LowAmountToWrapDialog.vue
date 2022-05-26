@@ -2,13 +2,13 @@
 	<q-dialog ref="dialog" @hide="onDialogHide">
 		<q-card class="q-dialog-plugin">
 			<q-card-section>
-				<div class="text-h5 q-mt-sm q-mb-xs">⚠️ Are you sure?</div>
+				<div class="text-h5 q-mt-sm q-mb-xs">⚠️ {{ $t('dialogs.low-amount-to-wrap.are-you-sure') }}</div>
 			</q-card-section>
 			<q-card-section horizontal>
 				<q-card-section class="q-pt-xs">
 					<div class="text-white">
-						<p>You are requesting to wrap/unwrap a 🤏 amount of {{ amount }} BAN/wBAN.</p>
-						<p>{{ currentBlockchain.chainName }} network fees may not be worth it for this wrap/unwrap.</p>
+						<p>{{ $t('dialogs.low-amount-to-wrap.phrase1', { amount: amount }) }}</p>
+						<p>{{ $t('dialogs.low-amount-to-wrap.phrase2', { network: currentBlockchain.chainName }) }}</p>
 					</div>
 				</q-card-section>
 				<q-card-section class="col-5 flex flex-center">
@@ -20,17 +20,17 @@
 				</q-card-section>
 			</q-card-section>
 			<q-card-actions align="right">
-				<q-btn label="Proceed anyway" text-color="primary" flat @click="onOKClick" />
-				<q-btn label="Cancel" color="primary" text-color="secondary" @click="onCancelClick" />
+				<q-btn :label="$t('dialogs.low-amount-to-wrap.proceed-anyway')" text-color="primary" flat @click="onOKClick" />
+				<q-btn :label="$t('cancel')" color="primary" text-color="secondary" @click="onCancelClick" />
 			</q-card-actions>
 		</q-card>
 	</q-dialog>
 </template>
 
 <script lang="ts">
-import { Network } from '@ethersproject/providers'
 import { Component, Ref, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
+import { Network } from '../Networks'
 
 const accountsStore = namespace('accounts')
 

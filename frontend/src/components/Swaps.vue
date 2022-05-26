@@ -1,8 +1,23 @@
 <template>
 	<div class="swaps q-pa-md q-gutter-sm">
+		<div class="warnings row justify-center" v-if="warningCode !== ''">
+			<div class="col-12">
+				<q-banner v-if="warningCode !== ''" inline-actions rounded class="bg-primary text-secondary text-center">
+					<span
+						v-if="warningCode === 'gasless-swap'"
+						v-html="
+							$t('components.swap-form.gasless-swap', {
+								amount: gaslessSettings.banThreshold,
+								crypto: network.nativeCurrency.name,
+							})
+						"
+					/>
+				</q-banner>
+			</div>
+		</div>
 		<token-input
 			ref="from"
-			label="From"
+			:label="$t('components.swap-form.from')"
 			v-model="from"
 			@token-changed="onInputTokenChanged($event)"
 			@update:amount="getSwapQuote($event)"
@@ -13,7 +28,7 @@
 		</div>
 		<token-input
 			ref="to"
-			label="To"
+			:label="$t('components.swap-form.to')"
 			v-model="to"
 			disable
 			@token-changed="onOutputTokenChanged($event)"
@@ -21,12 +36,12 @@
 		/>
 		<q-card class="swap-details" bordered>
 			<div class="row q-pa-md q-gutter-y-md">
-				<div class="col-12 section-title">Transaction Settings</div>
+				<div class="col-12 section-title">{{ $t('components.swap-form.transaction-settings') }}</div>
 				<div class="col-6">
-					Slippage Tolerance
+					{{ $t('components.swap-form.slippage-tolerance') }}
 					<q-icon name="info" class="dictionary vertical-top">
 						<q-tooltip>
-							This is maximum percentage you are willing to lose due to unfavorable price changes.
+							{{ $t('components.swap-form.slippage-tolerance-tooltip') }}
 						</q-tooltip>
 					</q-icon>
 				</div>
@@ -39,40 +54,45 @@
 						</q-input>
 					</q-popup-edit>
 				</div>
-				<div class="col-6">
-					Allowance
-					<q-icon name="info" class="dictionary vertical-top">
-						<q-tooltip>
-							Amount of {{ from.token.symbol }} the exchange can move on your behalf.<br /><br />
-							Exact Amount: Approve each time, safer but less convenient.<br />
-							Unlimited: Approve only once, more convenient but less safe.<br />
-						</q-tooltip>
-					</q-icon>
-				</div>
-				<div class="col-6 text-right">
-					<q-btn-toggle
-						v-model="allowanceSetting"
-						no-caps
-						rounded
-						unelevated
-						color="light-secondary"
-						toggle-text-color="secondary"
-						text-color="primary"
-						size="xs"
-						:options="[
-							{ label: 'Exact Amount', value: 'exact' },
-							{ label: 'Unlimited', value: 'unlimited' },
-						]"
-					/>
-				</div>
-				<hr class="col-12" />
-				<div class="col-6">Estimated Gas Fee</div>
-				<div class="col-6 text-right">{{ estimatedFee }}</div>
+				<template v-if="!isAmountEligibleForGaslessWrap">
+					<div class="col-6">
+						{{ $t('components.swap-form.allowance') }}
+						<q-icon name="info" class="dictionary vertical-top">
+							<q-tooltip>
+								<span v-html="$t('components.swap-form.allowance-tooltip', { fromSymbol: from.token.symbol })" />
+							</q-tooltip>
+						</q-icon>
+					</div>
+					<div class="col-6 text-right">
+						<q-btn-toggle
+							v-model="allowanceSetting"
+							no-caps
+							rounded
+							unelevated
+							color="light-secondary"
+							toggle-text-color="secondary"
+							text-color="primary"
+							size="xs"
+							:options="[
+								{ label: $t('components.swap-form.allowance-exact-amount'), value: 'exact' },
+								{ label: $t('components.swap-form.allowance-unlimited-amount'), value: 'unlimited' },
+							]"
+						/>
+					</div>
+					<hr class="col-12" />
+					<div class="col-6">{{ $t('components.swap-form.estimated-gas-fee') }}</div>
+					<div class="col-6 text-right">{{ estimatedFee }}</div>
+				</template>
 			</div>
 		</q-card>
 		<q-card class="swap-route" bordered>
 			<div class="row q-pa-sm">
-				<q-expansion-item class="col-12" expand-separator icon="alt_route" label="Exchange Route">
+				<q-expansion-item
+					class="col-12"
+					expand-separator
+					icon="alt_route"
+					:label="$t('components.swap-form.exchange-route')"
+				>
 					<q-card>
 						<q-card-section>
 							<div v-for="path in quote.route" v-bind:key="path.source">
@@ -120,14 +140,20 @@ import { DEXUtils } from '@/utils/DEXUtils'
 import { sleep } from '@/utils/AsyncUtils'
 import { SwapQuoteResponse, EMPTY_QUOTE } from '@/models/dex/SwapQuote'
 import { TransactionRequest } from '@ethersproject/providers'
-import { IERC20, IERC20__factory } from '@artifacts/typechain'
+import { IERC20, IERC20__factory, WBANTokenWithPermit } from '@artifacts/typechain'
 import SwapDialogs from '@/utils/SwapDialogs'
 import Accounts from '@/store/modules/accounts'
+import Contracts from '@/store/modules/contracts'
+import backend from '@/store/modules/backend'
 import plausible from '@/store/modules/plausible'
 import { Logger } from 'ethers/lib/utils'
+import { GaslessSettings } from '@/models/GaslessSettings'
 
 const accountsStore = namespace('accounts')
 const pricesStore = namespace('prices')
+const contractsStore = namespace('contracts')
+const backendStore = namespace('backend')
+const banStore = namespace('ban')
 
 @Component({
 	components: {
@@ -152,7 +178,7 @@ export default class Swaps extends Vue {
 
 	swapEnabled = false
 	swapInProgress = false
-	swapLabel = 'Swap'
+	swapLabel = this.$t('components.swap-form.button-swap')
 	swapButtonClass = ''
 	swapButtonTextColor = 'secondary'
 	swapButtonBackgroundColor = 'primary'
@@ -163,11 +189,23 @@ export default class Swaps extends Vue {
 	@accountsStore.State('network')
 	network!: Network
 
+	@accountsStore.State('activeBalance')
+	activeCryptoBalance!: BigNumber
+
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.Web3Provider | null
 
 	@pricesStore.Getter('prices')
 	prices!: Map<string, number>
+
+	@contractsStore.Getter('wbanContract')
+	wban!: WBANTokenWithPermit
+
+	@backendStore.Getter('gaslessSettings')
+	gaslessSettings!: GaslessSettings
+
+	@banStore.Getter('banAddress')
+	banAddress!: string
 
 	get gasPriceFormatted(): string {
 		return `${ethers.utils.formatUnits(this.gasPrice, 'gwei')} gwei`
@@ -183,9 +221,45 @@ export default class Swaps extends Vue {
 		return `$${usdFee.toFixed(2)}`
 	}
 
+	get wbanBalanceMatches(): boolean {
+		return (
+			this.from.amount !== '' &&
+			ethers.utils
+				.parseEther(this.from.amount)
+				.gte(ethers.utils.parseEther(this.gaslessSettings.banThreshold.toString()))
+		)
+	}
+
+	get cryptoBalanceMatches(): boolean {
+		return this.activeCryptoBalance.lte(ethers.utils.parseEther(this.gaslessSettings.cryptoThreshold.toString()))
+	}
+
+	get isEligibleForGaslessSwap(): boolean {
+		return (
+			this.gaslessSettings.enabled &&
+			this.gaslessSettings.swapAllowed &&
+			this.cryptoBalanceMatches &&
+			this.from.token.symbol === 'wBAN' &&
+			this.to.token.address === ''
+		)
+	}
+
+	get isAmountEligibleForGaslessWrap(): boolean {
+		return this.isEligibleForGaslessSwap && this.wbanBalanceMatches
+	}
+
+	get warningCode(): string {
+		if (this.isEligibleForGaslessSwap) {
+			return 'gasless-swap'
+		}
+		return ''
+	}
+
 	onInputTokenChanged(token: Token) {
 		this.from.token = token
-		this.swapLabel = 'Swap'
+		this.swapLabel = this.isAmountEligibleForGaslessWrap
+			? this.$t('components.swap-form.button-gasless-swap')
+			: this.$t('components.swap-form.button-swap')
 		this.swapButtonClass = ''
 		this.swapButtonTextColor = 'secondary'
 		this.swapButtonBackgroundColor = 'primary'
@@ -226,14 +300,21 @@ export default class Swaps extends Vue {
 			this.swapButtonBackgroundColor = 'light-secondary'
 			return
 		}
+
 		try {
 			// check allowance for 0x Exchange Proxy
 			let skipValidation = false
 			if (this.from.token.address !== '') {
 				const token = IERC20__factory.connect(this.from.token.address, this.provider)
 				const allowance: BigNumber = await token.allowance(this.user, DEXUtils.get0xExchangeRouterAddress())
-				if (allowance.lt(ethers.utils.parseUnits(this.from.amount, this.from.token.decimals))) {
-					this.approveLabel = `Approve ${this.from.token.symbol}`
+				if (this.isAmountEligibleForGaslessWrap) {
+					this.approveLabel = ''
+					this.swapEnabled = false
+					skipValidation = true
+				} else if (allowance.lt(ethers.utils.parseUnits(this.from.amount, this.from.token.decimals))) {
+					this.approveLabel = this.$t('components.swap-form.button-approve', {
+						fromSymbol: this.from.token.symbol,
+					}).toString()
 					this.swapEnabled = false
 					skipValidation = true
 					console.error(
@@ -264,13 +345,17 @@ export default class Swaps extends Vue {
 			this.from.amount = amountIn
 			this.to.amount = this.quote.to.amount
 			// check if there is an allowance needed
-			if (skipValidation && this.from.token.address !== '') {
-				this.approveLabel = `Approve ${this.from.token.symbol}`
+			if (!this.isAmountEligibleForGaslessWrap && skipValidation && this.from.token.address !== '') {
+				this.approveLabel = this.$t('components.swap-form.button-approve', {
+					fromSymbol: this.from.token.symbol,
+				}).toString()
 				this.swapEnabled = false
 			} else {
 				this.approveLabel = ''
 				this.swapEnabled = true
-				this.swapLabel = 'Swap'
+				this.swapLabel = this.isAmountEligibleForGaslessWrap
+					? this.$t('components.swap-form.button-gasless-swap')
+					: this.$t('components.swap-form.button-swap')
 				this.swapButtonClass = ''
 				this.swapButtonTextColor = 'secondary'
 				this.swapButtonBackgroundColor = 'primary'
@@ -333,34 +418,49 @@ export default class Swaps extends Vue {
 		if (!this.provider) {
 			return
 		}
-		// send the transaction
-		const txn: TransactionRequest = {
-			to: this.quote.txnTo,
-			gasLimit: this.quote.gas,
-			gasPrice: this.quote.gasPrice,
-			data: this.quote.txnData,
-			value: this.quote.value,
-			// chainId: this.expectedBlockchain.chainIdNumber,
-		}
-		const signer: Signer = this.provider.getSigner()
-		SwapDialogs.startSwap()
-		try {
-			const txnResponse = await signer.sendTransaction(txn)
-			await txnResponse.wait(2)
-			const txnHash = txnResponse.hash
-			const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
-			const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
-			SwapDialogs.confirmSwap(txnHash, txnLink)
-			// track quote request
-			this.trackEventInPlausible('Swaps: Swapped')
-			// reset form
-			this.from.amount = ''
-			this.to.amount = ''
-			this.quote = EMPTY_QUOTE
-			this.swapEnabled = false
-			this.swapInProgress = false
-		} catch (err) {
-			SwapDialogs.errorSwap()
+		if (this.isAmountEligibleForGaslessWrap) {
+			await backend.gaslessSwap({
+				banWallet: this.banAddress,
+				permit: {
+					amount: this.from.amount,
+					deadline: (await this.provider.getBlock('latest')).timestamp + 30 * 60, // 30 minutes
+					signature: '',
+				},
+				recipient: this.user,
+				gasLimit: this.quote.gas.toNumber(),
+				swapCallData: this.quote.txnData,
+				provider: this.provider,
+			})
+		} else {
+			// send the transaction
+			const txn: TransactionRequest = {
+				to: this.quote.txnTo,
+				gasLimit: this.quote.gas,
+				gasPrice: this.quote.gasPrice,
+				data: this.quote.txnData,
+				value: this.quote.value,
+				// chainId: this.expectedBlockchain.chainIdNumber,
+			}
+			const signer: Signer = this.provider.getSigner()
+			SwapDialogs.startSwap()
+			try {
+				const txnResponse = await signer.sendTransaction(txn)
+				await txnResponse.wait(2)
+				const txnHash = txnResponse.hash
+				const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
+				const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
+				SwapDialogs.confirmSwap(txnHash, txnLink)
+				// track quote request
+				this.trackEventInPlausible('Swaps: Swapped')
+				// reset form
+				this.from.amount = ''
+				this.to.amount = ''
+				this.quote = EMPTY_QUOTE
+				this.swapEnabled = false
+				this.swapInProgress = false
+			} catch (err) {
+				SwapDialogs.errorSwap()
+			}
 		}
 	}
 
@@ -395,7 +495,9 @@ export default class Swaps extends Vue {
 			// update form
 			this.approveLabel = ''
 			this.swapEnabled = true
-			this.swapLabel = 'Swap'
+			this.swapLabel = this.isAmountEligibleForGaslessWrap
+				? this.$t('components.swap-form.button-gasless-swap')
+				: this.$t('components.swap-form.button-swap')
 			this.swapButtonClass = ''
 			this.swapButtonTextColor = 'secondary'
 			this.swapButtonBackgroundColor = 'primary'
@@ -420,7 +522,7 @@ export default class Swaps extends Vue {
 	}
 
 	async onProviderChange() {
-		await TokensUtil.loadTokensList()
+		await Contracts.initContract(this.provider)
 		// load tokens list
 		await TokensUtil.loadTokensList()
 		const wban = await TokensUtil.getTokenBySymbol('wBAN')
@@ -451,6 +553,9 @@ export default class Swaps extends Vue {
 	margin-left: auto
 	margin-right: auto
 	max-width: 500px
+
+.warnings
+	margin-left: 0
 
 .token-input
 	margin-left: 0

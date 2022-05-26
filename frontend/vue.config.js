@@ -12,9 +12,12 @@ module.exports = {
 			importStrategy: 'kebab',
 			rtlSupport: false
 		},
-		apollo: {
-			lintGQL: true
-		}
+		i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: false
+    },
 	}
 	/*
 	transpileDependencies: ['quasar'],

@@ -30,6 +30,9 @@ contract WBANToken is ERC20PausableUpgradeable, AccessControlUpgradeable, Ownabl
         _setupRole(DEFAULT_ADMIN_ROLE, owner());
     }
 
+    /**
+     * Mint {amount} WBAN to {recipient} using a signature from the bridge.
+     */
     function mintWithReceipt(
         address recipient,
         uint256 amount,
