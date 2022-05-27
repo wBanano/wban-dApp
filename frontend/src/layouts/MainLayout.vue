@@ -123,6 +123,7 @@ import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
 import prices from '@/store/modules/prices'
+import plausible from '@/store/modules/plausible'
 import SettingsMenu from '@/components/SettingsMenu.vue'
 import BlockchainChooser from '@/components/BlockchainChooser.vue'
 import { blockchainAddressFilter } from '@/utils/filters'
@@ -228,6 +229,7 @@ export default class MainLayout extends Vue {
 	}
 
 	async onProviderChange() {
+		plausible.init()
 		await ban.init()
 		await accounts.initWalletProvider()
 		await backend.initBackend(this.banAddress)

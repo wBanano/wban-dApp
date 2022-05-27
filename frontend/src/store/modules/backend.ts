@@ -3,6 +3,7 @@ import router from '@/router'
 import store from '@/store'
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
+import plausible from '@/store/modules/plausible'
 import axios, { AxiosResponse } from 'axios'
 import { BigNumber, ethers, Signature } from 'ethers'
 import { ClaimRequest } from '@/models/ClaimRequest'
@@ -197,6 +198,7 @@ class BackendModule extends VuexModule {
 							})
 						}
 						Dialogs.showWithdrawalSuccess(withdrawal, transaction)
+						this.trackEventInPlausible('Withdrawal: Pending')
 					} else {
 						console.log(
 							`Received banano pending withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN but this is put in a pending list`
@@ -240,12 +242,14 @@ class BackendModule extends VuexModule {
 					if (rejected) {
 						console.log(`Received ${deposit} BAN which were sent back.`)
 						Dialogs.declineUserDeposit(deposit)
+						this.trackEventInPlausible('Deposit: Rejected')
 					} else {
 						console.log(
 							`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
 						)
 						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 						Dialogs.confirmUserDeposit(deposit)
+						this.trackEventInPlausible('Deposit')
 					}
 				})
 				eventSource.addEventListener('banano-withdrawal', withdrawalEvent)
@@ -274,9 +278,11 @@ class BackendModule extends VuexModule {
 							const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 							const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
 							Dialogs.confirmSwapToWBan(swapped, txnHash, txnLink)
+							this.trackEventInPlausible('Wrap')
 						} catch (err) {
 							console.error(err)
 							Dialogs.errorSwapToWBan(swapped)
+							this.trackEventInPlausible('Wrap: Error')
 						}
 					} else {
 						console.error("Can't make the call to the smart-contract to mint")
@@ -290,6 +296,7 @@ class BackendModule extends VuexModule {
 					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
 					Dialogs.confirmSwapToBan(swapped)
+					this.trackEventInPlausible('Unwrap')
 				})
 				eventSource.addEventListener('ping', () => console.debug('Ping received from the server'))
 				eventSource.addEventListener('message', (e: any) => {
@@ -560,6 +567,14 @@ class BackendModule extends VuexModule {
 				}
 			}
 		}
+	}
+
+	private trackEventInPlausible(name: string) {
+		plausible.trackEvent(name, {
+			props: {
+				network: Accounts.network.chainName,
+			},
+		})
 	}
 }
 

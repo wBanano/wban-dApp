@@ -123,6 +123,7 @@ import { TransactionRequest } from '@ethersproject/providers'
 import { IERC20, IERC20__factory } from '@artifacts/typechain'
 import SwapDialogs from '@/utils/SwapDialogs'
 import Accounts from '@/store/modules/accounts'
+import plausible from '@/store/modules/plausible'
 import { Logger } from 'ethers/lib/utils'
 
 const accountsStore = namespace('accounts')
@@ -282,6 +283,8 @@ export default class Swaps extends Vue {
 			this.swapButtonTextColor = 'negative'
 			this.swapButtonBackgroundColor = 'light-secondary'
 		}
+		// track quote request
+		this.trackEventInPlausible('Swaps: Quote Request')
 	}
 
 	async approve() {
@@ -348,6 +351,9 @@ export default class Swaps extends Vue {
 			const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 			const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
 			SwapDialogs.confirmSwap(txnHash, txnLink)
+			// track quote request
+			this.trackEventInPlausible('Swaps: Swapped')
+			// reset form
 			this.from.amount = ''
 			this.to.amount = ''
 			this.quote = EMPTY_QUOTE
@@ -400,6 +406,17 @@ export default class Swaps extends Vue {
 
 	resetValidation() {
 		this.fromInput.resetValidation()
+	}
+
+	private trackEventInPlausible(name: string) {
+		plausible.trackEvent(name, {
+			props: {
+				network: this.network.chainName,
+				input: this.from.token.name,
+				output: this.to.token.name,
+				pair: `${this.from.token.symbol}-${this.to.token.symbol}`,
+			},
+		})
 	}
 
 	async onProviderChange() {

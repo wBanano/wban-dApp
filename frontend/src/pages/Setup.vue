@@ -178,6 +178,7 @@ import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
 import backend from '@/store/modules/backend'
+import plausible from '@/store/modules/plausible'
 import { BigNumber, ethers } from 'ethers'
 import { ClaimResponse, ClaimResponseResult } from '@/models/ClaimResponse'
 import { copyToClipboard } from 'quasar'
@@ -234,6 +235,8 @@ export default class SetupPage extends Vue {
 	async isNotBlacklisted(banWallet: string): Promise<any> {
 		const result: BlacklistRecord | undefined = await BananoWalletsBlacklist.isBlacklisted(banWallet)
 		if (result !== undefined) {
+			// track event in Plausible
+			this.trackEventInPlausible('Bridge Setup: Blacklisted Wallet')
 			return 'Do not use an exchange or faucet address.'
 		} else {
 			return true
@@ -256,6 +259,8 @@ export default class SetupPage extends Vue {
 			case ClaimResponseResult.AlreadyDone:
 				// skip step 5 and redirect to home if claim was previously done
 				ban.setBanAccount(this.banAddress)
+				// track event in Plausible
+				this.trackEventInPlausible('Bridge Setup: Linked Again')
 				router.push('/')
 				break
 			default:
@@ -275,6 +280,8 @@ export default class SetupPage extends Vue {
 		ban.setBanAccount(this.banAddress)
 		const result = await backend.checkSetupDone(this.banAddress)
 		if (result === true) {
+			this.trackEventInPlausible('Bridge Setup: Completed')
+			// redirect to home
 			router.push('/')
 		} else {
 			console.error("Setup didn't work")
@@ -302,6 +309,15 @@ export default class SetupPage extends Vue {
 			console.warn('Connected?', this.isUserConnected, 'Setup done?', this.setupDone)
 			router.push('/')
 		}
+	}
+
+	private trackEventInPlausible(name: string) {
+		plausible.trackEvent(name, {
+			props: {
+				from: this.choiceMade,
+				network: this.currentBlockchain.chainName,
+			},
+		})
 	}
 
 	async onProviderChange() {
