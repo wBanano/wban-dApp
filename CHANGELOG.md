@@ -1,3 +1,10 @@
+# v2.1.2
+## Improvements
+- improved Onboard styling
+## Bugs
+- footer links on mobile not linked #97
+- removed Ledger wallet connection option as it's not working
+
 # v2.1.1
 ## Bugs
 - History page: wrong dates for unwraps #95
