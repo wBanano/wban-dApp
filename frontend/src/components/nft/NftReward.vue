@@ -1,28 +1,26 @@
 <template>
-	<div class="col-xl-3 col-lg-3 col-md-4 col-sm-8 col-xs-12 flex">
-		<q-card class="nft-card fit text-white">
-			<q-item>
-				<q-item-section>
-					<q-item-label>
-						<div class="text-bold">{{ data.name }}</div>
-					</q-item-label>
-				</q-item-section>
-				<q-item-section side>
-					<q-item-label class="text-right text-bold">Qty: {{ data.balance }}</q-item-label>
-				</q-item-section>
-			</q-item>
-			<q-separator class="bg-secondary" />
-			<q-card-section class="text-center">
-				<nft-picture :uri="data.image" :disabled="data.balance === 0" />
-			</q-card-section>
-			<q-separator class="bg-secondary" />
-			<q-card-actions class="nft-actions">
-				<q-btn-group outline spread class="fit">
-					<q-btn @click="buyOrSell()" color="primary" class="fit" flat>Buy/Sell</q-btn>
-				</q-btn-group>
-			</q-card-actions>
-		</q-card>
-	</div>
+	<q-card class="nft-card fit text-white">
+		<q-item>
+			<q-item-section>
+				<q-item-label>
+					<div class="text-bold">{{ data.name }}</div>
+				</q-item-label>
+			</q-item-section>
+			<q-item-section side>
+				<q-item-label class="text-right text-bold">Qty: {{ data.balance }}</q-item-label>
+			</q-item-section>
+		</q-item>
+		<q-separator class="bg-secondary" />
+		<q-card-section class="text-center">
+			<nft-picture :uri="data.image" :disabled="data.balance === 0" />
+		</q-card-section>
+		<q-separator class="bg-secondary" />
+		<q-card-actions class="nft-actions">
+			<q-btn-group outline spread class="fit">
+				<q-btn @click="buyOrSell()" color="primary" class="fit" flat>Buy/Sell</q-btn>
+			</q-btn-group>
+		</q-card-actions>
+	</q-card>
 </template>
 
 <script lang="ts">

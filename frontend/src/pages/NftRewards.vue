@@ -1,6 +1,6 @@
 <template>
 	<q-page>
-		<div class="q-pa-md">
+		<div class="q-pa-sm">
 			<div class="row items-center">
 				<h6 class="subtitle justify-center offset-md-1">
 					<q-btn to="/" icon="arrow_back" text-color="primary" flat style="margin-top: -10px" />
@@ -31,8 +31,40 @@
 					</template>
 				</q-banner>
 			</div>
-			<div class="nfts row q-col-gutter-md justify-center">
-				<div class="col-4" v-for="[nftId, nftData] in nfts" :key="nftId">
+			<div v-if="wrongNetwork" class="col-12 text-center">
+				<p>wBAN NFTs are only available on Polygon network.</p>
+				<p>Please switch to the proper network.</p>
+			</div>
+			<div v-if="loading" class="nfts row q-col-gutter-md justify-center">
+				<div class="col-xs-12 col-md-4" v-for="n in 12" :key="`nft-${n}`">
+					<q-card class="nft-card fit text-white">
+						<q-item>
+							<q-item-section>
+								<q-item-label>
+									<q-skeleton type="rect" />
+								</q-item-label>
+							</q-item-section>
+							<q-item-section side>
+								<q-item-label>
+									<q-skeleton type="rect" width="45px" />
+								</q-item-label>
+							</q-item-section>
+						</q-item>
+						<q-separator class="bg-secondary" />
+						<q-card-section class="text-center">
+							<q-skeleton height="300px" />
+						</q-card-section>
+						<q-separator class="bg-secondary" />
+						<q-card-actions class="nft-actions justify-center">
+							<q-btn-group>
+								<q-skeleton type="QBtn" height="36px" width="285px" />
+							</q-btn-group>
+						</q-card-actions>
+					</q-card>
+				</div>
+			</div>
+			<div v-if="!loading && !wrongNetwork" class="nfts row q-col-gutter-md justify-center">
+				<div class="col-xs-12 col-md-4" v-for="[nftId, nftData] in nfts" :key="nftId">
 					<nft-reward :nftId="nftId" :data="nftData" />
 				</div>
 			</div>
@@ -122,10 +154,11 @@ import { NftData } from '@/models/nft/NftData'
 import { ClaimableNft } from '@/models/nft/ClaimableNft'
 import nft from '@/store/modules/nft'
 import { WBANLPRewards } from 'wban-nfts'
-import { asyncFilter, sleep } from '@/utils/AsyncUtils'
+import { asyncFilter } from '@/utils/AsyncUtils'
 import { ethers } from 'ethers'
 import axios, { AxiosResponse } from 'axios'
 import { openURL } from 'quasar'
+import { Network, POLYGON_MAINNET } from '@/utils/Networks'
 
 const nftStore = namespace('nft')
 const accountsStore = namespace('accounts')
@@ -149,11 +182,17 @@ export default class NftRewardsPage extends Vue {
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.Web3Provider | null
 
+	@accountsStore.State('network')
+	network!: Network
+
 	missingForGolden = 0
 	claimableForGolden = -1
 	promptForGoldenNFT = false
 
 	claimableNfts: Array<ClaimableNft> = []
+
+	wrongNetwork = true
+	loading = true
 
 	static NFT_CLAIMABLE_ENDPOINT: string = process.env.VUE_APP_NFT_CLAIMABLE_ENDPOINT || ''
 
@@ -286,14 +325,22 @@ export default class NftRewardsPage extends Vue {
 	}
 
 	async onProviderChange() {
-		await nft.initContract(this.provider)
-		await this.reload()
+		console.warn('onProviderChange()', this.network.network)
+		if (this.network.chainId === POLYGON_MAINNET.chainId) {
+			this.wrongNetwork = false
+			await nft.initContract(this.provider)
+			await this.reload()
+			this.loading = false
+		} else {
+			this.wrongNetwork = true
+			this.missingForGolden = 0
+			this.claimableForGolden = -1
+			this.claimableNfts = []
+			this.loading = true
+		}
 	}
 
 	async mounted() {
-		while (!this.provider) {
-			await sleep(100)
-		}
 		this.onProviderChange()
 		document.addEventListener('web3-connection', this.onProviderChange)
 	}
@@ -301,6 +348,8 @@ export default class NftRewardsPage extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import '@/styles/quasar.sass'
+
 .nft-banner, .nfts
 	max-width: 1000px
 	margin-left: auto
@@ -313,4 +362,9 @@ export default class NftRewardsPage extends Vue {
 .vertical-center
 	margin-top: auto
 	margin-bottom: auto
+
+.nft-card
+	background-color: lighten($secondary, 10%) !important
+	.nft-actions
+		background-color: lighten($secondary, 10%) !important
 </style>
