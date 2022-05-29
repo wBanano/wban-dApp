@@ -26,6 +26,9 @@ class NftModule extends VuexModule {
 	static NFT_REWARDS_CONTRACT: string = process.env.VUE_APP_NFT_REWARDS_CONTRACT || ''
 	static NFT_OPENSEA_URL: string = process.env.VUE_APP_NFT_OPENSEA_URL || ''
 
+	//static IPFS_GATEWAY = 'https://gateway.pinata.cloud/ipfs/'
+	static IPFS_GATEWAY = 'https://nftstorage.link/ipfs/'
+
 	get rewardsContract() {
 		return this._rewards
 	}
@@ -103,7 +106,7 @@ class NftModule extends VuexModule {
 		)
 		console.debug(`Balances of ${account} are ${balances}`)
 		// load NFT data
-		const uriTemplate = this._uri.replace('ipfs://', 'https://cloudflare-ipfs.com/ipfs/')
+		const uriTemplate = this._uri.replace('ipfs://', NftModule.IPFS_GATEWAY)
 		const nfts: Map<string, NftData> = new Map()
 		for (let index = 0; index < NftModule.NFT_IDS.length; index++) {
 			const balance: number = balances[index].toNumber()
@@ -118,7 +121,7 @@ class NftModule extends VuexModule {
 			const name = metadata.name
 			const description = metadata.description
 			const cid = metadata.image.substring('ipfs://'.length)
-			const uri = `https://cloudflare-ipfs.com/ipfs/${cid}`
+			const uri = `${NftModule.IPFS_GATEWAY}${cid}`
 			nfts.set(nftId.toString(), {
 				id: nftId,
 				name,
