@@ -1,3 +1,7 @@
+# v2.1.3
+## Improvements
+- NFTs pages loads way faster!
+
 # v2.1.2
 ## Improvements
 - improved Onboard styling
