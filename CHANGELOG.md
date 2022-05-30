@@ -1,3 +1,9 @@
+# v2.1.4
+## Improvements
+- improved nft page with network detection and loading state
+## Bugs
+- error when clicking on Max links #102
+
 # v2.1.3
 ## Improvements
 - NFTs pages loads way faster!
