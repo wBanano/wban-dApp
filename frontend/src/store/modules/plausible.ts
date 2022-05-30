@@ -26,12 +26,12 @@ class PlausibleModule extends VuexModule {
 	@Action
 	init() {
 		if (!this._initialized) {
-			const { enableAutoPageviews, enableAutoOutboundTracking, trackEvent } = Plausible({
+			const { enableAutoPageviews, /* enableAutoOutboundTracking,*/ trackEvent } = Plausible({
 				domain: 'wrap.banano.cc',
 				apiHost: 'https://plausible.banano.cc',
 			})
 			enableAutoPageviews()
-			enableAutoOutboundTracking()
+			// enableAutoOutboundTracking() -- created issue #102
 			this.context.commit('setTrackEvent', trackEvent)
 		}
 	}
