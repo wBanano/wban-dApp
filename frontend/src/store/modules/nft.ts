@@ -22,7 +22,7 @@ class NftModule extends VuexModule {
 	private _uri = ''
 	private _nfts: Map<string, NftData> = new Map()
 
-	static NFT_IDS = [900, 901, 0, 1, 2, 10, 11, 12, 20, 21, 22, 100, 101, 102]
+	static NFT_IDS = [902, 900, 901, 0, 1, 2, 10, 11, 12, 20, 21, 22, 100, 101, 102]
 	static NFT_REWARDS_CONTRACT: string = process.env.VUE_APP_NFT_REWARDS_CONTRACT || ''
 	static NFT_OPENSEA_URL: string = process.env.VUE_APP_NFT_OPENSEA_URL || ''
 
@@ -87,6 +87,7 @@ class NftModule extends VuexModule {
 		// load NFT balances
 		const balances = await contract.balanceOfBatch(
 			[
+				account,
 				account,
 				account,
 				account,

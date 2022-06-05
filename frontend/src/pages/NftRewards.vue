@@ -213,14 +213,10 @@ export default class NftRewardsPage extends Vue {
 	}
 
 	pictureOf(nftId: number): string {
-		console.debug(`Computing picture uri for ${nftId}`)
 		const nftData = this.nfts.get(nftId.toString())
-		// console.debug(nftData)
 		if (nftData) {
-			console.debug(`URI for ${nftId} is ${nftData.image}`)
 			return nftData.image
 		} else {
-			console.warn(`Can't find picture for ${nftId}`)
 			return ''
 		}
 	}
@@ -306,27 +302,30 @@ export default class NftRewardsPage extends Vue {
 		// check if there is a single NFT missing in order to claim a golden one
 		this.missingForGolden = this.computeFirstMissingNft()
 		this.claimableForGolden = this.canClaimGoldenNft()
-		const response: AxiosResponse<Array<ClaimableNft>> = await axios.request({
-			url: `${NftRewardsPage.NFT_CLAIMABLE_ENDPOINT}?address=${this.activeAccount}`,
-		})
-		// filter consumed receipts
-		this.claimableNfts = await asyncFilter(response.data, async (claim: ClaimableNft) => {
-			const consumed = await this.rewardsContract.isReceiptConsumed(
-				this.activeAccount,
-				claim.nft,
-				claim.quantity,
-				'0x00',
-				claim.uuid
-			)
-			console.debug(`${claim.nft} consumed? ${consumed}`)
-			return !consumed
-		})
-		console.info(`${this.claimableNfts.length} different NFT claimable`)
+		try {
+			const response: AxiosResponse<Array<ClaimableNft>> = await axios.request({
+				url: `${NftRewardsPage.NFT_CLAIMABLE_ENDPOINT}?address=${this.activeAccount}`,
+			})
+			// filter consumed receipts
+			this.claimableNfts = await asyncFilter(response.data, async (claim: ClaimableNft) => {
+				const consumed = await this.rewardsContract.isReceiptConsumed(
+					this.activeAccount,
+					claim.nft,
+					claim.quantity,
+					'0x00',
+					claim.uuid
+				)
+				console.debug(`${claim.nft} consumed? ${consumed}`)
+				return !consumed
+			})
+			console.info(`${this.claimableNfts.length} different NFT claimable`)
+		} catch (e) {
+			console.error("Can't load claimable NFTs", e)
+		}
 	}
 
 	async onProviderChange() {
-		console.warn('onProviderChange()', this.network.network)
-		if (this.network.chainId === POLYGON_MAINNET.chainId) {
+		if (this.activeAccount && this.network.chainId === POLYGON_MAINNET.chainId) {
 			this.wrongNetwork = false
 			await nft.initContract(this.provider)
 			await this.reload()
