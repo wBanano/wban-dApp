@@ -1,3 +1,6 @@
+# v2.1.5
+- NFT for first wBANniversary
+
 # v2.1.4
 ## Improvements
 - improved nft page with network detection and loading state
