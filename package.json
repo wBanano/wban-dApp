@@ -78,7 +78,7 @@
 		"solhint": "solhint \"contracts/**/*.sol\" -f unix",
 		"lint": "prettier --check \"contracts/**/*.{sol,ts,js}\"",
 		"prettier": "prettier --write \"contracts/**/*.{sol,ts,js}\"",
-		"coverage": "hardhat coverage && istanbul check-coverage ./coverage.json --statements 76 --branches 61 --functions 76 --lines 76",
+		"coverage": "hardhat coverage && istanbul check-coverage ./coverage.json --statements 73 --branches 57 --functions 72 --lines 72",
 		"node:watch": "hardhat node --watch",
 		"deploy:devnet": "hardhat run --network bscdevnet scripts/create-wban.js",
 		"deploy:testnet": "hardhat run --network bsctestnet scripts/create-wban.js",
