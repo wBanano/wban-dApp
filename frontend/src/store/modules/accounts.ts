@@ -18,7 +18,7 @@ import translationES from '@/web3-onboard/web3-onboard-es.json'
 import translationFR from '@/web3-onboard/web3-onboard-fr.json'
 // import translationHI from '@/web3-onboard/web3-onboard-hi.json'
 import translationID from '@/web3-onboard/web3-onboard-id.json'
-// import translationIT from '@/web3-onboard/web3-onboard-it.json'
+import translationIT from '@/web3-onboard/web3-onboard-it.json'
 import translationNL from '@/web3-onboard/web3-onboard-nl.json'
 import translationPTBR from '@/web3-onboard/web3-onboard-pt-BR.json'
 import translationRU from '@/web3-onboard/web3-onboard-ru.json'
@@ -203,11 +203,9 @@ class AccountsModule extends VuexModule {
 				case 'id':
 					translation = translationID
 					break
-				/*
 				case 'it':
 					translation = translationIT
 					break
-				*/
 				case 'nl':
 					translation = translationNL
 					break

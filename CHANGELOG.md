@@ -1,3 +1,7 @@
+# v2.2.1
+## New Features
+- Italian translation
+
 # v2.2.0
 ## New Features
 - gasless onboarding

@@ -1,0 +1,107 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "Wallet Disponibili",
+			"sidebar": {
+				"heading": "Per Iniziare",
+				"subheading": "Collega il tuo wallet",
+				"paragraph": "Collegare il tuo wallet è come “accedere” a Web3.\nSeleziona il tuo portafoglio dalle opzioni per iniziare."
+			},
+			"recommendedWalletsPart1": "{app} supporta solo",
+			"recommendedWalletsPart2": "su questa piattaforma. Si prega di utilizzare o installare uno dei wallet supportati per continuare",
+			"installWallet": "Non hai nessun wallet installato che {app} supporta, usa un wallet supportato",
+			"agreement": {
+				"agree": "Accetto i",
+				"terms": "Termini e Condizioni",
+				"and": "e la",
+				"privacy": "Politica Sulla Privacy"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select, false {Connessione a {wallet}...} other {Connessione rifiutata}}",
+			"sidebar": {
+				"subheading": "Approva Collegamento",
+				"paragraph": "Si prega di approvare la connessione nel portafoglio e autorizzare l'accesso per continuare."
+			},
+			"mainText": "Collegamento...",
+			"paragraph": "Assicurarsi di selezionare tutti gli account a cui si desidera concedere l'accesso.",
+			"rejectedText": "Connessione Rifiutata!",
+			"rejectedCTA": "Clicca qui per riprovare",
+			"primaryButton": "Torna ai wallet"
+		},
+		"connectedWallet": {
+			"header": "Connessione Riuscita",
+			"sidebar": {
+				"subheading": "Connessione Riuscita!",
+				"paragraph": "Il tuo wallet è ora connesso a {app}"
+			},
+			"mainText": "Connesso"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "Azione richiesta in {wallet}",
+			"paragraph": "Si prega di cambiare l'account attivo nel wallet.",
+			"linkText": "Scopri di più.",
+			"buttonText": "Okay"
+		},
+		"switchChain": {
+			"heading": "Cambia Chain",
+			"paragraph1": "{app} richiede che tu modifichi il tuo wallet alla rete {nextNetworkName} per continuare.",
+			"paragraph2": "*Alcuni wallet potrebbero non supportare la modifica delle reti. Se non puoi cambiare le reti nel tuo portafoglio, potresti prendere in considerazione di passare a un wallet diverso."
+		},
+		"confirmDisconnectAll": {
+			"heading": "Disconnetti tutti i wallet",
+			"description": "Sei sicuro di voler disconnettere tutti i wallet?",
+			"confirm": "Conferma",
+			"cancel": "Rifiuta"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "Collega un altro wallet",
+		"disconnectAllWallets": "Disconnetti tutti i wallet",
+		"currentNetwork": "Rete Corrente",
+		"appInfo": "Info App",
+		"learnMore": "Scopri Di Più",
+		"gettingStartedGuide": "Guida Per Iniziare",
+		"smartContracts": "Smart Contract(s)",
+		"explore": "Esplora",
+		"backToApp": "Torna al dapp",
+		"poweredBy": "powered by",
+		"addAccount": "Aggiungi Account",
+		"setPrimaryAccount": "Imposta Account Primario",
+		"disconnectWallet": "Disconnetti wallet"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "La tua transazione ti sta aspettando per la conferma",
+			"nsfFail": "Hai fondi insufficienti per completare questa transazione",
+			"txUnderpriced": "Il prezzo minimo necessario per la tua transazione è troppo basso, riprova con un prezzo più alto",
+			"txRepeat": "Questa potrebbe essere una transazione ripetuta",
+			"txAwaitingApproval": "Hai una precedente transazione in attesa di conferma",
+			"txConfirmReminder": "Si prega di confermare la transazione per continuare, la finestra della transazione potrebbe essere dietro nel browser",
+			"txSendFail": "Hai rifiutato la transazione",
+			"txSent": "La tua transazione è stata inviata alla rete",
+			"txStallPending": "La tua transazione è in fase di stallo e non è entrata nella pool di transazioni",
+			"txStuck": "La tua transazione è bloccata a causa di un vuoto vuoto",
+			"txPool": "La tua transazione è iniziata",
+			"txStallConfirmed": "La tua transazione è in stallo e non è stata confermata",
+			"txSpeedUp": "La tua transazione è stata caricata",
+			"txCancel": "La tua transazione è stata annullata",
+			"txFailed": "La tua transazione non è riuscita",
+			"txConfirmed": "La tua transazione è riuscita",
+			"txError": "Oops qualcosa è andato storto, si prega di riprovare"
+		},
+		"watched": {
+			"txPool": "Il tuo account è {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txSpeedUp": "La transazione per {formattedValue} {asset} {preposition} {counterpartyShortened} è stata caricata",
+			"txCancel": "La transazione per {formattedValue} {asset} {preposition} {counterpartyShortened} è stata annullata",
+			"txConfirmed": "Il tuo account {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txFailed": "Il tuo account non è riuscito a {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+		},
+		"time": {
+			"minutes": "min",
+			"seconds": "sec"
+		}
+	}
+}

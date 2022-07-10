@@ -26,9 +26,9 @@ export default class LocaleSwitcher extends Vue {
 			{ value: 'es', label: 'Español' },
 			{ value: 'ru', label: 'Русский' },
 			{ value: 'fr', label: 'Français' },
-			// { value: 'it', label: 'Italiano' },
+			{ value: 'it', label: 'Italiano' },
 			{ value: 'de', label: 'Deutsch' },
-			{ value: 'nl', label: 'Nederlandse' }, // TODO: get proper wording
+			{ value: 'nl', label: 'Nederlands' },
 			{ value: 'tr', label: 'Türkçe' },
 			{ value: 'uk', label: 'Українська' },
 			// { value: 'hi', label: 'हिन्दी' },
