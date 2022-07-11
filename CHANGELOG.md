@@ -1,3 +1,7 @@
+# v2.2.2
+## Bugs
+- gasless swap wasn't working when the exchange route involved the same source more than once
+
 # v2.2.1
 ## New Features
 - Italian translation

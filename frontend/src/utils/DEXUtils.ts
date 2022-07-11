@@ -20,6 +20,7 @@ class DEXUtils {
 				gasPrice: gasPrice.toNumber(),
 				slippagePercentage: slippagePercentage / 100,
 				affiliateAddress: '0xFD1Dc8Bf39Bc0e373068746787c1296a5aEF31Ee', // wBAN smart-contract deployer
+				// excludedSources: 'Uniswap_V3',
 				skipValidation: skipValidation,
 			}
 			// get quote from 0x
@@ -36,25 +37,30 @@ class DEXUtils {
 			const allowanceTarget = result.data.allowanceTarget
 			// extract swap path
 			const orders = result.data.orders
-			const route: SwapRoute = await Promise.all(
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				orders.map(async (order: any) => {
-					const source = order.source
-					const fromToken = await TokensUtil.getToken(order.takerToken)
-					const toToken = await TokensUtil.getToken(order.makerToken)
-					if (!fromToken || !toToken) {
-						throw Error("Can't find expected tokens")
-					}
-					const path: SwapPath = {
-						source: source,
-						from: fromToken,
-						to: toToken,
-					}
-					console.debug(`Swap ${fromToken?.symbol} -> ${toToken?.symbol} (${source})`)
-					return path
-				})
+			const route: SwapRoute = (
+				await Promise.all(
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					orders.map(async (order: any) => {
+						const source = order.source
+						const fromToken = await TokensUtil.getToken(order.takerToken)
+						const toToken = await TokensUtil.getToken(order.makerToken)
+						if (!fromToken || !toToken) {
+							throw Error("Can't find expected tokens")
+						}
+						const path: SwapPath = {
+							source: source,
+							from: fromToken,
+							to: toToken,
+						}
+						console.debug(`Swap ${fromToken?.symbol} -> ${toToken?.symbol} (${source})`)
+						return path
+					})
+				)
+			).reduce(
+				(acc: SwapPath[], path: SwapPath) => (acc.find((p) => p.source === path.source) ? acc : [...acc, path]),
+				[]
 			)
-			// return quote
+			console.log('Route:', route)
 			return {
 				price: price,
 				guaranteedPrice: guaranteedPrice,
