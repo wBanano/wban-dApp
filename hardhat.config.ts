@@ -141,30 +141,30 @@ task("wban:gasless-swap", "Deploy wBAN gasless swap contract")
 	.addParam("zeroEx", "The address of 0x exchange proxy", '', types.string)
 	.addParam("relayer", "The address of the relayer allowed to call this the gasless swap contract", '', types.string)
 	.setAction(async (args, hre) => {
-		const accounts = await hre.ethers.getSigners();
-		const wbanAddress = args.wban;
-		const zeroExAddress = args.zeroEx;
-		const relayerAddress = args.relayer;
+		const accounts = await hre.ethers.getSigners()
+		const wbanAddress = args.wban
+		const zeroExAddress = args.zeroEx
+		const relayerAddress = args.relayer
 
-		console.info(`Deploying wBAN gasless swap with owner "${accounts[0].address}"`);
-		const gaslessSwapFactory = await hre.ethers.getContractFactory("WBANGaslessSwap");
-		const swap = (await hre.upgrades.deployProxy(gaslessSwapFactory, [wbanAddress, zeroExAddress]));
-		await swap.deployed();
-		await swap.grantRole(await swap.MINTER_ROLE(), relayerAddress);
-		console.log(`wBAN gasless swap proxy deployed at: "${swap.address}"`);
+		console.info(`Deploying wBAN gasless swap with owner "${accounts[0].address}"`)
+		const gaslessSwapFactory = await hre.ethers.getContractFactory("WBANGaslessSwap")
+		const swap = (await hre.upgrades.deployProxy(gaslessSwapFactory, [wbanAddress, zeroExAddress]))
+		await swap.deployed()
+		await swap.grantRole(await swap.RELAYER_ROLE(), relayerAddress)
+		console.log(`wBAN gasless swap proxy deployed at: "${swap.address}"`)
 
 		// peer into OpenZeppelin manifest to extract the implementation address
-		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
-		const manifest = await ozUpgradesManifestClient.read();
-		const bytecodeHash = hashBytecodeWithoutMetadata(gaslessSwapFactory.bytecode);
-		const implementationContract = manifest.impls[bytecodeHash];
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider)
+		const manifest = await ozUpgradesManifestClient.read()
+		const bytecodeHash = hashBytecodeWithoutMetadata(gaslessSwapFactory.bytecode)
+		const implementationContract = manifest.impls[bytecodeHash]
 
 		// verify implementation contract
 		if (implementationContract) {
-			console.log(`wBAN gasless swap impl deployed at: "${implementationContract.address}"`);
+			console.log(`wBAN gasless swap impl deployed at: "${implementationContract.address}"`)
 			await hre.run("verify:verify", {
 				address: implementationContract.address
-			});
+			})
 		}
 	});
 

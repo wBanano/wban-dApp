@@ -10,7 +10,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 contract WBANGaslessSwap is AccessControlUpgradeable {
     using SafeERC20Upgradeable for WBANTokenWithPermit;
 
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant RELAYER_ROLE = keccak256("RELAYER_ROLE");
 
     WBANTokenWithPermit public wBAN;
     address payable public swapTarget;
@@ -50,7 +50,7 @@ contract WBANGaslessSwap is AccessControlUpgradeable {
         bytes32 r,
         bytes32 s,
         bytes calldata swapCallData
-    ) external payable onlyRole(MINTER_ROLE) {
+    ) external payable onlyRole(RELAYER_ROLE) {
         require(address(this).balance == 0, "Contract balance should be 0");
 
         // use permit approval

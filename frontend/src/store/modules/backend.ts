@@ -30,7 +30,13 @@ import SwapDialogs from '@/utils/SwapDialogs'
 })
 class BackendModule extends VuexModule {
 	private _online = false
-	private _gaslessSettings: GaslessSettings = { enabled: false, swapAllowed: true, banThreshold: 0, cryptoThreshold: 0 }
+	private _gaslessSettings: GaslessSettings = {
+		enabled: false,
+		swapAllowed: true,
+		banThreshold: 0,
+		cryptoThreshold: 0,
+		swapContract: '',
+	}
 	private _banWalletForDeposits = ''
 	private _banWalletForDepositsQRCode = ''
 	private _banDeposited: BigNumber = BigNumber.from(0)
@@ -47,8 +53,6 @@ class BackendModule extends VuexModule {
 	private _streamEventsSource: EventSource | null = null
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private _web3listener: ((ev: Event) => any) | undefined = undefined
-
-	static WBAN_GASSLESS_SWAP_ADDRESS: string = process.env.VUE_APP_WBAN_GASSLESS_SWAP_ADDRESS || ''
 
 	get online() {
 		return this._online
@@ -382,6 +386,7 @@ class BackendModule extends VuexModule {
 				swapAllowed: swapAllowedResponse.data.gaslessSwapAllowed,
 				banThreshold: gaslessSettingsResponse.data.banThreshold,
 				cryptoThreshold: gaslessSettingsResponse.data.cryptoThreshold,
+				swapContract: gaslessSettingsResponse.data.swapContract,
 			}
 			this.context.commit('setGaslessSettings', gaslessSettings)
 		} catch (err) {
@@ -582,7 +587,7 @@ class BackendModule extends VuexModule {
 	async gaslessSwap(swap: GaslessSwapRequest): Promise<string> {
 		const permit = {
 			amount: swap.permit.amount,
-			spender: BackendModule.WBAN_GASSLESS_SWAP_ADDRESS,
+			spender: this.gaslessSettings.swapContract,
 			deadline: swap.permit.deadline,
 			provider: swap.provider,
 		}

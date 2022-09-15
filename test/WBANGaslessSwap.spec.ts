@@ -45,7 +45,7 @@ describe('WBANGaslessSwap', () => {
     );
 		const swap = (await upgrades.deployProxy(gaslessSwapFactory, [wban.address, zeroEx.address])) as WBANGaslessSwap;
 		await swap.deployed();
-		await swap.grantRole(await swap.MINTER_ROLE(), relayer.address);
+		await swap.grantRole(await swap.RELAYER_ROLE(), relayer.address);
 
 		// fund 0x fake contract
 		await owner.sendTransaction({ to: zeroEx.address, value: ethers.utils.parseEther("1.0") });
