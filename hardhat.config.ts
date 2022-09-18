@@ -330,9 +330,9 @@ const config: HardhatUserConfig = {
 			accounts,
 		},
 		rinkeby: {
-			gasMultiplier: 2,
+			url: "https://rinkeby.infura.io/v3/2b0e677e7a214cc9855fa34e2e1f682e",
 			accounts,
-			url: "https://rinkeby.infura.io/v3/2b0e677e7a214cc9855fa34e2e1f682e"
+			//gasMultiplier: 2,
 		},
 		bscdevnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
