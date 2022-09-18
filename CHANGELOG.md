@@ -1,3 +1,9 @@
+# v2.3.0
+## New Features
+- gasless features for BSC and Fantom
+## Bugs
+- Invalid URL 'Add Liquidity' button to Sushiswap on Polygon #106
+
 # v2.2.2
 ## Bugs
 - gasless swap wasn't working when the exchange route involved the same source more than once
