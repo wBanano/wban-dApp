@@ -102,6 +102,32 @@ task("wban:upgrade", "Upgrade wBAN")
 		}
 	});
 
+task("wban:deploy-permit", "Deploy wBAN with permit feature")
+	.setAction(async (args, hre) => {
+		const accounts = await hre.ethers.getSigners();
+		console.info(`Deploying wBAN with owner "${accounts[0].address}"`);
+
+		// deploy upgradeable contract
+		const WBANTokenWithPermit = await hre.ethers.getContractFactory("WBANTokenWithPermit");
+		const wban = await hre.upgrades.deployProxy(WBANTokenWithPermit);
+		await wban.deployed();
+		console.log(`wBAN proxy deployed at: "${wban.address}"`);
+
+		// peer into OpenZeppelin manifest to extract the implementation address
+		const ozUpgradesManifestClient = await Manifest.forNetwork(hre.network.provider);
+		const manifest = await ozUpgradesManifestClient.read();
+		const bytecodeHash = hashBytecodeWithoutMetadata(WBANTokenWithPermit.bytecode);
+		const implementationContract = manifest.impls[bytecodeHash];
+
+		// verify implementation contract
+		if (implementationContract) {
+			console.log(`wBAN impl deployed at: "${implementationContract.address}"`);
+			await hre.run("verify:verify", {
+				address: implementationContract.address
+			});
+		}
+	});
+
 task("wban:upgrade-permit", "Upgrade wBAN to enable permit feature")
 	.addParam("contract", "The smart-contract address", '', types.string)
 	.setAction(async (args, hre) => {
@@ -329,10 +355,26 @@ const config: HardhatUserConfig = {
 			url: 'http://localhost:8545',
 			accounts,
 		},
+		ethereum: {
+			url: "https://rpc.ankr.com/eth",
+			accounts,
+			chainId: 1,
+			timeout: 600_000, // 10 minutes
+		},
 		rinkeby: {
 			url: "https://rinkeby.infura.io/v3/2b0e677e7a214cc9855fa34e2e1f682e",
 			accounts,
 			//gasMultiplier: 2,
+		},
+		ropsten: {
+			url: "https://rpc.ankr.com/eth_ropsten",
+			accounts,
+			chainId: 3,
+		},
+		goerli: {
+			url: "https://rpc.ankr.com/eth_goerli",
+			accounts,
+			chainId: 5,
 		},
 		bscdevnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
