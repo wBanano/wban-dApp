@@ -3,10 +3,9 @@ import { getTokensList, Token } from '@/config/constants/dex'
 import { Address } from '@/config/constants/types'
 import { IDBPDatabase, openDB } from 'idb'
 import { IERC20__factory } from '@artifacts/typechain'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import { POLYGON_MAINNET } from './Networks'
-import { TokenAmount } from '@/models/dex/TokenAmount'
 import Accounts from '@/store/modules/accounts'
 
 const TOKENS_STORE_NAME = 'tokens'
@@ -81,23 +80,23 @@ class TokensUtil {
 		return token
 	}
 
-	static async getTokenBySymbol(symbol: string): Promise<Token | undefined> {
+	static async getTokenBySymbol(symbol: string): Promise<Array<Token> | undefined> {
 		if (!TokensUtil.initialized) {
 			await TokensUtil.loadTokensList()
 		}
 		console.info(`Searching for token "${symbol.toLowerCase()}"`)
 		const db: IDBPDatabase = await openDB(Accounts.network.network)
-		const token = await db.getFromIndex(TOKENS_STORE_NAME, 'symbol', symbol)
+		const tokens: Token[] = await db.getAllFromIndex(TOKENS_STORE_NAME, 'symbol', symbol)
 		db.close()
-		return token
+		return tokens
 	}
 
-	static async filterTokens(search: string, owner: string, provider: Provider | null): Promise<Array<Token>> {
-		const tokens = await TokensUtil.getAllTokens(owner, provider)
+	static async filterTokens(search: string): Promise<Array<Token>> {
+		const tokens = await TokensUtil.getAllTokens()
 		return tokens.filter((token) => token.symbol.toLowerCase().includes(search.toLowerCase()))
 	}
 
-	static async getAllTokens(owner: string, provider: Provider | null): Promise<Array<Token>> {
+	static async getAllTokens() {
 		if (!TokensUtil.initialized) {
 			await TokensUtil.loadTokensList()
 		}
@@ -111,41 +110,7 @@ class TokensUtil {
 				})
 			)
 		db.close()
-		if (provider) {
-			// filter by decreasing balance
-			const tokenAmounts: Array<TokenAmount> = await Promise.all(
-				tokens.map(async (token: Token) => {
-					const balance = await this.getBalance(owner, token, provider)
-					return {
-						token: token,
-						amount: balance.toString(),
-					}
-				})
-			)
-			return (
-				tokenAmounts
-					.sort((a: TokenAmount, b: TokenAmount) => {
-						if (a.amount !== '0' && b.amount !== '0') {
-							return ethers.utils
-								.parseUnits(a.amount, a.token.decimals)
-								.gt(ethers.utils.parseUnits(b.amount, b.token.decimals))
-								? -1
-								: 1
-						} else if (a.amount !== '0') {
-							return -1
-						} else if (b.amount !== '0') {
-							return 1
-						} else {
-							return 0
-						}
-					})
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					.map((tokenAmount) => tokenAmount.token!)
-			)
-		} else {
-			// fallback to non sorted list
-			return tokens
-		}
+		return tokens
 	}
 
 	static async getBalance(owner: string, token: Token, provider: Provider): Promise<BigNumber> {

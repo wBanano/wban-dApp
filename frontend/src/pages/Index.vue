@@ -31,6 +31,12 @@
 							<q-card-section>Fantom</q-card-section>
 						</q-card>
 					</div>
+					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
+						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('ethereum')">
+							<img src="ethereum-home-logo.svg" width="80px" height="80px" />
+							<q-card-section>Ethereum</q-card-section>
+						</q-card>
+					</div>
 				</div>
 				<br /><br />
 				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" :label="$t('connect')" />
@@ -81,7 +87,7 @@ import router from '@/router'
 import Statistics from '@/components/Statistics.vue'
 import ChainInfo from '@/components/ChainInfo.vue'
 import accounts from '@/store/modules/accounts'
-import { BSC_MAINNET, FANTOM_MAINNET, Network, POLYGON_MAINNET } from '@/utils/Networks'
+import { BSC_MAINNET, ETHEREUM_MAINNET, FANTOM_MAINNET, Network, POLYGON_MAINNET } from '@/utils/Networks'
 
 const banStore = namespace('ban')
 const accountsStore = namespace('accounts')
@@ -114,7 +120,7 @@ export default class PageIndex extends Vue {
 		}
 	}
 
-	async connectWalletProvider(wanted: 'bsc' | 'polygon' | 'fantom' | undefined) {
+	async connectWalletProvider(wanted: 'bsc' | 'polygon' | 'fantom' | 'ethereum' | undefined) {
 		let wantedChain = undefined
 		if (wanted === 'bsc') {
 			wantedChain = BSC_MAINNET.chainId
@@ -122,6 +128,8 @@ export default class PageIndex extends Vue {
 			wantedChain = POLYGON_MAINNET.chainId
 		} else if (wanted === 'fantom') {
 			wantedChain = FANTOM_MAINNET.chainId
+		} else if (wanted === 'ethereum') {
+			wantedChain = ETHEREUM_MAINNET.chainId
 		}
 		console.warn('Wanted chain', wantedChain)
 		await accounts.connectWalletProvider(wantedChain)

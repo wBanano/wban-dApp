@@ -3,7 +3,7 @@ import axios from 'axios'
 import { BigNumber, ethers } from 'ethers'
 
 interface Network {
-	network: 'bsc' | 'polygon' | 'fantom'
+	network: 'bsc' | 'polygon' | 'fantom' | 'ethereum'
 	chainId: string
 	chainIdNumber: number
 	chainName: string
@@ -123,6 +123,22 @@ const FANTOM_TESTNET: Network = {
 	blockExplorerUrls: ['https://testnet.ftmscan.com'],
 }
 
+const ETHEREUM_MAINNET: Network = {
+	network: 'ethereum',
+	chainId: '0x1',
+	chainIdNumber: 1,
+	chainName: 'Ethereum',
+	chainUrl: 'https://polygon.technology',
+	nativeCurrency: {
+		name: 'ETH',
+		symbol: 'ETH',
+		decimals: 18,
+	},
+	minimumNeededForWrap: 0.002,
+	rpcUrls: ['https://rpc.ankr.com/eth'],
+	blockExplorerUrls: ['hhttps://etherscan.io/'],
+}
+
 class Networks {
 	private networks: Map<string, Network>
 	private testnet: Network | undefined
@@ -135,6 +151,7 @@ class Networks {
 		this.networks.set(POLYGON_TESTNET.chainId, POLYGON_TESTNET)
 		this.networks.set(FANTOM_MAINNET.chainId, FANTOM_MAINNET)
 		this.networks.set(FANTOM_TESTNET.chainId, FANTOM_TESTNET)
+		this.networks.set(ETHEREUM_MAINNET.chainId, ETHEREUM_MAINNET)
 
 		const testnetSelected = process.env.VUE_APP_TESTNET
 		if (testnetSelected) {
@@ -151,7 +168,7 @@ class Networks {
 	}
 
 	private getMainnetSupportedNetworks(): Network[] {
-		return [BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET]
+		return [BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, ETHEREUM_MAINNET]
 	}
 
 	public getNetworkData(chainId: string): Network | undefined {
@@ -164,4 +181,14 @@ class Networks {
 	}
 }
 
-export { Networks, Network, BSC_MAINNET, BSC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, FANTOM_MAINNET, FANTOM_TESTNET }
+export {
+	Networks,
+	Network,
+	BSC_MAINNET,
+	BSC_TESTNET,
+	POLYGON_MAINNET,
+	POLYGON_TESTNET,
+	FANTOM_MAINNET,
+	FANTOM_TESTNET,
+	ETHEREUM_MAINNET,
+}

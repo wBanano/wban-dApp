@@ -527,10 +527,12 @@ export default class Swaps extends Vue {
 		await TokensUtil.loadTokensList()
 		const wban = await TokensUtil.getTokenBySymbol('wBAN')
 		if (wban) {
-			Object.assign(this.from.token, wban)
+			Object.assign(this.from.token, wban[0])
 		}
 		const nativeCryptoToken = await TokensUtil.getTokenBySymbol(this.network.nativeCurrency.symbol)
-		Object.assign(this.to.token, nativeCryptoToken)
+		if (nativeCryptoToken) {
+			Object.assign(this.to.token, nativeCryptoToken[0])
+		}
 		this.fromInput.amountField.focus()
 		this.resetValidation()
 	}

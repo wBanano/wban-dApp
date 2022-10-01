@@ -2,13 +2,15 @@ import Accounts from '@/store/modules/accounts'
 import BSCDEX from './bsc/dex'
 import PolygonDEX from './polygon/dex'
 import FantomDEX from './fantom/dex'
+import EthereumDEX from './ethereum/dex'
 import { getBackendHost } from './backend'
-import { BSC_MAINNET, FANTOM_MAINNET, POLYGON_MAINNET } from '@/utils/Networks'
+import { BSC_MAINNET, FANTOM_MAINNET, POLYGON_MAINNET, ETHEREUM_MAINNET } from '@/utils/Networks'
 import axios from 'axios'
 
 const bsc = new BSCDEX()
 const polygon = new PolygonDEX()
 const fantom = new FantomDEX()
+const ethereum = new EthereumDEX()
 
 type Token = {
 	name: string
@@ -49,6 +51,8 @@ function get0xSwapAPI(): string {
 			return polygon.get0xSwapAPI()
 		case FANTOM_MAINNET.chainIdNumber:
 			return fantom.get0xSwapAPI()
+		case ETHEREUM_MAINNET.chainIdNumber:
+			return ethereum.get0xSwapAPI()
 		default:
 			throw new Error('Unexpected network')
 	}
@@ -62,6 +66,8 @@ function get0xExchangeRouterAddress(): string {
 			return polygon.get0xExchangeRouterAddress()
 		case FANTOM_MAINNET.chainIdNumber:
 			return fantom.get0xExchangeRouterAddress()
+		case ETHEREUM_MAINNET.chainIdNumber:
+			return ethereum.get0xExchangeRouterAddress()
 		default:
 			throw new Error('Unexpected network')
 	}

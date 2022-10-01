@@ -23,18 +23,15 @@
 					</template>
 				</q-input>
 			</q-card-section>
-			<q-card-section style="max-height: 60vh; min-height: 50vh" class="scroll">
-				<q-list>
-					<token-chooser-item
-						v-for="token in tokens"
-						v-bind:key="token.symbol"
-						:token="token"
-						@click="onTokenChosen(token)"
-					/>
-					<q-inner-loading :showing="loading">
-						<q-spinner-gears size="50px" color="primary" />
-					</q-inner-loading>
-				</q-list>
+			<q-card-section ref="tokensRef" style="max-height: 500px; overflow: auto">
+				<q-infinite-scroll ref="tokensList" @load="loadTokens" :offset="500" :scroll-target="$refs.tokensRef">
+					<token-chooser-item v-for="(item, index) in tokens" :key="index" :token="item" @click="onTokenChosen(item)" />
+					<template v-slot:loading>
+						<div class="text-center q-my-md">
+							<q-spinner-dots color="primary" size="40px" />
+						</div>
+					</template>
+				</q-infinite-scroll>
 			</q-card-section>
 		</q-card>
 	</q-dialog>
@@ -71,6 +68,10 @@ export default class TokenChooserDialog extends Vue {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private dialog: any
 
+	@Ref('tokensList')
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private tokensList: any
+
 	show() {
 		this.dialog.show()
 	}
@@ -89,14 +90,24 @@ export default class TokenChooserDialog extends Vue {
 		this.hide()
 	}
 
-	async filterTokens(search: string) {
-		if (!search) {
-			this.tokens = this.allTokens
+	async loadTokens(index: number, done: () => void) {
+		if (!this.search) {
+			this.tokens = this.allTokens.slice(0, index * 10)
 		} else {
-			this.loading = true
-			this.tokens = await TokensUtil.filterTokens(search, this.user, this.provider)
-			this.loading = false
+			const filteredTokens = await TokensUtil.filterTokens(this.search)
+			this.tokens = filteredTokens.slice(0, Math.min(index * 10, filteredTokens.length))
 		}
+		if (this.tokens.length > 0 && this.tokens.length <= 10) {
+			this.tokensList.stop()
+		}
+		done()
+	}
+
+	async filterTokens() {
+		this.tokens = []
+		this.tokensList.reset()
+		this.tokensList.resume()
+		this.tokensList.poll()
 	}
 
 	onTokenChosen(token: Token) {
@@ -115,8 +126,8 @@ export default class TokenChooserDialog extends Vue {
 
 	async onProviderChange() {
 		this.loading = true
-		this.allTokens = await TokensUtil.getAllTokens(this.user, this.provider)
-		this.tokens = this.allTokens
+		this.allTokens = await TokensUtil.getAllTokens()
+		this.tokens = []
 		this.loading = false
 	}
 

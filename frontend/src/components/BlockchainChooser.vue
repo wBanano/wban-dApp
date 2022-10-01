@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { Network, BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, Networks } from '@/utils/Networks'
+import { Network, BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, Networks, ETHEREUM_MAINNET } from '@/utils/Networks'
 import accounts from '@/store/modules/accounts'
 
 const accountsStore = namespace('accounts')
@@ -55,7 +55,8 @@ export default class BlockchainChooser extends Vue {
 		return (
 			this.currentBlockchain?.chainIdNumber === BSC_MAINNET.chainIdNumber ||
 			this.currentBlockchain?.chainIdNumber === POLYGON_MAINNET.chainIdNumber ||
-			this.currentBlockchain?.chainIdNumber === FANTOM_MAINNET.chainIdNumber
+			this.currentBlockchain?.chainIdNumber === FANTOM_MAINNET.chainIdNumber ||
+			this.currentBlockchain?.chainIdNumber === ETHEREUM_MAINNET.chainIdNumber
 		)
 	}
 
@@ -76,7 +77,7 @@ export default class BlockchainChooser extends Vue {
 	}
 
 	getBlockchainIcon(network: string): string {
-		return `img:${network}-logo-only.svg`
+		return `img:${network}-home-logo.svg`
 	}
 
 	async connectWalletProvider() {

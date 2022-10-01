@@ -6,6 +6,7 @@ import {
 	POLYGON_TESTNET,
 	FANTOM_MAINNET,
 	FANTOM_TESTNET,
+	ETHEREUM_MAINNET,
 } from '@/utils/Networks'
 
 function getBackendHost(): string {
@@ -16,6 +17,8 @@ function getBackendHost(): string {
 			return 'https://polygon-api.banano.cc'
 		case FANTOM_MAINNET.chainIdNumber:
 			return 'https://fantom-api.banano.cc'
+		case ETHEREUM_MAINNET.chainIdNumber:
+			return 'https://ethereum-api.banano.cc'
 		case BSC_TESTNET.chainIdNumber:
 		case POLYGON_TESTNET.chainIdNumber:
 		case FANTOM_TESTNET.chainIdNumber:

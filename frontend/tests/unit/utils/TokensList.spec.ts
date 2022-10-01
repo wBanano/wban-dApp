@@ -36,24 +36,19 @@ describe('TokensUtil', () => {
 		if (wban === undefined) {
 			throw Error()
 		}
-		expect(wban.symbol).to.equal('wBAN')
+		expect(wban[0].symbol).to.equal('wBAN')
 	})
 
 	it('finds plenty of tokens', async () => {
-		const tokens = await TokensList.getAllTokens('0x0', null)
+		const tokens = await TokensList.getAllTokens()
 		expect(tokens).to.not.be.empty
 	})
 
 	it('filters tokens', async () => {
-		let tokens = await TokensList.filterTokens('wban', '0x0', null)
+		let tokens = await TokensList.filterTokens('wban')
 		expect(tokens).to.have.lengthOf(1)
 
-		tokens = await TokensList.filterTokens('usdc', '0x0', null)
+		tokens = await TokensList.filterTokens('usdc')
 		expect(tokens).to.have.lengthOf(1)
-	})
-
-	it('sorts tokens by lexical order', async () => {
-		const tokens = await TokensList.getAllTokens('0x0', null)
-		expect(tokens[0].symbol.localeCompare(tokens[1].symbol)).to.equal(-1)
 	})
 })

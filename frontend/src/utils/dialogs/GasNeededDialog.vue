@@ -26,11 +26,7 @@
 					</div>
 				</q-card-section>
 				<q-card-section class="col-5 flex flex-center">
-					<img
-						:src="require(`@/assets/${currentBlockchain.nativeCurrency.symbol.toLowerCase()}-coin.png`)"
-						width="128px"
-						height="128px"
-					/>
+					<img :src="`/${currentBlockchain.network}-home-logo.svg`" width="128px" height="128px" />
 				</q-card-section>
 			</q-card-section>
 			<q-card-actions align="right">
