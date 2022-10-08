@@ -1,7 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { Benis, WBANToken, MockBEP20, ApeFactory, ApePair } from "../artifacts/typechain";
+import { BenisWithPermit, WBANToken, MockBEP20, ApeFactory, ApePair } from "../artifacts/typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Signature } from "ethers";
 import ReceiptsUtil from "./ReceiptsUtil";
@@ -10,14 +10,14 @@ import { increaseTo } from "./time";
 chai.use(solidity);
 const { expect } = chai;
 
-describe('Benis', () => {
+describe('BenisWithPermit', () => {
 	let wban: WBANToken;
 	let token1: MockBEP20;
 	let token2: MockBEP20;
 	let lpToken1: ApePair;
 	let lpToken2: ApePair;
 	let wbanRewards: BigNumber;
-	let benis: Benis;
+	let benis: BenisWithPermit;
 	let rewardsStartTime: number;
 	let owner: SignerWithAddress;
 	let rewarder: SignerWithAddress;
@@ -63,10 +63,10 @@ describe('Benis', () => {
 		lpToken2 = await ethers.getContractAt("ApePair", pair2, signers[0]) as ApePair;
 
 		// deploy `Benis` contract
-		const Benis = await ethers.getContractFactory("Benis", signers[0]);
+		const Benis = await ethers.getContractFactory("BenisWithPermit", signers[0]);
 		const rewardsPerSecond = ethers.utils.parseEther("1");
 		rewardsStartTime = (await ethers.provider.getBlock('latest')).timestamp + 24 * 60 * 60;
-		benis = await Benis.deploy(wban.address, rewardsPerSecond, rewardsStartTime) as Benis;
+		benis = await Benis.deploy(wban.address, rewardsPerSecond, rewardsStartTime) as BenisWithPermit;
 		await benis.deployed();
 		expect(benis.address).to.properAddress;
 
