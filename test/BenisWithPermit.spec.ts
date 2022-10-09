@@ -408,6 +408,23 @@ describe('BenisWithPermit', () => {
 			// should be exactly the initial stash
 			expect(await wban.balanceOf(rewarder.address)).to.equal(wbanRewards);
 		});
+
+		it('Can change end time by adding or removing seconds', async() => {
+			const initialEndTime = await benis.endTime();
+			// increase time
+			await benis.changeEndTime(ONE_WEEK);
+			expect(await benis.endTime()).to.equal(ONE_WEEK.add(initialEndTime));
+			// decrease time
+			await benis.reduceEndTime(ONE_WEEK);
+			expect(await benis.endTime()).to.equal(initialEndTime);
+			// ensure end time can't be earlier than current time
+			await increaseTo(rewardsStartTime + 24 * 60 * 60); // one day later
+			await expect(benis.reduceEndTime(ONE_WEEK)).to.be.revertedWith("Can't have end time in the past");
+			await benis.reduceEndTime(5 * 24 * 60 * 60); // reduce end time by 5 days
+			// ensure only owner can do such operations
+			await expect(benis.connect(user1).changeEndTime(ONE_WEEK)).to.be.revertedWith("Ownable: caller is not the owner");
+			await expect(benis.connect(user2).reduceEndTime(ONE_WEEK)).to.be.revertedWith("Ownable: caller is not the owner");
+		})
 	});
 
 	async function createAndStakeLiquidity(

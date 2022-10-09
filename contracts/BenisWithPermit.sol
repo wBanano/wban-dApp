@@ -70,6 +70,11 @@ contract BenisWithPermit is Ownable {
         endTime += addSeconds;
     }
 
+    function reduceEndTime(uint32 subSeconds) external onlyOwner {
+        require(endTime - subSeconds >= block.timestamp, "Can't have end time in the past");
+        endTime -= subSeconds;
+    }
+
     // Changes wBAN token reward per second. Use this function to moderate the `lockup amount`.
     // Essentially this function changes the amount of the reward which is entitled to the
     // user for his token staking by the time the `endTime` is passed.
