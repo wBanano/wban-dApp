@@ -35,18 +35,17 @@ contract BenisWithPermit is Ownable {
         uint16 allocPoint; // How many allocation points assigned to this pool. wBAN to distribute per second.
     }
 
-    IERC20 public immutable wban; // The wBAN TOKEN!!
+    IERC20 public immutable wban; // wBAN TOKEN
+    uint256 public wbanPerSecond; // wBAN tokens vested per second
+    address private rewardsDistributor;
 
-    uint256 public wbanPerSecond; // wBAN tokens vested per second.
+    PoolInfo[] public poolInfo; // Info of each pool
 
-    PoolInfo[] public poolInfo; // Info of each pool.
+    mapping(uint256 => mapping(address => UserInfo)) public userInfo; // Info of each user that stakes tokens
 
-    mapping(uint256 => mapping(address => UserInfo)) public userInfo; // Info of each user that stakes tokens.
+    uint256 public totalAllocPoint = 0; // Total allocation points. Must be the sum of all allocation points in all pools
 
-    uint256 public totalAllocPoint = 0; // Total allocation points. Must be the sum of all allocation points in all pools.
-
-    uint32 public immutable startTime; // The timestamp when wBAN farming starts.
-
+    uint32 public immutable startTime; // The timestamp when wBAN farming starts
     uint32 public endTime; // Time on which the reward calculation should end
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
@@ -56,13 +55,15 @@ contract BenisWithPermit is Ownable {
     constructor(
         IERC20 _wban,
         uint256 _wbanPerSecond,
-        uint32 _startTime
+        uint32 _startTime,
+        address _rewardsDistributor
     ) {
         wban = _wban;
 
         wbanPerSecond = _wbanPerSecond;
         startTime = _startTime;
         endTime = _startTime;
+        rewardsDistributor = _rewardsDistributor;
     }
 
     function changeEndTime(uint32 addSeconds) external onlyOwner {
@@ -108,6 +109,14 @@ contract BenisWithPermit is Ownable {
                 accWBANPerShare: 0
             })
         );
+    }
+
+    function withdrawRewards() external onlyOwner returns (uint256) {
+        uint256 wbanBalance = wban.balanceOf(address(this));
+        if (wbanBalance > 0) {
+            wban.safeTransfer(rewardsDistributor, wbanBalance);
+        }
+        return wbanBalance;
     }
 
     // Update the given pool's wBAN allocation point. Can only be called by the owner.

@@ -66,7 +66,7 @@ describe('BenisWithPermit', () => {
 		const Benis = await ethers.getContractFactory("BenisWithPermit", signers[0]);
 		const rewardsPerSecond = ethers.utils.parseEther("1");
 		rewardsStartTime = (await ethers.provider.getBlock('latest')).timestamp + 24 * 60 * 60;
-		benis = await Benis.deploy(wban.address, rewardsPerSecond, rewardsStartTime) as BenisWithPermit;
+		benis = await Benis.deploy(wban.address, rewardsPerSecond, rewardsStartTime, rewarder.address) as BenisWithPermit;
 		await benis.deployed();
 		expect(benis.address).to.properAddress;
 
@@ -377,6 +377,37 @@ describe('BenisWithPermit', () => {
 		expect(await wban.balanceOf(user1.address)).to.be.closeTo(wbanRewards.mul(2), ethers.utils.parseEther("0.0000000001"));
 		userInfo = await benis.userInfo(0, user1.address);
 		expect(userInfo.remainingWBANReward).to.equal(0);
+	});
+
+	describe("Ops Features", () => {
+		it('Collect non-distributed rewards: from owner', async() => {
+			// create farm pool
+			await benis.add(1_000, lpToken1.address, true);
+			expect(await benis.poolLength()).to.equal(1);
+
+			await createAndStakeLiquidity(user1);
+
+			// half a week later, user1 harvests then owner withdraw non distributed rewards
+			await increaseTo(rewardsStartTime + 7 * 24 * 60 * 60 / 2);
+			await benis.connect(user1).deposit(0, 0);
+			await benis.withdrawRewards();
+
+			// should be close to half of the initial stash
+			expect(await wban.balanceOf(rewarder.address)).to.be.closeTo(wbanRewards.div(2), ethers.utils.parseEther("1"));
+		});
+
+		it('Collect non-distributed rewards: from unauthorized wallet', async() => {
+			// create farm pool
+			await benis.add(1_000, lpToken1.address, true);
+			expect(await benis.poolLength()).to.equal(1);
+
+			await expect(benis.connect(user2).withdrawRewards())
+				.to.be.revertedWith("Ownable: caller is not the owner");
+			await benis.withdrawRewards();
+
+			// should be exactly the initial stash
+			expect(await wban.balanceOf(rewarder.address)).to.equal(wbanRewards);
+		});
 	});
 
 	async function createAndStakeLiquidity(
