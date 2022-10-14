@@ -3,6 +3,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -203,6 +204,13 @@ contract BenisWithPermit is Ownable {
         pool.stakingTokenTotalAmount += _amount;
         user.rewardDebt = user.amount * pool.accWBANPerShare / 1e12;
         emit Deposit(msg.sender, _pid, _amount);
+    }
+
+    // Deposit staking tokens to Benus for wBAN rewards, using EIP712 signatures.
+    function depositWithPermit(uint256 _pid, uint256 _amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public {
+        IERC20 stakingToken = poolInfo[_pid].stakingToken;
+        IERC20Permit(address(stakingToken)).permit(msg.sender, address(this), _amount, deadline, v, r, s);
+        deposit(_pid, _amount);
     }
 
     // Withdraw staked tokens from Benis.

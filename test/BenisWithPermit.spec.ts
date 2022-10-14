@@ -1,10 +1,11 @@
 import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { BenisWithPermit, WBANToken, MockBEP20, ApeFactory, ApePair } from "../artifacts/typechain";
+import { BenisWithPermit, WBANToken, MockBEP20, UniswapV2Factory, UniswapV2Pair } from "../artifacts/typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Signature } from "ethers";
 import ReceiptsUtil from "./ReceiptsUtil";
+import PermitUtil from "./PermitUtil";
 import { increaseTo } from "./time";
 
 chai.use(solidity);
@@ -14,8 +15,8 @@ describe('BenisWithPermit', () => {
 	let wban: WBANToken;
 	let token1: MockBEP20;
 	let token2: MockBEP20;
-	let lpToken1: ApePair;
-	let lpToken2: ApePair;
+	let lpToken1: UniswapV2Pair;
+	let lpToken2: UniswapV2Pair;
 	let wbanRewards: BigNumber;
 	let benis: BenisWithPermit;
 	let rewardsStartTime: number;
@@ -48,19 +49,19 @@ describe('BenisWithPermit', () => {
 		await token2.deployed();
 		expect(token2.address).to.properAddress;
 
-		const ApeFactory = await ethers.getContractFactory("ApeFactory", signers[0]);
-		const apeFactory = (await ApeFactory.deploy("0x0000000000000000000000000000000000000000")) as ApeFactory; // no fees
-		await apeFactory.deployed();
-		expect(apeFactory.address).to.properAddress;
+		const UniswapFactory = await ethers.getContractFactory("UniswapV2Factory", signers[0]);
+		const uniswapFactory = (await UniswapFactory.deploy("0x0000000000000000000000000000000000000000")) as UniswapV2Factory; // no fees
+		await uniswapFactory.deployed();
+		expect(uniswapFactory.address).to.properAddress;
 
 		// deploy fake wBAN-TOK1 pair
-		await apeFactory.createPair(token1.address, wban.address);
-		const pair1 = await apeFactory.getPair(wban.address, token1.address);
-		lpToken1 = await ethers.getContractAt("ApePair", pair1, signers[0]) as ApePair;
+		await uniswapFactory.createPair(token1.address, wban.address);
+		const pair1 = await uniswapFactory.getPair(wban.address, token1.address);
+		lpToken1 = await ethers.getContractAt("UniswapV2Pair", pair1, signers[0]) as UniswapV2Pair;
 		// deploy fake wBAN-TOK2 pair
-		await apeFactory.createPair(token2.address, wban.address);
-		const pair2 = await apeFactory.getPair(wban.address, token2.address);
-		lpToken2 = await ethers.getContractAt("ApePair", pair2, signers[0]) as ApePair;
+		await uniswapFactory.createPair(token2.address, wban.address);
+		const pair2 = await uniswapFactory.getPair(wban.address, token2.address);
+		lpToken2 = await ethers.getContractAt("UniswapV2Pair", pair2, signers[0]) as UniswapV2Pair;
 
 		// deploy `Benis` contract
 		const Benis = await ethers.getContractFactory("BenisWithPermit", signers[0]);
@@ -379,6 +380,64 @@ describe('BenisWithPermit', () => {
 		expect(userInfo.remainingWBANReward).to.equal(0);
 	});
 
+	it('Deposit with permit', async () => {
+		// create farm pool
+		await benis.add(1_000, lpToken1.address, true);
+		expect(await benis.poolLength()).to.equal(1);
+
+		const { lpToken, liquidity } = await createLiquidity(user1);
+		const deadline = Date.now();
+		const sig: Signature = await PermitUtil.createPermitSignatureForToken(
+			"Uniswap V2", "1", lpToken.address,
+			user1,
+			benis.address,
+			liquidity,
+			await lpToken.nonces(user1.address),
+			deadline,
+			await user1.getChainId(),
+		)
+		await benis.connect(user1).depositWithPermit(0, liquidity, deadline, sig.v, sig.r, sig.s);
+
+		// jump to farm start time
+		await increaseTo(rewardsStartTime);
+		// harvest should not give any reward yet
+		expect(await wban.balanceOf(user1.address)).to.equal(0);
+
+		// unstake liquidity one week later
+		await increaseTo(rewardsStartTime + 7 * 24 * 60 * 60 + 10_000);
+		expect(await wban.balanceOf(user1.address)).to.equal(0);
+		expect(await wban.balanceOf(benis.address)).to.equal(wbanRewards);
+
+		expect(await benis.pendingWBAN(0, user1.address)).to.be.above(0);
+
+		let userInfo = await benis.userInfo(0, user1.address);
+		await benis.connect(user1).withdraw(0, userInfo.amount);
+		expect(await wban.balanceOf(user1.address)).to.be.closeTo(wbanRewards, ethers.utils.parseEther("0.0000000001"));
+		userInfo = await benis.userInfo(0, user1.address);
+		expect(userInfo.remainingWBANReward).to.equal(0);
+	});
+
+	it('Deposit with permit with non EIP-2612 token', async () => {
+		// create farm pool
+		await benis.add(1_000, token1.address, true);
+		expect(await benis.poolLength()).to.equal(1);
+
+		// try to deposit with permit with invalid token
+		const amount = ethers.utils.parseEther("1.23");
+		const deadline = Date.now();
+		const sig: Signature = await PermitUtil.createPermitSignatureForToken(
+			"Uniswap V2", "1", token1.address,
+			user1,
+			benis.address,
+			amount,
+			BigNumber.from("1"),
+			deadline,
+			await user1.getChainId(),
+		)
+		await expect(benis.connect(user1).depositWithPermit(0, amount, deadline, sig.v, sig.r, sig.s))
+			.to.be.revertedWith("function selector was not recognized and there's no fallback function");
+	});
+
 	describe("Ops Features", () => {
 		it('Collect non-distributed rewards: from owner', async() => {
 			// create farm pool
@@ -433,6 +492,19 @@ describe('BenisWithPermit', () => {
 		wbanToMint = ethers.utils.parseEther("10000"),
 		tokenToMint = ethers.utils.parseEther("0.7936")
 	) {
+		const { lpToken, liquidity } = await createLiquidity(user, pid, wbanToMint, tokenToMint);
+
+		// stake liquidity before the farm started
+		await lpToken.connect(user).approve(benis.address, liquidity);
+		await benis.connect(user).deposit(pid, liquidity);
+	}
+
+	async function createLiquidity(
+		user: SignerWithAddress,
+		pid = 0,
+		wbanToMint = ethers.utils.parseEther("10000"),
+		tokenToMint = ethers.utils.parseEther("0.7936")
+	) {
 		// mint some wBAN for users
 		const uuid = BigNumber.from(await user.getTransactionCount());
 		const sig: Signature = await ReceiptsUtil.createReceipt(owner, user.address, wbanToMint, uuid, await user.getChainId());
@@ -454,10 +526,10 @@ describe('BenisWithPermit', () => {
 		const liquidity: BigNumber = await lpToken.balanceOf(user.address);
 		expect(liquidity.gt(BigNumber.from(0)));
 
-		// stake liquidity before the farm started
-		await lpToken.connect(user).approve(benis.address, liquidity);
-		await benis.connect(user).deposit(pid, liquidity);
-		//expect(await wban.balanceOf(user.address)).to.equal(0);
+		return {
+			lpToken,
+			liquidity,
+		}
 	}
 
 });

@@ -11,9 +11,23 @@ class PermitUtil {
     value: BigNumberish,
 		nonce: BigNumber,
     deadline: BigNumberish,
-		chainId: BigNumberish
+		chainId: BigNumberish,
 	): Promise<Signature> {
-    const domain: TypedDataDomain = { name: "Wrapped Banano", version: "1", chainId, verifyingContract: wban.address };
+		return PermitUtil.createPermitSignatureForToken("Wrapped Banano", "1", wban.address, owner, spender, value, nonce, deadline, chainId);
+	}
+
+	static async createPermitSignatureForToken(
+		name: string,
+		version: string,
+		verifyingContract: string,
+		owner: SignerWithAddress,
+    spender: string,
+    value: BigNumberish,
+		nonce: BigNumber,
+    deadline: BigNumberish,
+		chainId: BigNumberish,
+	): Promise<Signature> {
+    const domain: TypedDataDomain = { name, version, chainId, verifyingContract };
     const types: Record<string, Array<TypedDataField>> = {
       Permit: [
         { name: 'owner', type: 'address' },
