@@ -136,7 +136,7 @@ const ETHEREUM_MAINNET: Network = {
 	},
 	minimumNeededForWrap: 0.002,
 	rpcUrls: ['https://rpc.ankr.com/eth'],
-	blockExplorerUrls: ['hhttps://etherscan.io/'],
+	blockExplorerUrls: ['https://etherscan.io/'],
 }
 
 class Networks {
