@@ -206,7 +206,7 @@ contract BenisWithPermit is Ownable {
         emit Deposit(msg.sender, _pid, _amount);
     }
 
-    // Deposit staking tokens to Benus for wBAN rewards, using EIP712 signatures.
+    // Deposit staking tokens to Benis for wBAN rewards, using EIP712 signatures.
     function depositWithPermit(uint256 _pid, uint256 _amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public {
         IERC20 stakingToken = poolInfo[_pid].stakingToken;
         IERC20Permit(address(stakingToken)).permit(msg.sender, address(this), _amount, deadline, v, r, s);
