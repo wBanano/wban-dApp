@@ -98,6 +98,7 @@ describe('BenisWithPermit', () => {
 		// jump to farm start time
 		await increaseTo(rewardsStartTime);
 		// harvest should not give any reward yet
+		expect(await benis.pendingWBAN(0, user1.address)).to.equal(0);
 		expect(await wban.balanceOf(user1.address)).to.equal(0);
 
 		// unstake liquidity one week later
@@ -397,10 +398,12 @@ describe('BenisWithPermit', () => {
 			await user1.getChainId(),
 		)
 		await benis.connect(user1).depositWithPermit(0, liquidity, deadline, sig.v, sig.r, sig.s);
+		expect(await lpToken.balanceOf(user1.address)).to.equal(0);
 
 		// jump to farm start time
 		await increaseTo(rewardsStartTime);
 		// harvest should not give any reward yet
+		expect(await benis.pendingWBAN(0, user1.address)).to.equal(0);
 		expect(await wban.balanceOf(user1.address)).to.equal(0);
 
 		// unstake liquidity one week later
