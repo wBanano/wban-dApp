@@ -194,23 +194,26 @@ task("wban:gasless-swap", "Deploy wBAN gasless swap contract")
 		}
 	});
 
-task("benis:deploy", "Deploy Benis")
-	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
+task("benis:deploy", "Deploy Benis (with permit feature)")
+	.addParam("wban", "The address of wBAN smart-contract", '0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034', types.string)
 	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
 	.addParam("starttime", "The timestamp at which Benis farms should start", 0, types.int)
+	.addParam("rewarder", "The address of the wBAN rewarder", "", types.string)
 	.setAction(async (args, hre) => {
 		const wbanAddress = args.wban;
 		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
 		let rewardsStartTime = args.starttime == 0 ? (await hre.ethers.provider.getBlock('latest')).timestamp : args.starttime;
-		const Benis = await hre.ethers.getContractFactory("Benis");
-		const benis = await Benis.deploy(wbanAddress, rewardsPerSecond, rewardsStartTime);
+		const rewarderAddress = args.rewarder;
+		const Benis = await hre.ethers.getContractFactory("BenisWithPermit");
+		const benis = await Benis.deploy(wbanAddress, rewardsPerSecond, rewardsStartTime, rewarderAddress);
 		await benis.deployed();
 		await hre.run("verify:verify", {
 			address: benis.address,
 			constructorArguments: [
 				wbanAddress,
 				rewardsPerSecond,
-				rewardsStartTime
+				rewardsStartTime,
+				rewarderAddress,
 			]
 		});
 		console.log(`Benis deployed and verified at "${benis.address}" with rewardsPerSecond ${rewardsPerSecond.toString()} and startTime ${rewardsStartTime}`);
@@ -221,17 +224,20 @@ task("benis:verify", "Verify Benis source code on blockchain explorer")
 	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
 	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
 	.addParam("starttime", "The timestamp at which Benis farms should start", 0, types.int)
+	.addParam("rewarder", "The address of the wBAN rewarder", "", types.string)
 	.setAction(async (args, hre) => {
 		const benisAddress = args.benis;
 		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
 		let rewardsStartTime = args.starttime == 0 ? (await hre.ethers.provider.getBlock('latest')).timestamp : args.starttime;
+		const rewarderAddress = args.rewarder;
 		console.log(`Benis deployed at: "${benisAddress}"`);
 		await hre.run("verify:verify", {
 			address: benisAddress,
   		constructorArguments: [
 				args.wban,
 				rewardsPerSecond,
-				rewardsStartTime
+				rewardsStartTime,
+				rewarderAddress,
 			]
 		});
 	});
