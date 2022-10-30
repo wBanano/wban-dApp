@@ -5,7 +5,7 @@ const tokens: TokensList = {
 		symbol: 'wBAN',
 		address: {
 			dev: '',
-			staging: '',
+			staging: '0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034',
 			production: '0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034',
 		},
 		decimals: 18,
@@ -19,7 +19,7 @@ const tokens: TokensList = {
 		symbol: 'WETH',
 		address: {
 			dev: '',
-			staging: '',
+			staging: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 			production: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 		},
 		decimals: 18,

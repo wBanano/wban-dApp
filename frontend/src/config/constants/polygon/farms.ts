@@ -8,6 +8,8 @@ export default class PolygonFarms {
 		switch (this.ENV_NAME) {
 			case 'dev':
 				return '0xCA24D45C36951f0969574023507F21CA636D6345'
+			case 'staging':
+				return '0xefa4aED9Cf41A8A0FcdA4e88EfA2F60675bAeC9F'
 			case 'production':
 				return '0xefa4aED9Cf41A8A0FcdA4e88EfA2F60675bAeC9F'
 			default:
@@ -23,7 +25,7 @@ export default class PolygonFarms {
 				lpSymbol: 'wBAN-WETH',
 				lpAddresses: {
 					dev: '',
-					staging: '',
+					staging: '0xb556feD3B348634a9A010374C406824Ae93F0CF8',
 					production: '0xb556feD3B348634a9A010374C406824Ae93F0CF8',
 				},
 				token: tokens.wban,

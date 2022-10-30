@@ -8,6 +8,8 @@ export default class BSCFarms {
 		switch (this.ENV_NAME) {
 			case 'dev':
 				return '0x5501DE4089fCe613e78F60249930f0EF17eCfC4f'
+			case 'staging':
+				return '0x1E30E12e82956540bf870A40FD1215fC083a3751'
 			case 'production':
 				return '0x1E30E12e82956540bf870A40FD1215fC083a3751'
 			default:
@@ -56,7 +58,7 @@ export default class BSCFarms {
 				lpSymbol: 'wBAN-BUSD (PancakeSwap)',
 				lpAddresses: {
 					dev: '',
-					staging: '',
+					staging: '0x351A295AfBAB020Bc7eedcB7fd5A823c01A95Fda',
 					production: '0x351A295AfBAB020Bc7eedcB7fd5A823c01A95Fda',
 				},
 				token: tokens.wban,

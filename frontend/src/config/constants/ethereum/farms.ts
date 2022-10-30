@@ -7,7 +7,7 @@ export default class FantomFarms {
 	getBenisAddress(): string {
 		switch (this.ENV_NAME) {
 			case 'dev':
-				return ''
+			case 'staging':
 			case 'production':
 				return '0xD91f84D4E2d9f4fa508c61356A6CB81a306e5287'
 			default:

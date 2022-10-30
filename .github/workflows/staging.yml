@@ -38,7 +38,7 @@ jobs:
       - name: Compile & Test
         run: |
           yarn
-          yarn build
+          yarn build --mode staging
         #yarn test:unit
         working-directory: ${{env.working-directory}}
       - name: Deploy to wban-testing.netlify.app

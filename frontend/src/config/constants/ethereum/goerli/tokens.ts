@@ -4,8 +4,8 @@ const tokens: TokensList = {
 	wban: {
 		symbol: 'wBAN',
 		address: {
-			dev: '',
-			staging: '',
+			dev: '0xad043D3b1D86f50a7a1D3f370B23a0963b435a91',
+			staging: '0xad043D3b1D86f50a7a1D3f370B23a0963b435a91',
 			production: '0xad043D3b1D86f50a7a1D3f370B23a0963b435a91',
 		},
 		decimals: 18,
