@@ -167,7 +167,7 @@ class ContractsModule extends VuexModule {
 	}
 
 	@Action
-	async signPermitAllowance(permitRequest: PermitSignatureRequest): Promise<string> {
+	async signPermitAllowance(permitRequest: PermitSignatureRequest): Promise<Signature> {
 		const { amount, spender, deadline, provider } = permitRequest
 		const chainId = await provider.getSigner().getChainId()
 		return await PermitUtil.createPermitSignature(

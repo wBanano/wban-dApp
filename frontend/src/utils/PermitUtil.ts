@@ -1,23 +1,41 @@
 import { WBANTokenWithPermit } from '@artifacts/typechain'
-import { BigNumberish, providers } from 'ethers'
-import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer'
+import { ethers, providers, BigNumber, BigNumberish, Signature } from 'ethers'
+import { TypedDataDomain, TypedDataField } from 'ethers/node_modules/@ethersproject/abstract-signer'
 
 class PermitUtil {
 	static async createPermitSignature(
 		wban: WBANTokenWithPermit,
-		signer: providers.JsonRpcSigner,
+		owner: providers.JsonRpcSigner,
 		spender: string,
 		value: BigNumberish,
 		deadline: BigNumberish,
 		chainId: BigNumberish
-	): Promise<string> {
-		const address = await signer.getAddress()
-		const domain: TypedDataDomain = {
-			name: await wban.name(),
-			version: '1',
-			chainId,
-			verifyingContract: wban.address,
-		}
+	): Promise<Signature> {
+		return PermitUtil.createPermitSignatureForToken(
+			'Wrapped Banano',
+			'1',
+			wban.address,
+			owner,
+			spender,
+			value,
+			await wban.nonces(owner.getAddress()),
+			deadline,
+			chainId
+		)
+	}
+
+	static async createPermitSignatureForToken(
+		name: string,
+		version: string,
+		verifyingContract: string,
+		owner: providers.JsonRpcSigner,
+		spender: string,
+		value: BigNumberish,
+		nonce: BigNumber,
+		deadline: BigNumberish,
+		chainId: BigNumberish
+	): Promise<Signature> {
+		const domain: TypedDataDomain = { name, version, chainId, verifyingContract }
 		const types: Record<string, Array<TypedDataField>> = {
 			Permit: [
 				{ name: 'owner', type: 'address' },
@@ -28,15 +46,15 @@ class PermitUtil {
 			],
 		}
 		const message = {
-			owner: address,
+			owner: await owner.getAddress(),
 			spender,
 			value: value,
-			nonce: await wban.nonces(address),
+			nonce: nonce.toHexString(),
 			deadline,
 		}
-		const signature = await signer._signTypedData(domain, types, message)
-		// const sig: Signature = ethers.utils.splitSignature(signature)
-		return signature
+		const signature = await owner._signTypedData(domain, types, message)
+		const sig: Signature = ethers.utils.splitSignature(signature)
+		return sig
 	}
 }
 

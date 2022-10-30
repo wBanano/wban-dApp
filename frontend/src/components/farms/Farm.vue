@@ -247,6 +247,7 @@ import numeral from 'numeral'
 import { openURL } from 'quasar'
 import { getDexUrl } from '@/config/constants/dex'
 import Accounts from '@/store/modules/accounts'
+import { hasPermitFeature } from '@/config/constants/farms'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -346,6 +347,8 @@ export default class Farm extends Vue {
 			const otherToken = this.value.quoteToken.address[Farm.ENV_NAME as keyof Address]
 			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl() === 'https://pancakeswap.finance') {
 				openURL(`${getDexUrl()}/add/${this.wbanAddress}/${otherToken}?chainId=${Accounts.network.chainIdNumber}`)
+			} else if (getDexUrl() === 'https://app.uniswap.org') {
+				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/${otherToken}`)
 			} else {
 				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/${otherToken}`)
 			}
@@ -371,7 +374,22 @@ export default class Farm extends Vue {
 	}
 
 	async supply() {
-		const txnHash = await this.benisUtils.supply(this.value.pid, this.lpAmount, this.value.lpSymbol, this.benis)
+		let txnHash = ''
+		// check if Benis has permit feature
+		const permitEnabled = hasPermitFeature()
+		console.debug('Is Benis permit enabled?', permitEnabled)
+		if (permitEnabled) {
+			txnHash = await this.benisUtils.supplyWithPermit(
+				this.value.pid,
+				this.value.lpAddresses[Farm.ENV_NAME as keyof Address],
+				this.lpAmount,
+				this.value.lpSymbol,
+				this.signer,
+				this.benis
+			)
+		} else {
+			txnHash = await this.benisUtils.supply(this.value.pid, this.lpAmount, this.value.lpSymbol, this.benis)
+		}
 		await this.reload()
 		const blockExplorerUrl = Accounts.network.blockExplorerUrls[0]
 		Dialogs.confirmFarmSupply(this.lpAmount, this.value.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
@@ -417,12 +435,17 @@ export default class Farm extends Vue {
 			)
 			this.emptyRewards = this.farmData.userPendingRewards.isZero()
 
-			const allowance: BigNumber = await this.bep20.allowance(
-				this.account,
-				this.value.lpAddresses[Farm.ENV_NAME as keyof Address],
-				this.signer
-			)
-			this.lpTokenAllowance = allowance.gt(BigNumber.from('0'))
+			const permitEnabled = hasPermitFeature()
+			if (permitEnabled) {
+				this.lpTokenAllowance = true
+			} else {
+				const allowance: BigNumber = await this.bep20.allowance(
+					this.account,
+					this.value.lpAddresses[Farm.ENV_NAME as keyof Address],
+					this.signer
+				)
+				this.lpTokenAllowance = allowance.gt(BigNumber.from('0'))
+			}
 
 			this.isLoading = false
 		}

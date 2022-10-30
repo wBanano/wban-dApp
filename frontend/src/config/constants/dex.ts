@@ -3,14 +3,16 @@ import BSCDEX from './bsc/dex'
 import PolygonDEX from './polygon/dex'
 import FantomDEX from './fantom/dex'
 import EthereumDEX from './ethereum/dex'
+import GoerliDEX from './ethereum/goerli/dex'
 import { getBackendHost } from './backend'
-import { BSC_MAINNET, FANTOM_MAINNET, POLYGON_MAINNET, ETHEREUM_MAINNET } from '@/utils/Networks'
+import { BSC_MAINNET, FANTOM_MAINNET, POLYGON_MAINNET, ETHEREUM_MAINNET, ETHEREUM_TESTNET } from '@/utils/Networks'
 import axios from 'axios'
 
 const bsc = new BSCDEX()
 const polygon = new PolygonDEX()
 const fantom = new FantomDEX()
 const ethereum = new EthereumDEX()
+const goerli = new GoerliDEX()
 
 type Token = {
 	name: string
@@ -38,6 +40,10 @@ function getDexUrl() {
 			return polygon.getDexUrl()
 		case FANTOM_MAINNET.chainIdNumber:
 			return fantom.getDexUrl()
+		case ETHEREUM_MAINNET.chainIdNumber:
+			return ethereum.getDexUrl()
+		case ETHEREUM_TESTNET.chainIdNumber:
+			return goerli.getDexUrl()
 		default:
 			throw new Error('Unexpected network')
 	}

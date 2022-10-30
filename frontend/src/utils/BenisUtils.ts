@@ -1,6 +1,8 @@
-import { Benis } from '@artifacts/typechain'
-import { BigNumber, ethers } from 'ethers'
+import { Benis, BenisWithPermit__factory, UniswapV2Pair__factory } from '@artifacts/typechain'
+import { JsonRpcSigner } from '@ethersproject/providers'
+import { BigNumber, ethers, Signature, Signer } from 'ethers'
 import Dialogs from './Dialogs'
+import PermitUtil from './PermitUtil'
 
 const ONE_UNIT = ethers.utils.parseEther('1')
 const ONE_YEAR = 365 * 24 * 60 * 60
@@ -46,6 +48,39 @@ class BenisUtils {
 
 	public async supply(pid: number, lpAmount: string, lpSymbol: string, benis: Benis): Promise<string> {
 		const txn = await benis.deposit(pid, ethers.utils.parseEther(lpAmount))
+		Dialogs.startFarmSupply(lpAmount, lpSymbol)
+		return (await txn.wait(2)).transactionHash
+	}
+
+	public async supplyWithPermit(
+		pid: number,
+		lpAddress: string,
+		lpAmount: string,
+		lpSymbol: string,
+		user: Signer,
+		benis: Benis
+	): Promise<string> {
+		// ask for LP permit nonce
+		const lpToken = UniswapV2Pair__factory.connect(lpAddress, user)
+		const nonce = await lpToken.nonces(user.getAddress())
+
+		// permit signature for Benis approval
+		const liquidity: BigNumber = ethers.utils.parseEther(lpAmount)
+		const deadline = Date.now() + 30 * 60 * 1_000 // deadline of 30 minutes
+		const sig: Signature = await PermitUtil.createPermitSignatureForToken(
+			'Uniswap V2',
+			'1',
+			lpAddress,
+			user as JsonRpcSigner,
+			benis.address,
+			liquidity,
+			nonce,
+			deadline,
+			await user.getChainId()
+		)
+
+		const benisWithPermit = BenisWithPermit__factory.connect(benis.address, user)
+		const txn = await benisWithPermit.depositWithPermit(pid, liquidity, deadline, sig.v, sig.r, sig.s)
 		Dialogs.startFarmSupply(lpAmount, lpSymbol)
 		return (await txn.wait(2)).transactionHash
 	}

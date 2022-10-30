@@ -1,4 +1,4 @@
-import { TokensList } from '../types'
+import { TokensList } from '../../types'
 
 const tokens: TokensList = {
 	wban: {
@@ -6,7 +6,7 @@ const tokens: TokensList = {
 		address: {
 			dev: '',
 			staging: '',
-			production: '0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034',
+			production: '0xad043D3b1D86f50a7a1D3f370B23a0963b435a91',
 		},
 		decimals: 18,
 		projectLink: 'https://ethereum.banano.cc/',
@@ -20,7 +20,7 @@ const tokens: TokensList = {
 		address: {
 			dev: '',
 			staging: '',
-			production: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+			production: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
 		},
 		decimals: 18,
 	},

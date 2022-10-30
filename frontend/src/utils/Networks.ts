@@ -139,6 +139,22 @@ const ETHEREUM_MAINNET: Network = {
 	blockExplorerUrls: ['https://etherscan.io/'],
 }
 
+const ETHEREUM_TESTNET: Network = {
+	network: 'ethereum',
+	chainId: '0x5',
+	chainIdNumber: 5,
+	chainName: 'Goerli',
+	chainUrl: 'https://goerli.net/',
+	nativeCurrency: {
+		name: 'ETH',
+		symbol: 'ETH',
+		decimals: 18,
+	},
+	minimumNeededForWrap: 0.002,
+	rpcUrls: ['https://rpc.ankr.com/eth_goerli'],
+	blockExplorerUrls: ['https://goerli.etherscan.io/'],
+}
+
 class Networks {
 	private networks: Map<string, Network>
 	private testnet: Network | undefined
@@ -152,6 +168,7 @@ class Networks {
 		this.networks.set(FANTOM_MAINNET.chainId, FANTOM_MAINNET)
 		this.networks.set(FANTOM_TESTNET.chainId, FANTOM_TESTNET)
 		this.networks.set(ETHEREUM_MAINNET.chainId, ETHEREUM_MAINNET)
+		this.networks.set(ETHEREUM_TESTNET.chainId, ETHEREUM_TESTNET)
 
 		const testnetSelected = process.env.VUE_APP_TESTNET
 		if (testnetSelected) {
@@ -191,4 +208,5 @@ export {
 	FANTOM_MAINNET,
 	FANTOM_TESTNET,
 	ETHEREUM_MAINNET,
+	ETHEREUM_TESTNET,
 }

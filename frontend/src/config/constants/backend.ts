@@ -7,6 +7,7 @@ import {
 	FANTOM_MAINNET,
 	FANTOM_TESTNET,
 	ETHEREUM_MAINNET,
+	ETHEREUM_TESTNET,
 } from '@/utils/Networks'
 
 function getBackendHost(): string {
@@ -22,6 +23,7 @@ function getBackendHost(): string {
 		case BSC_TESTNET.chainIdNumber:
 		case POLYGON_TESTNET.chainIdNumber:
 		case FANTOM_TESTNET.chainIdNumber:
+		case ETHEREUM_TESTNET.chainIdNumber:
 			return 'https://wban-api.kalixia.com'
 		default:
 			throw new Error('Unexpected network')

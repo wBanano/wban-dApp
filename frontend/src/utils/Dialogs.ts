@@ -243,7 +243,7 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: i18n.t('notifications.farm-supply.message', { amount, symbol }).toString(),
+			message: i18n.t('notifications.farm-supply', { amount, symbol }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,

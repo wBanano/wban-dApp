@@ -284,7 +284,9 @@ task("benis:create-pool", "Create a farm")
 		const lpTokenAddress = args.lp;
 		const alloc = args.alloc;
 		const benis = await hre.ethers.getContractAt("Benis", benisAddress)
-		await benis.add(alloc, lpTokenAddress, true);
+		const tx = await benis.add(alloc, lpTokenAddress, true);
+		console.info('Tx hash:', tx.hash);
+		await tx.wait();
 	});
 
 const config: HardhatUserConfig = {
@@ -381,6 +383,7 @@ const config: HardhatUserConfig = {
 			url: "https://rpc.ankr.com/eth_goerli",
 			accounts,
 			chainId: 5,
+			gasMultiplier: 1.5,
 		},
 		bscdevnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
