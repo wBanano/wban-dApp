@@ -22,12 +22,12 @@ export default class FantomFarms {
 				pid: 0,
 				lpSymbol: 'wBAN-ETH',
 				lpAddresses: {
-					dev: '',
-					staging: '',
-					production: '',
+					dev: '0x1f249F8b5a42aa78cc8a2b66EE0bb015468a5f43',
+					staging: '0x1f249F8b5a42aa78cc8a2b66EE0bb015468a5f43',
+					production: '0x1f249F8b5a42aa78cc8a2b66EE0bb015468a5f43',
 				},
 				token: tokens.wban,
-				quoteToken: tokens.weth,
+				quoteToken: tokens.eth,
 			},
 		]
 	}

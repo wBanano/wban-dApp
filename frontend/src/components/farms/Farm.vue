@@ -353,7 +353,11 @@ export default class Farm extends Vue {
 				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/${otherToken}`)
 			}
 		} else {
-			openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/ETH`)
+			if (getDexUrl() === 'https://app.uniswap.org') {
+				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/ETH`)
+			} else {
+				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/ETH`)
+			}
 		}
 	}
 
