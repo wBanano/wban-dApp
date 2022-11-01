@@ -1,3 +1,9 @@
+# v2.4.0
+## New Features
+- Deployment on Ethereum
+## Bugs
+- Missing text for farm deposit notification #104
+
 # v2.3.0
 ## New Features
 - gasless features for BSC and Fantom
