@@ -1,3 +1,7 @@
+# v2.4.1
+## Bugs
+- wrong logo path when displaying low amount of crypto dialog
+
 # v2.4.0
 ## New Features
 - Deployment on Ethereum
