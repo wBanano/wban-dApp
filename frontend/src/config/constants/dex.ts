@@ -4,15 +4,26 @@ import PolygonDEX from './polygon/dex'
 import FantomDEX from './fantom/dex'
 import EthereumDEX from './ethereum/dex'
 import GoerliDEX from './ethereum/goerli/dex'
+import ArbitrumDEX from './arbitrum/dex'
 import { getBackendHost } from './backend'
-import { BSC_MAINNET, FANTOM_MAINNET, POLYGON_MAINNET, ETHEREUM_MAINNET, ETHEREUM_TESTNET } from '@/utils/Networks'
+import {
+	BSC_MAINNET,
+	FANTOM_MAINNET,
+	POLYGON_MAINNET,
+	ETHEREUM_MAINNET,
+	ETHEREUM_TESTNET,
+	ARBITRUM_MAINNET,
+	ARBITRUM_TESTNET,
+} from '@/utils/Networks'
 import axios from 'axios'
+import { DEXAggregator } from '@/models/dex/SwapQuote'
 
 const bsc = new BSCDEX()
 const polygon = new PolygonDEX()
 const fantom = new FantomDEX()
 const ethereum = new EthereumDEX()
 const goerli = new GoerliDEX()
+const arbitrum = new ArbitrumDEX()
 
 type Token = {
 	name: string
@@ -44,36 +55,60 @@ function getDexUrl() {
 			return ethereum.getDexUrl()
 		case ETHEREUM_TESTNET.chainIdNumber:
 			return goerli.getDexUrl()
+		case ARBITRUM_MAINNET.chainIdNumber:
+		case ARBITRUM_TESTNET.chainIdNumber:
+			return arbitrum.getDexUrl()
 		default:
 			throw new Error('Unexpected network')
 	}
 }
 
-function get0xSwapAPI(): string {
+function getDexAggregator(): DEXAggregator {
 	switch (Accounts.network.chainIdNumber) {
 		case BSC_MAINNET.chainIdNumber:
-			return bsc.get0xSwapAPI()
+			return bsc.getDexAggregator()
 		case POLYGON_MAINNET.chainIdNumber:
-			return polygon.get0xSwapAPI()
+			return polygon.getDexAggregator()
 		case FANTOM_MAINNET.chainIdNumber:
-			return fantom.get0xSwapAPI()
+			return fantom.getDexAggregator()
 		case ETHEREUM_MAINNET.chainIdNumber:
-			return ethereum.get0xSwapAPI()
+			return ethereum.getDexAggregator()
+		case ARBITRUM_MAINNET.chainIdNumber:
+			return arbitrum.getDexAggregator()
 		default:
 			throw new Error('Unexpected network')
 	}
 }
 
-function get0xExchangeRouterAddress(): string {
+function getDexAggregatorUri(): string {
 	switch (Accounts.network.chainIdNumber) {
 		case BSC_MAINNET.chainIdNumber:
-			return bsc.get0xExchangeRouterAddress()
+			return bsc.getDexAggregatorUri()
 		case POLYGON_MAINNET.chainIdNumber:
-			return polygon.get0xExchangeRouterAddress()
+			return polygon.getDexAggregatorUri()
 		case FANTOM_MAINNET.chainIdNumber:
-			return fantom.get0xExchangeRouterAddress()
+			return fantom.getDexAggregatorUri()
 		case ETHEREUM_MAINNET.chainIdNumber:
-			return ethereum.get0xExchangeRouterAddress()
+			return ethereum.getDexAggregatorUri()
+		case ARBITRUM_MAINNET.chainIdNumber:
+			return arbitrum.getDexAggregatorUri()
+		default:
+			throw new Error('Unexpected network')
+	}
+}
+
+function getDexAggregatorAllowanceTarget(): string {
+	switch (Accounts.network.chainIdNumber) {
+		case BSC_MAINNET.chainIdNumber:
+			return bsc.getDexAggregatorAllowanceTarget()
+		case POLYGON_MAINNET.chainIdNumber:
+			return polygon.getDexAggregatorAllowanceTarget()
+		case FANTOM_MAINNET.chainIdNumber:
+			return fantom.getDexAggregatorAllowanceTarget()
+		case ETHEREUM_MAINNET.chainIdNumber:
+			return ethereum.getDexAggregatorAllowanceTarget()
+		case ARBITRUM_MAINNET.chainIdNumber:
+			return arbitrum.getDexAggregatorAllowanceTarget()
 		default:
 			throw new Error('Unexpected network')
 	}
@@ -100,4 +135,12 @@ async function getTokensList(): Promise<Array<Token>> {
 	return tokens
 }
 
-export { getDexUrl, get0xSwapAPI, get0xExchangeRouterAddress, getTokensList, Token, EMPTY_TOKEN }
+export {
+	getDexUrl,
+	getDexAggregator,
+	getDexAggregatorUri,
+	getDexAggregatorAllowanceTarget,
+	getTokensList,
+	Token,
+	EMPTY_TOKEN,
+}

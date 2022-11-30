@@ -8,20 +8,20 @@ class PermitUtil {
 		owner: providers.JsonRpcSigner,
 		spender: string,
 		value: BigNumberish,
-		deadline: BigNumberish,
-		chainId: BigNumberish
+		deadline: BigNumberish
 	): Promise<Signature> {
-		return PermitUtil.createPermitSignatureForToken(
+		const sig = await PermitUtil.createPermitSignatureForToken(
 			'Wrapped Banano',
 			'1',
 			wban.address,
 			owner,
 			spender,
 			value,
-			await wban.nonces(owner.getAddress()),
-			deadline,
-			chainId
+			await wban.nonces(await owner.getAddress()),
+			deadline
 		)
+		console.debug('Permit sig:', sig)
+		return sig
 	}
 
 	static async createPermitSignatureForToken(
@@ -32,9 +32,9 @@ class PermitUtil {
 		spender: string,
 		value: BigNumberish,
 		nonce: BigNumber,
-		deadline: BigNumberish,
-		chainId: BigNumberish
+		deadline: BigNumberish
 	): Promise<Signature> {
+		const chainId = await owner.getChainId()
 		const domain: TypedDataDomain = { name, version, chainId, verifyingContract }
 		const types: Record<string, Array<TypedDataField>> = {
 			Permit: [
@@ -48,10 +48,11 @@ class PermitUtil {
 		const message = {
 			owner: await owner.getAddress(),
 			spender,
-			value: value,
+			value,
 			nonce: nonce.toHexString(),
 			deadline,
 		}
+		console.log(message)
 		const signature = await owner._signTypedData(domain, types, message)
 		const sig: Signature = ethers.utils.splitSignature(signature)
 		return sig

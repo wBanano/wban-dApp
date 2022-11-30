@@ -95,7 +95,7 @@
 				>
 					<q-card>
 						<q-card-section>
-							<div v-for="path in quote.route" v-bind:key="path.source">
+							<div v-for="path in quote.route" v-bind:key="path.from.address">
 								- {{ path.source }}: {{ path.from.symbol }} -> {{ path.to.symbol }}
 							</div>
 						</q-card-section>
@@ -131,14 +131,13 @@ import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import TokensUtil from '@/utils/TokensUtil'
 import { BigNumber, ethers, Signer } from 'ethers'
-import { Token } from '@/config/constants/dex'
-import { BigNumberish } from 'ethers'
+import { Token, getDexAggregator, getDexAggregatorAllowanceTarget } from '@/config/constants/dex'
 import TokenInput from '@/components/tokens/TokenInput.vue'
 import { TokenAmount, emptyTokenAmount } from '@/models/dex/TokenAmount'
 import { Network, Networks } from '@/utils/Networks'
 import { DEXUtils } from '@/utils/DEXUtils'
 import { sleep } from '@/utils/AsyncUtils'
-import { SwapQuoteResponse, EMPTY_QUOTE } from '@/models/dex/SwapQuote'
+import { QuoteResponse, EMPTY_QUOTE, SwapResponse } from '@/models/dex/SwapQuote'
 import { TransactionRequest } from '@ethersproject/providers'
 import { IERC20, IERC20__factory, WBANTokenWithPermit } from '@artifacts/typechain'
 import SwapDialogs from '@/utils/SwapDialogs'
@@ -148,6 +147,7 @@ import backend from '@/store/modules/backend'
 import plausible from '@/store/modules/plausible'
 import { Logger } from 'ethers/lib/utils'
 import { GaslessSettings } from '@/models/GaslessSettings'
+import { InsufficientLiquidityError } from '@/services/dex/Errors'
 
 const accountsStore = namespace('accounts')
 const pricesStore = namespace('prices')
@@ -168,10 +168,10 @@ export default class Swaps extends Vue {
 	to: TokenAmount = emptyTokenAmount()
 
 	gas: BigNumber = BigNumber.from(0)
-	gasPrice: BigNumberish = BigNumber.from(0)
+	gasPrice: BigNumber = BigNumber.from(0)
 	slippagePercentage = 0.5 // 0.5% slippage
 
-	quote: SwapQuoteResponse = EMPTY_QUOTE
+	quote: QuoteResponse = EMPTY_QUOTE
 
 	allowanceSetting = 'unlimited'
 	approveLabel = ''
@@ -216,7 +216,7 @@ export default class Swaps extends Vue {
 		if (cryptoPrice === 0 || this.quote.price === '') {
 			return ''
 		}
-		const gasFee: BigNumber = this.gas.mul(ethers.utils.parseUnits(this.gasPrice.toString(), 'wei'))
+		const gasFee: BigNumber = this.gas.mul(this.gasPrice)
 		const usdFee = Number.parseFloat(ethers.utils.formatEther(gasFee).toString()) * cryptoPrice
 		return `$${usdFee.toFixed(2)}`
 	}
@@ -306,7 +306,7 @@ export default class Swaps extends Vue {
 			let skipValidation = false
 			if (this.from.token.address !== '') {
 				const token = IERC20__factory.connect(this.from.token.address, this.provider)
-				const allowance: BigNumber = await token.allowance(this.user, DEXUtils.get0xExchangeRouterAddress())
+				const allowance: BigNumber = await token.allowance(this.user, getDexAggregatorAllowanceTarget())
 				if (this.isAmountEligibleForGaslessWrap) {
 					this.approveLabel = ''
 					this.swapEnabled = false
@@ -325,10 +325,14 @@ export default class Swaps extends Vue {
 				}
 			}
 			// get gas price from tracker
-			this.gasPrice = await Networks.getSuggestedTransactionGasPriceInGwei()
-			// get quote from 0x
+			this.gasPrice = await Networks.getSuggestedTransactionGasPrice()
+			if (this.gasPrice.isZero()) {
+				this.gasPrice = await this.provider.getGasPrice()
+			}
+			// get quote from dex aggregator
 			this.quote = await DEXUtils.getQuote(
 				{
+					dexAggregator: getDexAggregator(),
 					user: this.user,
 					from: this.from,
 					to: this.to.token,
@@ -360,10 +364,13 @@ export default class Swaps extends Vue {
 				this.swapButtonTextColor = 'secondary'
 				this.swapButtonBackgroundColor = 'primary'
 			}
-		} catch (err) {
-			console.error(err)
+		} catch (err: unknown) {
+			if (err instanceof InsufficientLiquidityError) {
+				this.swapLabel = 'Insufficient liquidity'
+			} else {
+				this.swapLabel = this.fromInput.errorMessage
+			}
 			this.swapEnabled = false
-			this.swapLabel = this.fromInput.errorMessage
 			this.swapButtonClass = 'swap-button-error'
 			this.swapButtonTextColor = 'negative'
 			this.swapButtonBackgroundColor = 'light-secondary'
@@ -386,18 +393,19 @@ export default class Swaps extends Vue {
 		if (this.allowanceSetting === 'unlimited') {
 			amount = BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
 		}
+		const allowanceTarget = getDexAggregatorAllowanceTarget()
 		try {
 			SwapDialogs.startTokenApproval()
-			const approveTxn = await token.approve(this.quote.allowanceTarget, amount)
+			const approveTxn = await token.approve(allowanceTarget, amount)
 			await approveTxn.wait(2)
 			// check that allowance is enough now
-			await this.checkAllowance(approveTxn.hash, this.quote.allowanceTarget, this.user, token, amount)
+			await this.checkAllowance(approveTxn.hash, allowanceTarget, this.user, token, amount)
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			if (error.code === Logger.errors.TRANSACTION_REPLACED) {
 				if (error.repriced) {
 					console.warn('Transaction was repriced by the user')
-					await this.checkAllowance(error.replacement.hash, this.quote.allowanceTarget, this.user, token, amount)
+					await this.checkAllowance(error.replacement.hash, allowanceTarget, this.user, token, amount)
 				} else if (error.cancelled) {
 					console.error('Transaction was cancelled by the user')
 				} else {
@@ -405,12 +413,12 @@ export default class Swaps extends Vue {
 					// `error.replacement` is the new txn and `error.receipt` the new txn receipt
 					console.warn('The transaction was most likely speed up')
 					await error.replacement.wait(2)
-					await this.checkAllowance(error.replacement.hash, this.quote.allowanceTarget, this.user, token, amount)
+					await this.checkAllowance(error.replacement.hash, allowanceTarget, this.user, token, amount)
 				}
 			}
 			console.error(error)
 			SwapDialogs.errorTokenApproval()
-			throw new Error(`Can't approve ${this.quote.allowanceTarget} to spend ${this.from.token.symbol}`)
+			throw new Error(`Can't approve ${allowanceTarget} to spend ${this.from.token.symbol}`)
 		}
 	}
 
@@ -418,6 +426,20 @@ export default class Swaps extends Vue {
 		if (!this.provider) {
 			return
 		}
+		// get swap data
+		const swapResponse: SwapResponse = await DEXUtils.getSwap(
+			{
+				dexAggregator: getDexAggregator(),
+				user: this.user,
+				from: this.from,
+				to: this.to.token,
+				gasPrice: this.gasPrice,
+				slippagePercentage: this.slippagePercentage,
+				nativeCurrency: this.network.nativeCurrency.symbol,
+			},
+			this.isAmountEligibleForGaslessWrap,
+			this.isAmountEligibleForGaslessWrap
+		)
 		if (this.isAmountEligibleForGaslessWrap) {
 			await backend.gaslessSwap({
 				banWallet: this.banAddress,
@@ -427,18 +449,18 @@ export default class Swaps extends Vue {
 					signature: '',
 				},
 				recipient: this.user,
-				gasLimit: this.quote.gas.toNumber(),
-				swapCallData: this.quote.txnData,
+				gasLimit: swapResponse.gas.toNumber(),
+				swapCallData: swapResponse.txnData,
 				provider: this.provider,
 			})
 		} else {
 			// send the transaction
 			const txn: TransactionRequest = {
-				to: this.quote.txnTo,
-				gasLimit: this.quote.gas,
-				gasPrice: this.quote.gasPrice,
-				data: this.quote.txnData,
-				value: this.quote.value,
+				to: swapResponse.txnTo,
+				gasLimit: swapResponse.gas,
+				gasPrice: swapResponse.gasPrice,
+				data: swapResponse.txnData,
+				value: swapResponse.value,
 				// chainId: this.expectedBlockchain.chainIdNumber,
 			}
 			const signer: Signer = this.provider.getSigner()
@@ -450,7 +472,7 @@ export default class Swaps extends Vue {
 				const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 				const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
 				SwapDialogs.confirmSwap(txnHash, txnLink)
-				// track quote request
+				// track swap request
 				this.trackEventInPlausible('Swaps: Swapped')
 				// reset form
 				this.from.amount = ''

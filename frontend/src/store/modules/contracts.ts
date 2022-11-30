@@ -72,7 +72,7 @@ class ContractsModule extends VuexModule {
 			const oldProvider = this._wBanToken?.provider
 			// do not initialize contract if this was done earlier
 			if (!this._wBanToken || provider !== oldProvider) {
-				console.debug('Connecting to wBAN contract...')
+				console.debug(`Connecting to wBAN contract at "${TokensUtil.getWBANAddress()}"...`)
 				const contract = WBANTokenWithPermit__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
 				this.context.commit('setWBANToken', contract)
 
@@ -169,15 +169,13 @@ class ContractsModule extends VuexModule {
 	@Action
 	async signPermitAllowance(permitRequest: PermitSignatureRequest): Promise<Signature> {
 		const { amount, spender, deadline, provider } = permitRequest
-		const chainId = await provider.getSigner().getChainId()
 		return await PermitUtil.createPermitSignature(
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			this.wbanContract!,
 			provider.getSigner(),
 			spender,
 			amount,
-			deadline,
-			chainId
+			deadline
 		)
 	}
 }

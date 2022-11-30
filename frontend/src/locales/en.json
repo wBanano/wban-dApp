@@ -234,7 +234,7 @@
 		},
 		"unsupported-network": {
 			"title": "Unsupported network {network}",
-			"message": "<p>wBAN is only available on BSC, Polygon and Fantom.</p><p>Please switch to one of those networks.</p>"
+			"message": "<p>wBAN is only available on BSC, Polygon, Fantom, Ethereum and Arbitrum.</p><p>Please switch to one of those networks.</p>"
 		}
 	},
 	"notifications": {

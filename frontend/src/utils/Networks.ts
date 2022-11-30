@@ -3,7 +3,7 @@ import axios from 'axios'
 import { BigNumber, ethers } from 'ethers'
 
 interface Network {
-	network: 'bsc' | 'polygon' | 'fantom' | 'ethereum'
+	network: 'bsc' | 'polygon' | 'fantom' | 'ethereum' | 'arbitrum'
 	chainId: string
 	chainIdNumber: number
 	chainName: string
@@ -155,6 +155,38 @@ const ETHEREUM_TESTNET: Network = {
 	blockExplorerUrls: ['https://goerli.etherscan.io/'],
 }
 
+const ARBITRUM_MAINNET: Network = {
+	network: 'arbitrum',
+	chainId: '0xa4b1',
+	chainIdNumber: 42161,
+	chainName: 'Arbitrum',
+	chainUrl: '',
+	nativeCurrency: {
+		name: 'ETH',
+		symbol: 'ETH',
+		decimals: 18,
+	},
+	minimumNeededForWrap: 0.0002,
+	rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+	blockExplorerUrls: ['https://arbiscan.io/'],
+}
+
+const ARBITRUM_TESTNET: Network = {
+	network: 'arbitrum',
+	chainId: '0x66eed',
+	chainIdNumber: 421613,
+	chainName: 'Arbitrum Goerli',
+	chainUrl: '',
+	nativeCurrency: {
+		name: 'AGOR',
+		symbol: 'AGOR',
+		decimals: 18,
+	},
+	minimumNeededForWrap: 0.002,
+	rpcUrls: ['https://goerli-rollup.arbitrum.io/rpc'],
+	blockExplorerUrls: ['https://goerli.arbiscan.io/'],
+}
+
 class Networks {
 	private networks: Map<string, Network>
 	private testnet: Network | undefined
@@ -169,6 +201,8 @@ class Networks {
 		this.networks.set(FANTOM_TESTNET.chainId, FANTOM_TESTNET)
 		this.networks.set(ETHEREUM_MAINNET.chainId, ETHEREUM_MAINNET)
 		this.networks.set(ETHEREUM_TESTNET.chainId, ETHEREUM_TESTNET)
+		this.networks.set(ARBITRUM_MAINNET.chainId, ARBITRUM_MAINNET)
+		this.networks.set(ARBITRUM_TESTNET.chainId, ARBITRUM_TESTNET)
 
 		const testnetSelected = process.env.VUE_APP_TESTNET
 		if (testnetSelected) {
@@ -184,17 +218,25 @@ class Networks {
 		return [...mainnet, this.testnet]
 	}
 
-	private getMainnetSupportedNetworks(): Network[] {
-		return [BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, ETHEREUM_MAINNET]
+	public getMainnetSupportedNetworks(): Network[] {
+		return [BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, ETHEREUM_MAINNET, ARBITRUM_MAINNET]
 	}
 
 	public getNetworkData(chainId: string): Network | undefined {
 		return this.networks.get(chainId.toLowerCase())
 	}
 
-	public static async getSuggestedTransactionGasPriceInGwei(): Promise<BigNumber> {
-		const resp = await axios.get(`${getBackendHost()}/blockchain/gas-price`)
-		return ethers.utils.parseUnits(resp.data.SafeGasPrice, 'gwei')
+	public static async getSuggestedTransactionGasPrice(): Promise<BigNumber> {
+		try {
+			const resp = await axios({
+				method: 'get',
+				url: `${getBackendHost()}/blockchain/gas-price`,
+				timeout: 2_000,
+			})
+			return ethers.utils.parseUnits(resp.data.gasPrice, 'wei')
+		} catch (err: unknown) {
+			return ethers.constants.Zero
+		}
 	}
 }
 
@@ -209,4 +251,6 @@ export {
 	FANTOM_TESTNET,
 	ETHEREUM_MAINNET,
 	ETHEREUM_TESTNET,
+	ARBITRUM_MAINNET,
+	ARBITRUM_TESTNET,
 }

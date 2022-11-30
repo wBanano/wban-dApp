@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { Network, BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, Networks, ETHEREUM_MAINNET } from '@/utils/Networks'
+import { Network, Networks } from '@/utils/Networks'
 import accounts from '@/store/modules/accounts'
 
 const accountsStore = namespace('accounts')
@@ -52,12 +52,9 @@ export default class BlockchainChooser extends Vue {
 	networks = new Networks()
 
 	get isMainnet() {
-		return (
-			this.currentBlockchain?.chainIdNumber === BSC_MAINNET.chainIdNumber ||
-			this.currentBlockchain?.chainIdNumber === POLYGON_MAINNET.chainIdNumber ||
-			this.currentBlockchain?.chainIdNumber === FANTOM_MAINNET.chainIdNumber ||
-			this.currentBlockchain?.chainIdNumber === ETHEREUM_MAINNET.chainIdNumber
-		)
+		return this.networks
+			.getMainnetSupportedNetworks()
+			.find((network) => network.chainId === this.currentBlockchain.chainId)
 	}
 
 	get supportedBlockchains(): Network[] {

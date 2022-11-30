@@ -1,5 +1,5 @@
 import { getBenisAddress } from '@/config/constants/farms'
-import { IBEP20, IBEP20__factory, IApePair, IApePair__factory } from '@artifacts/typechain'
+import { IBEP20, IBEP20__factory, UniswapV2Pair, UniswapV2Pair__factory } from '@artifacts/typechain'
 import { BigNumber, ethers, Signer } from 'ethers'
 
 class BEP20Utils {
@@ -26,7 +26,7 @@ class BEP20Utils {
 	}
 
 	public async getLPDetails(account: string, lpStakedBalance: BigNumber, lpAddress: string, signer: Signer) {
-		const lp: IApePair = await IApePair__factory.connect(lpAddress, signer)
+		const lp: UniswapV2Pair = await UniswapV2Pair__factory.connect(lpAddress, signer)
 		const addressToken0 = await lp.token0()
 		const addressToken1 = await lp.token1()
 		const token0 = await IBEP20__factory.connect(addressToken0, signer)

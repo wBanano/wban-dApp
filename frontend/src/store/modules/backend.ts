@@ -1,4 +1,6 @@
 import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
+import { namespace } from 'vuex-class'
+import { BindingHelpers } from 'vuex-class/lib/bindings'
 import router from '@/router'
 import store from '@/store'
 import Contracts from '@/store/modules/contracts'
@@ -673,3 +675,4 @@ class BackendModule extends VuexModule {
 }
 
 export default getModule(BackendModule)
+export const Backend: BindingHelpers = namespace('backend')

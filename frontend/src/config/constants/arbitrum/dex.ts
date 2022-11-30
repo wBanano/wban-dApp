@@ -2,15 +2,15 @@ import { DEXAggregator } from '@/models/dex/SwapQuote'
 
 export default class DEX {
 	getDexUrl() {
-		return 'https://app.uniswap.org'
+		return 'https://app.sushi.com/legacy'
 	}
 	getDexAggregator(): DEXAggregator {
-		return '0x'
+		return '1inch'
 	}
 	getDexAggregatorUri(): string {
-		return 'https://api.0x.org/swap/v1/quote'
+		return 'https://api.1inch.io/v5.0/42161'
 	}
 	getDexAggregatorAllowanceTarget(): string {
-		return '0xdef1c0ded9bec7f1a1670819833240f027b25eff'
+		return '0x1111111254eeb25477b68fb85ed929f73a960582'
 	}
 }
