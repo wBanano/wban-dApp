@@ -163,18 +163,18 @@ task("wban:pause", "Pause wBAN -- [EMERGENCY ONLY]")
 	});
 
 task("wban:gasless-swap", "Deploy wBAN gasless swap contract")
-	.addParam("wban", "The address of wBAN smart-contract", '', types.string)
-	.addParam("zeroEx", "The address of 0x exchange proxy", '', types.string)
+	.addParam("wban", "The address of wBAN smart-contract", '0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034', types.string)
+	.addParam("swapTarget", "The address of 0x exchange proxy", '', types.string)
 	.addParam("relayer", "The address of the relayer allowed to call this the gasless swap contract", '', types.string)
 	.setAction(async (args, hre) => {
 		const accounts = await hre.ethers.getSigners()
 		const wbanAddress = args.wban
-		const zeroExAddress = args.zeroEx
+		const swapTarget = args.swapTarget
 		const relayerAddress = args.relayer
 
 		console.info(`Deploying wBAN gasless swap with owner "${accounts[0].address}"`)
 		const gaslessSwapFactory = await hre.ethers.getContractFactory("WBANGaslessSwap")
-		const swap = (await hre.upgrades.deployProxy(gaslessSwapFactory, [wbanAddress, zeroExAddress]))
+		const swap = (await hre.upgrades.deployProxy(gaslessSwapFactory, [wbanAddress, swapTarget]))
 		await swap.deployed()
 		await swap.grantRole(await swap.RELAYER_ROLE(), relayerAddress)
 		console.log(`wBAN gasless swap proxy deployed at: "${swap.address}"`)
@@ -198,7 +198,7 @@ task("benis:deploy", "Deploy Benis (with permit feature)")
 	.addParam("wban", "The address of wBAN smart-contract", '0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034', types.string)
 	.addParam("rewards", "The number of wBAN to reward per second", 1, types.float)
 	.addParam("starttime", "The timestamp at which Benis farms should start", 0, types.int)
-	.addParam("rewarder", "The address of the wBAN rewarder", "", types.string)
+	.addParam("rewarder", "The address of the wBAN rewarder", "0xD7eB548715FdC282d237Dd826b1A99d86bfec79c", types.string)
 	.setAction(async (args, hre) => {
 		const wbanAddress = args.wban;
 		const rewardsPerSecond = hre.ethers.utils.parseEther(args.rewards.toString());
@@ -249,7 +249,8 @@ task("benis:add-time", "Deploy Benis")
 		const benisAddress = args.benis;
 		const additionalTime = args.time;
 		const benis = await hre.ethers.getContractAt("Benis", benisAddress)
-		await benis.changeEndTime(additionalTime)
+		const tx = await benis.changeEndTime(additionalTime)
+		console.info('Tx hash:', tx.hash)
 	});
 
 task("benis:change-rewards", "Changes Benis rewards per second")
@@ -311,6 +312,15 @@ const config: HardhatUserConfig = {
 			},
 			{
 				version: "0.6.12",
+				settings: {
+					optimizer: {
+						enabled: true,
+						runs: 200
+					},
+				}
+			},
+			{
+				version: "0.6.6",
 				settings: {
 					optimizer: {
 						enabled: true,
@@ -383,7 +393,7 @@ const config: HardhatUserConfig = {
 			url: "https://rpc.ankr.com/eth_goerli",
 			accounts,
 			chainId: 5,
-			gasMultiplier: 1.5,
+			gasMultiplier: 1.1,
 		},
 		bscdevnet: {
 			url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
@@ -419,7 +429,6 @@ const config: HardhatUserConfig = {
 			accounts,
 			chainId: 137,
 			gasMultiplier: 1.1,
-			gasPrice: 60000000000,
 		},
 		fantomtestnet: {
 			url: 'https://rpc.testnet.fantom.network',
@@ -433,6 +442,18 @@ const config: HardhatUserConfig = {
 			gasMultiplier: 1.4,
 			//gasPrice: 4000000000000,
 		},
+		arbitrum: {
+			url: 'https://arb1.arbitrum.io/rpc',
+			accounts,
+			chainId: 42161,
+			gasMultiplier: 1.1,
+		},
+		"arbitrum-goerli": {
+			url: 'https://goerli-rollup.arbitrum.io/rpc',
+			accounts,
+			chainId: 421613,
+			gasMultiplier: 1.1,
+		},
 	},
 	typechain: {
 		outDir: 'artifacts/typechain',
@@ -443,8 +464,8 @@ const config: HardhatUserConfig = {
 			'@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol',
 			'@uniswap/v2-core/contracts/UniswapV2Factory.sol',
 			'@uniswap/v2-core/contracts/UniswapV2Pair.sol',
-			'ApeSwap-Banana-Farm/contracts/libs/MockBEP20.sol',
-			'ApeSwap-Core-Contracts/contracts/ApeFactory.sol',
+			'@uniswap/v2-core/contracts/test/ERC20.sol',
+			'@uniswap/v2-periphery/contracts/test/WETH9.sol',
 		],
 	},
 	spdxLicenseIdentifier: {

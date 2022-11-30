@@ -8,6 +8,8 @@ import {
 	FANTOM_TESTNET,
 	ETHEREUM_MAINNET,
 	ETHEREUM_TESTNET,
+	ARBITRUM_MAINNET,
+	ARBITRUM_TESTNET,
 } from '@/utils/Networks'
 
 function getBackendHost(): string {
@@ -20,11 +22,14 @@ function getBackendHost(): string {
 			return 'https://fantom-api.banano.cc'
 		case ETHEREUM_MAINNET.chainIdNumber:
 			return 'https://ethereum-api.banano.cc'
+		case ARBITRUM_MAINNET.chainIdNumber:
+			return 'https://arbitrum-api.banano.cc'
 		case BSC_TESTNET.chainIdNumber:
 		case POLYGON_TESTNET.chainIdNumber:
 		case FANTOM_TESTNET.chainIdNumber:
 		case ETHEREUM_TESTNET.chainIdNumber:
-			return 'https://wban-api.kalixia.com'
+		case ARBITRUM_TESTNET.chainIdNumber:
+			return 'https://wban-api.banano-testing.cc'
 		default:
 			throw new Error('Unexpected network')
 	}

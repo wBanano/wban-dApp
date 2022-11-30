@@ -4,7 +4,15 @@ import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
 import { BigNumber, ethers } from 'ethers'
 import MetaMask from '@/utils/MetaMask'
-import { BSC_MAINNET, POLYGON_MAINNET, FANTOM_MAINNET, ETHEREUM_MAINNET, Network, Networks } from '@/utils/Networks'
+import {
+	BSC_MAINNET,
+	POLYGON_MAINNET,
+	FANTOM_MAINNET,
+	ETHEREUM_MAINNET,
+	ARBITRUM_MAINNET,
+	Network,
+	Networks,
+} from '@/utils/Networks'
 import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
@@ -172,6 +180,13 @@ class AccountsModule extends VuexModule {
 					label: ETHEREUM_MAINNET.chainName,
 					rpcUrl: ETHEREUM_MAINNET.rpcUrls[0],
 					blockExplorerUrl: ETHEREUM_MAINNET.blockExplorerUrls[0],
+				},
+				{
+					id: ARBITRUM_MAINNET.chainId,
+					token: ARBITRUM_MAINNET.nativeCurrency.symbol,
+					label: ARBITRUM_MAINNET.chainName,
+					rpcUrl: ARBITRUM_MAINNET.rpcUrls[0],
+					blockExplorerUrl: ARBITRUM_MAINNET.blockExplorerUrls[0],
 				},
 			]
 			const testnetSelected = process.env.VUE_APP_TESTNET

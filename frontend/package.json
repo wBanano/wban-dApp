@@ -1,6 +1,6 @@
 {
 	"name": "frontend",
-	"version": "2.4.1",
+	"version": "2.5.0",
 	"private": true,
 	"scripts": {
 		"serve": "vue-cli-service serve",
@@ -19,8 +19,11 @@
 		"@web3-onboard/ledger": "2.1.4",
 		"@web3-onboard/walletconnect": "2.0.5",
 		"axios": "0.27.2",
-		"core-js": "^3.22.8",
-		"humanize-duration": "^3.27.2",
+		"core-js": "^3.26.1",
+		"@ethersproject/abi": "^5.7.0",
+		"@ethersproject/bytes": "^5.7.0",
+		"@ethersproject/providers": "^5.7.2",
+		"humanize-duration": "^3.27.3",
 		"idb": "^7.0.1",
 		"numeral": "^2.0.6",
 		"plausible-tracker": "^0.3.5",
@@ -82,6 +85,6 @@
 		"handlebars": "^4.7.7",
 		"underscore": "^1.12.1",
 		"node-fetch": "^2.6.1",
-		"ethers": "5.6.8"
+		"ethers": "5.7.2"
 	}
 }

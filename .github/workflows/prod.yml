@@ -11,7 +11,7 @@ jobs:
       - name: Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "14"
+          node-version: "16"
       - run: npm install -g yarn
       - name: Compile & Test
         run: |
@@ -27,7 +27,7 @@ jobs:
       - name: Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "14"
+          node-version: "16"
       - run: npm install -g yarn
         working-directory: ${{env.working-directory}}
       - name: Build Smart Contract artifacts

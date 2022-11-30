@@ -68,15 +68,14 @@ class BenisUtils {
 		const liquidity: BigNumber = ethers.utils.parseEther(lpAmount)
 		const deadline = Date.now() + 30 * 60 * 1_000 // deadline of 30 minutes
 		const sig: Signature = await PermitUtil.createPermitSignatureForToken(
-			'Uniswap V2',
+			await lpToken.name(),
 			'1',
 			lpAddress,
 			user as JsonRpcSigner,
 			benis.address,
 			liquidity,
 			nonce,
-			deadline,
-			await user.getChainId()
+			deadline
 		)
 
 		const benisWithPermit = BenisWithPermit__factory.connect(benis.address, user)

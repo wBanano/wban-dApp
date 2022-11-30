@@ -353,7 +353,9 @@ export default class Farm extends Vue {
 				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/${otherToken}`)
 			}
 		} else {
-			if (getDexUrl() === 'https://app.uniswap.org') {
+			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl() === 'https://pancakeswap.finance') {
+				openURL(`${getDexUrl()}/add/${this.wbanAddress}/ETH?chainId=${Accounts.network.chainIdNumber}`)
+			} else if (getDexUrl() === 'https://app.uniswap.org') {
 				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/ETH`)
 			} else {
 				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/ETH`)

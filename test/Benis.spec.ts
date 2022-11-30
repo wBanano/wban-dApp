@@ -1,7 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { Benis, WBANToken, MockBEP20, ApeFactory, ApePair } from "../artifacts/typechain";
+import { Benis, WBANToken, ERC20, UniswapV2Factory, UniswapV2Pair } from "../artifacts/typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Signature } from "ethers";
 import ReceiptsUtil from "./ReceiptsUtil";
@@ -12,10 +12,10 @@ const { expect } = chai;
 
 describe('Benis', () => {
 	let wban: WBANToken;
-	let token1: MockBEP20;
-	let token2: MockBEP20;
-	let lpToken1: ApePair;
-	let lpToken2: ApePair;
+	let token1: ERC20;
+	let token2: ERC20;
+	let lpToken1: UniswapV2Pair;
+	let lpToken2: UniswapV2Pair;
 	let wbanRewards: BigNumber;
 	let benis: Benis;
 	let rewardsStartTime: number;
@@ -38,29 +38,29 @@ describe('Benis', () => {
 		await wban.deployed();
 		expect(wban.address).to.properAddress;
 
-		// deploy fake WBNB contract
-		const MockBEP20 = await ethers.getContractFactory("MockBEP20", signers[0]);
+		// deploy fake tokens
+		const MockERC20 = await ethers.getContractFactory("@uniswap/v2-core/contracts/test/ERC20.sol:ERC20", signers[0]);
 		const MINTED_ERC20 = ethers.utils.parseEther("100");
-		token1 = (await MockBEP20.deploy("Token 1", "TOK1", MINTED_ERC20)) as MockBEP20;
+		token1 = (await MockERC20.deploy(MINTED_ERC20)) as ERC20;
 		await token1.deployed();
 		expect(token1.address).to.properAddress;
-		token2 = (await MockBEP20.deploy("Token 2", "TOK2", MINTED_ERC20)) as MockBEP20;
+		token2 = (await MockERC20.deploy(MINTED_ERC20)) as ERC20;
 		await token2.deployed();
 		expect(token2.address).to.properAddress;
 
-		const ApeFactory = await ethers.getContractFactory("ApeFactory", signers[0]);
-		const apeFactory = (await ApeFactory.deploy("0x0000000000000000000000000000000000000000")) as ApeFactory; // no fees
-		await apeFactory.deployed();
-		expect(apeFactory.address).to.properAddress;
+		const UniswapFactory = await ethers.getContractFactory("UniswapV2Factory", signers[0]);
+		const uniswapFactory = (await UniswapFactory.deploy("0x0000000000000000000000000000000000000000")) as UniswapV2Factory; // no fees
+		await uniswapFactory.deployed();
+		expect(uniswapFactory.address).to.properAddress;
 
 		// deploy fake wBAN-TOK1 pair
-		await apeFactory.createPair(token1.address, wban.address);
-		const pair1 = await apeFactory.getPair(wban.address, token1.address);
-		lpToken1 = await ethers.getContractAt("ApePair", pair1, signers[0]) as ApePair;
+		await uniswapFactory.createPair(token1.address, wban.address);
+		const pair1 = await uniswapFactory.getPair(wban.address, token1.address);
+		lpToken1 = await ethers.getContractAt("UniswapV2Pair", pair1, signers[0]) as UniswapV2Pair;
 		// deploy fake wBAN-TOK2 pair
-		await apeFactory.createPair(token2.address, wban.address);
-		const pair2 = await apeFactory.getPair(wban.address, token2.address);
-		lpToken2 = await ethers.getContractAt("ApePair", pair2, signers[0]) as ApePair;
+		await uniswapFactory.createPair(token2.address, wban.address);
+		const pair2 = await uniswapFactory.getPair(wban.address, token2.address);
+		lpToken2 = await ethers.getContractAt("UniswapV2Pair", pair2, signers[0]) as UniswapV2Pair;
 
 		// deploy `Benis` contract
 		const Benis = await ethers.getContractFactory("Benis", signers[0]);

@@ -19,7 +19,7 @@ jobs:
       - name: Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "14"
+          node-version: "16"
       - run: npm install -g yarn
       - name: Compile & Test
         run: |
@@ -28,7 +28,7 @@ jobs:
       - name: Checks
         run: |
           yarn lint
-          yarn coverage
+      #yarn coverage
   build-frontend:
     name: dAPP
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
       - name: Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "14"
+          node-version: "16"
       - run: npm install -g yarn
         working-directory: ${{env.working-directory}}
       - name: Build Smart Contract artifacts

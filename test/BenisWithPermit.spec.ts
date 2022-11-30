@@ -1,7 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { BenisWithPermit, WBANToken, MockBEP20, UniswapV2Factory, UniswapV2Pair } from "../artifacts/typechain";
+import { BenisWithPermit, WBANToken, ERC20, UniswapV2Factory, UniswapV2Pair, WETH9 } from "../artifacts/typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Signature } from "ethers";
 import ReceiptsUtil from "./ReceiptsUtil";
@@ -13,8 +13,8 @@ const { expect } = chai;
 
 describe('BenisWithPermit', () => {
 	let wban: WBANToken;
-	let token1: MockBEP20;
-	let token2: MockBEP20;
+	let token1: ERC20;
+	let token2: ERC20;
 	let lpToken1: UniswapV2Pair;
 	let lpToken2: UniswapV2Pair;
 	let wbanRewards: BigNumber;
@@ -39,13 +39,13 @@ describe('BenisWithPermit', () => {
 		await wban.deployed();
 		expect(wban.address).to.properAddress;
 
-		// deploy fake WBNB contract
-		const MockBEP20 = await ethers.getContractFactory("MockBEP20", signers[0]);
+		// deploy fake tokens
+		const MockERC20 = await ethers.getContractFactory("@uniswap/v2-core/contracts/test/ERC20.sol:ERC20", signers[0]);
 		const MINTED_ERC20 = ethers.utils.parseEther("100");
-		token1 = (await MockBEP20.deploy("Token 1", "TOK1", MINTED_ERC20)) as MockBEP20;
+		token1 = (await MockERC20.deploy(MINTED_ERC20)) as ERC20;
 		await token1.deployed();
 		expect(token1.address).to.properAddress;
-		token2 = (await MockBEP20.deploy("Token 2", "TOK2", MINTED_ERC20)) as MockBEP20;
+		token2 = (await MockERC20.deploy(MINTED_ERC20)) as ERC20;
 		await token2.deployed();
 		expect(token2.address).to.properAddress;
 
@@ -421,15 +421,24 @@ describe('BenisWithPermit', () => {
 	});
 
 	it('Deposit with permit with non EIP-2612 token', async () => {
+		// deploy fake WETH contract
+		const WETH9 = await ethers.getContractFactory("WETH9", owner);
+		const weth = (await WETH9.deploy()) as WETH9;
+		await weth.deployed();
+
 		// create farm pool
-		await benis.add(1_000, token1.address, true);
+		await benis.add(1_000, weth.address, true);
 		expect(await benis.poolLength()).to.equal(1);
 
+		// mint some WETH
+		const amount = ethers.utils.parseEther("1");
+		await weth.connect(user1).deposit({ value: amount });
+		expect(await weth.balanceOf(user1.address)).to.equal(amount);
+
 		// try to deposit with permit with invalid token
-		const amount = ethers.utils.parseEther("1.23");
 		const deadline = Date.now();
 		const sig: Signature = await PermitUtil.createPermitSignatureForToken(
-			"Uniswap V2", "1", token1.address,
+			"Uniswap V2", "1", weth.address,
 			user1,
 			benis.address,
 			amount,

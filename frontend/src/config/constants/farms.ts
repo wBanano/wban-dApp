@@ -4,8 +4,11 @@ import PolygonFarms from './polygon/farms'
 import FantomFarms from './fantom/farms'
 import EthereumFarms from './ethereum/farms'
 import GoerliFarms from './ethereum/goerli/farms'
+import ArbitrumFarms from './arbitrum/farms'
 import Accounts from '@/store/modules/accounts'
 import {
+	ARBITRUM_MAINNET,
+	ARBITRUM_TESTNET,
 	BSC_MAINNET,
 	BSC_TESTNET,
 	ETHEREUM_MAINNET,
@@ -21,6 +24,7 @@ const polygon = new PolygonFarms()
 const fantom = new FantomFarms()
 const ethereum = new EthereumFarms()
 const goerli = new GoerliFarms()
+const arbitrum = new ArbitrumFarms()
 
 function getBenisAddress(): string {
 	switch (Accounts.network.chainIdNumber) {
@@ -37,6 +41,9 @@ function getBenisAddress(): string {
 			return ethereum.getBenisAddress()
 		case ETHEREUM_TESTNET.chainIdNumber:
 			return goerli.getBenisAddress()
+		case ARBITRUM_MAINNET.chainIdNumber:
+		case ARBITRUM_TESTNET.chainIdNumber:
+			return arbitrum.getBenisAddress()
 		default:
 			throw new Error('Unexpected network')
 	}
@@ -46,6 +53,8 @@ function hasPermitFeature(): boolean {
 	switch (Accounts.network.chainIdNumber) {
 		case ETHEREUM_MAINNET.chainIdNumber:
 		case ETHEREUM_TESTNET.chainIdNumber:
+		case ARBITRUM_MAINNET.chainIdNumber:
+		case ARBITRUM_TESTNET.chainIdNumber:
 			return true
 		default:
 			return false
@@ -67,6 +76,9 @@ function getFarms(): FarmConfig[] {
 			return ethereum.getFarms()
 		case ETHEREUM_TESTNET.chainIdNumber:
 			return goerli.getFarms()
+		case ARBITRUM_MAINNET.chainIdNumber:
+		case ARBITRUM_TESTNET.chainIdNumber:
+			return arbitrum.getFarms()
 		default:
 			throw new Error('Unexpected network')
 	}
