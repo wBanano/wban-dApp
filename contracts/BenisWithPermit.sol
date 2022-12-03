@@ -159,10 +159,10 @@ contract BenisWithPermit is Ownable {
 
         if (block.timestamp > pool.lastRewardTime && pool.stakingTokenTotalAmount != 0) {
             uint256 multiplier = getMultiplier(pool.lastRewardTime, block.timestamp);
-            uint256 wbanReward = multiplier * wbanPerSecond * pool.allocPoint / totalAllocPoint;
-            accWBANPerShare += wbanReward * 1e12 / pool.stakingTokenTotalAmount;
+            uint256 wbanReward = (multiplier * wbanPerSecond * pool.allocPoint) / totalAllocPoint;
+            accWBANPerShare += (wbanReward * 1e12) / pool.stakingTokenTotalAmount;
         }
-        return (user.amount * accWBANPerShare / 1e12) - user.rewardDebt + user.remainingWBANReward;
+        return ((user.amount * accWBANPerShare) / 1e12) - user.rewardDebt + user.remainingWBANReward;
     }
 
     // Update reward vairables for all pools. Be careful of gas spending!
@@ -185,8 +185,8 @@ contract BenisWithPermit is Ownable {
             return;
         }
         uint256 multiplier = getMultiplier(pool.lastRewardTime, block.timestamp);
-        uint256 wbanReward = multiplier * wbanPerSecond * pool.allocPoint / totalAllocPoint;
-        pool.accWBANPerShare += wbanReward * 1e12 / pool.stakingTokenTotalAmount;
+        uint256 wbanReward = (multiplier * wbanPerSecond * pool.allocPoint) / totalAllocPoint;
+        pool.accWBANPerShare += (wbanReward * 1e12) / pool.stakingTokenTotalAmount;
         pool.lastRewardTime = uint32(block.timestamp);
     }
 
@@ -196,18 +196,26 @@ contract BenisWithPermit is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
         if (user.amount > 0) {
-            uint256 pending = (user.amount * pool.accWBANPerShare / 1e12) - user.rewardDebt + user.remainingWBANReward;
+            uint256 pending =
+                ((user.amount * pool.accWBANPerShare) / 1e12) - user.rewardDebt + user.remainingWBANReward;
             user.remainingWBANReward = safeRewardTransfer(msg.sender, pending);
         }
         pool.stakingToken.safeTransferFrom(address(msg.sender), address(this), _amount);
         user.amount += _amount;
         pool.stakingTokenTotalAmount += _amount;
-        user.rewardDebt = user.amount * pool.accWBANPerShare / 1e12;
+        user.rewardDebt = (user.amount * pool.accWBANPerShare) / 1e12;
         emit Deposit(msg.sender, _pid, _amount);
     }
 
     // Deposit staking tokens to Benis for wBAN rewards, using EIP712 signatures.
-    function depositWithPermit(uint256 _pid, uint256 _amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public {
+    function depositWithPermit(
+        uint256 _pid,
+        uint256 _amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public {
         IERC20 stakingToken = poolInfo[_pid].stakingToken;
         IERC20Permit(address(stakingToken)).permit(msg.sender, address(this), _amount, deadline, v, r, s);
         deposit(_pid, _amount);
@@ -219,11 +227,11 @@ contract BenisWithPermit is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "Benis: not enough LP");
         updatePool(_pid);
-        uint256 pending = (user.amount * pool.accWBANPerShare / 1e12) - user.rewardDebt + user.remainingWBANReward;
+        uint256 pending = ((user.amount * pool.accWBANPerShare) / 1e12) - user.rewardDebt + user.remainingWBANReward;
         user.remainingWBANReward = safeRewardTransfer(msg.sender, pending);
         user.amount -= _amount;
         pool.stakingTokenTotalAmount -= _amount;
-        user.rewardDebt = user.amount * pool.accWBANPerShare / 1e12;
+        user.rewardDebt = (user.amount * pool.accWBANPerShare) / 1e12;
         pool.stakingToken.safeTransfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
     }
