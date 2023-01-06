@@ -25,6 +25,7 @@
 			},
 			"mainText": "Подключение...",
 			"paragraph": "Не забудьте выбрать все учетные записи, к которым вы хотите предоставить доступ.",
+			"previousConnection": "{wallet} уже имеет ожидающий запроса на подключение, пожалуйста, откройте приложение {wallet} для входа и подключения.",
 			"rejectedText": "Соединение отклонено!",
 			"rejectedCTA": "Нажмите здесь, чтобы попробовать снова",
 			"primaryButton": "Назад к кошелькам"
@@ -70,19 +71,20 @@
 		"poweredBy": "при поддержке",
 		"addAccount": "Добавить Аккаунт",
 		"setPrimaryAccount": "Установить основной аккаунт",
-		"disconnectWallet": "Отключить кошелек"
+		"disconnectWallet": "Отключить кошелек",
+		"copyAddress": "Скопировать адрес кошелька"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "Ваша транзакция ожидает подтверждения",
-			"nsfFail": "У вас недостаточно средств для завершения этой транзакции",
-			"txUnderpriced": "Стоимость газа для транзакции слишком низкая, попробуйте еще раз с более высокой ценой на газ",
+			"nsfFail": "У вас недостаточно средств для этой транзакции",
+			"txUnderpriced": "Цена на газ для транзакции слишком низкая, попробуйте повысить цену на газ",
 			"txRepeat": "Это может быть повторная транзакция",
 			"txAwaitingApproval": "У вас есть предыдущая транзакция, ожидающая подтверждения",
-			"txConfirmReminder": "Пожалуйста, подтвердите транзакцию для продолжения, окно транзакций может находиться за вашим браузером",
+			"txConfirmReminder": "Пожалуйста, подтвердите вашу транзакцию, чтобы продолжить",
 			"txSendFail": "Вы отклонили транзакцию",
 			"txSent": "Ваша транзакция была отправлена в сеть",
-			"txStallPending": "Ваша транзакция остановлена и не вошла в пул транзакций",
+			"txStallPending": "Ваша транзакция не отправилась, пожалуйста, попробуйте еще раз",
 			"txStuck": "Ваша транзакция застряла из-за разрыва nonce",
 			"txPool": "Ваша транзакция запущена",
 			"txStallConfirmed": "Ваша транзакция прервана и не была подтверждена",
@@ -90,14 +92,16 @@
 			"txCancel": "Транзакция отменена",
 			"txFailed": "Не удалось выполнить транзакцию",
 			"txConfirmed": "Ваша транзакция успешно завершена",
-			"txError": "Ой, что-то пошло не так, попробуйте еще раз"
+			"txError": "Ой, что-то пошло не так, попробуйте еще раз",
+			"txReplaceError": "Произошла ошибка при замене вашей транзакции, пожалуйста, попробуйте еще раз"
 		},
 		"watched": {
 			"txPool": "Ваша учётная запись {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "Ускорена транзакция для {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txCancel": "Транзакция для {formattedValue} {asset} {preposition} {counterpartyShortened} отменена",
 			"txConfirmed": "Ваша учетная запись успешно {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Ваша учетная запись не удалась {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Ваша учетная запись не удалась {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "Ваша транзакция застряла из-за разрыва nonce"
 		},
 		"time": {
 			"minutes": "мин",

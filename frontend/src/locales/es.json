@@ -26,6 +26,11 @@
 			"from-ban-description": "Tengo Banano y quiero empezar a aprender DeFi con wBAN.",
 			"from-wban": "Soy nuevo en Banano",
 			"from-wban-description": "Tengo wBAN y quiero utilizar la red de Banano.",
+			"reconnect-bridge": "Reconectar con el puente",
+			"reconnect-bridge-description": "Ya hice la configuración y quiero conectar desde un nuevo dispositivo.",
+			"swaps-only": "Comprar wBAN",
+			"swaps-only-description": "Haré la configuración del puente más adelante cuando necesite envolver o desenvolver.",
+			"swaps-only-button": "Comprar",
 			"verify-ban-address": "¡Necesitamos verificar tu dirección de BAN!",
 			"verify-ban-address-explanation": "Este paso es importante ya que asegura que tú controlas la billetera de BAN que está interactuando con wBAN.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Comprar/Vender"
 		},
 		"farm": {
+			"farm": "Granja",
 			"wban-earned": "wBAN Ganado",
 			"wban-earned-farm-ended": "(retira lo producido)",
 			"farm-ended": "¡Granja finalizada!",
+			"zap-in-from": "Hacer Zap In con {symbol}",
+			"zap-out-to-symbol": "Hacer Zap Out a {symbol}",
+			"zap-in-process-phrase1": "Este es un proceso de dos pasos:",
+			"zap-in-process-phrase2": "Hacer Zap de {symbol} para añadir los tokens a la piscina de liquidez",
+			"zap-in-process-phrase3": "Depositar tus tokens de la piscina de liquidez (LP) en la granja",
+			"zap-out-hint": "Después de retirar los tokens de la piscina de liquidez de la granja, podrás remover fácilmente la liquidez y hacer Zap Out en {symbol1} o {symbol2}.",
 			"harvest": "Recolectar",
 			"deposit": "Depósito",
 			"details": "Detalles",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "TVL de la piscina",
 			"button-approve": "Aprobar",
 			"button-add-liquidity": "Añadir liquidez",
-			"button-supply": "Suministro",
-			"button-supply-tooltip": "¡Al añadir tus tokens de liquidez a la granja, también recolectas tu wBAN ganado!",
+			"button-deposit": "Depositar",
+			"button-deposit-tooltip": "¡Al añadir tus tokens de liquidez a la granja, también recolectas tu wBAN ganado!",
+			"button-zap-in": "Zap In",
+			"button-zap-out": "Zap Out",
 			"button-withdraw-tooltip": "Al retirar tus tokens de liquidez de la granja, también recolectas tu wBAN ganado!"
 		}
 	},
@@ -224,8 +238,12 @@
 			"title": "Desenvoltura de {amount} wBAN en progreso...",
 			"message": "¡Trabajando duro para procesar tu solicitud de desenvolver!"
 		},
-		"farm-supply": {
-			"title": "Suministro de {amount} {symbol} en progreso...",
+		"farm-zap": {
+			"title": "Zap de {amount} {symbol} en progreso...",
+			"message": "¡Trabajando duro para procesar tu solicitud!"
+		},
+		"farm-deposit": {
+			"title": "Depósito de {amount} {symbol} en curso...",
 			"message": "¡Trabajando duro para procesar tu solicitud de suministro!"
 		},
 		"farm-withdraw": {
@@ -234,7 +252,7 @@
 		},
 		"unsupported-network": {
 			"title": "Red {network} no soportada",
-			"message": "<p>wBAN solo está disponible en BSC, Polygon y Fantom.</p><p>Por favor cambia a una de esas redes.</p>"
+			"message": "<p>wBAN solo está disponible en BSC, Polygon, Fantom, Ethereum y Arbitrum.</p><p>Cambia a una de esas redes.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +284,9 @@
 			"message": "Tu envoltura de {amount} wBAN fue procesada con éxito.",
 			"caption": "Tu balance de Banano depositado ha sido actualizado."
 		},
-		"farm-supply": "Tu suministro de {amount} {symbol} ha sido procesado con éxito.",
+		"farm-zap-in": "Tu zap de {amount} {symbol} ha sido procesado con éxito.<br /><strong>¡No olvides depositar tu liquidez ahora!</strong>",
+		"farm-zap-out": "Tu zap de {amount} {symbol} ha sido procesado con éxito.",
+		"farm-deposit": "Tu depósito de {amount} {symbol} ha sido procesado con éxito.",
 		"farm-withdraw": "Tu retiro de {amount} {symbol} ha sido procesado con éxito."
 	},
 	"menu": {
@@ -274,7 +294,9 @@
 			"title": "Donaciones",
 			"aside": "Puedes donarme en:",
 			"phrase1": "¡Trabajar en esta aplicación ha sido un gran viaje, y todavía continúa!",
-			"phrase2": "Las donaciones siempre son apreciados y si quieres apoyar mis esfuerzos, siempre puedes ayudarme enviando algo de Banano a:"
+			"phrase2": "Las donaciones siempre son apreciados y si quieres apoyar mis esfuerzos, siempre puedes ayudarme enviando algo de Banano a:",
+			"kalium": "Enviar vía Kalium",
+			"copy-address": "Copiar dirección"
 		}
 	},
 	"footer": {

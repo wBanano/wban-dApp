@@ -6,13 +6,9 @@
 					<q-btn to="/history" flat icon="history" :label="$t('pages.history.title')" color="primary" size="md">
 						<q-tooltip>{{ $t('pages.history.title-tooltip') }}</q-tooltip>
 					</q-btn>
-					<q-badge color="primary" text-color="secondary">
+					<q-badge v-if="unclaimedWraps > 0" color="primary" text-color="secondary">
 						{{ unclaimedWraps }}
-						<q-icon
-							name="warning"
-							size="14px"
-							class="q-ml-xs"
-						/>
+						<q-icon name="warning" size="14px" class="q-ml-xs" />
 					</q-badge>
 				</div>
 			</div>
@@ -159,7 +155,7 @@ export default class SwapInput extends Vue {
 	}
 
 	get unclaimedWraps(): number {
-		return this.swaps.filter((swap) => (swap.type === 'swap-to-wban' && swap.consumed === false)).length
+		return this.swaps.filter((swap) => swap.type === 'swap-to-wban' && swap.consumed === false).length
 	}
 
 	get banBalanceMatches(): boolean {

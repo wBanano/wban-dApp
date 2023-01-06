@@ -44,7 +44,10 @@
 						</q-card>
 					</div>
 				</div>
-				<br /><br />
+				<div v-if="!$q.platform.is.mobile">
+					<br />
+				</div>
+				<br />
 				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" :label="$t('connect')" />
 				<div v-if="!$q.platform.is.mobile">
 					<h4>{{ $t('pages.index.what-can-you-do') }}</h4>
@@ -154,7 +157,6 @@ export default class PageIndex extends Vue {
 
 <style lang="sass" scoped>
 @import '@/styles/quasar.sass'
-
 body.body--dark
 	.welcome-section
 		a
@@ -170,6 +172,11 @@ body.body--light
 		background-color: lighten($secondary, 15%)
 		margin-top: 5px
 		padding-bottom: 10px
+
+body.mobile
+	h3, h5
+		margin-top: 0.5em
+		margin-bottom: 0.5em
 
 .use-cases
 	.q-card

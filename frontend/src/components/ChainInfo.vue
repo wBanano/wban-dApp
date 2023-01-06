@@ -35,84 +35,24 @@
 				<swap-input v-if="!isOwner" :banBalance="banBalance" :wBanBalance="wBanBalance" />
 			</div>
 		</div>
-		<q-dialog v-model="promptForBanDeposit" persistent>
-			<q-card class="ban-deposits-dialog">
-				<q-card-section>
-					<div class="text-h6">{{ $t('dialogs.ban-deposit.title') }}</div>
-				</q-card-section>
-				<q-card-section class="q-gutter-sm">
-					<div class="row">
-						<div class="col-sm-9 col-xs-12">
-							<p>
-								<i18n path="dialogs.ban-deposit.phrase1">
-									<span class="banano-address gt-sm">{{ banAddress }}</span>
-								</i18n>
-								&nbsp;<strong class="banano-address gt-sm">{{ banWalletForDeposits }}</strong>
-								<a class="lt-md banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
-							</p>
-							<p v-html="$t('dialogs.ban-deposit.phrase2')" />
-						</div>
-						<div class="col-sm-3 col-xs-12 text-right">
-							<q-icon :name="banWalletForDepositsQRCode" v:if="!$q.platform.is.mobile" size="200px" />
-						</div>
-					</div>
-				</q-card-section>
-				<q-card-actions align="right">
-					<q-btn
-						@click="copyBanAddressForDepositsToClipboard"
-						v-if="!$q.platform.is.mobile"
-						color="primary"
-						text-color="secondary"
-						:label="$t('dialogs.ban-deposit.button-copy-address')"
-					/>
-					<q-btn color="primary" text-color="secondary" :label="$t('ok')" v-close-popup />
-				</q-card-actions>
-			</q-card>
-		</q-dialog>
-		<q-dialog v-model="promptForBanWithdrawal" persistent>
-			<q-card class="ban-withdrawal-dialog">
-				<form @submit.prevent.stop="withdrawBAN">
-					<q-card-section>
-						<div class="text-h6">{{ $t('dialogs.ban-withdrawal.title') }}</div>
-					</q-card-section>
-					<q-card-section class="q-gutter-sm">
-						<swap-currency-input
-							ref="currency-input"
-							label=""
-							:amount.sync="withdrawAmount"
-							:balance="banBalance"
-							currency="BAN"
-							editable
-						/>
-					</q-card-section>
-					<q-card-actions align="right">
-						<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
-						<q-btn type="submit" color="primary" text-color="secondary" :label="$t('withdraw')" />
-					</q-card-actions>
-				</form>
-			</q-card>
-		</q-dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SwapInput from '@/components/SwapInput.vue'
-import SwapCurrencyInput from '@/components/SwapCurrencyInput.vue'
 import { bnToStringFilter } from '@/utils/filters'
 import ban from '@/store/modules/ban'
 import accounts from '@/store/modules/accounts'
 import contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
-import { WithdrawRequest } from '@/models/WithdrawRequest'
 import { WBANTokenWithPermit } from '@artifacts/typechain'
 import { BigNumber, ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
-import QRCode from 'qrcode'
-import { copyToClipboard } from 'quasar'
 import { sleep } from '@/utils/AsyncUtils'
 import { Network } from '@/utils/Networks'
+import Dialogs from '@/utils/Dialogs'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -121,7 +61,6 @@ const contractsStore = namespace('contracts')
 @Component({
 	components: {
 		SwapInput,
-		SwapCurrencyInput,
 	},
 	filters: {
 		bnToStringFilter,
@@ -129,24 +68,12 @@ const contractsStore = namespace('contracts')
 })
 export default class ChainInfo extends Vue {
 	public banAddress = ''
-	public withdrawAmount = ''
-	public promptForBanDeposit = false
-	public promptForBanWithdrawal = false
-	public banWalletForDepositsQRCode = ''
-
-	@Ref('currency-input') readonly currencyInput!: SwapCurrencyInput
 
 	@accountsStore.Getter('isUserConnected')
 	isUserConnected!: boolean
 
 	@backendStore.Getter('banDeposited')
 	banBalance!: BigNumber
-
-	@backendStore.Getter('banWalletForDeposits')
-	banWalletForDeposits!: string
-
-	@backendStore.Getter('banWalletForDepositsLink')
-	banWalletForDepositsLink!: string
 
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.Web3Provider | null
@@ -173,33 +100,11 @@ export default class ChainInfo extends Vue {
 	}
 
 	async depositBAN() {
-		this.promptForBanDeposit = true
+		Dialogs.startDeposit()
 	}
 
 	async askWithdrawalAmount() {
-		this.promptForBanWithdrawal = true
-	}
-
-	async withdrawBAN() {
-		if (accounts.activeAccount) {
-			try {
-				if (!this.currencyInput.validate()) {
-					return
-				}
-				await backend.withdrawBAN({
-					amount: Number.parseFloat(this.withdrawAmount),
-					// amount: Number.parseInt(ethers.utils.formatEther(this.banBalance)),
-					banAddress: ban.banAddress,
-					blockchainAddress: accounts.activeAccount,
-					provider: accounts.providerEthers,
-				} as WithdrawRequest)
-				this.promptForBanWithdrawal = false
-				this.withdrawAmount = ''
-				this.$emit('withdrawal')
-			} catch (err) {
-				console.error("Withdrawal can't be done", err)
-			}
-		}
+		Dialogs.initiateWithdrawal()
 	}
 
 	swap() {
@@ -224,37 +129,10 @@ export default class ChainInfo extends Vue {
 		}
 	}
 
-	async copyBanAddressForDepositsToClipboard() {
-		try {
-			await copyToClipboard(this.banWalletForDeposits)
-			this.$q.notify({
-				type: 'positive',
-				message: 'Address copied',
-			})
-		} catch (err) {
-			this.$q.notify({
-				type: 'negative',
-				message: "Can't write to clipboard!",
-			})
-		}
-	}
-
 	async onProviderChange() {
 		console.warn('Web3 provider was changed to:', this.provider)
 		await contracts.initContract(this.provider)
 		await this.reloadBalances()
-		try {
-			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
-				scale: 6,
-				color: {
-					dark: '2A2A2E',
-					light: 'FBDD11',
-				},
-			})
-			this.banWalletForDepositsQRCode = `img:${qrcode}`
-		} catch (err) {
-			console.error(err)
-		}
 	}
 
 	async mounted() {
@@ -265,8 +143,6 @@ export default class ChainInfo extends Vue {
 			await sleep(100)
 		}
 		await this.onProviderChange()
-		document.addEventListener('deposit-ban', this.depositBAN)
-		document.addEventListener('withdraw-ban', this.askWithdrawalAmount)
 		document.addEventListener('reload-balances', this.reloadBalances)
 		document.addEventListener('swap', this.swap)
 		document.addEventListener('web3-connection', this.onProviderChange)
@@ -301,8 +177,4 @@ export default class ChainInfo extends Vue {
 
 #balances
 	margin-top: 10px
-
-@media (min-width: 900px)
-	.ban-deposits-dialog
-		min-width: 900px
 </style>

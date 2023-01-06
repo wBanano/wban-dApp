@@ -1,6 +1,6 @@
 {
 	"name": "frontend",
-	"version": "2.5.0",
+	"version": "2.6.0",
 	"private": true,
 	"scripts": {
 		"serve": "vue-cli-service serve",
@@ -12,17 +12,18 @@
 		"i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
 	},
 	"dependencies": {
-		"@quasar/extras": "^1.14.0",
-		"@web3-onboard/core": "2.3.2",
-		"@web3-onboard/gnosis": "2.0.5",
-		"@web3-onboard/injected-wallets": "2.0.12",
-		"@web3-onboard/ledger": "2.1.4",
-		"@web3-onboard/walletconnect": "2.0.5",
-		"axios": "0.27.2",
-		"core-js": "^3.26.1",
 		"@ethersproject/abi": "^5.7.0",
 		"@ethersproject/bytes": "^5.7.0",
 		"@ethersproject/providers": "^5.7.2",
+		"@quasar/extras": "^1.14.0",
+		"@web3-onboard/coinbase": "^2.2.0",
+		"@web3-onboard/core": "2.12.1",
+		"@web3-onboard/enkrypt": "^2.0.0",
+		"@web3-onboard/injected-wallets": "2.4.0",
+		"@web3-onboard/ledger": "2.3.2",
+		"@web3-onboard/walletconnect": "2.2.2",
+		"axios": "0.27.2",
+		"core-js": "^3.26.1",
 		"humanize-duration": "^3.27.3",
 		"idb": "^7.0.1",
 		"numeral": "^2.0.6",
@@ -30,6 +31,7 @@
 		"qrcode": "^1.4.17",
 		"qs": "^6.10.3",
 		"quasar": "^1.19.1",
+		"siwe": "^1.1.6",
 		"vue": "^2.6.14",
 		"vue-class-component": "^7.2.6",
 		"vue-i18n": "^8.27.2",
@@ -38,7 +40,8 @@
 		"vuex": "^3.6.2",
 		"vuex-class": "^0.3.2",
 		"vuex-module-decorators": "^1.0.1",
-		"wban-nfts": "^0.3.0"
+		"wban-nfts": "^0.3.0",
+		"wban-zaps": "^0.0.3"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.17.2",

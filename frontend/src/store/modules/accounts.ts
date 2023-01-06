@@ -16,8 +16,9 @@ import {
 import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
-// import ledgerModule from '@web3-onboard/ledger'
-import gnosisModule from '@web3-onboard/gnosis'
+import ledgerModule from '@web3-onboard/ledger'
+import coinbaseWalletModule from '@web3-onboard/coinbase'
+import enrkypt from '@web3-onboard/enkrypt'
 import Dialogs from '@/utils/Dialogs'
 import i18n from '@/i18n'
 import translationDE from '@/web3-onboard/web3-onboard-de.json'
@@ -111,21 +112,26 @@ class AccountsModule extends VuexModule {
 		const oldAccount = this.activeAccount
 		const oldNetworkChainId = this.network.chainId
 
-		const wallet = update.wallets[0]
-		this.activeAccount = wallet.accounts[0].address
-		this._providerEthers = new ethers.providers.Web3Provider(wallet.provider)
-		const chainId = wallet.chains[0].id
-		console.debug(`Switched to chain ${chainId}`)
-		this.network = new Networks().getNetworkData(chainId) ?? POLYGON_MAINNET
-		window.localStorage.setItem(
-			'selectedWallet',
-			JSON.stringify(update.wallets.map((wallet: WalletState) => wallet.label))
-		)
-		window.localStorage.setItem('selectedBlockchain', chainId)
+		if (update.wallets.length > 0) {
+			const wallet = update.wallets[0]
+			this.activeAccount = wallet.accounts[0].address
+			this._providerEthers = new ethers.providers.Web3Provider(wallet.provider)
 
-		// only emit event if network or connected address was changed
-		if (this.activeAccount !== oldAccount || oldNetworkChainId !== chainId) {
-			document.dispatchEvent(new CustomEvent('web3-connection'))
+			const chainId = wallet.chains[0].id
+			console.debug(`Switched to chain ${chainId}`)
+			this.network = new Networks().getNetworkData(chainId) ?? POLYGON_MAINNET
+			window.localStorage.setItem(
+				'selectedWallet',
+				JSON.stringify(update.wallets.map((wallet: WalletState) => wallet.label))
+			)
+			window.localStorage.setItem('selectedBlockchain', chainId)
+
+			// only emit event if network or connected address was changed
+			if (this.activeAccount !== oldAccount || oldNetworkChainId !== chainId) {
+				document.dispatchEvent(new CustomEvent('web3-connection'))
+			}
+		} else {
+			console.warn('No wallet selected')
 		}
 	}
 
@@ -133,8 +139,14 @@ class AccountsModule extends VuexModule {
 	async disconnectWallet() {
 		window.localStorage.removeItem('selectedWallet')
 		// disconnect the first wallet in the wallets array
-		// const [primaryWallet] = this._onboard?.state.get().wallets
-		// await this._onboard?.disconnectWallet({ label: primaryWallet.label })
+		if (this._onboard) {
+			const [primaryWallet] = this._onboard.state.get().wallets
+			await this._onboard.disconnectWallet({ label: primaryWallet.label })
+		}
+		window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id')
+		window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret')
+		window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked')
+		window.localStorage.removeItem('WALLETCONNECT_DEEPLINK_CHOICE')
 		this.activeAccount = null
 		this.activeBalance = BigNumber.from(0)
 		this._providerEthers = null
@@ -146,154 +158,159 @@ class AccountsModule extends VuexModule {
 	@Action
 	async initWalletProvider() {
 		console.debug('in initWalletProvider')
-		if (!this._isInitialized || this._language != i18n.locale) {
-			this.context.commit('setInitialized', true)
-			const injected = injectedModule()
-			const walletConnect = walletConnectModule()
-			// const ledger = ledgerModule()
-			const gnosis = gnosisModule()
-			const mainnetChains = [
-				{
-					id: BSC_MAINNET.chainId,
-					token: BSC_MAINNET.nativeCurrency.symbol,
-					label: BSC_MAINNET.chainName,
-					rpcUrl: BSC_MAINNET.rpcUrls[0],
-					blockExplorerUrl: BSC_MAINNET.blockExplorerUrls[0],
-				},
-				{
-					id: POLYGON_MAINNET.chainId,
-					token: POLYGON_MAINNET.nativeCurrency.symbol,
-					label: POLYGON_MAINNET.chainName,
-					rpcUrl: POLYGON_MAINNET.rpcUrls[0],
-					blockExplorerUrl: POLYGON_MAINNET.blockExplorerUrls[0],
-				},
-				{
-					id: FANTOM_MAINNET.chainId,
-					token: FANTOM_MAINNET.nativeCurrency.symbol,
-					label: FANTOM_MAINNET.chainName,
-					rpcUrl: FANTOM_MAINNET.rpcUrls[0],
-					blockExplorerUrl: FANTOM_MAINNET.blockExplorerUrls[0],
-				},
-				{
-					id: ETHEREUM_MAINNET.chainId,
-					token: ETHEREUM_MAINNET.nativeCurrency.symbol,
-					label: ETHEREUM_MAINNET.chainName,
-					rpcUrl: ETHEREUM_MAINNET.rpcUrls[0],
-					blockExplorerUrl: ETHEREUM_MAINNET.blockExplorerUrls[0],
-				},
-				{
-					id: ARBITRUM_MAINNET.chainId,
-					token: ARBITRUM_MAINNET.nativeCurrency.symbol,
-					label: ARBITRUM_MAINNET.chainName,
-					rpcUrl: ARBITRUM_MAINNET.rpcUrls[0],
-					blockExplorerUrl: ARBITRUM_MAINNET.blockExplorerUrls[0],
-				},
-			]
-			const testnetSelected = process.env.VUE_APP_TESTNET
-			let testnet = undefined
-			if (testnetSelected) {
-				const networks = new Networks()
-				const selected = networks.getNetworkData(testnetSelected)
-				if (selected) {
-					testnet = {
-						id: selected.chainId,
-						token: selected.nativeCurrency.symbol,
-						label: selected.chainName,
-						rpcUrl: selected.rpcUrls[0],
-					}
+		if (this._isInitialized && this._language === i18n.locale) {
+			return
+		}
+		this.context.commit('setInitialized', true)
+		const injected = injectedModule()
+		const walletConnect = walletConnectModule({
+			qrcodeModalOptions: {
+				mobileLinks: ['metamask', 'rainbow', 'trust'],
+			},
+			connectFirstChainId: false,
+		})
+		const ledger = ledgerModule()
+		const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
+		const enrkyptModule = enrkypt()
+		const mainnetChains = [
+			{
+				id: BSC_MAINNET.chainId,
+				token: BSC_MAINNET.nativeCurrency.symbol,
+				label: BSC_MAINNET.chainName,
+				rpcUrl: BSC_MAINNET.rpcUrls[0],
+				blockExplorerUrl: BSC_MAINNET.blockExplorerUrls[0],
+			},
+			{
+				id: POLYGON_MAINNET.chainId,
+				token: POLYGON_MAINNET.nativeCurrency.symbol,
+				label: POLYGON_MAINNET.chainName,
+				rpcUrl: POLYGON_MAINNET.rpcUrls[0],
+				blockExplorerUrl: POLYGON_MAINNET.blockExplorerUrls[0],
+			},
+			{
+				id: FANTOM_MAINNET.chainId,
+				token: FANTOM_MAINNET.nativeCurrency.symbol,
+				label: FANTOM_MAINNET.chainName,
+				rpcUrl: FANTOM_MAINNET.rpcUrls[0],
+				blockExplorerUrl: FANTOM_MAINNET.blockExplorerUrls[0],
+			},
+			{
+				id: ETHEREUM_MAINNET.chainId,
+				token: ETHEREUM_MAINNET.nativeCurrency.symbol,
+				label: ETHEREUM_MAINNET.chainName,
+				rpcUrl: ETHEREUM_MAINNET.rpcUrls[0],
+				blockExplorerUrl: ETHEREUM_MAINNET.blockExplorerUrls[0],
+			},
+			{
+				id: ARBITRUM_MAINNET.chainId,
+				token: ARBITRUM_MAINNET.nativeCurrency.symbol,
+				label: ARBITRUM_MAINNET.chainName,
+				rpcUrl: ARBITRUM_MAINNET.rpcUrls[0],
+				blockExplorerUrl: ARBITRUM_MAINNET.blockExplorerUrls[0],
+			},
+		]
+		const testnetSelected = process.env.VUE_APP_TESTNET
+		let testnet = undefined
+		if (testnetSelected) {
+			const networks = new Networks()
+			const selected = networks.getNetworkData(testnetSelected)
+			if (selected) {
+				testnet = {
+					id: selected.chainId,
+					token: selected.nativeCurrency.symbol,
+					label: selected.chainName,
+					rpcUrl: selected.rpcUrls[0],
 				}
 			}
-			let translation = translationEN
-			switch (i18n.locale) {
-				case 'de':
-					translation = translationDE
-					break
-				case 'en':
-					translation = translationEN
-					break
-				case 'es':
-					translation = translationES
-					break
-				case 'fr':
-					translation = translationFR
-					break
-				/*
-				case 'hi':
-					translation = translationHI
-					break
-				*/
-				case 'id':
-					translation = translationID
-					break
-				case 'it':
-					translation = translationIT
-					break
-				case 'nl':
-					translation = translationNL
-					break
-				case 'pt-BR':
-					translation = translationPTBR
-					break
-				case 'ru':
-					translation = translationRU
-					break
-				case 'tr':
-					translation = translationTR
-					break
-				case 'uk':
-					translation = translationUK
-					break
-				case 'vi':
-					translation = translationVI
-					break
-			}
-			if (this._onboard) {
-				this.disconnectWalletProvider()
-			}
-			this._onboard = Onboard({
-				wallets: [injected, walletConnect, /*ledger,*/ gnosis],
-				chains: testnet ? [...mainnetChains, testnet] : mainnetChains,
-				appMetadata: {
-					name: 'Wrapped Banano',
-					icon: require(`@/assets/wban-logo-${this.network.network}.svg`),
-					logo: require(`@/assets/wban-logo-${this.network.network}.svg`),
-					description: 'Wrapped Banano',
-					recommendedInjectedWallets: [
-						{ name: 'MetaMask', url: 'https://metamask.io' },
-						{ name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
-					],
+		}
+		let translation = translationEN
+		switch (i18n.locale) {
+			case 'de':
+				translation = translationDE
+				break
+			case 'es':
+				translation = translationES
+				break
+			case 'fr':
+				translation = translationFR
+				break
+			/*
+			case 'hi':
+				translation = translationHI
+				break
+			*/
+			case 'id':
+				translation = translationID
+				break
+			case 'it':
+				translation = translationIT
+				break
+			case 'nl':
+				translation = translationNL
+				break
+			case 'pt-BR':
+				translation = translationPTBR
+				break
+			case 'ru':
+				translation = translationRU
+				break
+			case 'tr':
+				translation = translationTR
+				break
+			case 'uk':
+				translation = translationUK
+				break
+			case 'vi':
+				translation = translationVI
+				break
+		}
+		if (this._onboard) {
+			this.disconnectWalletProvider()
+		}
+		this._onboard = Onboard({
+			wallets: [injected, walletConnect, ledger, coinbaseWalletSdk, enrkyptModule],
+			chains: testnet ? [...mainnetChains, testnet] : mainnetChains,
+			appMetadata: {
+				name: 'Wrapped Banano',
+				icon: require(`@/assets/wban-logo-${this.network.network}.svg`),
+				logo: require(`@/assets/wban-logo-${this.network.network}.svg`),
+				description: 'Wrapped Banano',
+				recommendedInjectedWallets: [
+					{ name: 'MetaMask', url: 'https://metamask.io' },
+					{ name: 'Rabby', url: 'https://rabby.io' },
+					{ name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
+				],
+			},
+			i18n: {
+				en: translation,
+			},
+			accountCenter: {
+				desktop: {
+					enabled: false,
 				},
-				i18n: {
-					en: translation,
+				mobile: {
+					enabled: false,
 				},
-				accountCenter: {
-					desktop: {
-						enabled: false,
-					},
-					mobile: {
-						enabled: false,
-					},
-				},
-			})
-			this.context.commit('setLanguage', i18n.locale)
+			},
+		})
+		this.context.commit('setLanguage', i18n.locale)
 
-			const state = this._onboard.state.select()
-			const subscription = state.subscribe((update) => {
-				this.context.commit('updateNetworkData', update)
-				this.context.dispatch('fetchActiveBalance')
-			})
-			this.context.commit('setSubscription', subscription)
+		const state = this._onboard.state.select()
+		const subscription = state.subscribe((update) => {
+			this.context.commit('updateNetworkData', update)
+			this.context.dispatch('fetchActiveBalance')
+		})
+		this.context.commit('setSubscription', subscription)
 
-			const previouslyConnectedBlockchain = window.localStorage.getItem('selectedBlockchain')
-			if (previouslyConnectedBlockchain) {
-				const network = new Networks().getNetworkData(previouslyConnectedBlockchain) ?? POLYGON_MAINNET
-				this.context.commit('setNetwork', network)
-			}
+		const previouslyConnectedBlockchain = window.localStorage.getItem('selectedBlockchain')
+		if (previouslyConnectedBlockchain) {
+			const network = new Networks().getNetworkData(previouslyConnectedBlockchain) ?? POLYGON_MAINNET
+			this.context.commit('setNetwork', network)
+		}
 
-			const previouslyConnectedWallets = window.localStorage.getItem('selectedWallet')
-			if (previouslyConnectedWallets != null && previouslyConnectedWallets !== '') {
-				await this.connectWalletProvider()
-			}
+		const previouslyConnectedWallets = window.localStorage.getItem('selectedWallet')
+		if (previouslyConnectedWallets != null && previouslyConnectedWallets !== '') {
+			await this.connectWalletProvider()
 		}
 	}
 

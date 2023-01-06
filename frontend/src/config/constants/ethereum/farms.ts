@@ -15,6 +15,10 @@ export default class FantomFarms {
 		}
 	}
 
+	getZapAddress(): string {
+		return '0x52FfD8A14f0A8883d5B29bd7402472A3ABc8760B'
+	}
+
 	getFarms(): FarmConfig[] {
 		const tokens = getTokens()
 		return [

@@ -17,6 +17,10 @@ export default class BSCFarms {
 		}
 	}
 
+	getZapAddress(): string {
+		return '0xB8a5aF7461FeDED80d27f562A12b2Bc27389128d'
+	}
+
 	getFarms(): FarmConfig[] {
 		const tokens = getTokens()
 		return [

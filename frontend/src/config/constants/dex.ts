@@ -119,16 +119,13 @@ async function getTokensList(): Promise<Array<Token>> {
 	const result = await axios.get(`${getBackendHost()}/dex/tokens`)
 	const tokens: Token[] = result.data.tokens.filter((token: Token) => token.chainId === Accounts.network.chainIdNumber)
 	const nativeCrypto = Accounts.network.nativeCurrency
-	const wrappedNativeCrypto = tokens.find(
-		(token: Token) => token.symbol.toLocaleLowerCase() === `w${nativeCrypto.symbol}`.toLocaleLowerCase()
-	)
 	const nativeToken: Token = {
 		name: nativeCrypto.name,
 		symbol: nativeCrypto.symbol,
 		decimals: nativeCrypto.decimals,
 		address: '',
 		chainId: Accounts.network.chainIdNumber,
-		logoURI: wrappedNativeCrypto?.logoURI ?? '',
+		logoURI: `/${Accounts.network.network}-home-logo.svg`,
 	}
 	tokens.push(nativeToken)
 	console.debug(`Found ${tokens.length} tokens`)

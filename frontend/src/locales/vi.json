@@ -26,6 +26,11 @@
 			"from-ban-description": "Tôi có Banano và muốn bắt đầu học DeFi với wBAN.",
 			"from-wban": "Tôi chưa quen với Banano",
 			"from-wban-description": "Tôi có wBAN và muốn sử dụng mạng lưới Banano.",
+			"reconnect-bridge": "Kết nối lại",
+			"reconnect-bridge-description": "Tôi đã hoàn tất thiết lập và muốn kết nối từ một thiết bị khác.",
+			"swaps-only": "Mua wBAN",
+			"swaps-only-description": "Hoàn tất thiết lập sau, khi cần wrap hoặc unwrap.",
+			"swaps-only-button": "Mua",
 			"verify-ban-address": "Chung tôi cần xác minh địa chỉ BAN của bạn!",
 			"verify-ban-address-explanation": "Bước này rất quan trọng vì nó có tác dụng khẳng định việc bạn đang kiểm soát ví BAN dùng để thao tac với wBAN.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Mua/Bán"
 		},
 		"farm": {
+			"farm": "Farm",
 			"wban-earned": "wBAN đã được",
 			"wban-earned-farm-ended": "(rút để thu hoạch)",
 			"farm-ended": "Farm đã dừng hoạt động!",
+			"zap-in-from": "Chuyển vào từ {symbol}",
+			"zap-out-to-symbol": "Chuyển thành {symbol}",
+			"zap-in-process-phrase1": "Quá trình này gồm hai bước:",
+			"zap-in-process-phrase2": "Chuyển {symbol} thành token bể thanh khoản",
+			"zap-in-process-phrase3": "Nạp token bể thanh khoản vào farm",
+			"zap-out-hint": "Sau khi rút token bể thanh khoản từ farm, bạn có thể dễ dàng rút lại thanh khoản và chuyển đổi về {symbol1} hoặc {symbol2}.",
 			"harvest": "Thu hoạch",
 			"deposit": "Nạp",
 			"details": "Chi tiết",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Tổng giá trị bị khóa của bể thanh khoản",
 			"button-approve": "Đồng ý",
 			"button-add-liquidity": "Tạo thanh khoản",
-			"button-supply": "Cung cấp",
-			"button-supply-tooltip": "Khi bạn thêm token để tạo thanh khoản vào farm, bạn cùng lúc cũng nhận wBAN được thưởng!",
+			"button-deposit": "Nạp",
+			"button-deposit-tooltip": "Khi bạn thêm token để tạo thanh khoản vào farm, bạn cùng lúc cũng nhận wBAN được thưởng!",
+			"button-zap-in": "Chuyển",
+			"button-zap-out": "Chuyển",
 			"button-withdraw-tooltip": "Khi bạn rút token để tạo thanh khoản từ farm, bạn cùng lúc cũng nhận wBAN được thưởng!"
 		}
 	},
@@ -224,8 +238,12 @@
 			"title": "Đang unwrap {amount} wBAN...",
 			"message": "Đang căng sức thực hiện yêu cầu unwrap của bạn!"
 		},
-		"farm-supply": {
-			"title": "Đang xử lý yêu cầu tạo thanh khoản {amount} {symbol}...",
+		"farm-zap": {
+			"title": "Đang xử lý yêu cầu chuyển {amount} {symbol}...",
+			"message": "Đang căng sức thực hiện yêu cầu của bạn!"
+		},
+		"farm-deposit": {
+			"title": "Đang xử lý yêu cầu nạp {amount} {symbol}...",
 			"message": "Đang căng sức thực hiện yêu cầu của bạn!"
 		},
 		"farm-withdraw": {
@@ -234,7 +252,7 @@
 		},
 		"unsupported-network": {
 			"title": "{network} không được hỗ trợ",
-			"message": "<p>wBAN chỉ có trên BSC, Polygon và Fantom.</p><p>Xin chuyển sang một trong các mạng lưới này.</p>"
+			"message": "<p>wBAN chỉ có trên BSC, Polygon, Fantom, Ethereum và Arbitrum.</p><p>Xin chuyển sang một trong các mạng lưới này.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +284,9 @@
 			"message": "Đã thực hiện unwrap {amount} wBAN thành công.",
 			"caption": "Số dư Banano đã nạp của bạn đã được cập nhật."
 		},
-		"farm-supply": "Đã thực hiện tạo thanh khoản với {amount} {symbol} thành công.",
+		"farm-zap-in": "Đã chuyển thành công {amount} {symbol}.<br /><strong>Đừng quên nạp thanh khoản!</strong>",
+		"farm-zap-out": "Đã chuyển {amount} {symbol} thành công.",
+		"farm-deposit": "Đã nạp {amount} {symbol} thành công.",
 		"farm-withdraw": "Đã thực hiện yêu cầu rút {amount} {symbol} thành công."
 	},
 	"menu": {
@@ -274,7 +294,9 @@
 			"title": "Đóng góp",
 			"aside": "Tôi tôi qua:",
 			"phrase1": "Xây dựng ứng dụng này là cả một hành trình, và vẫn đang tiếp tục!",
-			"phrase2": "Tip luôn được đón nhận và nếu bạn muốn ủng hộ những nỗ lực của tôi, bạn luôn có thể giúp bằng cách gửi tip Banano tới:"
+			"phrase2": "Tip luôn được đón nhận và nếu bạn muốn ủng hộ những nỗ lực của tôi, bạn luôn có thể giúp bằng cách gửi tip Banano tới:",
+			"kalium": "Gửi bằng Kalium",
+			"copy-address": "Sao chép địa chỉ"
 		}
 	},
 	"footer": {

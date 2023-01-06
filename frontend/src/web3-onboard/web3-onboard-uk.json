@@ -25,6 +25,7 @@
 			},
 			"mainText": "З’єднання...",
 			"paragraph": "Оберіть всі облікові записи, до яких ви хочете надати доступ.",
+			"previousConnection": "{wallet} вже має запит на підключення, будь ласка, відкрийте додаток {wallet} для входу та підключення.",
 			"rejectedText": "З'єднання відхилено!",
 			"rejectedCTA": "Натисніть тут, щоб спробувати знову",
 			"primaryButton": "Назад до гаманців"
@@ -70,19 +71,20 @@
 		"poweredBy": "працює на",
 		"addAccount": "Додати акаунт",
 		"setPrimaryAccount": "Встановіть основний обліковий запис",
-		"disconnectWallet": "Від'єднати гаманець"
+		"disconnectWallet": "Від'єднати гаманець",
+		"copyAddress": "Копіювати адресу гаманця"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "Ваша операція очікує на підтвердження",
-			"nsfFail": "У вас недостатньо коштів для завершення цієї транзакції",
-			"txUnderpriced": "Вартість газу для вашої транзакції занадто мала, спробуйте ще раз з більшою ціною газу",
+			"nsfFail": "Для цієї операції у вас недостатньо коштів",
+			"txUnderpriced": "Вартість газу для вашої транзакції занадто мала, спробуйте підвищити ціну газу",
 			"txRepeat": "Це може бути повторення транзакції",
 			"txAwaitingApproval": "У вас є попередня транзакція, яка очікує на підтвердження",
-			"txConfirmReminder": "Будь ласка, підтвердіть транзакцію, щоб продовжити, вікно транзакції може бути за вашим браузером",
+			"txConfirmReminder": "Будь ласка, підтвердіть транзакцію, щоб продовжити",
 			"txSendFail": "Ви відхилили транзакцію",
 			"txSent": "Вашу транзакцію було надіслано в мережу",
-			"txStallPending": "Ваша транзакція зупинилася і не увійшла в пул транзакцій",
+			"txStallPending": "Вашу транзакцію зупинено до її відправлення, будь ласка, спробуйте ще раз",
 			"txStuck": "Ваша транзакція застрягла через инший проміжок",
 			"txPool": "Ваша транзакція розпочалась",
 			"txStallConfirmed": "Вашу транзакцію зупинено і не підтверджено",
@@ -90,14 +92,16 @@
 			"txCancel": "Вашу транзакцію скасовано",
 			"txFailed": "Ваша транзакція не вдалася",
 			"txConfirmed": "Ваші операції успішні",
-			"txError": "Ой, щось пішло не так, спробуйте ще раз"
+			"txError": "Ой, щось пішло не так, спробуйте ще раз",
+			"txReplaceError": "Помилка заміни транзакції, будь ласка, спробуйте ще раз"
 		},
 		"watched": {
 			"txPool": "Ваш обліковий запис {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "Транзакція для {formattedValue} {asset} {preposition} {counterpartyShortened} була пришвидшена",
 			"txCancel": "Транзакція для {formattedValue} {asset} {preposition} {counterpartyShortened} була скасована",
 			"txConfirmed": "Ваш обліковий запис успішно {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Ваш обліковий запис не вдалося {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Ваш обліковий запис не вдалося {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "Ваша транзакція застрягла через nonce проміжок"
 		},
 		"time": {
 			"minutes": "хв",

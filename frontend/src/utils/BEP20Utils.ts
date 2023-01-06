@@ -67,7 +67,7 @@ class BEP20Utils {
 		return token.symbol()
 	}
 
-	private async getBEP20Token(tokenAddress: string, signer: Signer): Promise<IBEP20> {
+	public async getBEP20Token(tokenAddress: string, signer: Signer): Promise<IBEP20> {
 		return IBEP20__factory.connect(tokenAddress, signer)
 	}
 }

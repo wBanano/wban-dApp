@@ -32,9 +32,8 @@
 			<q-separator class="bg-secondary" />
 			<q-card-section>
 				<div class="row justify-around">
-					<div class="col-4"><q-skeleton type="QBtn" /></div>
-					<div class="col-4"><q-skeleton type="QBtn" /></div>
-					<div class="col-4"><q-skeleton type="QBtn" /></div>
+					<div class="col-5"><q-skeleton type="QBtn" class="fit" /></div>
+					<div class="col-5"><q-skeleton type="QBtn" class="fit" /></div>
 				</div>
 			</q-card-section>
 		</q-card>
@@ -150,12 +149,9 @@
 					{{ $t('components.farm.button-approve') }}
 				</q-btn>
 				<q-btn-group outline spread class="fit">
-					<q-btn @click="addLiquidity" v-if="!isStaking()" color="primary" class="fit" flat>
-						{{ $t('components.farm.button-add-liquidity') }}
-					</q-btn>
-					<q-btn @click="beginSupply" v-if="lpTokenAllowance && isActive()" color="primary" flat>
-						<div class="text-button">{{ $t('components.farm.button-supply') }}</div>
-						<q-tooltip>{{ $t('components.farm.button-supply-tooltip') }}</q-tooltip>
+					<q-btn @click="beginDeposit" v-if="lpTokenAllowance && isActive()" color="primary" flat>
+						<div class="text-button">{{ $t('components.farm.button-deposit') }}</div>
+						<q-tooltip>{{ $t('components.farm.button-deposit-tooltip') }}</q-tooltip>
 					</q-btn>
 					<q-btn
 						@click="beginWithdraw"
@@ -172,54 +168,6 @@
 				</q-btn-group>
 			</q-card-actions>
 		</q-card>
-		<q-dialog v-model="promptForSupply" persistent>
-			<q-card>
-				<q-card-section>
-					<div class="text-h6">{{ $t('components.farm.button-supply') }}</div>
-				</q-card-section>
-				<q-card-section>
-					<token-input
-						:label="value.lpSymbol"
-						:currency="value.lpSymbol"
-						:balance="lpTokenBalance"
-						:amount.sync="lpAmount"
-						editable
-					/>
-				</q-card-section>
-				<q-card-section>{{ $t('components.farm.button-supply-tooltip') }}</q-card-section>
-				<q-card-actions align="right">
-					<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
-					<q-btn
-						@click="supply"
-						color="primary"
-						text-color="secondary"
-						:label="$t('components.farm.button-supply')"
-						v-close-popup
-					/>
-				</q-card-actions>
-			</q-card>
-		</q-dialog>
-		<q-dialog v-model="promptForWithdraw" persistent>
-			<q-card>
-				<q-card-section>
-					<div class="text-h6">{{ $t('withdraw') }}</div>
-				</q-card-section>
-				<q-card-section>
-					<token-input
-						:label="value.lpSymbol"
-						:currency="value.lpSymbol"
-						:balance="lpStakedTokenBalance"
-						:amount.sync="lpAmount"
-						editable
-					/>
-				</q-card-section>
-				<q-card-section>{{ $t('components.farm.button-withdraw-tooltip') }}</q-card-section>
-				<q-card-actions align="right">
-					<q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
-					<q-btn @click="withdraw" color="primary" text-color="secondary" :label="$t('withdraw')" v-close-popup />
-				</q-card-actions>
-			</q-card>
-		</q-dialog>
 	</div>
 </template>
 
@@ -229,7 +177,7 @@ import { namespace } from 'vuex-class'
 import TokenInput from '@/components/farms/TokenInput.vue'
 import ban from '@/store/modules/ban'
 import { BigNumber, Signer, ethers } from 'ethers'
-import { Benis } from '../../../../artifacts/typechain'
+import { Benis } from '@artifacts/typechain'
 import { FarmData, EMPTY_FARM_DATA, BN_ZERO } from '@/models/FarmData'
 import { FarmConfig, Address } from '@/config/constants/types'
 import FarmUtils from '@/utils/FarmUtils'
@@ -244,9 +192,6 @@ import {
 } from '@/utils/filters'
 import Dialogs from '@/utils/Dialogs'
 import numeral from 'numeral'
-import { openURL } from 'quasar'
-import { getDexUrl } from '@/config/constants/dex'
-import Accounts from '@/store/modules/accounts'
 import { hasPermitFeature } from '@/config/constants/farms'
 
 const benisStore = namespace('benis')
@@ -286,9 +231,6 @@ export default class Farm extends Vue {
 	lpTokenBalance = BigNumber.from(0)
 	lpStakedTokenBalance = BigNumber.from(0)
 	lpAmount = '0'
-
-	promptForSupply = false
-	promptForWithdraw = false
 
 	signer!: Signer
 
@@ -342,79 +284,17 @@ export default class Farm extends Vue {
 			.div(ethers.utils.parseEther('1'))
 	}
 
-	addLiquidity() {
-		if (this.value.quoteToken.address) {
-			const otherToken = this.value.quoteToken.address[Farm.ENV_NAME as keyof Address]
-			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl() === 'https://pancakeswap.finance') {
-				openURL(`${getDexUrl()}/add/${this.wbanAddress}/${otherToken}?chainId=${Accounts.network.chainIdNumber}`)
-			} else if (getDexUrl() === 'https://app.uniswap.org') {
-				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/${otherToken}`)
-			} else {
-				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/${otherToken}`)
-			}
-		} else {
-			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl() === 'https://pancakeswap.finance') {
-				openURL(`${getDexUrl()}/add/${this.wbanAddress}/ETH?chainId=${Accounts.network.chainIdNumber}`)
-			} else if (getDexUrl() === 'https://app.uniswap.org') {
-				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/ETH`)
-			} else {
-				openURL(`${getDexUrl()}/#/add/${this.wbanAddress}/ETH`)
-			}
-		}
-	}
-
 	async approve() {
 		await this.bep20.approve(this.value.lpAddresses[Farm.ENV_NAME as keyof Address], this.signer)
 		await this.reload()
 	}
 
-	async beginSupply() {
-		this.lpTokenBalance = await this.bep20.getLPBalance(
-			this.account,
-			this.value.lpAddresses[Farm.ENV_NAME as keyof Address],
-			this.signer
-		)
-		console.debug(`LP token balance: ${ethers.utils.formatEther(this.lpTokenBalance)}`)
-		this.lpAmount = ''
-		this.promptForSupply = true
-	}
-
-	async supply() {
-		let txnHash = ''
-		// check if Benis has permit feature
-		const permitEnabled = hasPermitFeature()
-		console.debug('Is Benis permit enabled?', permitEnabled)
-		if (permitEnabled) {
-			txnHash = await this.benisUtils.supplyWithPermit(
-				this.value.pid,
-				this.value.lpAddresses[Farm.ENV_NAME as keyof Address],
-				this.lpAmount,
-				this.value.lpSymbol,
-				this.signer,
-				this.benis
-			)
-		} else {
-			txnHash = await this.benisUtils.supply(this.value.pid, this.lpAmount, this.value.lpSymbol, this.benis)
-		}
-		await this.reload()
-		const blockExplorerUrl = Accounts.network.blockExplorerUrls[0]
-		Dialogs.confirmFarmSupply(this.lpAmount, this.value.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
-		this.promptForSupply = false
+	async beginDeposit() {
+		await Dialogs.startFarmDepositDialog(this.value, this.signer)
 	}
 
 	async beginWithdraw() {
-		this.lpStakedTokenBalance = await this.benisUtils.getStakedBalance(this.value.pid, this.account, this.benis)
-		console.debug(`Staked balance: ${ethers.utils.formatEther(this.lpStakedTokenBalance)}`)
-		this.lpAmount = ''
-		this.promptForWithdraw = true
-	}
-
-	async withdraw() {
-		const txnHash = await this.benisUtils.withdraw(this.value.pid, this.lpAmount, this.value.lpSymbol, this.benis)
-		await this.reload()
-		const blockExplorerUrl = Accounts.network.blockExplorerUrls[0]
-		Dialogs.confirmFarmWithdraw(this.lpAmount, this.value.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
-		this.promptForWithdraw = false
+		await Dialogs.startFarmWithdrawDialog(this.value, this.signer)
 	}
 
 	async harvest() {

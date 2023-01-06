@@ -49,6 +49,29 @@ function getBenisAddress(): string {
 	}
 }
 
+function getZapAddress(): string {
+	switch (Accounts.network.chainIdNumber) {
+		case BSC_MAINNET.chainIdNumber:
+		case BSC_TESTNET.chainIdNumber:
+			return bsc.getZapAddress()
+		case POLYGON_MAINNET.chainIdNumber:
+		case POLYGON_TESTNET.chainIdNumber:
+			return polygon.getZapAddress()
+		case FANTOM_MAINNET.chainIdNumber:
+		case FANTOM_TESTNET.chainIdNumber:
+			return fantom.getZapAddress()
+		case ETHEREUM_MAINNET.chainIdNumber:
+			return ethereum.getZapAddress()
+		case ETHEREUM_TESTNET.chainIdNumber:
+			return goerli.getZapAddress()
+		case ARBITRUM_MAINNET.chainIdNumber:
+		case ARBITRUM_TESTNET.chainIdNumber:
+			return arbitrum.getZapAddress()
+		default:
+			throw new Error('Unexpected network')
+	}
+}
+
 function hasPermitFeature(): boolean {
 	switch (Accounts.network.chainIdNumber) {
 		case ETHEREUM_MAINNET.chainIdNumber:
@@ -84,4 +107,4 @@ function getFarms(): FarmConfig[] {
 	}
 }
 
-export { getBenisAddress, hasPermitFeature, getFarms }
+export { getBenisAddress, getZapAddress, hasPermitFeature, getFarms }

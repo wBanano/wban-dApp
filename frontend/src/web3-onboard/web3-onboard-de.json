@@ -25,6 +25,7 @@
 			},
 			"mainText": "Verbinde...",
 			"paragraph": "Stelle sicher, alle Konten auszuwählen, auf die Zugriff gewährt werden soll.",
+			"previousConnection": "{wallet} hat bereits eine ausstehende Verbindungsanfrage, bitte öffnen Sie die {wallet} -App, um sich anzumelden und zu verbinden.",
 			"rejectedText": "Verbindung abgelehnt!",
 			"rejectedCTA": "Klicke hier, um es erneut zu versuchen",
 			"primaryButton": "Zurück zum Wallet"
@@ -70,19 +71,20 @@
 		"poweredBy": "powered by",
 		"addAccount": "Konto hinzufügen",
 		"setPrimaryAccount": "Hauptkonto festlegen",
-		"disconnectWallet": "Wallet trennen"
+		"disconnectWallet": "Wallet trennen",
+		"copyAddress": "Wallet-Adresse kopieren"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "Deine Transaktion wartet auf deine Bestätigung",
-			"nsfFail": "Du hast nicht genügend Guthaben, um diese Transaktion abzuschließen",
-			"txUnderpriced": "Die Gebühren für deine Transaktion sind zu niedrig, versuche es erneut mit höheren Gebühren",
+			"nsfFail": "Sie haben nicht genügend Guthaben für diese Transaktion",
+			"txUnderpriced": "Der Gaspreis für Ihre Transaktion ist zu niedrig, versuchen Sie einen höheren Gaspreis",
 			"txRepeat": "Dies könnte eine wiederholte Transaktion sein",
 			"txAwaitingApproval": "Du hast eine vorherige Transaktion mit ausstehender Bestätigung",
-			"txConfirmReminder": "Bitte bestätige deine Transaktion, um fortzufahren, das Transaktionsfenster könnte hinter deine Browser versteckt sein",
+			"txConfirmReminder": "Bitte bestätigen Sie Ihre Transaktion um fortzufahren",
 			"txSendFail": "Du hast die Transaktion abgelehnt",
 			"txSent": "Deine Transaktion wurde an das Netzwerk gesendet",
-			"txStallPending": "Deine Transaktion ist blockiert und hat den Transaktionspool nicht erreicht",
+			"txStallPending": "Ihre Transaktion ist blockiert, bevor sie gesendet wurde, bitte versuchen Sie es erneut",
 			"txStuck": "Deine Transaktion wird aufgrund einer Nonce Lücke blockiert",
 			"txPool": "Deine Transaktion wurde gestartet",
 			"txStallConfirmed": "Deine Transaktion wird blockiert und wurde nicht bestätigt",
@@ -90,14 +92,16 @@
 			"txCancel": "Deine Transaktion wird abgebrochen",
 			"txFailed": "Deine Transaktion ist fehlgeschlagen",
 			"txConfirmed": "Deine Transaktion wurde erfolgreich abgeschlossen",
-			"txError": "Hoppla, etwas ist schief gelaufen. Bitte versuche es erneut"
+			"txError": "Hoppla, etwas ist schief gelaufen. Bitte versuche es erneut",
+			"txReplaceError": "Es gab einen Fehler beim Ersetzen Ihrer Transaktion, bitte versuchen Sie es erneut"
 		},
 		"watched": {
 			"txPool": "Ihr Konto ist {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "Transaktion für {formattedValue} {asset} {preposition} {counterpartyShortened} wurde beschleunigt",
 			"txCancel": "Transaktion für {formattedValue} {asset} {preposition} {counterpartyShortened} wurde storniert",
 			"txConfirmed": "Ihr Konto {verb} erfolgreich {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Ihr Konto konnte {verb} {formattedValue} {asset} {preposition} {counterpartyShortened} nicht erhalten"
+			"txFailed": "Ihr Konto konnte {verb} {formattedValue} {asset} {preposition} {counterpartyShortened} nicht erhalten",
+			"txStuck": "Deine Transaktion wird aufgrund einer Nonce Lücke blockiert"
 		},
 		"time": {
 			"minutes": "min",

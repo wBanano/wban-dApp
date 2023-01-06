@@ -25,6 +25,7 @@
 			},
 			"mainText": "Conectando...",
 			"paragraph": "Asegúrate de seleccionar todas las cuentas a las que deseas conceder acceso.",
+			"previousConnection": "{wallet} ya tienes una solicitud de conexión pendiente, por favor abre la aplicación {wallet} para iniciar sesión y conectarte.",
 			"rejectedText": "¡Conexión rechazada!",
 			"rejectedCTA": "Haz clic aquí para volver a intentarlo",
 			"primaryButton": "Volver a las billeteras"
@@ -70,19 +71,20 @@
 		"poweredBy": "con el desarrollo de",
 		"addAccount": "Añadir cuenta",
 		"setPrimaryAccount": "Establecer cuenta principal",
-		"disconnectWallet": "Desconectar billetera"
+		"disconnectWallet": "Desconectar billetera",
+		"copyAddress": "Copiar dirección de la billetera"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "Tu transacción está esperando a que confirmes",
-			"nsfFail": "No tienes fondos suficientes para completar esta transacción",
-			"txUnderpriced": "El precio del gas para tu transacción es demasiado bajo, inténtalo de nuevo con un precio de gas más alto",
+			"nsfFail": "No tienes fondos suficientes para esta transacción",
+			"txUnderpriced": "El precio de la comisión (gas) para tu transacción es demasiado bajo, prueba un precio de comisión más alto",
 			"txRepeat": "Esto podría ser una transacción repetida",
 			"txAwaitingApproval": "Tienes una transacción anterior esperando por confirmar",
-			"txConfirmReminder": "Por favor, confirma tu transacción para continuar, la ventana de la transacción puede estar detrás de tu navegador",
+			"txConfirmReminder": "Por favor, confirma tu transacción para continuar",
 			"txSendFail": "Has rechazado la transacción",
 			"txSent": "Tu transacción ha sido enviada a la red",
-			"txStallPending": "Tu transacción se ha estancado y no ha entrado en el grupo de transacciones",
+			"txStallPending": "Tu transacción se ha atascado antes de ser enviada, por favor inténtalo de nuevo",
 			"txStuck": "Tu transacción está atascada debido a una brecha de nonce",
 			"txPool": "Tu transacción ha comenzado",
 			"txStallConfirmed": "Tu transacción se ha estancado y no ha sido confirmada",
@@ -90,14 +92,16 @@
 			"txCancel": "Tu transacción está siendo cancelada",
 			"txFailed": "Tu transacción ha fallado",
 			"txConfirmed": "Tu transacción se ha realizado con éxito",
-			"txError": "Vaya, algo salió mal, por favor inténtalo de nuevo"
+			"txError": "Vaya, algo salió mal, por favor inténtalo de nuevo",
+			"txReplaceError": "Hubo un error al reemplazar tu transacción, por favor inténtelo de nuevo"
 		},
 		"watched": {
 			"txPool": "Tu cuenta es {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "La transacción {formattedValue} {asset} {preposition} {counterpartyShortened} ha sido acelerada",
 			"txCancel": "La transacción {formattedValue} {asset} {preposition} {counterpartyShortened} ha sido cancelada",
 			"txConfirmed": "Tu cuenta exitosamente logró {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Tu cuenta falló en {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Tu cuenta falló en {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "Tu transacción está atascada debido a una brecha de nonce"
 		},
 		"time": {
 			"minutes": "min",
