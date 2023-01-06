@@ -25,6 +25,7 @@
 			},
 			"mainText": "Collegamento...",
 			"paragraph": "Assicurarsi di selezionare tutti gli account a cui si desidera concedere l'accesso.",
+			"previousConnection": "{wallet} ha già una richiesta di connessione in sospeso, per favore apri l'app {wallet} per accedere e connetterti.",
 			"rejectedText": "Connessione Rifiutata!",
 			"rejectedCTA": "Clicca qui per riprovare",
 			"primaryButton": "Torna ai wallet"
@@ -70,19 +71,20 @@
 		"poweredBy": "powered by",
 		"addAccount": "Aggiungi Account",
 		"setPrimaryAccount": "Imposta Account Primario",
-		"disconnectWallet": "Disconnetti wallet"
+		"disconnectWallet": "Disconnetti wallet",
+		"copyAddress": "Copia indirizzo portafoglio"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "La tua transazione ti sta aspettando per la conferma",
-			"nsfFail": "Hai fondi insufficienti per completare questa transazione",
-			"txUnderpriced": "Il prezzo minimo necessario per la tua transazione è troppo basso, riprova con un prezzo più alto",
+			"nsfFail": "Hai fondi insufficienti per questa transazione",
+			"txUnderpriced": "Il prezzo del gas per la tua transazione è troppo basso, prova un prezzo del gas più alto",
 			"txRepeat": "Questa potrebbe essere una transazione ripetuta",
 			"txAwaitingApproval": "Hai una precedente transazione in attesa di conferma",
-			"txConfirmReminder": "Si prega di confermare la transazione per continuare, la finestra della transazione potrebbe essere dietro nel browser",
+			"txConfirmReminder": "Conferma la tua transazione per continuare",
 			"txSendFail": "Hai rifiutato la transazione",
 			"txSent": "La tua transazione è stata inviata alla rete",
-			"txStallPending": "La tua transazione è in fase di stallo e non è entrata nella pool di transazioni",
+			"txStallPending": "La tua transazione è in fase di stallo prima che sia stata inviata, riprova",
 			"txStuck": "La tua transazione è bloccata a causa di un vuoto vuoto",
 			"txPool": "La tua transazione è iniziata",
 			"txStallConfirmed": "La tua transazione è in stallo e non è stata confermata",
@@ -90,14 +92,16 @@
 			"txCancel": "La tua transazione è stata annullata",
 			"txFailed": "La tua transazione non è riuscita",
 			"txConfirmed": "La tua transazione è riuscita",
-			"txError": "Oops qualcosa è andato storto, si prega di riprovare"
+			"txError": "Oops qualcosa è andato storto, si prega di riprovare",
+			"txReplaceError": "Si è verificato un errore durante la sostituzione della transazione, riprova"
 		},
 		"watched": {
 			"txPool": "Il tuo account è {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "La transazione per {formattedValue} {asset} {preposition} {counterpartyShortened} è stata caricata",
 			"txCancel": "La transazione per {formattedValue} {asset} {preposition} {counterpartyShortened} è stata annullata",
 			"txConfirmed": "Il tuo account {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Il tuo account non è riuscito a {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Il tuo account non è riuscito a {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "La tua transazione è bloccata a causa di un vuoto vuoto"
 		},
 		"time": {
 			"minutes": "min",

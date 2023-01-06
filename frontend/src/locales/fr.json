@@ -26,6 +26,11 @@
 			"from-ban-description": "J'ai des Banano et je veux commencer à apprendre DeFi avec wBAN.",
 			"from-wban": "Je découvre Banano",
 			"from-wban-description": "J'ai des wBAN et je veux utiliser le réseau Banano.",
+			"reconnect-bridge": "Reconnexion au bridge",
+			"reconnect-bridge-description": "J'ai déjà fait la configuration du bridge et je veux me connecter à partir d'un nouvel appareil.",
+			"swaps-only": "Acheter des wBAN",
+			"swaps-only-description": "Je ferai la configuration du bridge plus tard quand je devrai wrapper/unwrapper.",
+			"swaps-only-button": "Acheter",
 			"verify-ban-address": "Nous devons vérifier votre adresse Banano !",
 			"verify-ban-address-explanation": "Cette étape est importante car elle permet de s'assurer que vous contrôlez le portefeuille Banano qui interagira avec wBAN.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Acheter/Vendre"
 		},
 		"farm": {
+			"farm": "Ferme",
 			"wban-earned": "wBAN gagnés",
 			"wban-earned-farm-ended": "(retirer pour récolter)",
 			"farm-ended": "Ferme terminée !",
+			"zap-in-from": "Zap à partir de {symbol}",
+			"zap-out-to-symbol": "Zap vers {symbol}",
+			"zap-in-process-phrase1": "Il s'agit d'un processus en deux étapes :",
+			"zap-in-process-phrase2": "Zap {symbol} en tokens du pool de liquidités",
+			"zap-in-process-phrase3": "Déposez vos tokens de liquidité dans la ferme",
+			"zap-out-hint": "Après avoir retiré des tokens de liquidité de la ferme, vous pourrez facilement retirer de la liquidité et passer à {symbol1} ou {symbol2}.",
 			"harvest": "Récolter",
 			"deposit": "Dépôt",
 			"details": "Détails",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "TVL du pool de liquidités",
 			"button-approve": "Approuver",
 			"button-add-liquidity": "Ajouter de la liquidité",
-			"button-supply": "Déposer",
-			"button-supply-tooltip": "Lorsque vous ajoutez vos jetons de liquidité dans la ferme, vous récoltez également vos wBAN gagnés !",
+			"button-deposit": "Dépôt",
+			"button-deposit-tooltip": "Lorsque vous ajoutez vos tokens de liquidité dans la ferme, vous récoltez également vos wBAN !",
+			"button-zap-in": "Zap",
+			"button-zap-out": "Zap",
 			"button-withdraw-tooltip": "Lorsque vous retirez vos jetons de liquidité de la ferme, vous récoltez également vos wBAN gagnés !"
 		}
 	},
@@ -224,9 +238,13 @@
 			"title": "Unwrap de {amount} wBAN en cours...",
 			"message": "Travaille dur pour traiter votre demande d'unwrap !"
 		},
-		"farm-supply": {
-			"title": "Fourniture de {amount} {symbol} en cours...",
-			"message": "Travaille dur pour traiter votre dépôt !"
+		"farm-zap": {
+			"title": "Zap de {amount} {symbol} en cours...",
+			"message": "Traitement de votre demande en cours !"
+		},
+		"farm-deposit": {
+			"title": "Dépôt de {amount} {symbol} en cours...",
+			"message": "Dépôt en cours de traitement !"
 		},
 		"farm-withdraw": {
 			"title": "Retrait de {amount} {symbol} en cours...",
@@ -234,7 +252,7 @@
 		},
 		"unsupported-network": {
 			"title": "Réseau {network} non pris en charge",
-			"message": "<p>wBAN n'est disponible que sur BSC, Polygon et Fantom.</p><p>Veuillez basculer vers l'un de ces réseaux.</p>"
+			"message": "<p>wBAN n'est disponible que sur BSC, Polygon, Fantom, Ethereum et Arbitrum.</p><p>Veuillez basculer sur l'un de ces réseaux.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +284,9 @@
 			"message": "Votre unwrap de {amount} wBAN a été traité avec succès.",
 			"caption": "Votre solde de Banano déposés a été mis à jour."
 		},
-		"farm-supply": "Votre fourniture de {amount} {symbol} a été traitée avec succès.",
+		"farm-zap-in": "Votre zap de {amount} {symbol} a été traité avec succès.<br /><strong>N'oubliez pas de déposer vos liquidités maintenant !</strong>",
+		"farm-zap-out": "Votre zap de {amount} {symbol} a été traité avec succès.",
+		"farm-deposit": "Votre dépôt de {amount} {symbol} a été traité avec succès.",
 		"farm-withdraw": "Votre retrait de {amount} {symbol} a été traité avec succès."
 	},
 	"menu": {
@@ -274,7 +294,9 @@
 			"title": "Dons",
 			"aside": "Envoyez moi un don à :",
 			"phrase1": "Travailler sur cette application a été un vrai voyage, et est encore en cours !",
-			"phrase2": "Les dons sont toujours appréciés et si vous souhaitez soutenir mes efforts, vous pouvez toujours m'aider en envoyant des Banano à :"
+			"phrase2": "Les dons sont toujours appréciés et si vous souhaitez soutenir mes efforts, vous pouvez toujours m'aider en envoyant des Banano à :",
+			"kalium": "Envoyer via Kalium",
+			"copy-address": "Copier l'adresse"
 		}
 	},
 	"footer": {

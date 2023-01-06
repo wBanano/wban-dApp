@@ -25,6 +25,7 @@
 			},
 			"mainText": "Bağlanılıyor...",
 			"paragraph": "Erişim vereceğiniz bütün hesaplarınızı seçtiğinizden emin olun.",
+			"previousConnection": "{wallet} already has a pending connection request, please open the {wallet} app to login and connect.",
 			"rejectedText": "Bağlantı Reddedildi!",
 			"rejectedCTA": "Buraya tıklayarak tekrar deneyin",
 			"primaryButton": "Cüzdanlara geri dönün"
@@ -70,19 +71,20 @@
 		"poweredBy": "güç kaynağımız",
 		"addAccount": "Hesap Ekle",
 		"setPrimaryAccount": "Birincil Hesap Belirle",
-		"disconnectWallet": "Cüzdan Bağlantısını Kes"
+		"disconnectWallet": "Cüzdan Bağlantısını Kes",
+		"copyAddress": "Copy Wallet address"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "İşleminiz onaylamanız için sizi bekliyor",
-			"nsfFail": "Bu işlemi tamamlayacak bakiyeniz bulunmamaktadır",
-			"txUnderpriced": "Bu işlem için belirlenmiş gaz ücreti fazla düşük, daha yüksek bir gas ücreti ile tekrar deneyin",
+			"nsfFail": "You have insufficient funds for this transaction",
+			"txUnderpriced": "The gas price for your transaction is too low, try a higher gas price",
 			"txRepeat": "Bu tekrarlanan bir işlem olabilir",
 			"txAwaitingApproval": "Önceki işleminiz onaylamanız için sizi bekliyor",
-			"txConfirmReminder": "Devam etmek için lütfen işleminizi onaylayın, işlem penceresi tarayıcınızın arkasında olabilir",
+			"txConfirmReminder": "Please confirm your transaction to continue",
 			"txSendFail": "İşlemi reddettiniz",
 			"txSent": "İşleminiz ağa gönderildi",
-			"txStallPending": "İşleminiz durdu ve işlem havuzuna girmedi",
+			"txStallPending": "Your transaction has stalled before it was sent, please try again",
 			"txStuck": "İşleminiz nonce açığı nedeniyle takıldı",
 			"txPool": "İşleminiz başladı",
 			"txStallConfirmed": "İşleminiz durdu ve onaylanmadı",
@@ -90,14 +92,16 @@
 			"txCancel": "İşleminiz iptal ediliyor",
 			"txFailed": "İşleminiz başarısız oldu",
 			"txConfirmed": "İşleminiz başarılı oldu",
-			"txError": "Hay aksi, bir şeyler ters gitti, lütfen tekrar deneyin"
+			"txError": "Hay aksi, bir şeyler ters gitti, lütfen tekrar deneyin",
+			"txReplaceError": "There was an error replacing your transaction, please try again"
 		},
 		"watched": {
 			"txPool": "Hesabınız {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "İşlem için {formattedValue} {asset} {preposition} {counterpartyShortened} hızlandırıldı",
 			"txCancel": "İşlem için {formattedValue} {asset} {preposition} {counterpartyShortened} iptal edildi",
 			"txConfirmed": "Hesabınız başarıyla {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Hesabınız başaramadı {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Hesabınız başaramadı {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "İşleminiz nonce açığı nedeniyle takıldı"
 		},
 		"time": {
 			"minutes": "dak",

@@ -1,0 +1,111 @@
+{
+	"connect": {
+		"selectingWallet": {
+			"header": "उपलब्ध खाते",
+			"sidebar": {
+				"heading": "आरंभ करें",
+				"subheading": "अपना वॉलेट कनेक्ट करें",
+				"paragraph": "वॉलेट कनेक्ट करना वेब3 में \"लॉगिन\" करने के समान है।\nशुरू होने के लिए दिए गए विकल्पों में से अपना वॉलेट चुने।"
+			},
+			"recommendedWalletsPart1": "{app} केवल समर्थन करता है",
+			"recommendedWalletsPart2": "इस प्लेटफार्म पर। कृपया सपोर्टेड वालेट्स में से एक का इस्तेमाल करें या इंस्टॉल करें।",
+			"installWallet": "आपके पास कोई ऐसा वॉलेट इंस्टॉल नहीं हैं जो {app} सपोर्ट करती हो, कृपया एक सपोर्टेड वॉलेट का इस्तेमाल करें",
+			"agreement": {
+				"agree": "मैं इससे सहमत हूं",
+				"terms": "नियम & शर्तें",
+				"and": "और",
+				"privacy": "गोपनीयता पॉलिसी"
+			}
+		},
+		"connectingWallet": {
+			"header": "{connectionRejected, select,false {{wallet} से कनेक्ट किया जा रहा हैं}other {कनेक्शन अस्वीकृत}}",
+			"sidebar": {
+				"subheading": "कनेक्शन मंजूर करें",
+				"paragraph": "कृपया अपने वॉलेट में कनेक्शन को स्वीकृत करे और आगे बढ़ने के लिए एक्सेस स्वीकारी करें।"
+			},
+			"mainText": "जुड़ने की कोशिश...",
+			"paragraph": "निश्चित करें की आप सारे अकाउंट्स चुन रहे हैं जिसके लिए आप एक्सेस प्रदान करना चाहते हैं।",
+			"previousConnection": "{wallet} में पहले से ही एक लंबित कनेक्शन अनुरोध है, कृपया लॉगिन और कनेक्ट करने के लिए {wallet} ऐप खोलें।",
+			"rejectedText": "कनेक्शन रद्द!",
+			"rejectedCTA": "दोबारा प्रयास करने के लिए इधर क्लिक करे",
+			"primaryButton": "वॉलेट्स पर वापस जाएं"
+		},
+		"connectedWallet": {
+			"header": "कनेक्शन कामयाब",
+			"sidebar": {
+				"subheading": "कनेक्शन कामयाब!",
+				"paragraph": "आपका वॉलेट अब {app} से जुड़ चुका हैं"
+			},
+			"mainText": "जुड़ा हुआ"
+		}
+	},
+	"modals": {
+		"actionRequired": {
+			"heading": "{wallet} में कुछ करने की जरूरत",
+			"paragraph": "कृपया अपने अकाउंट में चालू वॉलेट पर जाए।",
+			"linkText": "और जाने।",
+			"buttonText": "ठीक हैं"
+		},
+		"switchChain": {
+			"heading": "चैन बदले",
+			"paragraph1": "आगे बरने के लिए {app} आपको अपने वाले का नेटवर्क {nextNetworkName} पर बदला होगा।",
+			"paragraph2": "*कुछ वॉलेट्स नेटवर्क के बदलाव की अनुमति नहीं देते। अगर आप अपने वॉलेट में नेटवर्क बदल नहीं सकते तो कृपया दूसरे वॉलेट के इस्तेमाल करने का प्रयास करें।"
+		},
+		"confirmDisconnectAll": {
+			"heading": "सारे वॉलेट डायसनेक्स करें",
+			"description": "क्या आप निश्चित हैं की आप सारे वॉलेट्स हटाना चाहते हैं?",
+			"confirm": "निश्चित करें",
+			"cancel": "रद्द करें"
+		}
+	},
+	"accountCenter": {
+		"connectAnotherWallet": "दूसरा वॉलेट जोड़े",
+		"disconnectAllWallets": "सारे वॉलेट हटाए",
+		"currentNetwork": "वर्तमान नेटवर्क",
+		"appInfo": "एप की जानकारी",
+		"learnMore": "और जाने",
+		"gettingStartedGuide": "शुरू होने का मार्गदर्शन",
+		"smartContracts": "स्मार्ट कॉन्ट्रैक्ट्(स)",
+		"explore": "और देखें",
+		"backToApp": "Dapp पर वापस जाएं",
+		"poweredBy": "द्वारा संचालित",
+		"addAccount": "खाता जोड़ो",
+		"setPrimaryAccount": "मुख्य खाता जोड़े",
+		"disconnectWallet": "खाता हटाएं",
+		"copyAddress": "वॉलेट पता कॉपी करें"
+	},
+	"notify": {
+		"transaction": {
+			"txRequest": "आपका लेन-देन आपके पुष्टिकरण की प्रतीक्षा कर रहा है",
+			"nsfFail": "इस लेन-देन के लिए आपके पास अपर्याप्त धनराशि है",
+			"txUnderpriced": "आपके लेन-देन के लिए गैस की कीमत बहुत कम है, गैस की ऊंची कीमत का प्रयास करें",
+			"txRepeat": "यह एक दोहराव लेनदेन हो सकती है",
+			"txAwaitingApproval": "आपके पास एक पिछला लेन-देन है जो आपके पुष्टिकरण की प्रतीक्षा कर रहा है",
+			"txConfirmReminder": "जारी रखने के लिए कृपया अपने लेन-देन की पुष्टि करें",
+			"txSendFail": "आपने लेन-देन को अस्वीकार कर दिया",
+			"txSent": "आपका लेन-देन नेटवर्क पर भेज दिया गया है",
+			"txStallPending": "आपका लेन-देन भेजे जाने से पहले ही रुक गया है, कृपया पुनः प्रयास करें",
+			"txStuck": "आपका लेन-देन एक गैर-अंतराल के कारण अटका हुआ है",
+			"txPool": "आपका लेन-देन शुरू हो गया है",
+			"txStallConfirmed": "आपका लेन-देन रुक गया है और उसकी पुष्टि नहीं हुई है",
+			"txSpeedUp": "आपका लेन-देन तेज कर दिया गया है",
+			"txCancel": "आपका लेन-देन रद्द किया जा रहा है",
+			"txFailed": "आपका लेन-देन विफल हो गया है",
+			"txConfirmed": "आपका लेन-देन सफल हो गया है",
+			"txError": "ओह कुछ गलत हो गया है, कृपया पुनः प्रयास करें",
+			"txReplaceError": "आपके लेन-देन को बदलने में एक त्रुटि हुई, कृपया पुन: प्रयास करें"
+		},
+		"watched": {
+			"txPool": "आपका खाता है {verb}{formattedValue}{asset}{preposition}{counterpartyShortened}",
+			"txSpeedUp": "लेन-देन {formattedValue}{asset}{preposition}{counterpartyShortened} तेज किया गया है",
+			"txCancel": "लेन-देन {formattedValue}{asset}{preposition}{counterpartyShortened} रद्द किया गया है",
+			"txConfirmed": "आपका खाता सफलतापूर्वक {verb}{formattedValue}{asset}{preposition}{counterpartyShortened}",
+			"txFailed": "आपका खाता विफल रहा {verb}{formattedValue}{asset}{preposition}{counterpartyShortened}",
+			"txStuck": "आपका लेन-देन एक गैर-अंतराल के कारण अटका हुआ है"
+		},
+		"time": {
+			"minutes": "मिनट",
+			"seconds": "सेकंड"
+		}
+	}
+}

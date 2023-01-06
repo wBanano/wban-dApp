@@ -88,3 +88,29 @@ body.body--light
 	--onboard-wallet-button-border-color: transparent
 	--onboard-wallet-app-icon-border-color: #{$primary}
 	--onboard-primary-100: #{$primary}
+// Onboard mobile settings
+:root body.mobile
+	--onboard-gray-700: #{$primary}
+	--onboard-gray-400: #{$primary}
+	--onboard-wallet-button-color: #{$primary}
+	--onboard-wallet-button-color-hover: #{$secondary}
+	--onboard-wallet-app-icon-background-transparent: #{lighten($secondary, 50%)}
+// Onboard WalletConnect modal styling
+.walletconnect-modal__base
+	background: lighten($secondary, 10%) !important
+	.walletconnect-modal__mobile__toggle
+		color: $primary
+		background: $secondary
+		.walletconnect-modal__mobile__toggle_selector
+			background: lighten($secondary, 10%)
+	.walletconnect-qrcode__image
+		background: $primary !important
+	.walletconnect-search__input
+		color: $primary
+		background: $secondary
+	.walletconnect-search__input::placeholder
+		color: $primary
+	.walletconnect-connect__button__text
+		color: $primary
+	.walletconnect-qrcode__text, .walletconnect-modal__footer a
+		color: $primary

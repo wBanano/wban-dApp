@@ -1,3 +1,16 @@
+# v2.6.0
+## New Features
+- zap in or out with farms
+- relink with the bridge with a simple signature
+## Improvements
+- mobile layouts for all pages
+- show unclaimed wraps on the main page #93
+- swap page handles `input` and `output` query parameters
+- updated Web3 Onboard library
+## Bugs
+- don't ask for bridge setup to see farms or NFT pages #94
+- BAN deposit/withdraw dialogs where not displayed when starting from the farms page
+
 # v2.5.0
 ## New Features
 - Deployment on Arbitrum

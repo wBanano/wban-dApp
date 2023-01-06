@@ -46,13 +46,13 @@ class BenisUtils {
 		return userPoolStaked.amount
 	}
 
-	public async supply(pid: number, lpAmount: string, lpSymbol: string, benis: Benis): Promise<string> {
+	public async deposit(pid: number, lpAmount: string, lpSymbol: string, benis: Benis): Promise<string> {
 		const txn = await benis.deposit(pid, ethers.utils.parseEther(lpAmount))
-		Dialogs.startFarmSupply(lpAmount, lpSymbol)
-		return (await txn.wait(2)).transactionHash
+		Dialogs.startFarmDepositProgress(lpAmount, lpSymbol)
+		return (await txn.wait()).transactionHash
 	}
 
-	public async supplyWithPermit(
+	public async depositWithPermit(
 		pid: number,
 		lpAddress: string,
 		lpAmount: string,
@@ -80,19 +80,19 @@ class BenisUtils {
 
 		const benisWithPermit = BenisWithPermit__factory.connect(benis.address, user)
 		const txn = await benisWithPermit.depositWithPermit(pid, liquidity, deadline, sig.v, sig.r, sig.s)
-		Dialogs.startFarmSupply(lpAmount, lpSymbol)
-		return (await txn.wait(2)).transactionHash
+		Dialogs.startFarmDepositProgress(lpAmount, lpSymbol)
+		return (await txn.wait()).transactionHash
 	}
 
 	public async withdraw(pid: number, lpAmount: string, lpSymbol: string, benis: Benis): Promise<string> {
 		const txn = await benis.withdraw(pid, ethers.utils.parseEther(lpAmount))
 		Dialogs.startFarmWithdraw(lpAmount, lpSymbol)
-		return (await txn.wait(2)).transactionHash
+		return (await txn.wait()).transactionHash
 	}
 
 	public async harvest(pid: number, benis: Benis): Promise<string> {
 		const txn = await benis.withdraw(pid, BigNumber.from(0))
-		return (await txn.wait(2)).transactionHash
+		return (await txn.wait()).transactionHash
 	}
 
 	public async getPendingRewards(pid: number, account: string, benis: Benis): Promise<BigNumber> {

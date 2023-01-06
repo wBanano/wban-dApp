@@ -26,6 +26,11 @@
 			"from-ban-description": "Saya punya Banano dan ingin mulai belajar DeFi dengan wBAN.",
 			"from-wban": "Saya baru tau Banano",
 			"from-wban-description": "Saya punya wBAN dan ingin gunakan jaringan Banano.",
+			"reconnect-bridge": "Hubungkan kembali dengan Jembatan",
+			"reconnect-bridge-description": "Saya sudah melakukan pengaturan dan ingin menghubungkan dengan perangkat baru.",
+			"swaps-only": "Beli wBAN",
+			"swaps-only-description": "Saya akan melakukan pengaturan Jembatan lain kali, saat Saya ingin melakukan pembungkusan atau pembukaan.",
+			"swaps-only-button": "Beli",
 			"verify-ban-address": "Kami perlu memverifikasi alamat BAN anda!",
 			"verify-ban-address-explanation": "Langkah ini penting untuk memastikan bahwa anda mengendalikan dompet BAN yang berinteraksi dengan wBAN.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Beli/Jual"
 		},
 		"farm": {
+			"farm": "Ternak",
 			"wban-earned": "wBAN diterima",
 			"wban-earned-farm-ended": "(tarik untuk memanen)",
 			"farm-ended": "Peternakan Selesai!",
+			"zap-in-from": "Kirim dari {symbol}",
+			"zap-out-to-symbol": "Kirim ke {symbol}",
+			"zap-in-process-phrase1": "Proses ini terdiri dari dua langkah:",
+			"zap-in-process-phrase2": "Kirim {symbol} ke token kolam likuiditas",
+			"zap-in-process-phrase3": "Setor kolam likuiditas anda ke dalam peternakan",
+			"zap-out-hint": "Setelah menarik token kolam likuiditas dari peternakan, kamu dapat menarik likuiditas dan menarik {symbol1} atau {symbol2}.",
 			"harvest": "Panen",
 			"deposit": "Deposit",
 			"details": "Rincian",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Nilai TVL Kolam Likuiditas",
 			"button-approve": "Setujui",
 			"button-add-liquidity": "Tambahkan Likuiditas",
-			"button-supply": "Suplai",
-			"button-supply-tooltip": "Saat menambahkan token likuiditas ke dalam peternakan, anda juga memanen wBAN yang sudah diperoleh!",
+			"button-deposit": "Setor",
+			"button-deposit-tooltip": "Saat menambahkan token likuiditas ke dalam peternakan, anda juga memanen wBAN yang sudah diperoleh!",
+			"button-zap-in": "Masukkan",
+			"button-zap-out": "Keluarkan",
 			"button-withdraw-tooltip": "Saat menarik token likuiditas dari peternakan, anda juga memanen wBAN yang sudah diterima!"
 		}
 	},
@@ -224,8 +238,12 @@
 			"title": "Pembukaan {amount} wBAN sedang berlangsung...",
 			"message": "Bekerja keras memproses pembukaan anda!"
 		},
-		"farm-supply": {
-			"title": "Suplai {amount} {symbol} sedang berlangsung...",
+		"farm-zap": {
+			"title": "Pengiriman sejumlah {amount} {symbol} sedang diproses...",
+			"message": "Bekerja keras memproses permintaanmu!"
+		},
+		"farm-deposit": {
+			"title": "Setoran {amount} {symbol} sedang diproses...",
 			"message": "Bekerja keras memproses suplai anda!"
 		},
 		"farm-withdraw": {
@@ -234,7 +252,7 @@
 		},
 		"unsupported-network": {
 			"title": "Jaringan tidak didukung {network}",
-			"message": "<p>wBAN hanya tersedia di BSC, Polygon, dan Fantom.</p><p>Silakan beralih ke salah satu jaringan tersebut.</p>"
+			"message": "<p>wBAN hanya tersedia di BSC, Polygon, Fantom, Ethereum dan Arbitrum.</p><p>Silahkan pilih salah satu dari jaringan tersebut.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +284,9 @@
 			"message": "Pembukaan anda sejumlah {amount} wBAN telah berhasil diproses.",
 			"caption": "Saldo deposit Banano anda telah diperbaharui."
 		},
-		"farm-supply": "Suplai anda sejumlah {amount} {symbol} telah berhasil diproses.",
+		"farm-zap-in": "Pengiriman anda sejumlah {amount}{symbol} telah berhasil diproses. <br /><strong>Jangan lupa untuk menyetorkan likuiditas!</strong>",
+		"farm-zap-out": "Pengiriman sejumlah {amount} {symbol} telah berhasil diproses.",
+		"farm-deposit": "Setoran anda sejumlah {amount} {symbol} telah berhasil diproses.",
 		"farm-withdraw": "Penarikan anda sejumlah {amount} {symbol} telah berhasil diproses."
 	},
 	"menu": {
@@ -274,7 +294,9 @@
 			"title": "Donasi",
 			"aside": "Kirim Tip ke:",
 			"phrase1": "Bekerja pada aplikasi ini telah menjadi perjalanan yang cukup, dan masih berlangsung!",
-			"phrase2": "Tips selalu diapresiasi dan jika anda ingin mendukung upaya saya, Anda selalu dapat membantu saya dengan mengirimkan tips Banano di:"
+			"phrase2": "Tips selalu diapresiasi dan jika anda ingin mendukung upaya saya, Anda selalu dapat membantu saya dengan mengirimkan tips Banano di:",
+			"kalium": "Kirim dengan Kalium",
+			"copy-address": "Salin Alamat"
 		}
 	},
 	"footer": {

@@ -26,6 +26,11 @@
 			"from-ban-description": "I have Banano and want to start learning DeFi with wBAN.",
 			"from-wban": "I'm new to Banano",
 			"from-wban-description": "I have wBAN and want to use the Banano network.",
+			"reconnect-bridge": "Reconnect to Bridge",
+			"reconnect-bridge-description": "I already did the setup and want to connect from a new device.",
+			"swaps-only": "Buy wBAN",
+			"swaps-only-description": "I will do the bridge setup later when I need to wrap or unwrap.",
+			"swaps-only-button": "Buy",
 			"verify-ban-address": "We need to verify your BAN address!",
 			"verify-ban-address-explanation": "This step is important as it ensures that you control the BAN wallet interacting with wBAN.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Buy/Sell"
 		},
 		"farm": {
+			"farm": "Farm",
 			"wban-earned": "wBAN Earned",
 			"wban-earned-farm-ended": "(withdraw to harvest)",
 			"farm-ended": "Farm Ended!",
+			"zap-in-from": "Zap in from {symbol}",
+			"zap-out-to-symbol": "Zap to {symbol}",
+			"zap-in-process-phrase1": "This is a two steps process:",
+			"zap-in-process-phrase2": "Zap {symbol} into liquidity pool tokens",
+			"zap-in-process-phrase3": "Deposit your liquidity pool tokens into the farm",
+			"zap-out-hint": "After withdrawing liquidity pool tokens from the farm, you will be able to easily remove liquidity and zap out to either {symbol1} or {symbol2}.",
 			"harvest": "Harvest",
 			"deposit": "Deposit",
 			"details": "Details",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Liquidity Pool TVL",
 			"button-approve": "Approve",
 			"button-add-liquidity": "Add Liquidity",
-			"button-supply": "Supply",
-			"button-supply-tooltip": "When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!",
+			"button-deposit": "Deposit",
+			"button-deposit-tooltip": "When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!",
+			"button-zap-in": "Zap in",
+			"button-zap-out": "Zap out",
 			"button-withdraw-tooltip": "When withdrawing your liquidity tokens from the farm, you harvest your wBAN earned as well!"
 		}
 	},
@@ -224,8 +238,12 @@
 			"title": "Unwrap of {amount} wBAN in progress...",
 			"message": "Working hard to process your unwrap request!"
 		},
-		"farm-supply": {
-			"title": "Supply of {amount} {symbol} in progress...",
+		"farm-zap": {
+			"title": "Zap of {amount} {symbol} in progress...",
+			"message": "Working hard to process your request!"
+		},
+		"farm-deposit": {
+			"title": "Deposit of {amount} {symbol} in progress...",
 			"message": "Working hard to process your supply request!"
 		},
 		"farm-withdraw": {
@@ -266,7 +284,9 @@
 			"message": "Your unwrap of {amount} wBAN was processed succesfully.",
 			"caption": "Your balance of deposited Banano has been updated."
 		},
-		"farm-supply": "Your supply of {amount} {symbol} was processed succesfully.",
+		"farm-zap-in": "Your zap of {amount} {symbol} was processed succesfully.<br /><strong>Don't forget to deposit your liquidity now!</strong>",
+		"farm-zap-out": "Your zap of {amount} {symbol} was processed succesfully.",
+		"farm-deposit": "Your deposit of {amount} {symbol} was processed succesfully.",
 		"farm-withdraw": "Your withdrawal of {amount} {symbol} was processed succesfully."
 	},
 	"menu": {
@@ -274,7 +294,9 @@
 			"title": "Donations",
 			"aside": "Tip me at:",
 			"phrase1": "Working on this app has been quite a journey, and still going on!",
-			"phrase2": "Tips are always appreciated and if you would like to support my efforts, you can always help me by sending Banano tips at:"
+			"phrase2": "Tips are always appreciated and if you would like to support my efforts, you can always help me by sending Banano tips at:",
+			"kalium": "Send via Kalium",
+			"copy-address": "Copy Address"
 		}
 	},
 	"footer": {

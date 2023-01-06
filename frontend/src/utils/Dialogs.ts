@@ -1,8 +1,14 @@
 import { Dialog, Notify, openURL } from 'quasar'
 import i18n from '@/i18n'
+import BANDepositDialog from '@/utils/dialogs/BANDepositDialog.vue'
+import BANWithdrawDialog from '@/utils/dialogs/BANWithdrawDialog.vue'
 import Web3ErrorDialog from '@/utils/dialogs/Web3ErrorDialog.vue'
 import GasNeededDialog from '@/utils/dialogs/GasNeededDialog.vue'
 import LowAmountToWrapDialog from '@/utils/dialogs/LowAmountToWrapDialog.vue'
+import FarmDepositDialog from '@/utils/dialogs/FarmDepositDialog.vue'
+import FarmWithdrawDialog from '@/utils/dialogs/FarmWithdrawDialog.vue'
+import { FarmConfig } from '@/config/constants/types'
+import { Signer } from 'ethers'
 
 class Dialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,11 +18,19 @@ class Dialogs {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private static swapToBanDialog: any
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private static swapFarmSupplyDialog: any
+	private static farmZapDialog: any
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private static swapFarmWithdrawDialog: any
+	private static farmDepositDialog: any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private static farmWithdrawDialog: any
 
 	private static TIMEOUT = 20_000
+
+	static startDeposit(): void {
+		Dialog.create({
+			component: BANDepositDialog,
+		})
+	}
 
 	static confirmUserDeposit(deposit: string): void {
 		const dismiss = Notify.create({
@@ -50,6 +64,12 @@ class Dialogs {
 					handler: () => dismiss(),
 				},
 			],
+		})
+	}
+
+	static initiateWithdrawal(): void {
+		Dialog.create({
+			component: BANWithdrawDialog,
 		})
 	}
 
@@ -227,11 +247,19 @@ class Dialogs {
 		}
 	}
 
-	static startFarmSupply(amount: string, symbol: string): void {
-		Dialogs.swapFarmSupplyDialog = Dialog.create({
+	static startFarmDepositDialog(farm: FarmConfig, signer: Signer): void {
+		Dialogs.farmDepositDialog = Dialog.create({
+			component: FarmDepositDialog,
+			farm,
+			signer,
+		})
+	}
+
+	static startFarmZapProgress(amount: string, symbol: string): void {
+		Dialogs.farmZapDialog = Dialog.create({
 			dark: true,
-			title: i18n.t('dialogs.farm-supply.title', { amount, symbol }).toString(),
-			message: i18n.t('dialogs.farm-supply.message').toString(),
+			title: i18n.t('dialogs.farm-zap.title', { amount, symbol }).toString(),
+			message: i18n.t('dialogs.farm-zap.message').toString(),
 			progress: true,
 			persistent: true,
 			cancel: false,
@@ -239,11 +267,11 @@ class Dialogs {
 		})
 	}
 
-	static confirmFarmSupply(amount: string, symbol: string, txnHash: string, txnLink: string): void {
+	static confirmFarmZapIn(amount: string, symbol: string, txnHash: string, txnLink: string): void {
 		const dismiss = Notify.create({
-			type: 'positive',
+			type: 'warning',
 			html: true,
-			message: i18n.t('notifications.farm-supply', { amount, symbol }).toString(),
+			message: i18n.t('notifications.farm-zap-in', { amount, symbol }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
@@ -263,14 +291,94 @@ class Dialogs {
 				},
 			],
 		})
-		if (Dialogs.swapFarmSupplyDialog) {
-			Dialogs.swapFarmSupplyDialog.hide()
-			Dialogs.swapFarmSupplyDialog = null
+		if (Dialogs.farmZapDialog) {
+			Dialogs.farmZapDialog.hide()
+			Dialogs.farmZapDialog = null
 		}
 	}
 
+	static confirmFarmZapOut(amount: string, symbol: string, txnHash: string, txnLink: string): void {
+		const dismiss = Notify.create({
+			type: 'positive',
+			html: true,
+			message: i18n.t('notifications.farm-zap-out', { amount, symbol }).toString(),
+			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
+			actions: [
+				{
+					label: i18n.t('notifications.view').toString(),
+					color: 'white',
+					noDismiss: true,
+					handler: () => {
+						openURL(txnLink)
+					},
+				},
+				{
+					label: i18n.t('notifications.close').toString(),
+					color: 'white',
+					handler: () => dismiss(),
+				},
+			],
+		})
+		if (Dialogs.farmZapDialog) {
+			Dialogs.farmZapDialog.hide()
+			Dialogs.farmZapDialog = null
+		}
+	}
+
+	static startFarmDepositProgress(amount: string, symbol: string): void {
+		Dialogs.farmDepositDialog = Dialog.create({
+			dark: true,
+			title: i18n.t('dialogs.farm-deposit.title', { amount, symbol }).toString(),
+			message: i18n.t('dialogs.farm-deposit.message').toString(),
+			progress: true,
+			persistent: true,
+			cancel: false,
+			ok: false,
+		})
+	}
+
+	static confirmFarmDeposit(amount: string, symbol: string, txnHash: string, txnLink: string): void {
+		const dismiss = Notify.create({
+			type: 'positive',
+			html: true,
+			message: i18n.t('notifications.farm-deposit', { amount, symbol }).toString(),
+			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
+			timeout: Dialogs.TIMEOUT,
+			progress: true,
+			actions: [
+				{
+					label: i18n.t('notifications.view').toString(),
+					color: 'white',
+					noDismiss: true,
+					handler: () => {
+						openURL(txnLink)
+					},
+				},
+				{
+					label: i18n.t('notifications.close').toString(),
+					color: 'white',
+					handler: () => dismiss(),
+				},
+			],
+		})
+		if (Dialogs.farmDepositDialog) {
+			Dialogs.farmDepositDialog.hide()
+			Dialogs.farmDepositDialog = null
+		}
+	}
+
+	static startFarmWithdrawDialog(farm: FarmConfig, signer: Signer): void {
+		Dialogs.farmWithdrawDialog = Dialog.create({
+			component: FarmWithdrawDialog,
+			farm,
+			signer,
+		})
+	}
+
 	static startFarmWithdraw(amount: string, symbol: string): void {
-		Dialogs.swapFarmWithdrawDialog = Dialog.create({
+		Dialogs.farmWithdrawDialog = Dialog.create({
 			dark: true,
 			title: i18n.t('dialogs.farm-withdraw.title', { amount, symbol }).toString(),
 			message: i18n.t('dialogs.farm-withdraw.message').toString(),
@@ -285,7 +393,7 @@ class Dialogs {
 		const dismiss = Notify.create({
 			type: 'positive',
 			html: true,
-			message: i18n.t('notifications.farm-withdraw.message', { amount, symbol }).toString(),
+			message: i18n.t('notifications.farm-withdraw', { amount, symbol }).toString(),
 			caption: `Txn: <span class="banano-transaction-hash">${txnHash}</span>`,
 			timeout: Dialogs.TIMEOUT,
 			progress: true,
@@ -305,9 +413,9 @@ class Dialogs {
 				},
 			],
 		})
-		if (Dialogs.swapFarmWithdrawDialog) {
-			Dialogs.swapFarmWithdrawDialog.hide()
-			Dialogs.swapFarmWithdrawDialog = null
+		if (Dialogs.farmWithdrawDialog) {
+			Dialogs.farmWithdrawDialog.hide()
+			Dialogs.farmWithdrawDialog = null
 		}
 	}
 

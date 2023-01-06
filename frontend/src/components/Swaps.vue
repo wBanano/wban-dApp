@@ -397,7 +397,7 @@ export default class Swaps extends Vue {
 		try {
 			SwapDialogs.startTokenApproval()
 			const approveTxn = await token.approve(allowanceTarget, amount)
-			await approveTxn.wait(2)
+			await approveTxn.wait()
 			// check that allowance is enough now
 			await this.checkAllowance(approveTxn.hash, allowanceTarget, this.user, token, amount)
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -412,7 +412,7 @@ export default class Swaps extends Vue {
 					// The user used "speed up" or something similar in their client, but we now have the updated info
 					// `error.replacement` is the new txn and `error.receipt` the new txn receipt
 					console.warn('The transaction was most likely speed up')
-					await error.replacement.wait(2)
+					await error.replacement.wait()
 					await this.checkAllowance(error.replacement.hash, allowanceTarget, this.user, token, amount)
 				}
 			}
@@ -467,7 +467,7 @@ export default class Swaps extends Vue {
 			SwapDialogs.startSwap()
 			try {
 				const txnResponse = await signer.sendTransaction(txn)
-				await txnResponse.wait(2)
+				await txnResponse.wait()
 				const txnHash = txnResponse.hash
 				const blockchainExplorerUrl = Accounts.network.blockExplorerUrls[0]
 				const txnLink = `${blockchainExplorerUrl}/tx/${txnHash}`
@@ -548,14 +548,34 @@ export default class Swaps extends Vue {
 		// load tokens list
 		await TokensUtil.loadTokensList()
 		const wban = await TokensUtil.getTokenBySymbol('wBAN')
-		if (wban) {
-			Object.assign(this.from.token, wban[0])
+		const inputToken = this.$route.query.input
+		const outputToken = this.$route.query.output
+		// process input token
+		if (inputToken && typeof inputToken === 'string' && inputToken !== 'ETH') {
+			if (inputToken === 'wban' && wban) {
+				Object.assign(this.from.token, wban[0])
+			} else {
+				Object.assign(this.from.token, await TokensUtil.getToken(inputToken))
+			}
+		} else {
+			const nativeCryptoToken = await TokensUtil.getTokenBySymbol(this.network.nativeCurrency.symbol)
+			if (nativeCryptoToken) {
+				Object.assign(this.from.token, nativeCryptoToken[0])
+			}
 		}
-		const nativeCryptoToken = await TokensUtil.getTokenBySymbol(this.network.nativeCurrency.symbol)
-		if (nativeCryptoToken) {
-			Object.assign(this.to.token, nativeCryptoToken[0])
+		// process output token
+		if (outputToken && typeof outputToken === 'string' && outputToken !== 'ETH') {
+			if (outputToken === 'wban' && wban) {
+				Object.assign(this.to.token, wban[0])
+			} else {
+				Object.assign(this.to.token, await TokensUtil.getToken(outputToken))
+			}
+		} else {
+			const nativeCryptoToken = await TokensUtil.getTokenBySymbol(this.network.nativeCurrency.symbol)
+			if (nativeCryptoToken) {
+				Object.assign(this.to.token, nativeCryptoToken[0])
+			}
 		}
-		this.fromInput.amountField.focus()
 		this.resetValidation()
 	}
 

@@ -24,8 +24,10 @@ const bnToSixDecimalsStringFilter = Vue.filter('bnToSixDecimalsString', (value: 
 	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]000000')
 })
 
-const bnToExactStringFilter = Vue.filter('bnToExactString', (value: string) => {
-	return numeral(ethers.utils.formatUnits(value, 18)).format('0,0[.]00000000')
+const bnToExactStringFilter = Vue.filter('bnToExactString', (value: string, decimals = 18) => {
+	const formatted = ethers.utils.formatUnits(value, decimals)
+	const result = numeral(formatted).format('0,0[.]00000000')
+	return result === 'NaN' ? 'dust' : result
 })
 
 const bnToHumanStringFilter = Vue.filter('bnToHumanString', (value: string) => {

@@ -25,6 +25,7 @@
 			},
 			"mainText": "Menghubungkan...",
 			"paragraph": "Pastikan memilih semua akun yang ingin anda berikan akses.",
+			"previousConnection": "{wallet} memiliki permintaan tertunda, silakan buka aplikasi {wallet} untuk masuk dan hubungkan.",
 			"rejectedText": "Koneksi Ditolak!",
 			"rejectedCTA": "Klik disini untuk mencoba kembali",
 			"primaryButton": "Kembali ke dompet"
@@ -70,19 +71,20 @@
 		"poweredBy": "dipersembahkan oleh",
 		"addAccount": "Tambahkan Akun",
 		"setPrimaryAccount": "Tentukan Akun Utama",
-		"disconnectWallet": "Memutuskan Dompet"
+		"disconnectWallet": "Memutuskan Dompet",
+		"copyAddress": "Salin Alamat dompet"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "Transaksi anda menunggu konfirmasi",
-			"nsfFail": "Anda kekurangan dana untuk menyelesaikan transaksi ini",
-			"txUnderpriced": "Harga gas untuk transaksi anda terlalu rendah, ulangi dengan harga gas lebih tinggi",
+			"nsfFail": "Dana Anda tidak mencukupi untuk transaksi ini",
+			"txUnderpriced": "Harga gas untuk transaksi terlalu rendah, coba dengan gas lebih tinggi",
 			"txRepeat": "Ini akan menjadi transaksi berulang",
 			"txAwaitingApproval": "Anda mempunyai transaksi sebelumnya yang membutuhkan konfirmasi",
-			"txConfirmReminder": "Mohon konfirmasikan transaksi anda untuk melanjutkan, jendela transaksi mungkin dibelakang browser anda",
+			"txConfirmReminder": "Silakan konfirmasi transaksi Anda untuk melanjutkan",
 			"txSendFail": "Anda menolak transaksi",
 			"txSent": "Transaksi anda telah dikirim ke jaringan",
-			"txStallPending": "Transaksi anda telah macet dan belum memasuki kumpulan transaksi",
+			"txStallPending": "Transaksi Anda terhenti sebelum terkirim, silakan dicoba kembali",
 			"txStuck": "Transaksi anda macet karena celah nonce",
 			"txPool": "Transaksi anda telah dimulai",
 			"txStallConfirmed": "Transaksi anda terhenti dan belum dikonfirmasi",
@@ -90,14 +92,16 @@
 			"txCancel": "Transaksi anda sedang dibatalkan",
 			"txFailed": "Transaksi anda telah gagal",
 			"txConfirmed": "Transaksi anda telah berhasil",
-			"txError": "Ups ada yang salah, mohon coba lagi"
+			"txError": "Ups ada yang salah, mohon coba lagi",
+			"txReplaceError": "Ada masalah saat mengganti transaksi Anda, silakan dicoba kembali"
 		},
 		"watched": {
 			"txPool": "Akun anda sedang {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "Transaksi untuk {formattedValue} {asset} {preposition} {counterpartyShortened} telah dipercepat",
 			"txCancel": "Transaksi untuk {formattedValue} {asset} {preposition} {counterpartyShortened} telah dibatalkan",
 			"txConfirmed": "Akun anda telah berhasil {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
-			"txFailed": "Akun anda gagal untuk {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Akun anda gagal untuk {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "Transaksi Anda macet karena celah nonce"
 		},
 		"time": {
 			"minutes": "menit",

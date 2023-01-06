@@ -1,37 +1,52 @@
 <template>
-	<div class="q-pa-md">
-		<div v-if="choiceMade === ''" class="q-pa-md row items-start justify-center q-gutter-md">
-			<q-card class="coming-from-card" flat>
-				<q-card-section class="currency-logo">
-					<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" width="128px" />
-				</q-card-section>
-				<q-card-section>
-					<div class="title">{{ $t('pages.setup.from-ban') }}</div>
-					<div class="subtitle">{{ $t('pages.setup.from-ban-description') }}</div>
-				</q-card-section>
-				<q-card-section class="text-center">
-					<q-btn
-						@click="
-							choiceMade = 'BAN'
-							step = 3
-						"
-						color="primary"
-						text-color="black"
-						:label="$t('pages.setup.continue')"
-					/>
-				</q-card-section>
+	<div class="container fit q-pa-md">
+		<div v-if="choiceMade === ''" class="row items-center justify-center q-gutter-md">
+			<q-card class="coming-from-card col-12 col-sm-5" flat bordered>
+				<div class="currency-logo">
+					<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" />
+				</div>
+				<div class="title">{{ $t('pages.setup.from-ban') }}</div>
+				<div class="subtitle">{{ $t('pages.setup.from-ban-description') }}</div>
+				<q-btn
+					@click="
+						choiceMade = 'BAN'
+						step = 3
+					"
+					class="button"
+					color="primary"
+					text-color="black"
+					:label="$t('pages.setup.continue')"
+				/>
 			</q-card>
-			<q-card class="coming-from-card" flat>
-				<q-card-section class="currency-logo">
+			<q-card class="coming-from-card col-12 col-sm-5" flat bordered>
+				<div class="currency-logo">
 					<img :src="require('@/assets/banano-logo-big.png')" />
-				</q-card-section>
-				<q-card-section>
-					<div class="title">{{ $t('pages.setup.from-wban') }}</div>
-					<div class="subtitle">{{ $t('pages.setup.from-wban-description') }}</div>
-				</q-card-section>
-				<q-card-section class="text-center">
-					<q-btn @click="choiceMade = 'wBAN'" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
-				</q-card-section>
+				</div>
+				<div class="title">{{ $t('pages.setup.from-wban') }}</div>
+				<div class="subtitle">{{ $t('pages.setup.from-wban-description') }}</div>
+				<q-btn
+					@click="choiceMade = 'wBAN'"
+					class="button"
+					color="primary"
+					text-color="black"
+					:label="$t('pages.setup.continue')"
+				/>
+			</q-card>
+			<q-card class="coming-from-card col-12 col-sm-5" flat bordered>
+				<div class="title">{{ $t('pages.setup.reconnect-bridge') }}</div>
+				<div class="subtitle">{{ $t('pages.setup.reconnect-bridge-description') }}</div>
+				<q-btn @click="relink" class="button" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
+			</q-card>
+			<q-card class="coming-from-card col-12 col-sm-5" flat bordered>
+				<div class="title">{{ $t('pages.setup.swaps-only') }}</div>
+				<div class="subtitle">{{ $t('pages.setup.swaps-only-description') }}</div>
+				<q-btn
+					@click="buy"
+					class="button"
+					color="primary"
+					text-color="black"
+					:label="$t('pages.setup.swaps-only-button')"
+				/>
 			</q-card>
 		</div>
 
@@ -173,6 +188,22 @@
 								<br />
 							</div>
 						</div>
+						<div v-else class="row justify-around q-pb-sm">
+							<q-btn
+								:href="kalium(banWalletForDeposits)"
+								color="primary"
+								text-color="secondary"
+								class="col-5"
+								:label="$t('menu.donations.kalium')"
+							/>
+							<q-btn
+								@click="copyBanAddressForDepositsToClipboard"
+								color="primary"
+								text-color="secondary"
+								class="col-5"
+								:label="$t('dialogs.ban-deposit.button-copy-address')"
+							/>
+						</div>
 						<p>
 							{{ $t('pages.setup.step5.phrase4') }}
 							<br />
@@ -207,6 +238,9 @@ import { ClaimResponse, ClaimResponseResult } from '@/models/ClaimResponse'
 import { copyToClipboard } from 'quasar'
 import { BananoWalletsBlacklist, BlacklistRecord } from '@/utils/BananoWalletsBlacklist'
 import { Network } from '@/utils/Networks'
+import axios from 'axios'
+import { SiweMessage } from 'siwe'
+import { getBackendHost } from '@/config/constants/backend'
 
 const accountsStore = namespace('accounts')
 const backendStore = namespace('backend')
@@ -240,6 +274,9 @@ export default class SetupPage extends Vue {
 	@backendStore.Getter('banWalletForDepositsQRCode')
 	banWalletForDepositsQRCode!: string
 
+	@accountsStore.State('activeAccount')
+	activeAccount!: string
+
 	banAddress = ''
 
 	get activeColor(): string {
@@ -252,6 +289,10 @@ export default class SetupPage extends Vue {
 
 	get inactiveColor(): string {
 		return '#9e9e9e'
+	}
+
+	kalium(wallet: string) {
+		return `ban:${wallet}`
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -328,6 +369,56 @@ export default class SetupPage extends Vue {
 		}
 	}
 
+	async relink() {
+		const signer = this.provider?.getSigner()
+		// fetch nonce from the backend
+		let resp = await axios.get(`${getBackendHost()}/nonce`, { withCredentials: true })
+		const nonce = resp.data
+		// prepare login request to sign
+		const domain = window.location.host
+		const origin = window.location.origin
+		const message = new SiweMessage({
+			domain,
+			address: await signer?.getAddress(),
+			statement: 'Sign in with Web3 wallet to the dApp',
+			uri: origin,
+			version: '1',
+			chainId: this.currentBlockchain.chainIdNumber,
+			nonce,
+		})
+		const signature = await signer?.signMessage(message.prepareMessage())
+		// verify login request
+		resp = await axios.post(
+			`${getBackendHost()}/verify`,
+			{
+				message,
+				signature,
+			},
+			{
+				withCredentials: true,
+			}
+		)
+		resp = await axios.get(`${getBackendHost()}/relink`, { withCredentials: true })
+		const banAddresses: Array<string> = resp.data.banAddresses
+		// TODO: deal with more than 1 BAN address
+		const banAddress = banAddresses[0]
+		console.info(`Relinking ${banAddress} with ${await signer?.getAddress()}`)
+		ban.setBanAccount(banAddress)
+		const result = await backend.checkSetupDone(banAddress)
+		if (result === true) {
+			await backend.initBackend(banAddress)
+			this.trackEventInPlausible('Bridge Setup: Completed')
+			// redirect to home
+			router.push('/')
+		} else {
+			console.error("Setup didn't work")
+		}
+	}
+
+	buy() {
+		router.push({ path: '/swaps', query: { output: 'wban' } })
+	}
+
 	@Watch('setupDone')
 	redirect() {
 		if (this.setupDone === true) {
@@ -372,14 +463,20 @@ export default class SetupPage extends Vue {
 <style lang="sass">
 @import '@/styles/quasar.sass'
 
+body.desktop .container
+	margin-top: 15%
+
 .coming-from-card
 	background-color: lighten($secondary, 5%)
 	max-width: 500px
 	padding: 20px
 	.currency-logo
-		padding-bottom: 0
+		float: right
+		width: 128px
+		height: 128px
 		img
 			width: 128px
+			height: 128px
 	.title
 		text-align: left
 		font-weight: bold
@@ -387,6 +484,18 @@ export default class SetupPage extends Vue {
 	.subtitle
 		color: darken(white, 20%)
 		font-size: 1.3rem
+	.button
+		margin-left: 25%
+		margin-top: 1em
+		width: 50%
+
+body.mobile .coming-from-card
+	.currency-logo
+		width: 96px !important
+		height: 96px !important
+		img
+			width: 96px !important
+			height: 96px !important
 
 .kalium
 	background-color: $secondary

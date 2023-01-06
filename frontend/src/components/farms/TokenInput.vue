@@ -2,36 +2,44 @@
 	<q-card class="token-chooser-card flat bg-token-chooser text-black">
 		<q-item>
 			<q-item-section>
-				<q-item-label>{{ label }}</q-item-label>
+				<q-item-label v-if="!dense">{{ label }}</q-item-label>
 			</q-item-section>
 			<q-item-section side>
-				<q-item-label>{{ $t('components.token-input.balance') }} {{ balance | bnToExactString }}</q-item-label>
+				<q-item-label>
+					{{ $t('components.token-input.balance') }} {{ balance | bnToExactString(decimals) }}
+				</q-item-label>
 			</q-item-section>
 		</q-item>
 		<q-card-section>
-			<q-input
-				ref="amount"
-				rounded
-				dense
-				outlined
-				:disable="!editable"
-				v-model="syncAmount"
-				@input="emitEvent"
-				:rules="validationRules"
-			>
-				<template v-slot:append>
-					<a v-if="editable" @click="setToMax" class="max">{{ $t('components.token-input.max') }}</a>
-				</template>
-			</q-input>
+			<div class="row q-col-gutter-md">
+				<span v-if="$slots.prepend" class="prepend col-5"><slot name="prepend" /></span>
+				<q-input
+					ref="amount"
+					class="col"
+					rounded
+					dense
+					outlined
+					:disable="!editable"
+					v-model="syncAmount"
+					@input="emitEvent"
+					:rules="validationRules"
+				>
+					<template v-slot:append v-if="!dense">
+						<a v-if="editable" @click="setToMax" class="max">{{ $t('components.token-input.max') }}</a>
+					</template>
+				</q-input>
+				<span v-if="$slots.append" class="prepend col-12"><slot name="append" /></span>
+			</div>
 		</q-card-section>
 	</q-card>
 </template>
 
 <script lang="ts">
 import { Component, Prop, PropSync, Ref, Vue } from 'vue-property-decorator'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 import { bnToExactStringFilter, banPriceFilter } from '@/utils/filters'
 import accounts from '@/store/modules/accounts'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 @Component({
 	filters: {
@@ -43,7 +51,9 @@ export default class TokenInput extends Vue {
 	@Prop({ type: String, required: true }) readonly label!: string
 	@Prop({ type: String, required: true }) readonly currency!: string
 	@Prop({ type: Object, required: true }) readonly balance!: BigNumber
+	@Prop({ type: Number, required: false }) readonly decimals!: number
 	@Prop({ type: Boolean, required: false }) readonly editable!: boolean
+	@Prop({ type: Boolean, required: false, default: false }) readonly dense!: boolean
 	@PropSync('amount', { type: String, required: true }) syncAmount!: string
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,19 +61,19 @@ export default class TokenInput extends Vue {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	validationRules: Array<any> = [
-		(val: string) => val == '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
-		(val: string) => this.isLowerThanMax(val) || `Not enough ${this.currency} available!`,
+		(val: string) => val === '' || Number.parseFloat(val) > 0 || 'Amount should be more than zero',
+		(val: string) => this.isLowerThanMax(val) || 'Not enough available!',
 	]
 
 	setToMax() {
-		this.syncAmount = ethers.utils.formatEther(this.balance)
+		this.syncAmount = formatUnits(this.balance, this.decimals)
 	}
 
 	isLowerThanMax(val: string) {
 		if (val == '') {
 			return true
 		} else {
-			return !this.editable || ethers.utils.parseEther(val).lte(this.balance)
+			return !this.editable || parseUnits(val, this.decimals).lte(this.balance)
 		}
 	}
 
@@ -104,6 +114,7 @@ body.body--dark #add-wban-to-metamask
 	cursor: pointer
 	font-size: .8em
 .max
+	color: $primary
 	font-size: 0.7em
 	text-decoration: underline
 </style>

@@ -2,9 +2,9 @@
 	<q-dialog ref="dialog" @hide="onDialogHide">
 		<q-card class="q-dialog-plugin">
 			<q-card-section class="row items-center">
-				<div class="text-h5 q-mt-sm q-mb-xs">{{ $t('dialogs.token-chooser.title') }}</div>
+				<div class="text-h6 q-mt-sm q-mb-xs">{{ $t('dialogs.token-chooser.title') }}</div>
 				<q-space />
-				<q-btn icon="close" flat round dense v-close-popup class="text-white" />
+				<q-btn icon="close" flat round dense v-close-popup color="white" />
 			</q-card-section>
 			<q-card-section>
 				<q-input

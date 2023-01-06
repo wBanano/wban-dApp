@@ -6,17 +6,19 @@
 				<a @click="home" class="gt-xs">
 					<img :src="require(`@/assets/wban-logo-${currentBlockchain.network}.svg`)" class="currency-logo" />
 				</a>
-				<q-toolbar-title @click="home">wBAN - {{ $t('title') }}</q-toolbar-title>
+				<q-toolbar-title @click="home">
+					wBAN<span v-if="$q.platform.is.desktop"> - {{ $t('title') }}</span>
+				</q-toolbar-title>
 				<blockchain-chooser />
 				<q-avatar v-if="banAddress" class="gt-xs">
 					<img @click="openBan(banAddress)" :src="banAddressPicture" :alt="banAddress" />
 					<q-tooltip>{{ banAddress }}</q-tooltip>
 				</q-avatar>
-				<q-btn flat round dense @click="openNftPage()">
+				<q-btn v-if="!drawerEnabled" flat round dense @click="openNftPage()">
 					<q-icon name="img:nft.svg" />
 					<q-tooltip>wBAN NFTs</q-tooltip>
 				</q-btn>
-				<q-btn flat round dense icon="redeem" class="text-primary">
+				<q-btn v-if="!drawerEnabled" flat round dense icon="redeem" class="text-primary">
 					<q-menu id="donations">
 						<div class="row no-wrap q-pa-md">
 							<div class="column">
@@ -27,17 +29,10 @@
 								</p>
 							</div>
 							<q-separator vertical inset class="q-mx-lg" />
-							<div class="column items-center" v-if="$q.platform.is.desktop">
+							<div class="column items-center">
 								<div class="text-subtitle1 q-mt-md q-mb-xs">{{ $t('menu.donations.aside') }}</div>
 								<q-icon :name="banWalletForTipsQRCode" size="200px" />
 							</div>
-							<q-btn
-								v-if="$q.platform.is.mobile"
-								color="primary"
-								text-color="secondary"
-								:label="$t('ok')"
-								v-close-popup
-							/>
 						</div>
 					</q-menu>
 				</q-btn>
@@ -85,6 +80,58 @@
 					<q-separator vertical inset />
 					<q-item-section>{{ $t('pages.bridge.button-stake-and-farm') }}</q-item-section>
 				</q-item>
+				<q-separator />
+				<q-item clickable v-ripple @click="openNftPage()">
+					<q-item-section avatar>
+						<q-icon name="img:nft.svg" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>wBAN NFTs</q-item-section>
+				</q-item>
+				<q-item clickable v-ripple>
+					<q-item-section avatar>
+						<q-icon name="redeem" class="text-primary" size="3em" />
+					</q-item-section>
+					<q-separator vertical inset />
+					<q-item-section>
+						<span @click="showDonations = true">{{ $t('menu.donations.title') }}</span>
+						<q-dialog v-model="showDonations">
+							<q-card>
+								<q-card-section class="row items-center q-pb-none">
+									<div class="text-h6">{{ $t('menu.donations.title') }}</div>
+									<q-space />
+									<q-btn icon="close" flat round dense v-close-popup color="white" />
+								</q-card-section>
+								<q-card-section>
+									<p>{{ $t('menu.donations.phrase1') }}</p>
+									<p>
+										{{ $t('menu.donations.phrase2') }}
+										<span class="banano-address ellipsis">
+											{{ banWalletForTips.substring(0, 16) }}...{{ banWalletForTips.substring(48) }}
+										</span>
+									</p>
+									<q-separator vertical inset class="q-mx-lg" />
+									<div class="row justify-around">
+										<q-btn
+											:href="kalium(banWalletForTips)"
+											color="primary"
+											text-color="secondary"
+											class="col-5"
+											:label="$t('menu.donations.kalium')"
+										/>
+										<q-btn
+											@click="copyBanAddressForDonationsToClipboard"
+											color="primary"
+											text-color="secondary"
+											class="col-5"
+											:label="$t('menu.donations.copy-address')"
+										/>
+									</div>
+								</q-card-section>
+							</q-card>
+						</q-dialog>
+					</q-item-section>
+				</q-item>
 			</q-list>
 		</q-drawer>
 		<q-page-container>
@@ -122,7 +169,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { Screen } from 'quasar'
+import { copyToClipboard, Screen } from 'quasar'
 import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
@@ -135,6 +182,7 @@ import { blockchainAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
 import { openURL } from 'quasar'
 import { Network, POLYGON_MAINNET } from '@/utils/Networks'
+import Dialogs from '@/utils/Dialogs'
 
 const accountsStore = namespace('accounts')
 const banStore = namespace('ban')
@@ -190,6 +238,7 @@ export default class MainLayout extends Vue {
 	banWalletForTipsQRCode = ''
 
 	drawerOpened = false
+	showDonations = false
 
 	get drawerEnabled() {
 		return Screen.lt.sm && this.isUserConnected
@@ -202,13 +251,13 @@ export default class MainLayout extends Vue {
 	}
 
 	depositBAN() {
-		document.dispatchEvent(new CustomEvent('deposit-ban'))
 		this.drawerOpened = false
+		Dialogs.startDeposit()
 	}
 
 	withdrawBAN() {
-		document.dispatchEvent(new CustomEvent('withdraw-ban'))
 		this.drawerOpened = false
+		Dialogs.initiateWithdrawal()
 	}
 
 	swap() {
@@ -229,6 +278,25 @@ export default class MainLayout extends Vue {
 			router.push('/nft')
 		} else {
 			openURL('https://opensea.io/collection/wban')
+		}
+	}
+
+	kalium(wallet: string) {
+		return `ban:${wallet}`
+	}
+
+	async copyBanAddressForDonationsToClipboard() {
+		try {
+			await copyToClipboard(this.banWalletForTips)
+			this.$q.notify({
+				type: 'positive',
+				message: 'Address copied',
+			})
+		} catch (err) {
+			this.$q.notify({
+				type: 'negative',
+				message: "Can't write to clipboard!",
+			})
 		}
 	}
 
@@ -261,7 +329,6 @@ export default class MainLayout extends Vue {
 	}
 
 	async mounted() {
-		console.debug('lookup locale for local storage setting')
 		if (localStorage.locale) {
 			this.$i18n.locale = localStorage.locale
 		} else {

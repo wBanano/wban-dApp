@@ -25,6 +25,7 @@
 			},
 			"mainText": "Connexion en cours...",
 			"paragraph": "Assurez-vous de sélectionner tous les comptes auxquels vous voulez accorder l'accès.",
+			"previousConnection": "{wallet} a déjà une demande de connexion en attente, veuillez ouvrir l'application {wallet} pour vous connecter.",
 			"rejectedText": "Connexion rejetée !",
 			"rejectedCTA": "Cliquez ici pour réessayer",
 			"primaryButton": "Retour aux portefeuilles"
@@ -70,19 +71,20 @@
 		"poweredBy": "propulsé par",
 		"addAccount": "Ajouter un compte",
 		"setPrimaryAccount": "Définir le compte principal",
-		"disconnectWallet": "Déconnecter le portefeuille"
+		"disconnectWallet": "Déconnecter le portefeuille",
+		"copyAddress": "Copier l'adresse du portefeuille"
 	},
 	"notify": {
 		"transaction": {
 			"txRequest": "Votre transaction est en attente de confirmation",
-			"nsfFail": "Vous n'avez pas assez de fonds pour compléter cette transaction",
-			"txUnderpriced": "Le prix du gaz pour votre transaction est trop bas, essayez à nouveau avec un prix de gaz plus élevé",
+			"nsfFail": "Vous n'avez pas assez de fonds pour cette transaction",
+			"txUnderpriced": "Le prix du gaz pour votre transaction est trop bas, essayez un prix de gaz plus élevé",
 			"txRepeat": "Cela pourrait être une opération répétitive",
 			"txAwaitingApproval": "Vous avez une transaction précédente en attente de confirmation",
-			"txConfirmReminder": "Veuillez confirmer votre transaction pour continuer, la fenêtre de transaction peut être derrière votre navigateur",
+			"txConfirmReminder": "Veuillez confirmer votre transaction pour continuer",
 			"txSendFail": "Vous avez rejeté la transaction",
 			"txSent": "Votre transaction a été envoyée au réseau",
-			"txStallPending": "Votre transaction a été bloquée et n'a pas saisi le pool de transactions",
+			"txStallPending": "Votre transaction a été bloquée avant d'être envoyée, veuillez réessayer",
 			"txStuck": "Votre transaction est bloquée en raison d'un écart de nonce",
 			"txPool": "Votre transaction a commencé",
 			"txStallConfirmed": "Votre transaction a été bloquée et n'a pas été confirmée",
@@ -90,14 +92,16 @@
 			"txCancel": "Votre transaction est en cours d'annulation",
 			"txFailed": "Votre transaction a échoué",
 			"txConfirmed": "Votre transaction a réussi",
-			"txError": "Une erreur est survenue, veuillez réessayer"
+			"txError": "Une erreur est survenue, veuillez réessayer",
+			"txReplaceError": "Une erreur s'est produite lors du remplacement de votre transaction, veuillez réessayer"
 		},
 		"watched": {
 			"txPool": "Votre compte est {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
 			"txSpeedUp": "La transaction pour {formattedValue} {asset} {preposition} {counterpartyShortened} a été accélérée",
 			"txCancel": "La transaction pour {formattedValue} {asset} {preposition} {counterpartyShortened} a été annulée",
 			"txConfirmed": "Votre compte {verb} {formattedValue} {asset} {preposition} {counterpartyShortened} avec succès",
-			"txFailed": "Votre compte a échoué sur {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}"
+			"txFailed": "Votre compte a échoué sur {verb} {formattedValue} {asset} {preposition} {counterpartyShortened}",
+			"txStuck": "Votre transaction est bloquée en raison d'un écart de nonce"
 		},
 		"time": {
 			"minutes": "minutes",

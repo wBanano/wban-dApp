@@ -67,6 +67,7 @@ import { BN_ZERO } from '@/models/FarmData'
 import { Benis } from '@artifacts/typechain'
 import { sleep } from '@/utils/AsyncUtils'
 import { Network } from '@/utils/Networks'
+import accounts from '@/store/modules/accounts'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -88,6 +89,9 @@ export default class FarmsPage extends Vue {
 
 	@accountsStore.Getter('providerEthers')
 	provider!: ethers.providers.Web3Provider | null
+
+	@accountsStore.Getter('isUserConnected')
+	isUserConnected!: boolean
 
 	@benisStore.Getter('benisContract')
 	benis!: Benis
@@ -139,6 +143,11 @@ export default class FarmsPage extends Vue {
 	}
 
 	async mounted() {
+		await accounts.initWalletProvider()
+		console.warn('User connected?', this.isUserConnected)
+		if (!this.isUserConnected) {
+			await accounts.connectWalletProvider()
+		}
 		// wait for Web3 provider to be ready
 		while (!this.provider) {
 			await sleep(100)

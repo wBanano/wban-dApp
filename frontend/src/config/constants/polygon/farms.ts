@@ -17,6 +17,10 @@ export default class PolygonFarms {
 		}
 	}
 
+	getZapAddress(): string {
+		return '0x825EC74e89a4F48eDb92F3af89f29DAA0aD70CA8'
+	}
+
 	getFarms(): FarmConfig[] {
 		const tokens = getTokens()
 		return [
