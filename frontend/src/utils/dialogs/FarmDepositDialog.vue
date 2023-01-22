@@ -89,6 +89,7 @@ import i18n from '@/i18n'
 import { getDexUrl } from '@/config/constants/dex'
 import { openURL } from 'quasar'
 import TokensUtil from '@/utils/TokensUtil'
+import plausible from '@/store/modules/plausible'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -113,7 +114,7 @@ export default class FarmDepositDialog extends Vue {
 	account!: string
 
 	@accountsStore.State('network')
-	currentBlockchain!: Network
+	network!: Network
 
 	token = { symbol: '', address: '', zap: false }
 	balance = ethers.constants.Zero
@@ -155,7 +156,8 @@ export default class FarmDepositDialog extends Vue {
 		} else {
 			txnHash = await this.benisUtils.deposit(this.farm.pid, this.amount, this.farm.lpSymbol, this.benis)
 		}
-		const blockExplorerUrl = this.currentBlockchain.blockExplorerUrls[0]
+		this.trackEventInPlausible('Farms: Deposit')
+		const blockExplorerUrl = this.network.blockExplorerUrls[0]
 		Dialogs.confirmFarmDeposit(this.amount, this.farm.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
 		this.hide()
 		this.$emit('farm-supply', txnHash)
@@ -223,9 +225,12 @@ export default class FarmDepositDialog extends Vue {
 					swapAmountOut //swapAmountOut.mul(9998).div(1000), // 0.2% slippage
 				)
 			}
+			this.trackEventInPlausible('Farms: Zap in', {
+				from: this.token.address ? this.token.symbol : this.network.nativeCurrency,
+			})
 			Dialogs.startFarmZapProgress(this.amount, this.token.symbol)
 			await tx.wait()
-			const blockExplorerUrl = this.currentBlockchain.blockExplorerUrls[0]
+			const blockExplorerUrl = this.network.blockExplorerUrls[0]
 			Dialogs.confirmFarmZapIn(this.amount, this.token.symbol, tx.hash, `${blockExplorerUrl}/tx/${tx.hash}`)
 		} else {
 			const tx = await zap.zapInFromETH(swapAmountOut, { value: amountToZap })
@@ -240,7 +245,7 @@ export default class FarmDepositDialog extends Vue {
 		if (this.farm.quoteToken.address) {
 			const otherToken = this.farm.quoteToken.address[FarmDepositDialog.ENV_NAME as keyof Address]
 			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl() === 'https://pancakeswap.finance') {
-				openURL(`${getDexUrl()}/add/${this.wbanAddress}/${otherToken}?chainId=${this.currentBlockchain.chainIdNumber}`)
+				openURL(`${getDexUrl()}/add/${this.wbanAddress}/${otherToken}?chainId=${this.network.chainIdNumber}`)
 			} else if (getDexUrl() === 'https://app.uniswap.org') {
 				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/${otherToken}`)
 			} else {
@@ -248,7 +253,7 @@ export default class FarmDepositDialog extends Vue {
 			}
 		} else {
 			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl() === 'https://pancakeswap.finance') {
-				openURL(`${getDexUrl()}/add/${this.wbanAddress}/ETH?chainId=${this.currentBlockchain.chainIdNumber}`)
+				openURL(`${getDexUrl()}/add/${this.wbanAddress}/ETH?chainId=${this.network.chainIdNumber}`)
 			} else if (getDexUrl() === 'https://app.uniswap.org') {
 				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/ETH`)
 			} else {
@@ -276,6 +281,16 @@ export default class FarmDepositDialog extends Vue {
 				this.amount = formatEther(await this.signer.getBalance())
 			}
 		}
+	}
+
+	private trackEventInPlausible(name: string, customProps = {}) {
+		plausible.trackEvent(name, {
+			props: {
+				network: this.network.chainName,
+				farm: `${this.farmTokens[1].symbol}-${this.farmTokens[2].symbol}`,
+				...customProps,
+			},
+		})
 	}
 
 	get submitLabel() {
@@ -316,6 +331,8 @@ export default class FarmDepositDialog extends Vue {
 	}
 
 	async mounted() {
+		plausible.init()
+
 		const lpAddress = this.farm.lpAddresses[FarmDepositDialog.ENV_NAME as keyof Address]
 		const tokenAddress = this.farm.token.address
 			? this.farm.token.address[FarmDepositDialog.ENV_NAME as keyof Address]

@@ -77,6 +77,7 @@ import { formatEther, parseEther } from 'ethers/lib/utils'
 import PermitUtil from '@/utils/PermitUtil'
 import TokenInput from '@/components/farms/TokenInput.vue'
 import TokensUtil from '@/utils/TokensUtil'
+import plausible from '@/store/modules/plausible'
 
 const benisStore = namespace('benis')
 const accountsStore = namespace('accounts')
@@ -97,7 +98,7 @@ export default class FarmWithdrawDialog extends Vue {
 	account!: string
 
 	@accountsStore.State('network')
-	currentBlockchain!: Network
+	network!: Network
 
 	lpSymbol = ''
 	lpStakedBalance = ethers.constants.Zero
@@ -120,7 +121,8 @@ export default class FarmWithdrawDialog extends Vue {
 
 	async withdraw() {
 		const txnHash = await this.benisUtils.withdraw(this.farm.pid, this.lpStakedAmount, this.farm.lpSymbol, this.benis)
-		const blockExplorerUrl = this.currentBlockchain.blockExplorerUrls[0]
+		this.trackEventInPlausible('Farms: Withdraw')
+		const blockExplorerUrl = this.network.blockExplorerUrls[0]
 		Dialogs.confirmFarmWithdraw(this.lpStakedAmount, this.farm.lpSymbol, txnHash, `${blockExplorerUrl}/tx/${txnHash}`)
 		await this.selectToken()
 		this.$emit('farm-withdraw', txnHash)
@@ -159,9 +161,12 @@ export default class FarmWithdrawDialog extends Vue {
 			sig.r,
 			sig.s
 		)
+		this.trackEventInPlausible('Farms: Zap out', {
+			to: this.token.address ? this.token.symbol : this.network.nativeCurrency,
+		})
 		Dialogs.startFarmZapProgress(this.lpAmount, this.lpSymbol)
 		await tx.wait()
-		const blockExplorerUrl = this.currentBlockchain.blockExplorerUrls[0]
+		const blockExplorerUrl = this.network.blockExplorerUrls[0]
 		Dialogs.confirmFarmZapOut(this.lpAmount, this.lpSymbol, tx.hash, `${blockExplorerUrl}/tx/${tx.hash}`)
 		this.hide()
 	}
@@ -214,7 +219,19 @@ export default class FarmWithdrawDialog extends Vue {
 		}
 	}
 
+	private trackEventInPlausible(name: string, customProps = {}) {
+		plausible.trackEvent(name, {
+			props: {
+				network: this.network.chainName,
+				farm: `${this.token1Symbol}-${this.token2Symbol}`,
+				...customProps,
+			},
+		})
+	}
+
 	async mounted() {
+		plausible.init()
+
 		const tokenAddress = this.farm.token.address
 			? this.farm.token.address[FarmWithdrawDialog.ENV_NAME as keyof Address]
 			: ''
