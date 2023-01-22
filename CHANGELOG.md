@@ -1,3 +1,7 @@
+# v2.6.1
+## Improvements
+- updated translations for Ukrainian, Russian and Dutch
+
 # v2.6.0
 ## New Features
 - zap in or out with farms
