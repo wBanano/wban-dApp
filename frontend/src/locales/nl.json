@@ -26,6 +26,11 @@
 			"from-ban-description": "Ik heb Banano en wil DeFi leren met wBAN.",
 			"from-wban": "Ik ben nieuw bij Banano",
 			"from-wban-description": "Ik heb wBAN en wil gebruik maken van het Bananonetwerk.",
+			"reconnect-bridge": "Opnieuw verbinden met bridge",
+			"reconnect-bridge-description": "Ik heb de installatie al gedaan en wil verbinding maken met een nieuw apparaat.",
+			"swaps-only": "Koop wBAN",
+			"swaps-only-description": "Ik zal de brugfunctie later uitvoeren wanneer ik moet wrappen of unwrappen.",
+			"swaps-only-button": "Kopen",
 			"verify-ban-address": "We moeten je BAN adres verifiëren!",
 			"verify-ban-address-explanation": "Deze stap is belangrijk omdat het ervoor zorgt dat u de interactie tussen de BAN wallet en wBAN controleert.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Kopen/verkopen"
 		},
 		"farm": {
+			"farm": "Farm",
 			"wban-earned": "wBAN verdiend",
 			"wban-earned-farm-ended": "(opnemen om te harvesten)",
 			"farm-ended": "Farm Beëindigd!",
+			"zap-in-from": "Spring in from {symbol}",
+			"zap-out-to-symbol": "Spring naar {symbol}",
+			"zap-in-process-phrase1": "Dit is een tweestappenproces:",
+			"zap-in-process-phrase2": "Spring {symbol} in liquiditeitspool tokens",
+			"zap-in-process-phrase3": "Plaats je liquiditeitspool tokens op de Farm",
+			"zap-out-hint": "Na het opnemen van de liquiditeitspool tokens van de farm, kun je eenvoudig de liquiditeit verwijderen en op {symbol1} of {symbol2} springen.",
 			"harvest": "Oogst",
 			"deposit": "Storting",
 			"details": "Details",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Liquidity Pool TVL",
 			"button-approve": "Goedkeuren",
 			"button-add-liquidity": "Liquidity toevoegen",
-			"button-supply": "Beschikbaarheid",
-			"button-supply-tooltip": "Bij het toevoegen van je liquiditeitstokens in de farm, oogst je ook je verdiende wBAN!",
+			"button-deposit": "Storting",
+			"button-deposit-tooltip": "Bij het toevoegen van je liquiditeitstokens in de farm, oogst je ook je verdiende wBAN!",
+			"button-zap-in": "Spring in",
+			"button-zap-out": "Spring uit",
 			"button-withdraw-tooltip": "Wanneer je je liquiditeitstokens van de farm verwijdert, oogst je ook je verdiende wBAN!"
 		}
 	},
@@ -224,8 +238,12 @@
 			"title": "Unwrappen van {amount} wBAN in uitvoering...",
 			"message": "Hard aan het werk om je unwrap verzoek te verwerken!"
 		},
-		"farm-supply": {
-			"title": "Levering van {amount} {symbol} in behandeling...",
+		"farm-zap": {
+			"title": "Spring van {amount} {symbol} in voortgang...",
+			"message": "Werk hard om je aanvraag te verwerken!"
+		},
+		"farm-deposit": {
+			"title": "Storting van {amount} {symbol} in uitvoering...",
 			"message": "Hard aan het werk om je hoeveelheids verzoek te verwerken!"
 		},
 		"farm-withdraw": {
@@ -234,7 +252,7 @@
 		},
 		"unsupported-network": {
 			"title": "Niet-ondersteund netwerk {network}",
-			"message": "<p>wBAN is alleen beschikbaar op BSC, Polygon en Fantom.</p><p>Schakel over naar een van deze netwerken.</p>"
+			"message": "<p>wBAN is alleen beschikbaar op BSC, Polygon, Fantom, Ethereum en Arbitrum.</p><p>Schakel over naar een van deze netwerken.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +284,9 @@
 			"message": "Je unwrap van {amount} wBAN is succesvol verwerkt.",
 			"caption": "Je saldo van gestorte Banano is bijgewerkt."
 		},
-		"farm-supply": "Uw voorraad van {amount} {symbol} is met succes verwerkt.",
+		"farm-zap-in": "Uw sprong van {amount} {symbol} is met succes verwerkt.<br /><strong>Vergeet niet uw liquiditeit nu te storten!</strong>",
+		"farm-zap-out": "Je sprong van {amount} {symbol} is met succes verwerkt.",
+		"farm-deposit": "Uw storting van {amount} {symbol} is met succes verwerkt.",
 		"farm-withdraw": "Uw opname van {amount} {symbol} is met succes verwerkt."
 	},
 	"menu": {
@@ -274,7 +294,9 @@
 			"title": "Donaties",
 			"aside": "Tip me op:",
 			"phrase1": "Het werken aan deze app is een hele reis geweest en gaat nog steeds door!",
-			"phrase2": "Tips worden altijd op prijs gesteld en als u mijn inspanningen wilt steunen, kunt u mij helpen door Bananotips te sturen naar:"
+			"phrase2": "Tips worden altijd op prijs gesteld en als u mijn inspanningen wilt steunen, kunt u mij helpen door Bananotips te sturen naar:",
+			"kalium": "Verzenden via Kalium",
+			"copy-address": "Adres kopiëren"
 		}
 	},
 	"footer": {
