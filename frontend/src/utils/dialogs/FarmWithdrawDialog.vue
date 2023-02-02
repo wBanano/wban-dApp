@@ -17,15 +17,15 @@
 					editable
 				/>
 			</q-card-section>
-			<q-card-section v-if="!userHasLiquidityTokens">
+			<!--q-card-section v-if="!userHasLiquidityTokens">
 				<div class="border-left">
 					{{ $t('components.farm.zap-out-hint', { symbol1: token1Symbol, symbol2: token2Symbol }) }}
 				</div>
-			</q-card-section>
+			</q-card-section-->
 			<q-card-section align="right">
 				<q-btn @click="withdraw" color="primary" text-color="secondary" :label="$t('withdraw')" />
 			</q-card-section>
-			<q-card-section v-if="userHasLiquidityTokens">
+			<!--q-card-section v-if="userHasLiquidityTokens">
 				<div>{{ $t('components.farm.zap-out-to-symbol', { symbol: token.symbol }) }}</div>
 				<token-input
 					@input="selectToken"
@@ -56,7 +56,7 @@
 			</q-card-section>
 			<q-card-section v-if="userHasLiquidityTokens" align="right">
 				<q-btn @click="zapOut" color="primary" text-color="secondary" :label="$t('components.farm.button-zap-out')" />
-			</q-card-section>
+			</q-card-section-->
 		</q-card>
 	</q-dialog>
 </template>
