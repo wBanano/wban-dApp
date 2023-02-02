@@ -1,3 +1,7 @@
+# v2.6.2
+## Bugs
+- disable zap out until slippage issue isn't properly fixed
+
 # v2.6.1
 ## Improvements
 - updated translations for Ukrainian, Russian and Dutch
