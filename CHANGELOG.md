@@ -1,3 +1,7 @@
+# v2.6.3
+## Changes
+- kill old domains (v1 versions) with redirects to v2
+
 # v2.6.2
 ## Bugs
 - disable zap out until slippage issue isn't properly fixed
