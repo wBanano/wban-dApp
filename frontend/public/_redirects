@@ -1,5 +1,8 @@
 http://wban.banano.cc/* https://wrap.banano.cc/:splat 301!
 https://wban.banano.cc/* https://wrap.banano.cc/:splat 301!
+https://bsc.banano.cc/* https://wrap.banano.cc/:splat 301!
+https://polygon.banano.cc/* https://wrap.banano.cc/:splat 301!
+https://fantom.banano.cc/* https://wrap.banano.cc/:splat 301!
 
 /*    /index   200
 /*    /index   404
