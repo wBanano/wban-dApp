@@ -176,7 +176,7 @@
 			"farm-tvl": "TVL ферми",
 			"liquidity-pool-tvl": "Ферми пулів ліквідності TVL",
 			"button-approve": "Підтвердити",
-			"button-add-liquidity": "Додати ліквідність",
+			"button-add-liquidity": "<u>Додати ліквідність</u>",
 			"button-deposit": "Поповнити",
 			"button-deposit-tooltip": "Додаючи ваші токени ліквідності на ферму, ви також збираєте свій зароблений wBAN!",
 			"button-zap-in": "Обміняти в",

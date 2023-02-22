@@ -176,7 +176,7 @@
 			"farm-tvl": "Nilai TVL Peternakan",
 			"liquidity-pool-tvl": "Nilai TVL Kolam Likuiditas",
 			"button-approve": "Setujui",
-			"button-add-liquidity": "Tambahkan Likuiditas",
+			"button-add-liquidity": "<u>Tambahkan Likuiditas</u>",
 			"button-deposit": "Setor",
 			"button-deposit-tooltip": "Saat menambahkan token likuiditas ke dalam peternakan, anda juga memanen wBAN yang sudah diperoleh!",
 			"button-zap-in": "Masukkan",

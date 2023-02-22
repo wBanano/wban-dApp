@@ -176,7 +176,7 @@
 			"farm-tvl": "Tổng giá trị bị khóa của farm",
 			"liquidity-pool-tvl": "Tổng giá trị bị khóa của bể thanh khoản",
 			"button-approve": "Đồng ý",
-			"button-add-liquidity": "Tạo thanh khoản",
+			"button-add-liquidity": "<u>Tạo thanh khoản</u>",
 			"button-deposit": "Nạp",
 			"button-deposit-tooltip": "Khi bạn thêm token để tạo thanh khoản vào farm, bạn cùng lúc cũng nhận wBAN được thưởng!",
 			"button-zap-in": "Chuyển",

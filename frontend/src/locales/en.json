@@ -176,7 +176,7 @@
 			"farm-tvl": "Farm TVL",
 			"liquidity-pool-tvl": "Liquidity Pool TVL",
 			"button-approve": "Approve",
-			"button-add-liquidity": "Add Liquidity",
+			"button-add-liquidity": "<u>Add Liquidity</u>",
 			"button-deposit": "Deposit",
 			"button-deposit-tooltip": "When adding your liquidity tokens into the farm, you harvest your wBAN earned as well!",
 			"button-zap-in": "Zap in",

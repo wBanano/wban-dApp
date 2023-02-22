@@ -164,7 +164,7 @@
 			"farm-tvl": "Valor bloqueado na Farm",
 			"liquidity-pool-tvl": "Valor bloqueado na Pool de Liquidez",
 			"button-approve": "Aprovar",
-			"button-add-liquidity": "Adicionar Liquidez",
+			"button-add-liquidity": "<u>Adicionar Liquidez</u>",
 			"button-supply": "Fornecer",
 			"button-supply-tooltip": "Ao adicionar seus tokens de liquidez na farm, você automaticamente colhe seu wBAN ganho!",
 			"button-withdraw-tooltip": "Ao retirar seus tokens de liquidez da farm, você automaticamente colhe seu wBAN ganho!"

@@ -164,7 +164,7 @@
 			"farm-tvl": "Farm TVL",
 			"liquidity-pool-tvl": "Pool Di Liquidità TVl",
 			"button-approve": "Approva",
-			"button-add-liquidity": "Aggiungi Liquidità",
+			"button-add-liquidity": "<u>Aggiungi Liquidità</u>",
 			"button-supply": "Fornitura",
 			"button-supply-tooltip": "Quando aggiungi i tuoi token di liquidità nella farm, raccogli anche i tuoi wBAN guadagnati!",
 			"button-withdraw-tooltip": "Quando ritiri i tuoi token di liquidità dalla farm, raccogli anche i tuoi wBAN guadagnati!"

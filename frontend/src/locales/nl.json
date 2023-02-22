@@ -176,7 +176,7 @@
 			"farm-tvl": "Farm TVL",
 			"liquidity-pool-tvl": "Liquidity Pool TVL",
 			"button-approve": "Goedkeuren",
-			"button-add-liquidity": "Liquidity toevoegen",
+			"button-add-liquidity": "<u>Liquidity toevoegen</u>",
 			"button-deposit": "Storting",
 			"button-deposit-tooltip": "Bij het toevoegen van je liquiditeitstokens in de farm, oogst je ook je verdiende wBAN!",
 			"button-zap-in": "Spring in",

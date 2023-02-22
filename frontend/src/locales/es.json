@@ -176,7 +176,7 @@
 			"farm-tvl": "TVL de la granja",
 			"liquidity-pool-tvl": "TVL de la piscina",
 			"button-approve": "Aprobar",
-			"button-add-liquidity": "Añadir liquidez",
+			"button-add-liquidity": "<u>Añadir liquidez</u>",
 			"button-deposit": "Depositar",
 			"button-deposit-tooltip": "¡Al añadir tus tokens de liquidez a la granja, también recolectas tu wBAN ganado!",
 			"button-zap-in": "Zap In",

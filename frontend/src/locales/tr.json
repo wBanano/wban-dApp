@@ -164,7 +164,7 @@
 			"farm-tvl": "Çiftlik TVL",
 			"liquidity-pool-tvl": "Likidite Havuzu TVL",
 			"button-approve": "Onayla",
-			"button-add-liquidity": "Likidite Ekle",
+			"button-add-liquidity": "<u>Likidite Ekle</u>",
 			"button-supply": "Tedarik",
 			"button-supply-tooltip": "Likidite tokenlerinizi çiftliğe eklerken, kazandığınız wBAN'ınızı da hasat edersiniz!",
 			"button-withdraw-tooltip": "Likidite tokenlerinizi çiftlikten çekerken, kazandığınız wBAN'ınızı da hasat edersiniz!"
