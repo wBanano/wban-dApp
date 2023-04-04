@@ -23,6 +23,8 @@ import accounts from '@/store/modules/accounts'
 import BackendUtils from '@/utils/BackendUtils'
 import { GaslessSwapRequest } from '@/models/GaslessSwapRequest'
 import SwapDialogs from '@/utils/SwapDialogs'
+import { WBANTokenWithPermit } from '@artifacts/typechain'
+import { MulticallWrapper } from 'kasumah-multicall'
 
 @Module({
 	namespaced: true,
@@ -623,28 +625,25 @@ class BackendModule extends VuexModule {
 			try {
 				const resp = await axios.get(`${getBackendHost()}/history/${blockchainAddress}/${banAddress}`)
 				const { deposits, withdrawals } = resp.data
-				const swaps = await Promise.all(
-					resp.data.swaps.map(async (swap: any) => {
-						if (swap.receipt && swap.uuid && Contracts.wbanContract) {
-							// swap.consumed = await Contracts.wbanContract.isReceiptConsumed(swap.receipt)
-							// console.debug(`Blockchain address: ${blockchainAddress}`)
-							// console.debug(`Amount: ${swap.amount}`)
-							// console.debug(`UUID: ${swap.uuid}`)
-							swap.consumed = await Contracts.wbanContract.isReceiptConsumed(
-								blockchainAddress,
-								BigNumber.from(swap.amount),
-								swap.uuid
-							)
-						}
-						if (swap.type === 'swap-to-ban') {
-							swap.timestamp = swap.timestamp / 1_000
-						}
-						return swap
-					})
-				)
+
+				if (Accounts.providerEthers && Contracts.wbanContract) {
+					const wrapper = new MulticallWrapper(Accounts.providerEthers, Accounts.network.chainIdNumber)
+					const wban = await wrapper.wrap<WBANTokenWithPermit>(Contracts.wbanContract)
+					const swaps = await Promise.all(
+						resp.data.swaps.map(async (swap: any) => {
+							if (swap.receipt && swap.uuid) {
+								swap.consumed = await wban.isReceiptConsumed(blockchainAddress, BigNumber.from(swap.amount), swap.uuid)
+							}
+							if (swap.type === 'swap-to-ban') {
+								swap.timestamp = swap.timestamp / 1_000
+							}
+							return swap
+						})
+					)
+					this.context.commit('setSwaps', swaps)
+				}
 				this.context.commit('setDeposits', deposits)
 				this.context.commit('setWithdrawals', withdrawals)
-				this.context.commit('setSwaps', swaps)
 			} catch (err: any) {
 				console.log(err)
 				this.context.commit('setInError', true)

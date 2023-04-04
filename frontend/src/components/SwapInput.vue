@@ -265,13 +265,18 @@ export default class SwapInput extends Vue {
 		}
 	}
 
-	async mounted() {
+	async onProviderChange() {
 		if (accounts.activeAccount) {
 			await backend.getHistory({
 				blockchainAddress: accounts.activeAccount,
 				banAddress: this.banAddress,
 			})
 		}
+	}
+
+	async mounted() {
+		this.onProviderChange()
+		document.addEventListener('web3-connection', this.onProviderChange)
 	}
 
 	created() {

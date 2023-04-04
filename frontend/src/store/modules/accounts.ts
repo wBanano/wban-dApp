@@ -12,6 +12,7 @@ import {
 	ARBITRUM_MAINNET,
 	Network,
 	Networks,
+	ARBITRUM_TESTNET,
 } from '@/utils/Networks'
 import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
@@ -19,6 +20,7 @@ import walletConnectModule from '@web3-onboard/walletconnect'
 import ledgerModule from '@web3-onboard/ledger'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
 import enrkypt from '@web3-onboard/enkrypt'
+import { MulticallWrapper } from 'kasumah-multicall'
 import Dialogs from '@/utils/Dialogs'
 import i18n from '@/i18n'
 import translationDE from '@/web3-onboard/web3-onboard-de.json'
@@ -162,6 +164,14 @@ class AccountsModule extends VuexModule {
 			return
 		}
 		this.context.commit('setInitialized', true)
+
+		MulticallWrapper.setMulticallAddress(BSC_MAINNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
+		MulticallWrapper.setMulticallAddress(POLYGON_MAINNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
+		MulticallWrapper.setMulticallAddress(FANTOM_MAINNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
+		MulticallWrapper.setMulticallAddress(ETHEREUM_MAINNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
+		MulticallWrapper.setMulticallAddress(ARBITRUM_MAINNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
+		MulticallWrapper.setMulticallAddress(ARBITRUM_TESTNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
+
 		const injected = injectedModule()
 		const walletConnect = walletConnectModule({
 			qrcodeModalOptions: {
