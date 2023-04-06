@@ -46,9 +46,7 @@
 				<div v-if="!token.zap">
 					<div class="border-left">
 						You can
-						<a @click="addLiquidity" color="primary">
-							{{ $t('components.farm.button-add-liquidity') }}
-						</a>
+						<a @click="addLiquidity" color="primary">{{ $t('components.farm.button-add-liquidity') }}</a>
 						straight from the DEX, or zap in from any token of the liquidity pool and then deposit your liquidity pool
 						tokens in the farm.
 					</div>
@@ -381,6 +379,8 @@ body.desktop
 	padding-left: 1em
 	a
 		cursor: pointer
+		text-decoration: underline
+		color: $primary
 	ol
 		margin-block-start: 0
 		padding-inline-start: 20px
