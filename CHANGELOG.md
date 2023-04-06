@@ -1,3 +1,9 @@
+# v2.6.4
+## Improvements
+- `multicall` for wraps history
+## Bugs
+- changed color and added underline for `Add Liquidity` link
+
 # v2.6.3
 ## Changes
 - kill old domains (v1 versions) with redirects to v2
