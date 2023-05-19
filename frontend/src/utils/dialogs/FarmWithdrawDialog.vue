@@ -25,7 +25,7 @@
 			<q-card-section align="right">
 				<q-btn @click="withdraw" color="primary" text-color="secondary" :label="$t('withdraw')" />
 			</q-card-section>
-			<!--q-card-section v-if="userHasLiquidityTokens">
+			<q-card-section v-if="userHasLiquidityTokens">
 				<div>{{ $t('components.farm.zap-out-to-symbol', { symbol: token.symbol }) }}</div>
 				<token-input
 					@input="selectToken"
@@ -56,7 +56,7 @@
 			</q-card-section>
 			<q-card-section v-if="userHasLiquidityTokens" align="right">
 				<q-btn @click="zapOut" color="primary" text-color="secondary" :label="$t('components.farm.button-zap-out')" />
-			</q-card-section-->
+			</q-card-section>
 		</q-card>
 	</q-dialog>
 </template>
@@ -64,8 +64,8 @@
 <script lang="ts">
 import { getZapAddress } from '@/config/constants/farms'
 import { Address, FarmConfig } from '@/config/constants/types'
-import { Benis, ERC20PermitUpgradeable__factory } from '@artifacts/typechain'
-import { WBANFarmZap, WBANFarmZap__factory } from 'wban-zaps'
+import { Benis, IUniswapV2Router02__factory } from '@artifacts/typechain'
+import { IUniswapV2Pair__factory, WBANFarmZap, WBANFarmZap__factory } from 'wban-zaps'
 import { ethers, providers, Signature, Signer } from 'ethers'
 import { Component, Ref, Prop, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
@@ -73,7 +73,7 @@ import BenisUtils from '@/utils/BenisUtils'
 import BEP20Utils from '@/utils/BEP20Utils'
 import Dialogs from '@/utils/Dialogs'
 import { Network } from '@/utils/Networks'
-import { formatEther, parseEther } from 'ethers/lib/utils'
+import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils'
 import PermitUtil from '@/utils/PermitUtil'
 import TokenInput from '@/components/farms/TokenInput.vue'
 import TokensUtil from '@/utils/TokensUtil'
@@ -130,14 +130,52 @@ export default class FarmWithdrawDialog extends Vue {
 
 	async zapOut() {
 		const zap: WBANFarmZap = WBANFarmZap__factory.connect(getZapAddress(), this.signer)
+		const lpAddress = this.farm.lpAddresses[FarmWithdrawDialog.ENV_NAME as keyof Address]
+		const lpPair = await IUniswapV2Pair__factory.connect(lpAddress, this.signer)
+
 		const amountToZap = parseEther(this.lpAmount)
 
-		const lpAddress = this.farm.lpAddresses[FarmWithdrawDialog.ENV_NAME as keyof Address]
-		const erc20 = await ERC20PermitUpgradeable__factory.connect(lpAddress, this.signer)
-		const nonce = await erc20.nonces(this.account)
+		const weth = await TokensUtil.getTokenBySymbol('WETH')
+		if (!weth) {
+			console.error("Can't find WETH")
+			return
+		}
+		const tokenAddress = this.token.address ? this.token.address : weth[0].address
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const token: string = this.farm.token!.address![FarmWithdrawDialog.ENV_NAME as keyof Address]
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const quoteToken: string = this.farm.quoteToken!.address![FarmWithdrawDialog.ENV_NAME as keyof Address]
+		const otherTokenAddress = tokenAddress.toLowerCase() === token.toLowerCase() ? quoteToken : token
+
+		const router = IUniswapV2Router02__factory.connect(await zap.router(), this.signer)
+		const reserves = await lpPair.getReserves()
+		console.debug('Reserves:', formatEther(reserves.reserve0), formatEther(reserves.reserve1))
+		const lpTotalSupply = await lpPair.totalSupply()
+		console.debug('LP Total supply', formatEther(lpTotalSupply))
+		const isToken0 = (await lpPair.token0()).toLowerCase() === tokenAddress.toLowerCase()
+		const amountIn = (isToken0 ? reserves.reserve1 : reserves.reserve0)
+			.mul(parseEther(this.lpAmount))
+			.div(lpTotalSupply)
+		console.debug('amountIn', formatEther(amountIn), otherTokenAddress)
+		let [, swapAmountOut] = await router.getAmountsOut(amountIn, [otherTokenAddress, this.token.address])
+		swapAmountOut = swapAmountOut.mul(9995).div(10000) // 0.5% slippage
+
+		const otherToken = await this.bep20.getBEP20Token(otherTokenAddress, this.signer)
+		const otherTokenSymbol = await otherToken.symbol()
+		const otherTokenDecimals = await otherToken.decimals()
+		console.debug(
+			'Estimated output:',
+			formatUnits(swapAmountOut, otherTokenDecimals),
+			this.token.symbol,
+			'from',
+			formatEther(amountIn),
+			otherTokenSymbol
+		)
+
+		const nonce = await lpPair.nonces(this.account)
 		const deadline = Date.now() + 30 * 60 * 1_000 // 30 minutes
 		const sig: Signature = await PermitUtil.createPermitSignatureForToken(
-			await erc20.name(),
+			await lpPair.name(),
 			'1',
 			lpAddress,
 			this.signer as providers.JsonRpcSigner,
@@ -146,16 +184,11 @@ export default class FarmWithdrawDialog extends Vue {
 			nonce,
 			deadline
 		)
-		const weth = await TokensUtil.getTokenBySymbol('WETH')
-		if (!weth) {
-			console.error("Can't find WETH")
-			return
-		}
-		const tokenAddress = this.token.address ? this.token.address : weth[0].address
+
 		const tx = await zap.zapOutToTokenWithPermit(
 			amountToZap,
 			tokenAddress,
-			0, // TODO: find a way to get a better estimate,
+			swapAmountOut,
 			deadline,
 			sig.v,
 			sig.r,
