@@ -170,20 +170,20 @@ export default class FarmDepositDialog extends Vue {
 			const [, _swapAmountOut] = await zap.estimateSwap(this.token.address, amountToZap)
 			swapAmountOut = _swapAmountOut
 		} else {
-			const weth = await TokensUtil.getTokenBySymbol('WETH')
-			if (!weth) {
-				console.error("Can't find WETH")
+			const wrappedCrypto = await TokensUtil.getTokenBySymbol(`W${this.token.symbol}`)
+			if (!wrappedCrypto) {
+				console.error(`Can't find W${this.token.symbol}`)
 				return
 			}
-			const [, _swapAmountOut] = await zap.estimateSwap(weth[0].address, amountToZap)
+			const [, _swapAmountOut] = await zap.estimateSwap(wrappedCrypto[0].address, amountToZap)
 			swapAmountOut = _swapAmountOut
 		}
 		console.info('Estimated output:', formatEther(swapAmountOut), 'wBAN from ', this.amount, this.token.symbol)
 
+		let tx = undefined
 		if (this.token.address) {
 			const erc20 = await ERC20PermitUpgradeable__factory.connect(this.token.address, this.signer)
 			let permitEnabled = true
-			let tx = undefined
 			let nonce = undefined
 			try {
 				nonce = await erc20.nonces(this.account)
@@ -207,7 +207,7 @@ export default class FarmDepositDialog extends Vue {
 				tx = await zap.zapInFromTokenWithPermit(
 					this.token.address,
 					amountToZap,
-					swapAmountOut, //swapAmountOut.mul(9998).div(1000), // 0.2% slippage
+					swapAmountOut,
 					deadline,
 					sig.v,
 					sig.r,
@@ -217,23 +217,20 @@ export default class FarmDepositDialog extends Vue {
 				console.warn('no permit feature for', this.token.address)
 				tx = await erc20.approve(zap.address, amountToZap)
 				await tx.wait()
-				tx = await zap.zapInFromToken(
-					this.token.address,
-					amountToZap,
-					swapAmountOut //swapAmountOut.mul(9998).div(1000), // 0.2% slippage
-				)
+				tx = await zap.zapInFromToken(this.token.address, amountToZap, swapAmountOut)
 			}
-			this.trackEventInPlausible('Farms: Zap in', {
-				from: this.token.address ? this.token.symbol : this.network.nativeCurrency,
-			})
-			Dialogs.startFarmZapProgress(this.amount, this.token.symbol)
-			await tx.wait()
-			const blockExplorerUrl = this.network.blockExplorerUrls[0]
-			Dialogs.confirmFarmZapIn(this.amount, this.token.symbol, tx.hash, `${blockExplorerUrl}/tx/${tx.hash}`)
 		} else {
-			const tx = await zap.zapInFromETH(swapAmountOut, { value: amountToZap })
-			await tx.wait()
+			tx = await zap.zapInFromETH(swapAmountOut, { value: amountToZap })
 		}
+		// track zap even in Plausible
+		this.trackEventInPlausible('Farms: Zap in', {
+			from: this.token.address ? this.token.symbol : this.network.nativeCurrency,
+		})
+		// display progress dialog for the user
+		Dialogs.startFarmZapProgress(this.amount, this.token.symbol)
+		await tx.wait()
+		const blockExplorerUrl = this.network.blockExplorerUrls[0]
+		Dialogs.confirmFarmZapIn(this.amount, this.token.symbol, tx.hash, `${blockExplorerUrl}/tx/${tx.hash}`)
 		// switch to LP token deposit mode
 		this.token = this.farmTokens[0]
 		await this.selectToken()
