@@ -1,3 +1,8 @@
+# v2.6.5
+## Bugs
+- zap out is back! #114
+- zap in UX improvements and fixes #116
+
 # v2.6.4
 ## Improvements
 - `multicall` for wraps history
