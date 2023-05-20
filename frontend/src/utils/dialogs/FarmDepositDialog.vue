@@ -170,12 +170,16 @@ export default class FarmDepositDialog extends Vue {
 			const [, _swapAmountOut] = await zap.estimateSwap(this.token.address, amountToZap)
 			swapAmountOut = _swapAmountOut
 		} else {
-			const wrappedCrypto = await TokensUtil.getTokenBySymbol(`W${this.token.symbol}`)
+			if (!this.farm.quoteToken.address) {
+				throw Error('Missing quote token')
+			}
+			const quoteToken = this.farm.quoteToken.address[FarmDepositDialog.ENV_NAME as keyof Address]
+			const wrappedCrypto = await TokensUtil.getToken(quoteToken)
 			if (!wrappedCrypto) {
 				console.error(`Can't find W${this.token.symbol}`)
 				return
 			}
-			const [, _swapAmountOut] = await zap.estimateSwap(wrappedCrypto[0].address, amountToZap)
+			const [, _swapAmountOut] = await zap.estimateSwap(wrappedCrypto.address, amountToZap)
 			swapAmountOut = _swapAmountOut
 		}
 		console.info('Estimated output:', formatEther(swapAmountOut), 'wBAN from ', this.amount, this.token.symbol)

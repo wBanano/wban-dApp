@@ -24,6 +24,10 @@ class TokensUtil {
 		}
 	}
 
+	static isWBAN(token: string): boolean {
+		return TokensUtil.getWBANAddress().toLowerCase() === token.toLowerCase()
+	}
+
 	static async loadTokensList(): Promise<void> {
 		if (TokensUtil.initialized) {
 			console.info('IndexDB database already initialized')
