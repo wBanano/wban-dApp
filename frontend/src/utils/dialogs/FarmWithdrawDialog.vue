@@ -76,7 +76,6 @@ import { Network } from '@/utils/Networks'
 import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils'
 import PermitUtil from '@/utils/PermitUtil'
 import TokenInput from '@/components/farms/TokenInput.vue'
-import TokensUtil from '@/utils/TokensUtil'
 import plausible from '@/store/modules/plausible'
 
 const benisStore = namespace('benis')
@@ -135,41 +134,37 @@ export default class FarmWithdrawDialog extends Vue {
 
 		const amountToZap = parseEther(this.lpAmount)
 
-		const weth = await TokensUtil.getTokenBySymbol('WETH')
-		if (!weth) {
-			console.error("Can't find WETH")
-			return
+		if (!this.token.address) {
+			throw new Error("Can't pick crypto, choose wrapped token instead")
 		}
-		const tokenAddress = this.token.address ? this.token.address : weth[0].address
+
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const token: string = this.farm.token!.address![FarmWithdrawDialog.ENV_NAME as keyof Address]
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const quoteToken: string = this.farm.quoteToken!.address![FarmWithdrawDialog.ENV_NAME as keyof Address]
-		const otherTokenAddress = tokenAddress.toLowerCase() === token.toLowerCase() ? quoteToken : token
+		const otherTokenAddress = this.token.address.toLowerCase() === token.toLowerCase() ? quoteToken : token
 
 		const router = IUniswapV2Router02__factory.connect(await zap.router(), this.signer)
 		const reserves = await lpPair.getReserves()
 		console.debug('Reserves:', formatEther(reserves.reserve0), formatEther(reserves.reserve1))
 		const lpTotalSupply = await lpPair.totalSupply()
 		console.debug('LP Total supply', formatEther(lpTotalSupply))
-		const isToken0 = (await lpPair.token0()).toLowerCase() === tokenAddress.toLowerCase()
+		const isToken0 = (await lpPair.token0()).toLowerCase() === this.token.address.toLowerCase()
 		const amountIn = (isToken0 ? reserves.reserve1 : reserves.reserve0)
 			.mul(parseEther(this.lpAmount))
 			.div(lpTotalSupply)
 		console.debug('amountIn', formatEther(amountIn), otherTokenAddress)
 		let [, swapAmountOut] = await router.getAmountsOut(amountIn, [otherTokenAddress, this.token.address])
-		swapAmountOut = swapAmountOut.mul(9995).div(10000) // 0.5% slippage
+		swapAmountOut = swapAmountOut.mul(995).div(1000) // 0.5% slippage
 
 		const otherToken = await this.bep20.getBEP20Token(otherTokenAddress, this.signer)
-		const otherTokenSymbol = await otherToken.symbol()
-		const otherTokenDecimals = await otherToken.decimals()
 		console.debug(
 			'Estimated output:',
-			formatUnits(swapAmountOut, otherTokenDecimals),
+			formatUnits(swapAmountOut, await otherToken.decimals()),
 			this.token.symbol,
 			'from',
 			formatEther(amountIn),
-			otherTokenSymbol
+			await otherToken.symbol()
 		)
 
 		const nonce = await lpPair.nonces(this.account)
@@ -187,7 +182,7 @@ export default class FarmWithdrawDialog extends Vue {
 
 		const tx = await zap.zapOutToTokenWithPermit(
 			amountToZap,
-			tokenAddress,
+			this.token.address,
 			swapAmountOut,
 			deadline,
 			sig.v,
