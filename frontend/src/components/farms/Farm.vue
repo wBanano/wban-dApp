@@ -156,12 +156,18 @@
 					<q-btn
 						@click="beginWithdraw"
 						v-if="lpTokenAllowance"
-						:disable="farmData.stakedBalance.isZero()"
+						:disable="farmData.stakedBalance.isZero() && lpTokenBalance.isZero()"
 						color="primary"
 						flat
 					>
 						<div class="text-button">
-							<span v-if="isFinished()">{{ $t('components.farm.harvest') }} &amp; </span>{{ $t('withdraw') }}
+							<span v-if="!lpTokenBalance.isZero() && farmData.stakedBalance.isZero()">
+								{{ $t('components.farm.button-zap-out') }}
+							</span>
+							<span v-else-if="!farmData.stakedBalance.isZero()">
+								<span v-if="isFinished()">{{ $t('components.farm.harvest') }} &amp; </span>{{ $t('withdraw') }}
+							</span>
+							<span v-else>{{ $t('withdraw') }}</span>
 						</div>
 						<q-tooltip>{{ $t('components.farm.button-withdraw-tooltip') }}</q-tooltip>
 					</q-btn>
@@ -321,17 +327,20 @@ export default class Farm extends Vue {
 			)
 			this.emptyRewards = this.farmData.userPendingRewards.isZero()
 
+			const lpTokenAddress = this.value.lpAddresses[Farm.ENV_NAME as keyof Address]
 			const permitEnabled = hasPermitFeature()
 			if (permitEnabled) {
 				this.lpTokenAllowance = true
 			} else {
 				const allowance: BigNumber = await this.bep20.allowance(
 					this.account,
-					this.value.lpAddresses[Farm.ENV_NAME as keyof Address],
+					lpTokenAddress,
 					this.signer
 				)
 				this.lpTokenAllowance = allowance.gt(BigNumber.from('0'))
 			}
+
+			this.lpTokenBalance = await this.bep20.getLPBalance(this.account, lpTokenAddress, this.signer)
 
 			this.isLoading = false
 		}
