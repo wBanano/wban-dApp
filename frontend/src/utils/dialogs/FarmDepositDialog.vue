@@ -45,10 +45,9 @@
 			<q-card-section>
 				<div v-if="!token.zap">
 					<div class="border-left">
-						You can
-						<a @click="addLiquidity" color="primary">{{ $t('components.farm.button-add-liquidity') }}</a>
-						straight from the DEX, or zap in from any token of the liquidity pool and then deposit your liquidity pool
-						tokens in the farm.
+						<i18n path="dialogs.farm-deposit.phrase1">
+							<a @click="addLiquidity" color="primary">{{ $t('components.farm.button-add-liquidity') }}</a>
+						</i18n>
 					</div>
 					<div>{{ $t('components.farm.button-deposit-tooltip') }}</div>
 				</div>

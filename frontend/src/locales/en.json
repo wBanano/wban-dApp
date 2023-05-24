@@ -244,7 +244,8 @@
 		},
 		"farm-deposit": {
 			"title": "Deposit of {amount} {symbol} in progress...",
-			"message": "Working hard to process your supply request!"
+			"message": "Working hard to process your supply request!",
+			"phrase1": "You can {0} straight from the DEX, or zap in from any token of the liquidity pool and then deposit your liquidity pool tokens in the farm."
 		},
 		"farm-withdraw": {
 			"title": "Withdrawal of {amount} {symbol} in progress...",
