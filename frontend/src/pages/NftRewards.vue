@@ -156,7 +156,7 @@ import { asyncFilter } from '@/utils/AsyncUtils'
 import { ethers } from 'ethers'
 import axios, { AxiosResponse } from 'axios'
 import { openURL } from 'quasar'
-import { Network, POLYGON_MAINNET } from '@/utils/Networks'
+import { Network, POLYGON_MAINNET, ETHEREUM_TESTNET } from '@/utils/Networks'
 
 const nftStore = namespace('nft')
 const accountsStore = namespace('accounts')
@@ -323,7 +323,10 @@ export default class NftRewardsPage extends Vue {
 	}
 
 	async onProviderChange() {
-		if (this.activeAccount && this.network.chainId === POLYGON_MAINNET.chainId) {
+		if (
+			this.activeAccount &&
+			(this.network.chainId === POLYGON_MAINNET.chainId || this.network.chainId === ETHEREUM_TESTNET.chainId)
+		) {
 			this.wrongNetwork = false
 			await nft.initContract(this.provider)
 			await this.reload()

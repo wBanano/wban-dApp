@@ -181,7 +181,7 @@ import BlockchainChooser from '@/components/BlockchainChooser.vue'
 import { blockchainAddressFilter } from '@/utils/filters'
 import QRCode from 'qrcode'
 import { openURL } from 'quasar'
-import { Network, POLYGON_MAINNET } from '@/utils/Networks'
+import { Network, POLYGON_MAINNET, ETHEREUM_TESTNET } from '@/utils/Networks'
 import Dialogs from '@/utils/Dialogs'
 
 const accountsStore = namespace('accounts')
@@ -274,7 +274,11 @@ export default class MainLayout extends Vue {
 	}
 
 	openNftPage() {
-		if (this.isUserConnected && this.currentBlockchain.chainIdNumber === POLYGON_MAINNET.chainIdNumber) {
+		if (
+			this.isUserConnected &&
+			(this.currentBlockchain.chainIdNumber === POLYGON_MAINNET.chainIdNumber ||
+				this.currentBlockchain.chainIdNumber === ETHEREUM_TESTNET.chainIdNumber)
+		) {
 			router.push('/nft')
 		} else {
 			openURL('https://opensea.io/collection/wban')

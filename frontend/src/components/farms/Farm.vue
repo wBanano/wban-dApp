@@ -332,11 +332,7 @@ export default class Farm extends Vue {
 			if (permitEnabled) {
 				this.lpTokenAllowance = true
 			} else {
-				const allowance: BigNumber = await this.bep20.allowance(
-					this.account,
-					lpTokenAddress,
-					this.signer
-				)
+				const allowance: BigNumber = await this.bep20.allowance(this.account, lpTokenAddress, this.signer)
 				this.lpTokenAllowance = allowance.gt(BigNumber.from('0'))
 			}
 
