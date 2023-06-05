@@ -1,3 +1,7 @@
+# v2.6.6
+## New Features
+- NFT for second wBANniversary and top contributors
+
 # v2.6.5
 ## Bugs
 - zap out is back! #114
