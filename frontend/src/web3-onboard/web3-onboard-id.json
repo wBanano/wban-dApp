@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Dompet Tersedia",
 			"sidebar": {
-				"heading": "Memulai",
+				"heading": "",
 				"subheading": "Hubungkan dompet anda",
-				"paragraph": "Menghubungkan dompet adalah seperti \"login\" ke Web3. Pilih dompet anda dari pilihan untuk memulai."
+				"paragraph": "Menghubungkan dompet adalah seperti \"login\" ke Web3. Pilih dompet anda dari pilihan untuk memulai.",
+				"IDontHaveAWallet": "Saya tidak mempunyai dompet"
 			},
 			"recommendedWalletsPart1": "hanya mendukung {app}",
 			"recommendedWalletsPart2": "pada platform ini. Harap gunakan atau pasang salah satu dompet yang didukung untuk melanjutkan",
@@ -15,7 +16,9 @@
 				"terms": "Syarat & Ketentuan",
 				"and": "dan",
 				"privacy": "Kebijakan Pribadi"
-			}
+			},
+			"whyDontISeeMyWallet": "Mengapa saya tidak dapat melihat dompet saya?",
+			"learnMore": "Klik di sini untuk mempelajari lebih lanjut"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Menghubungkan ke {wallet}...} other {Koneksi Ditolak}}",
@@ -56,18 +59,24 @@
 			"description": "Apakah anda yakin akan memutuskan semua dompet?",
 			"confirm": "Konfirmasi",
 			"cancel": "Batalkan"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Aktifkan Pelindung Transaksi",
+			"description": "Lindungi RPC Endpoints dan sembunyikan transaksi anda dari serangan bot sandwich dan bot front-running untuk mengurangi penyelesaian transaksi yang merugikan karena selisih harga yang signifikan.",
+			"enable": "Aktifkan",
+			"dismiss": "Singkirkan"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Hubungkan Dompet lain",
 		"disconnectAllWallets": "Memutuskan semua Dompet",
 		"currentNetwork": "Jaringan Saat Ini",
+		"enableTransactionProtection": "Aktifkan Pelindung Transaksi",
 		"appInfo": "Informasi Aplikasi",
 		"learnMore": "Pelajari Selengkapnya",
 		"gettingStartedGuide": "Panduan Memulai",
 		"smartContracts": "Kontrak(s) Pintar",
 		"explore": "Menjelajah",
-		"backToApp": "Kembali ke dapp",
 		"poweredBy": "dipersembahkan oleh",
 		"addAccount": "Tambahkan Akun",
 		"setPrimaryAccount": "Tentukan Akun Utama",

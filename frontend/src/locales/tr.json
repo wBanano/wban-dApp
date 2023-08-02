@@ -26,6 +26,11 @@
 			"from-ban-description": "Elimde Banano var ve wBAN ile DeFi hakkında bilgi sahibi olmak istiyorum.",
 			"from-wban": "Banano konusunda yeniyim",
 			"from-wban-description": "Elimde wBAN var ve Banano ağını kullanmak istiyorum.",
+			"reconnect-bridge": "Reconnect to Bridge",
+			"reconnect-bridge-description": "I already did the setup and want to connect from a new device.",
+			"swaps-only": "Buy wBAN",
+			"swaps-only-description": "I will do the bridge setup later when I need to wrap or unwrap.",
+			"swaps-only-button": "Satın Al",
 			"verify-ban-address": "BAN adresinizi doğrulamamız gerek!",
 			"verify-ban-address-explanation": "Bu aşama wBAN ile etkileşeceğiniz BAN cüzdanının kontrolünün sizde olduğunu doğrulamak açısından önemlidir.",
 			"step1": {
@@ -153,10 +158,17 @@
 			"buy-sell": "Al/Sat"
 		},
 		"farm": {
+			"farm": "Farm",
 			"wban-earned": "Kazanılmış wBAN",
 			"wban-earned-farm-ended": "(hasat için çekim yapın)",
 			"farm-ended": "Çiftlik Bitti!",
-			"harvest": "Hasat",
+			"zap-in-from": "Zap in from {symbol}",
+			"zap-out-to-symbol": "Zap to {symbol}",
+			"zap-in-process-phrase1": "This is a two steps process:",
+			"zap-in-process-phrase2": "Zap {symbol} into liquidity pool tokens",
+			"zap-in-process-phrase3": "Deposit your liquidity pool tokens into the farm",
+			"zap-out-hint": "After withdrawing liquidity pool tokens from the farm, you will be able to easily remove liquidity and zap out to either {symbol1} or {symbol2}.",
+			"harvest": "Hasat Et",
 			"deposit": "Yatırılan",
 			"details": "Ayrıntılar",
 			"yield": "Mahsül",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Likidite Havuzu TVL",
 			"button-approve": "Onayla",
 			"button-add-liquidity": "Likidite Ekle",
-			"button-supply": "Tedarik",
-			"button-supply-tooltip": "Likidite tokenlerinizi çiftliğe eklerken, kazandığınız wBAN'ınızı da hasat edersiniz!",
+			"button-deposit": "Yatırılan",
+			"button-deposit-tooltip": "Likidite tokenlerinizi çiftliğe eklerken, kazandığınız wBAN'ınızı da hasat edersiniz!",
+			"button-zap-in": "Zap in",
+			"button-zap-out": "Zap out",
 			"button-withdraw-tooltip": "Likidite tokenlerinizi çiftlikten çekerken, kazandığınız wBAN'ınızı da hasat edersiniz!"
 		}
 	},
@@ -224,9 +238,14 @@
 			"title": "{amount} wBAN wrap kaldırma işlemi devam ediyor...",
 			"message": "Wrap kaldırma talebinizi işleme koymak için çok çalışıyoruz!"
 		},
-		"farm-supply": {
-			"title": "{amount} {symbol} tedariği devam ediyor...",
-			"message": "Tedarik talebinizi işleme koymak için çok çalışıyoruz!"
+		"farm-zap": {
+			"title": "Zap of {amount} {symbol} in progress...",
+			"message": "Working hard to process your request!"
+		},
+		"farm-deposit": {
+			"title": "Deposit of {amount} {symbol} in progress...",
+			"message": "Tedarik talebinizi işleme koymak için çok çalışıyoruz!",
+			"phrase1": "You can {0} straight from the DEX, or zap in from any token of the liquidity pool and then deposit your liquidity pool tokens in the farm."
 		},
 		"farm-withdraw": {
 			"title": "{amount} {symbol} çekim işlemi devam ediyor...",
@@ -234,7 +253,7 @@
 		},
 		"unsupported-network": {
 			"title": "Desteklenmeyen ağ {network}",
-			"message": "<p>wBAN yalnızca BSC, Polygon ve Fantom'da kullanılabilir.</p><p>Lütfen bu ağlardan birine geçin.</p>"
+			"message": "<p>wBAN is only available on BSC, Polygon, Fantom, Ethereum and Arbitrum.</p><p>Please switch to one of those networks.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +285,9 @@
 			"message": "{amount} wrap kaldırmanız başarıyla işlendi.",
 			"caption": "Yatırılan Banano bakiyeniz güncellendi."
 		},
-		"farm-supply": "{amount} {symbol} tedariğiniz başarıyla işlendi.",
+		"farm-zap-in": "Your zap of {amount} {symbol} was processed succesfully.<br /><strong>Don't forget to deposit your liquidity now!</strong>",
+		"farm-zap-out": "Your zap of {amount} {symbol} was processed succesfully.",
+		"farm-deposit": "Your deposit of {amount} {symbol} was processed succesfully.",
 		"farm-withdraw": "{amount} {symbol} tutarındaki çekim işleminiz başarıyla işlendi."
 	},
 	"menu": {
@@ -274,7 +295,9 @@
 			"title": "Bağışlar",
 			"aside": "Bana buradan bağış yapabilirsiniz:",
 			"phrase1": "Bu uygulama üzerinde çalışmak oldukça uzun bir yolculuk oldu ve hala devam ediyor!",
-			"phrase2": "Bağışlarınız için müteşekkirim ve çabalarımı desteklemek isterseniz, Banano bağışlarını şu adrese göndererek bana her zaman yardımcı olabilirsiniz:"
+			"phrase2": "Bağışlarınız için müteşekkirim ve çabalarımı desteklemek isterseniz, Banano bağışlarını şu adrese göndererek bana her zaman yardımcı olabilirsiniz:",
+			"kalium": "Send via Kalium",
+			"copy-address": "Adresi Kopyala"
 		}
 	},
 	"footer": {

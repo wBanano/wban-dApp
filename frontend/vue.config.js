@@ -18,6 +18,14 @@ module.exports = {
       localeDir: 'locales',
       enableInSFC: false
     },
+	},
+	configureWebpack: {
+		module: {
+			rules: [
+				{ test: /node_modules[\\/]@walletconnect/, loader: 'babel-loader' },
+				{ test: /node_modules[\\/]@metamask/, loader: 'babel-loader' },
+			],
+		}
 	}
 	/*
 	transpileDependencies: ['quasar'],

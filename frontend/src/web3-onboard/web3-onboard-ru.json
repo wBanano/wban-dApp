@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Доступные кошельки",
 			"sidebar": {
-				"heading": "Начало работы",
+				"heading": "",
 				"subheading": "Подключите ваш кошелек",
-				"paragraph": "Подключение вашего кошелька как «Вход» к Web3. Выберите кошелек для начала."
+				"paragraph": "Подключение вашего кошелька как «Вход» к Web3. Выберите кошелек для начала.",
+				"IDontHaveAWallet": "У меня нет кошелька"
 			},
 			"recommendedWalletsPart1": "{app} поддерживает только",
 			"recommendedWalletsPart2": "на этой платформе. Пожалуйста, используйте или установите один из поддерживаемых кошельков, чтобы продолжить",
@@ -15,7 +16,9 @@
 				"terms": "Условия использования",
 				"and": "и",
 				"privacy": "Политика конфиденциальности"
-			}
+			},
+			"whyDontISeeMyWallet": "Почему я не вижу мой кошелек?",
+			"learnMore": "Нажмите здесь, чтобы узнать больше"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Подключение к {wallet}} other {Соединение отклонено}}",
@@ -56,18 +59,24 @@
 			"description": "Вы уверены, что хотите отключить все ваши кошельки?",
 			"confirm": "Подтвердить",
 			"cancel": "Отменить"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Включить защиту транзакций",
+			"description": "Защитите RPC Endpoints скрывает ваши транзакции от передовых и сэндвич-ботов, чтобы уменьшить невыгодное расчет транзакций с проскальзывания.",
+			"enable": "Включить",
+			"dismiss": "Отклонить"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Подключить другой кошелек",
 		"disconnectAllWallets": "Отключить все кошельки",
 		"currentNetwork": "Текущая сеть",
+		"enableTransactionProtection": "Включить защиту транзакций",
 		"appInfo": "Информация о приложении",
 		"learnMore": "Узнать больше",
 		"gettingStartedGuide": "Руководство по началу работы",
 		"smartContracts": "Смарт-контракт(ы)",
 		"explore": "Исследовать",
-		"backToApp": "Назад к dapp",
 		"poweredBy": "при поддержке",
 		"addAccount": "Добавить Аккаунт",
 		"setPrimaryAccount": "Установить основной аккаунт",

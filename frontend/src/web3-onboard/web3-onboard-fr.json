@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Portefeuilles disponibles",
 			"sidebar": {
-				"heading": "Commencer",
+				"heading": "",
 				"subheading": "Connectez votre portefeuille",
-				"paragraph": "La connexion de votre portefeuille est comme « se connecter » à Web3. Sélectionnez votre portefeuille parmi les options pour commencer."
+				"paragraph": "La connexion de votre portefeuille est comme « se connecter » à Web3. Sélectionnez votre portefeuille parmi les options pour commencer.",
+				"IDontHaveAWallet": "Je n'ai pas de portefeuille"
 			},
 			"recommendedWalletsPart1": "{app} prend uniquement en charge",
 			"recommendedWalletsPart2": "sur cette plateforme. Veuillez utiliser ou installer l'un des portefeuilles pris en charge pour continuer",
@@ -15,7 +16,9 @@
 				"terms": "Termes et Conditions",
 				"and": "et",
 				"privacy": "Politique de confidentialité"
-			}
+			},
+			"whyDontISeeMyWallet": "Pourquoi ne puis-je pas voir mon portefeuille ?",
+			"learnMore": "Cliquez ici pour en savoir plus"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Connexion à {wallet}...} other {Connexion rejetée}}",
@@ -56,18 +59,24 @@
 			"description": "Êtes-vous sûr de vouloir déconnecter tous vos portefeuilles ?",
 			"confirm": "Valider",
 			"cancel": "Abandonner"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Activer la protection des transactions",
+			"description": "Protégez les terminaux RPC pour cacher vos transactions des bots front-running et sandwich afin de réduire le règlement des transactions défavorable du slippage.",
+			"enable": "Activer",
+			"dismiss": "Refuser"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Connecter un autre portefeuille",
 		"disconnectAllWallets": "Déconnecter tous les portefeuilles",
 		"currentNetwork": "Réseau actuel",
+		"enableTransactionProtection": "Activer la protection des transactions",
 		"appInfo": "Infos sur l'application",
 		"learnMore": "En savoir plus",
 		"gettingStartedGuide": "Guide de démarrage",
 		"smartContracts": "Smart Contract(s)",
 		"explore": "Explorer",
-		"backToApp": "Retour à la dApp",
 		"poweredBy": "propulsé par",
 		"addAccount": "Ajouter un compte",
 		"setPrimaryAccount": "Définir le compte principal",

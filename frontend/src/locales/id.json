@@ -244,7 +244,8 @@
 		},
 		"farm-deposit": {
 			"title": "Setoran {amount} {symbol} sedang diproses...",
-			"message": "Bekerja keras memproses suplai anda!"
+			"message": "Bekerja keras memproses suplai anda!",
+			"phrase1": "Kamu bisa {0} langsung dari DEX, atau Zap-kan dari token apapun dari kolam likuiditas lalu setorkan token-token kolam likuiditas ke peternakan."
 		},
 		"farm-withdraw": {
 			"title": "Penarikan sejumlah {amount} {symbol} sedang berlangsung...",

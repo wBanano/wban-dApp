@@ -26,6 +26,11 @@
 			"from-ban-description": "Ho Banano e voglio iniziare ad imparare il DeFi con wBAN.",
 			"from-wban": "Sono nuovo in Banano",
 			"from-wban-description": "Ho wBAN e voglio utilizzare la rete Banano.",
+			"reconnect-bridge": "Riconnetti al ponte",
+			"reconnect-bridge-description": "Ho già fatto la configurazione e voglio connettermi da un nuovo dispositivo.",
+			"swaps-only": "Acquista wBAN",
+			"swaps-only-description": "Farò il bridge setup più tardi quando ho bisogno di avvolgere o staccare.",
+			"swaps-only-button": "Acquista",
 			"verify-ban-address": "Abbiamo bisogno di verificare il tuo indirizzo BAN!",
 			"verify-ban-address-explanation": "Questo passaggio è importante in quanto ti assicura di controllare il portafoglio BAN che interagisce con wBAN.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Acquista/Vendi"
 		},
 		"farm": {
+			"farm": "Fattoria",
 			"wban-earned": "wBAN Guadagnati",
 			"wban-earned-farm-ended": "(preleva per raccogliere)",
 			"farm-ended": "Farm Terminata!",
+			"zap-in-from": "Zap in da {symbol}",
+			"zap-out-to-symbol": "Zap a {symbol}",
+			"zap-in-process-phrase1": "Si tratta di un processo in due fasi:",
+			"zap-in-process-phrase2": "Zap {symbol} in token pool di liquidità",
+			"zap-in-process-phrase3": "Deposita i tuoi gettoni del pool di liquidità nella fattoria",
+			"zap-out-hint": "Dopo aver prelevato i token di liquidità dalla fattoria, sarai in grado di rimuovere facilmente liquidità e zap out a {symbol1} o {symbol2}.",
 			"harvest": "Raccogli",
 			"deposit": "Deposito",
 			"details": "Dettagli",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Pool Di Liquidità TVl",
 			"button-approve": "Approva",
 			"button-add-liquidity": "Aggiungi Liquidità",
-			"button-supply": "Fornitura",
-			"button-supply-tooltip": "Quando aggiungi i tuoi token di liquidità nella farm, raccogli anche i tuoi wBAN guadagnati!",
+			"button-deposit": "Deposito",
+			"button-deposit-tooltip": "Quando aggiungi i tuoi token di liquidità nella farm, raccogli anche i tuoi wBAN guadagnati!",
+			"button-zap-in": "Zap in",
+			"button-zap-out": "Zap out",
 			"button-withdraw-tooltip": "Quando ritiri i tuoi token di liquidità dalla farm, raccogli anche i tuoi wBAN guadagnati!"
 		}
 	},
@@ -224,9 +238,14 @@
 			"title": "Unwrap di {amount} wBAN in corso...",
 			"message": "Lavorando duramente per elaborare la tua richiesta di unwrap!"
 		},
-		"farm-supply": {
-			"title": "Fornitura di {amount} {symbol} in corso...",
-			"message": "Lavorando duramente per elaborare la tua richiesta di fornitura!"
+		"farm-zap": {
+			"title": "Zap di {amount} {symbol} in corso...",
+			"message": "Lavorare duramente per elaborare la tua richiesta!"
+		},
+		"farm-deposit": {
+			"title": "Deposito di {amount} {symbol} in corso...",
+			"message": "Lavorando duramente per elaborare la tua richiesta di fornitura!",
+			"phrase1": "È possibile {0} direttamente dal DEX, o zap da qualsiasi token del pool di liquidità e poi depositare i vostri gettoni pool di liquidità nella fattoria."
 		},
 		"farm-withdraw": {
 			"title": "Prelievo di {amount} {symbol} in corso...",
@@ -234,7 +253,7 @@
 		},
 		"unsupported-network": {
 			"title": "Rete non supportata {network}",
-			"message": "<p>wBAN è disponibile solo su BSC, Polygon e Fantom.</p><p>Si prega di passare a una di queste reti.</p>"
+			"message": "<p>wBAN è disponibile solo su BSC, Polygon, Fantom, Ethereum e Arbitrum.</p><p>Si prega di passare a una di queste reti.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +285,9 @@
 			"message": "Il tuo unwrap di {amount} wBAN è stato elaborato con successo.",
 			"caption": "Il tuo saldo di Banano depositato è stato aggiornato."
 		},
-		"farm-supply": "La tua fornitura di {amount} {symbol} è stata elaborata con successo.",
+		"farm-zap-in": "Il tuo zap di {amount} {symbol} è stato elaborato con successo.<br /><strong>Non dimenticare di depositare la tua liquidità ora!</strong>",
+		"farm-zap-out": "Il tuo zap di {amount} {symbol} è stato elaborato con successo.",
+		"farm-deposit": "Il tuo deposito di {amount} {symbol} è stato elaborato con successo.",
 		"farm-withdraw": "Il tuo prelievo di {amount} {symbol} è stato elaborato con successo."
 	},
 	"menu": {
@@ -274,7 +295,9 @@
 			"title": "Donazioni",
 			"aside": "Tippami a:",
 			"phrase1": "Lavorare su questa app è stato un bel viaggio, e ancora in corso!",
-			"phrase2": "I consigli sono sempre apprezzati e se vuoi supportare i miei sforzi, puoi sempre aiutarmi inviando consigli su Banano a:"
+			"phrase2": "I consigli sono sempre apprezzati e se vuoi supportare i miei sforzi, puoi sempre aiutarmi inviando consigli su Banano a:",
+			"kalium": "Invia via Kalium",
+			"copy-address": "Copia Indirizzo"
 		}
 	},
 	"footer": {

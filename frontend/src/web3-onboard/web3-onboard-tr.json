@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Mevcut Cüzdanlar",
 			"sidebar": {
-				"heading": "Başlarken",
+				"heading": "",
 				"subheading": "Cüzdanınızı bağlayın",
-				"paragraph": "Cüzdanızı bağlamak Web3 içinde oturum açmak gibidir. Başlamak için seçeneklerden kendi cüzdanınızı seçin."
+				"paragraph": "Cüzdanızı bağlamak Web3 içinde oturum açmak gibidir. Başlamak için seçeneklerden kendi cüzdanınızı seçin.",
+				"IDontHaveAWallet": "I don't have a wallet"
 			},
 			"recommendedWalletsPart1": "{app} bu platformda sadece şunları destekler",
 			"recommendedWalletsPart2": "Devam etmek için lütfen desteklenen cüzdanlardan birini kullanın veya yükleyin",
@@ -15,7 +16,9 @@
 				"terms": "Şartlar & Koşullar",
 				"and": "ve",
 				"privacy": "Gizlilik Politikası"
-			}
+			},
+			"whyDontISeeMyWallet": "Why don't I see my wallet?",
+			"learnMore": "Click here to learn more"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select,false {{wallet} ile bağlanılıyor...}other {Bağlantı Reddedildi}}",
@@ -56,18 +59,24 @@
 			"description": "Bütün cüzdanlarınızın bağlantısını kesmek istediğinizden emin misiniz?",
 			"confirm": "Onayla",
 			"cancel": "İptal Et"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Enable Transaction Protection",
+			"description": "Protect RPC Endpoints hide your transactions from front-running and sandwich bots to reduce unfavorable transaction settlement from slippage.",
+			"enable": "Enable",
+			"dismiss": "Dismiss"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Başka bir cüzdana bağlan",
 		"disconnectAllWallets": "Bütün cüzdanların bağlantısını kes",
 		"currentNetwork": "Güncel Ağ",
+		"enableTransactionProtection": "Enable Transaction Protection",
 		"appInfo": "Uygulama Bilgisi",
 		"learnMore": "Daha fazla bilgi edin",
 		"gettingStartedGuide": "Başlangıç Rehberi",
 		"smartContracts": "Akıllı Sözleşme(ler)",
 		"explore": "Keşfet",
-		"backToApp": "dapp'e geri dön",
 		"poweredBy": "güç kaynağımız",
 		"addAccount": "Hesap Ekle",
 		"setPrimaryAccount": "Birincil Hesap Belirle",

@@ -1,3 +1,9 @@
+# v2.6.7
+## Improvements
+- translations
+## Bugs
+- upgraded to WalletConnect v2 #117
+
 # v2.6.6
 ## New Features
 - NFT for second wBANniversary and top contributors

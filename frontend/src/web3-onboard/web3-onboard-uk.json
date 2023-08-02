@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Доступні гаманці",
 			"sidebar": {
-				"heading": "Початок роботи",
+				"heading": "",
 				"subheading": "Підключіть свій гаманець",
-				"paragraph": "Прив'язка вашого гаманця схожа на \"авторизацію\" в Web3. Виберіть свій гаманець з опцій для запуску."
+				"paragraph": "Прив'язка вашого гаманця схожа на \"авторизацію\" в Web3. Виберіть свій гаманець з опцій для запуску.",
+				"IDontHaveAWallet": "У мене немає гаманця"
 			},
 			"recommendedWalletsPart1": "{app} підтримує тільки",
 			"recommendedWalletsPart2": "на цій платформі. Будь ласка, використовуйте або встановіть один із підтримуваних гаманців, щоб продовжити",
@@ -15,7 +16,9 @@
 				"terms": "Правила та Умови",
 				"and": "та",
 				"privacy": "Політика конфіденційності"
-			}
+			},
+			"whyDontISeeMyWallet": "Чому я не бачу свій гаманець?",
+			"learnMore": "Натисніть тут, щоб дізнатися більше"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Підключення до {wallet}...} other {Підключення відхилено}}",
@@ -56,18 +59,24 @@
 			"description": "Ви впевнені, що хочете відключити всі свої гаманці?",
 			"confirm": "Підтвердити",
 			"cancel": "Скасувати"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Увімкнути захист від транзакцій",
+			"description": "Захистіть кінцеві точки RPC від фронт-бігових ботів і сендвічів для зменшення несприятливого розрахунку транзакцій від слайду.",
+			"enable": "Увімкнено",
+			"dismiss": "Відхилити"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Підключіть інший гаманець",
 		"disconnectAllWallets": "Відключити всі гаманці",
 		"currentNetwork": "Поточна мережа",
+		"enableTransactionProtection": "Увімкнути захист від транзакцій",
 		"appInfo": "Про додаток",
 		"learnMore": "Дізнатися більше",
 		"gettingStartedGuide": "Посібник",
 		"smartContracts": "Розумний контракт(и)",
 		"explore": "Досліджуйте",
-		"backToApp": "Повернутися до dapp",
 		"poweredBy": "працює на",
 		"addAccount": "Додати акаунт",
 		"setPrimaryAccount": "Встановіть основний обліковий запис",

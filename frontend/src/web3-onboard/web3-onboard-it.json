@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Wallet Disponibili",
 			"sidebar": {
-				"heading": "Per Iniziare",
+				"heading": "",
 				"subheading": "Collega il tuo wallet",
-				"paragraph": "Collegare il tuo wallet è come “accedere” a Web3.\nSeleziona il tuo portafoglio dalle opzioni per iniziare."
+				"paragraph": "Collegare il tuo wallet è come “accedere” a Web3.\nSeleziona il tuo portafoglio dalle opzioni per iniziare.",
+				"IDontHaveAWallet": "Non ho un portafoglio"
 			},
 			"recommendedWalletsPart1": "{app} supporta solo",
 			"recommendedWalletsPart2": "su questa piattaforma. Si prega di utilizzare o installare uno dei wallet supportati per continuare",
@@ -15,7 +16,9 @@
 				"terms": "Termini e Condizioni",
 				"and": "e la",
 				"privacy": "Politica Sulla Privacy"
-			}
+			},
+			"whyDontISeeMyWallet": "Perché non vedo il mio portafoglio?",
+			"learnMore": "Clicca qui per saperne di più"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Connessione a {wallet}...} other {Connessione rifiutata}}",
@@ -56,18 +59,24 @@
 			"description": "Sei sicuro di voler disconnettere tutti i wallet?",
 			"confirm": "Conferma",
 			"cancel": "Rifiuta"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Abilita Protezione Transazioni",
+			"description": "Proteggi gli endpoint RPC nascondi le tue transazioni dai bot front-running e sandwich per ridurre il regolamento sfavorevole delle transazioni dallo slippage.",
+			"enable": "Abilita",
+			"dismiss": "Ignora"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Collega un altro wallet",
 		"disconnectAllWallets": "Disconnetti tutti i wallet",
 		"currentNetwork": "Rete Corrente",
+		"enableTransactionProtection": "Abilita Protezione Transazioni",
 		"appInfo": "Info App",
 		"learnMore": "Scopri Di Più",
 		"gettingStartedGuide": "Guida Per Iniziare",
 		"smartContracts": "Smart Contract(s)",
 		"explore": "Esplora",
-		"backToApp": "Torna al dapp",
 		"poweredBy": "powered by",
 		"addAccount": "Aggiungi Account",
 		"setPrimaryAccount": "Imposta Account Primario",

@@ -244,7 +244,8 @@
 		},
 		"farm-deposit": {
 			"title": "Storting van {amount} {symbol} in uitvoering...",
-			"message": "Hard aan het werk om je hoeveelheids verzoek te verwerken!"
+			"message": "Hard aan het werk om je hoeveelheids verzoek te verwerken!",
+			"phrase1": "Je kunt {0} rechtstreeks vanuit de DEX of zap in vanuit elke token van de liquiditeitspool en stort dan de tokens van de liquiditeitspool in de farm."
 		},
 		"farm-withdraw": {
 			"title": "Opname van {amount} {symbol} in behandeling...",
