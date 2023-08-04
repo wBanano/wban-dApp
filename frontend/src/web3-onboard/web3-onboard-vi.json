@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Các ví khả dụng",
 			"sidebar": {
-				"heading": "Bắt đầu",
+				"heading": "",
 				"subheading": "Kết nối ví của bạn",
-				"paragraph": "Kêt nối ví cũng như \"đăng nhập\" Web3. Chọn ví từ danh sách để bắt đầu."
+				"paragraph": "Kêt nối ví cũng như \"đăng nhập\" Web3. Chọn ví từ danh sách để bắt đầu.",
+				"IDontHaveAWallet": "Tôi không có ví"
 			},
 			"recommendedWalletsPart1": "Chỉ hỗ trợ {app}",
 			"recommendedWalletsPart2": "trên nền tảng này. Xin dùng hoặc cài đặt một trong những ví được hỗ trợ để tiếp tục",
@@ -15,7 +16,9 @@
 				"terms": "Điều khoản & Điều kiện",
 				"and": "và",
 				"privacy": "Chính sach quyền riêng tư"
-			}
+			},
+			"whyDontISeeMyWallet": "Sao tôi không thấy ví của mình?",
+			"learnMore": "Bấm vào để tìm hiểu thêm"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Đang kết nối tới {ví}...} other {Kết nối bị từ chối}}",
@@ -56,18 +59,24 @@
 			"description": "Bác có chắc rằng bạn muốn ngắt kết nối toàn bộ ví?",
 			"confirm": "Xác nhận",
 			"cancel": "Huỷ"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Kích hoạt bảo vệ giao dịch",
+			"description": "Bảo vệ đầu cuối RPC giúp ẩn các giao dịch của bạn khỏi bot front-running và sandwich nhằm giảm thiểu giao dịch bất lợi do trượt giá.",
+			"enable": "Bật",
+			"dismiss": "Ẩn"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Kết nối ví khác",
 		"disconnectAllWallets": "Ngắt kết nối toàn bộ ví",
 		"currentNetwork": "Mạng lưới hiện tại",
+		"enableTransactionProtection": "Kích hoạt bảo vệ giao dịch",
 		"appInfo": "Thông tin ứng dụng",
 		"learnMore": "Tìm hiểu thêm",
 		"gettingStartedGuide": "Hướng dẫn bắt đầu",
 		"smartContracts": "Hợp đồng thông minh",
 		"explore": "Khám phá",
-		"backToApp": "Quay lại dApp",
 		"poweredBy": "bởi",
 		"addAccount": "Thêm tài khoản",
 		"setPrimaryAccount": "Đặt tài khoản chính",

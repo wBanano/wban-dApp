@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Verfügbare Wallets",
 			"sidebar": {
-				"heading": "Erste Schritte",
+				"heading": "",
 				"subheading": "Wallet verbinden",
-				"paragraph": "Das Verbinden eines Wallets ist wie „Anmelden“ bei Web3. Wähle ein Wallet aus den Optionen aus, um loszulegen."
+				"paragraph": "Das Verbinden eines Wallets ist wie „Anmelden“ bei Web3. Wähle ein Wallet aus den Optionen aus, um loszulegen.",
+				"IDontHaveAWallet": "Ich habe keine Brieftasche"
 			},
 			"recommendedWalletsPart1": "{app} unterstützt nur",
 			"recommendedWalletsPart2": "auf dieser Plattform. Bitte verwende oder installiere eines der unterstützten Wallets um fortzufahren",
@@ -15,7 +16,9 @@
 				"terms": "Nutzungsbedingungen",
 				"and": "und",
 				"privacy": "Datenschutzerklärung"
-			}
+			},
+			"whyDontISeeMyWallet": "Warum sehe ich meine Brieftasche?",
+			"learnMore": "Klicken Sie hier, um mehr zu erfahren"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Verbinde mit {wallet}...} other {Verbindung abgelehnt}}",
@@ -56,18 +59,24 @@
 			"description": "Bist du sicher, dass du alle deine Wallets trennen möchten?",
 			"confirm": "Bestätigen",
 			"cancel": "Abbrechen"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Transaktionsschutz aktivieren",
+			"description": "RPC Endpunkte schützen verstecken Ihre Transaktionen vor Front-Run und Sandwich-Bots, um unvorteilhafte Transaktionsabrechnung vor Slippage zu reduzieren.",
+			"enable": "Aktivieren",
+			"dismiss": "Verwerfen"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Ein anderes Wallet verbinden",
 		"disconnectAllWallets": "Alle Wallets trennen",
 		"currentNetwork": "Aktuelles Netzwerk",
+		"enableTransactionProtection": "Transaktionsschutz aktivieren",
 		"appInfo": "App-Info",
 		"learnMore": "Mehr erfahren",
 		"gettingStartedGuide": "Einsteiger-Anleitung",
 		"smartContracts": "Smart Contract(s)",
 		"explore": "Erkunden",
-		"backToApp": "Zurück zur dapp",
 		"poweredBy": "powered by",
 		"addAccount": "Konto hinzufügen",
 		"setPrimaryAccount": "Hauptkonto festlegen",

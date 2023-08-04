@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Carteiras Disponíveis",
 			"sidebar": {
-				"heading": "Comece Agora",
+				"heading": "",
 				"subheading": "Conecte sua carteira",
-				"paragraph": "Conectar sua carteira é como \"entrar\" na Web3. Selecione sua carteira entre as opções para começar."
+				"paragraph": "Conectar sua carteira é como \"entrar\" na Web3. Selecione sua carteira entre as opções para começar.",
+				"IDontHaveAWallet": "Eu não tenho uma carteira"
 			},
 			"recommendedWalletsPart1": "{app} só suporta",
 			"recommendedWalletsPart2": "nesta plataforma. Por favor, use ou instale uma das carteiras suportadas para continuar",
@@ -15,7 +16,9 @@
 				"terms": "Termos & Condições",
 				"and": "e",
 				"privacy": "Política de Privacidade"
-			}
+			},
+			"whyDontISeeMyWallet": "Por que não vejo a minha carteira?",
+			"learnMore": "Clique aqui para saber mais"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Conectando-se a {wallet}...} other {Conexão rejeitada}}",
@@ -56,18 +59,24 @@
 			"description": "Você tem certeza que deseja desconectar todas as suas carteiras?",
 			"confirm": "Confirmar",
 			"cancel": "Cancelar"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Habilitar proteção de transação",
+			"description": "Proteja os pontos de extremidade RPC que escondem suas transações de bots na frente e sandwich para reduzir a liquidação de transações desfavorável do slippage.",
+			"enable": "Habilitado",
+			"dismiss": "Descartar"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Conectar outra Carteira",
 		"disconnectAllWallets": "Desconectar todas as Carteiras",
 		"currentNetwork": "Rede atual",
+		"enableTransactionProtection": "Habilitar proteção de transação",
 		"appInfo": "Informações do aplicativo",
 		"learnMore": "Saber mais",
 		"gettingStartedGuide": "Guia de Introdução",
 		"smartContracts": "Contrato(s) Inteligente(s)",
 		"explore": "Explorar",
-		"backToApp": "Voltar ao dapp",
 		"poweredBy": "desenvolvido por",
 		"addAccount": "Adicionar conta",
 		"setPrimaryAccount": "Definir conta principal",

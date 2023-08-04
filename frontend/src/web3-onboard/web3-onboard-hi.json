@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "उपलब्ध खाते",
 			"sidebar": {
-				"heading": "आरंभ करें",
+				"heading": "",
 				"subheading": "अपना वॉलेट कनेक्ट करें",
-				"paragraph": "वॉलेट कनेक्ट करना वेब3 में \"लॉगिन\" करने के समान है।\nशुरू होने के लिए दिए गए विकल्पों में से अपना वॉलेट चुने।"
+				"paragraph": "वॉलेट कनेक्ट करना वेब3 में \"लॉगिन\" करने के समान है।\nशुरू होने के लिए दिए गए विकल्पों में से अपना वॉलेट चुने।",
+				"IDontHaveAWallet": "मेरे पास वॉलेट नहीं हैं"
 			},
 			"recommendedWalletsPart1": "{app} केवल समर्थन करता है",
 			"recommendedWalletsPart2": "इस प्लेटफार्म पर। कृपया सपोर्टेड वालेट्स में से एक का इस्तेमाल करें या इंस्टॉल करें।",
@@ -15,7 +16,9 @@
 				"terms": "नियम & शर्तें",
 				"and": "और",
 				"privacy": "गोपनीयता पॉलिसी"
-			}
+			},
+			"whyDontISeeMyWallet": "मुझे मेरा वॉलेट क्यों नहीं दिख रहा?",
+			"learnMore": "अधिक जानें के लिए इधर क्लिक करें"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select,false {{wallet} से कनेक्ट किया जा रहा हैं}other {कनेक्शन अस्वीकृत}}",
@@ -56,18 +59,24 @@
 			"description": "क्या आप निश्चित हैं की आप सारे वॉलेट्स हटाना चाहते हैं?",
 			"confirm": "निश्चित करें",
 			"cancel": "रद्द करें"
+		},
+		"confirmTransactionProtection": {
+			"heading": "लेनदेन सुरक्षा सक्षम करें",
+			"description": "RPC एंडपॉइंट को सुरक्षित रखें, स्लिपेज से प्रतिकूल लेनदेन निपटान को कम करने के लिए अपने लेनदेन को फ्रंट-रनिंग और सैंडविच बॉट से छिपाएं।",
+			"enable": "चालू करे",
+			"dismiss": "नकार दे"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "दूसरा वॉलेट जोड़े",
 		"disconnectAllWallets": "सारे वॉलेट हटाए",
 		"currentNetwork": "वर्तमान नेटवर्क",
+		"enableTransactionProtection": "लेनदेन सुरक्षा सक्षम करें",
 		"appInfo": "एप की जानकारी",
 		"learnMore": "और जाने",
 		"gettingStartedGuide": "शुरू होने का मार्गदर्शन",
 		"smartContracts": "स्मार्ट कॉन्ट्रैक्ट्(स)",
 		"explore": "और देखें",
-		"backToApp": "Dapp पर वापस जाएं",
 		"poweredBy": "द्वारा संचालित",
 		"addAccount": "खाता जोड़ो",
 		"setPrimaryAccount": "मुख्य खाता जोड़े",

@@ -245,7 +245,7 @@
 		"farm-deposit": {
 			"title": "Dépôt de {amount} {symbol} en cours...",
 			"message": "Dépôt en cours de traitement !",
-			"phrase1": "Vous pouvez {0} depuis le DEX, ou zap depuis n'importe quel jeton du pool de liquidité et ensuite déposer vos jetons de liquidité dans la ferme."
+			"phrase1": "Vous pouvez {0} directement depuis le DEX, ou zapper à partir d'un des jetons de la réserve de liquidités, puis déposer vos jetons de liquidité dans la ferme."
 		},
 		"farm-withdraw": {
 			"title": "Retrait de {amount} {symbol} en cours...",

@@ -26,6 +26,11 @@
 			"from-ban-description": "Ich beseitze bereits Bananos und möchte damit beginnen, DeFi über wBAN zu lernen.",
 			"from-wban": "Ich bin neu bei Banano",
 			"from-wban-description": "Ich habe bereits wBAN und möchte das Banano Netzwerk nutzen.",
+			"reconnect-bridge": "Erneut zur Brücke verbinden",
+			"reconnect-bridge-description": "Ich habe das Setup bereits gemacht und möchte mich von einem neuen Gerät verbinden.",
+			"swaps-only": "WBAN kaufen",
+			"swaps-only-description": "Ich werde die Bridge-Setup später machen, wenn ich umwickeln oder entpacken muss.",
+			"swaps-only-button": "Erwerben",
 			"verify-ban-address": "Wir müssen deine BAN-Adresse überprüfen!",
 			"verify-ban-address-explanation": "Dieser Schritt ist wichtig, da er sicherstellt, dass du das BAN-Wallet steuerst, welches mit wBAN interagiert.",
 			"step1": {
@@ -153,9 +158,16 @@
 			"buy-sell": "Kaufen/Verkaufen"
 		},
 		"farm": {
+			"farm": "Farm",
 			"wban-earned": "Verdiente wBan",
 			"wban-earned-farm-ended": "(Auzahlen zum ernten)",
 			"farm-ended": "Farm ausgelaufen!",
+			"zap-in-from": "Zap in {symbol}",
+			"zap-out-to-symbol": "Zap zu {symbol}",
+			"zap-in-process-phrase1": "Dies ist ein zweistufiger Prozess:",
+			"zap-in-process-phrase2": "{symbol} in Liquiditätspool-Token verteilen",
+			"zap-in-process-phrase3": "Hinterlegen Sie Ihre Liquiditätspool-Token auf den Bauernhof",
+			"zap-out-hint": "Nach dem Abheben von Liquiditätspool-Token vom Bauernhof können Sie einfach Liquidität entfernen und entweder auf {symbol1} oder {symbol2} verteilen.",
 			"harvest": "Harvesten",
 			"deposit": "Einzahlungen",
 			"details": "Details",
@@ -165,8 +177,10 @@
 			"liquidity-pool-tvl": "Liquiditätspool TVL",
 			"button-approve": "Bestätigen",
 			"button-add-liquidity": "Liquidität hinzufügen",
-			"button-supply": "Verfügbare Menge",
-			"button-supply-tooltip": "Wenn du deine Liquiditäts-Token auch in die Farm einzahlst, erhältst du auch wBan!",
+			"button-deposit": "Einzahlungen",
+			"button-deposit-tooltip": "Wenn du deine Liquiditäts-Token auch in die Farm einzahlst, erhältst du auch wBan!",
+			"button-zap-in": "Zap in",
+			"button-zap-out": "Auszocken",
 			"button-withdraw-tooltip": "Wenn du deine Liquiditäts-Token auszahlen lässt, erhältst du auch deine verdienten wBan!"
 		}
 	},
@@ -224,9 +238,14 @@
 			"title": "Unwrap von {amount} wBAN läuft...",
 			"message": "Wir arbeiten hart daran, den Unwrap zu verarbeiten!"
 		},
-		"farm-supply": {
-			"title": "Bereitstellung von {amount} {symbol} läuft...",
-			"message": "Wir arbeiten hart daran, ihre Bereitstellung zu verarbeiten!"
+		"farm-zap": {
+			"title": "Zap von {amount} {symbol} in Bearbeitung...",
+			"message": "Arbeiten Sie hart, um Ihre Anfrage zu bearbeiten!"
+		},
+		"farm-deposit": {
+			"title": "Einzahlung von {amount} {symbol} in Bearbeitung...",
+			"message": "Wir arbeiten hart daran, ihre Bereitstellung zu verarbeiten!",
+			"phrase1": "Sie können {0} direkt vom DEX oder aus einem beliebigen Zeichen des Liquiditätspools hereinfahren und dann Ihre Liquiditätspool-Token auf dem Bauernhof hinterlegen."
 		},
 		"farm-withdraw": {
 			"title": "Auszahlung von {amount} {symbol} läuft...",
@@ -234,7 +253,7 @@
 		},
 		"unsupported-network": {
 			"title": "Nicht unterstütztes Netzwerk {network}",
-			"message": "<p>wBAN ist nur auf BSC, Polygon und Fantom verfügbar.</p><p>Bitte wechsel zu einem dieser Netzwerke.</p>"
+			"message": "<p>wBAN ist nur auf BSC, Polygon, Fantom, Ethereum und Arbitrum verfügbar.</p><p>Bitte wechseln Sie zu einem dieser Netzwerke.</p>"
 		}
 	},
 	"notifications": {
@@ -266,7 +285,9 @@
 			"message": "Dein Unwrap von {amount} wBAN wurde erfolgreich verarbeitet.",
 			"caption": "Dein Guthaben der hinterlegten Banano wurde aktualisiert."
 		},
-		"farm-supply": "Deine Bereitstellung von {amount} {symbol} wurde erfolgreich bearbeitet.",
+		"farm-zap-in": "Ihr Zap von {amount} {symbol} wurde erfolgreich verarbeitet.<br /><strong>Vergessen Sie nicht, Ihre Liquidität jetzt einzuzahlen!</strong>",
+		"farm-zap-out": "Ihr Zap von {amount} {symbol} wurde erfolgreich verarbeitet.",
+		"farm-deposit": "Ihre Einzahlung von {amount} {symbol} wurde erfolgreich verarbeitet.",
 		"farm-withdraw": "Ihre Auszahlung von {amount} {symbol} wurde erfolgreich bearbeitet."
 	},
 	"menu": {
@@ -274,7 +295,9 @@
 			"title": "Spenden",
 			"aside": "Schick' mir ein kleines Danke: ",
 			"phrase1": "Die Arbeit an dieser App war schon ein wahres Abenteuer und ist noch immer im Gange!",
-			"phrase2": "Ich schätze jedes Trinkgeld wert. Wenn Sie meine Arbeit unterstützen wollen, können sind mir BAN an diese Adresse schicken:"
+			"phrase2": "Ich schätze jedes Trinkgeld wert. Wenn Sie meine Arbeit unterstützen wollen, können sind mir BAN an diese Adresse schicken:",
+			"kalium": "Über Kalium senden",
+			"copy-address": "Adresse kopieren"
 		}
 	},
 	"footer": {

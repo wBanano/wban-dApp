@@ -17,9 +17,10 @@ import {
 import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
-import ledgerModule from '@web3-onboard/ledger'
+// import ledgerModule from '@web3-onboard/ledger'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
 import enrkypt from '@web3-onboard/enkrypt'
+import frame from '@web3-onboard/frame'
 import { MulticallWrapper } from 'kasumah-multicall'
 import Dialogs from '@/utils/Dialogs'
 import i18n from '@/i18n'
@@ -122,11 +123,6 @@ class AccountsModule extends VuexModule {
 			const chainId = wallet.chains[0].id
 			console.debug(`Switched to chain ${chainId}`)
 			this.network = new Networks().getNetworkData(chainId) ?? POLYGON_MAINNET
-			window.localStorage.setItem(
-				'selectedWallet',
-				JSON.stringify(update.wallets.map((wallet: WalletState) => wallet.label))
-			)
-			window.localStorage.setItem('selectedBlockchain', chainId)
 
 			// only emit event if network or connected address was changed
 			if (this.activeAccount !== oldAccount || oldNetworkChainId !== chainId) {
@@ -139,16 +135,11 @@ class AccountsModule extends VuexModule {
 
 	@Mutation
 	async disconnectWallet() {
-		window.localStorage.removeItem('selectedWallet')
 		// disconnect the first wallet in the wallets array
 		if (this._onboard) {
 			const [primaryWallet] = this._onboard.state.get().wallets
 			await this._onboard.disconnectWallet({ label: primaryWallet.label })
 		}
-		window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id')
-		window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret')
-		window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked')
-		window.localStorage.removeItem('WALLETCONNECT_DEEPLINK_CHOICE')
 		this.activeAccount = null
 		this.activeBalance = BigNumber.from(0)
 		this._providerEthers = null
@@ -174,14 +165,20 @@ class AccountsModule extends VuexModule {
 
 		const injected = injectedModule()
 		const walletConnect = walletConnectModule({
-			qrcodeModalOptions: {
-				mobileLinks: ['metamask', 'rainbow', 'trust'],
-			},
-			connectFirstChainId: false,
+			version: 2,
+			projectId: '67179a0c8b6ef4afffe5e379cf1a3f01',
+			requiredChains: [ETHEREUM_MAINNET.chainIdNumber],
+			optionalChains: [
+				BSC_MAINNET.chainIdNumber,
+				POLYGON_MAINNET.chainIdNumber,
+				FANTOM_MAINNET.chainIdNumber,
+				ARBITRUM_MAINNET.chainIdNumber,
+			],
 		})
-		const ledger = ledgerModule()
+		//const ledger = ledgerModule()
 		const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 		const enrkyptModule = enrkypt()
+		const frameModule = frame()
 		const mainnetChains = [
 			{
 				id: BSC_MAINNET.chainId,
@@ -278,13 +275,18 @@ class AccountsModule extends VuexModule {
 			this.disconnectWalletProvider()
 		}
 		this._onboard = Onboard({
-			wallets: [injected, walletConnect, ledger, coinbaseWalletSdk, enrkyptModule],
+			wallets: [injected, walletConnect, /*ledger,*/ coinbaseWalletSdk, enrkyptModule, frameModule],
 			chains: testnet ? [...mainnetChains, testnet] : mainnetChains,
+			connect: {
+				autoConnectLastWallet: true,
+			},
 			appMetadata: {
 				name: 'Wrapped Banano',
 				icon: require(`@/assets/wban-logo-${this.network.network}.svg`),
 				logo: require(`@/assets/wban-logo-${this.network.network}.svg`),
 				description: 'Wrapped Banano',
+				explore: 'https://wrap.banano.cc',
+				gettingStartedGuide: 'https://wrap.banano.cc',
 				recommendedInjectedWallets: [
 					{ name: 'MetaMask', url: 'https://metamask.io' },
 					{ name: 'Rabby', url: 'https://rabby.io' },
@@ -311,17 +313,6 @@ class AccountsModule extends VuexModule {
 			this.context.dispatch('fetchActiveBalance')
 		})
 		this.context.commit('setSubscription', subscription)
-
-		const previouslyConnectedBlockchain = window.localStorage.getItem('selectedBlockchain')
-		if (previouslyConnectedBlockchain) {
-			const network = new Networks().getNetworkData(previouslyConnectedBlockchain) ?? POLYGON_MAINNET
-			this.context.commit('setNetwork', network)
-		}
-
-		const previouslyConnectedWallets = window.localStorage.getItem('selectedWallet')
-		if (previouslyConnectedWallets != null && previouslyConnectedWallets !== '') {
-			await this.connectWalletProvider()
-		}
 	}
 
 	@Action
@@ -332,45 +323,26 @@ class AccountsModule extends VuexModule {
 			throw new Error('Web3 provider not initialized')
 		}
 
-		const previouslyConnectedWallets = window.localStorage.getItem('selectedWallet')
-
-		if (previouslyConnectedWallets != null && previouslyConnectedWallets !== '') {
-			console.debug('Found existing wallet... Reconnecting...')
-			// connect the most recently connected wallet (first in the array)
-			await this._onboard.connectWallet({
-				autoSelect: { label: JSON.parse(previouslyConnectedWallets)[0], disableModals: true },
-			})
-			const previouslyConnectedBlockchain = window.localStorage.getItem('selectedBlockchain')
-			if (previouslyConnectedBlockchain) {
-				await this._onboard.setChain({ chainId: previouslyConnectedBlockchain })
-			}
-			this.context.commit('setIsConnected', true)
-		} else {
-			try {
-				const wallets = await this._onboard.connectWallet()
-				// check if the user is connected to a supported network
-				const chainId = wallets[0].chains[0].id
-				if (!new Networks().getSupportedNetworks().find((network) => network.chainId === chainId)) {
-					console.warn(`Unsupported blockchain network: ${chainId}. Asking for a switch to Polygon.`)
-					const switched = await this._onboard?.setChain({ chainId: POLYGON_MAINNET.chainId })
-					if (!switched) {
-						await Dialogs.showUnsupportedNetwork(chainId)
-						await this.disconnectWalletProvider()
-						return
-					}
-				}
-				// check if the user is connected to the wanted network
-				if (wantedChain) {
-					const switched = await this._onboard?.setChain({ chainId: wantedChain ?? POLYGON_MAINNET.chainId })
-					if (!switched) {
-						return
-					}
-				}
-				this.context.commit('setIsConnected', wallets.length > 0)
-			} catch (err) {
-				console.error('Unsupported blockchain?', err)
+		const wallets = await this._onboard.connectWallet()
+		// check if the user is connected to a supported network
+		const chainId = wallets[0].chains[0].id
+		if (!new Networks().getSupportedNetworks().find((network) => network.chainId === chainId)) {
+			console.warn(`Unsupported blockchain network: ${chainId}. Asking for a switch to Polygon.`)
+			const switched = await this._onboard?.setChain({ chainId: POLYGON_MAINNET.chainId })
+			if (!switched) {
+				await Dialogs.showUnsupportedNetwork(chainId)
+				await this.disconnectWalletProvider()
+				return
 			}
 		}
+		// check if the user is connected to the wanted network
+		if (wantedChain) {
+			const switched = await this._onboard?.setChain({ chainId: wantedChain ?? POLYGON_MAINNET.chainId })
+			if (!switched) {
+				return
+			}
+		}
+		this.context.commit('setIsConnected', wallets.length > 0)
 	}
 
 	@Action

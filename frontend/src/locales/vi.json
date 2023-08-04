@@ -244,7 +244,8 @@
 		},
 		"farm-deposit": {
 			"title": "Đang xử lý yêu cầu nạp {amount} {symbol}...",
-			"message": "Đang căng sức thực hiện yêu cầu của bạn!"
+			"message": "Đang căng sức thực hiện yêu cầu của bạn!",
+			"phrase1": "Bạn có thể {0} trực tiếp từ DEX hoặc đổi từ token bất kỳ từ bể thanh khoản rồi nạp token thanh khoản vào farm."
 		},
 		"farm-withdraw": {
 			"title": "Đang xử lý yêu cầu rút {amount}{symbol}...",

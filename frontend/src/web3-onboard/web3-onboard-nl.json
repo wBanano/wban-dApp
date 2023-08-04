@@ -3,9 +3,10 @@
 		"selectingWallet": {
 			"header": "Beschikbare wallets",
 			"sidebar": {
-				"heading": "Beginnen",
+				"heading": "",
 				"subheading": "Verbind uw wallet",
-				"paragraph": "Het verbinden van uw wallet is als \"inloggen\" op Web3. Selecteer uw wallet in de opties om te beginnen."
+				"paragraph": "Het verbinden van uw wallet is als \"inloggen\" op Web3. Selecteer uw wallet in de opties om te beginnen.",
+				"IDontHaveAWallet": "Ik heb geen portefeuille"
 			},
 			"recommendedWalletsPart1": "{app} ondersteunt alleen",
 			"recommendedWalletsPart2": "op dit platform. Gebruik of installeer een van de ondersteunde wallets om door te gaan",
@@ -15,7 +16,9 @@
 				"terms": "Algemene Voorwaarden",
 				"and": "en",
 				"privacy": "Privacy Beleid"
-			}
+			},
+			"whyDontISeeMyWallet": "Waarom zie ik mijn portemonnee niet?",
+			"learnMore": "Klik hier om meer te leren"
 		},
 		"connectingWallet": {
 			"header": "{connectionRejected, select, false {Verbinding maken met {wallet}...} other {Verbinding afgewezen}}",
@@ -56,18 +59,24 @@
 			"description": "Weet u zeker dat u alle portemonnees wilt loskoppelen?",
 			"confirm": "Bevestigen",
 			"cancel": "annuleren"
+		},
+		"confirmTransactionProtection": {
+			"heading": "Transactie bescherming inschakelen",
+			"description": "Bescherm RPC Endpoints om transacties te verbergen van front-run en sandwich bots om onvoordelige transactie verrekening van slippage te verminderen.",
+			"enable": "Inschakelen",
+			"dismiss": "Uitschakelen"
 		}
 	},
 	"accountCenter": {
 		"connectAnotherWallet": "Verbind een andere wallet",
 		"disconnectAllWallets": "Koppel alle wallets los",
 		"currentNetwork": "Huidig netwerk",
+		"enableTransactionProtection": "Transactie bescherming inschakelen",
 		"appInfo": "App informatie",
 		"learnMore": "Meer informatie",
 		"gettingStartedGuide": "Handleiding om aan de slag te gaan",
 		"smartContracts": "Smart Contract(s)",
 		"explore": "Verken",
-		"backToApp": "Terug naar dapp",
 		"poweredBy": "mogelijk gemaakt door",
 		"addAccount": "Account toevoegen",
 		"setPrimaryAccount": "Stel primair account in",
