@@ -1,3 +1,9 @@
+# v2.6.8
+## Improvements
+- Spanish translation
+## Bugs
+- Swaps via 0x weren't working because of recently introduced required API key
+
 # v2.6.7
 ## Improvements
 - translations
