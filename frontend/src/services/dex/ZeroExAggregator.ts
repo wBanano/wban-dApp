@@ -6,6 +6,8 @@ import { BigNumber, ethers } from 'ethers'
 import axios, { AxiosResponse, AxiosError } from 'axios'
 import qs from 'qs'
 
+const ZERO_EX_API_KEY = '4ded7f7b-e53c-4726-90fd-03f277466a43'
+
 class ZeroExAggregator implements DEXAggregator {
 	async getQuote(request: SwapQuoteRequest, skipValidation = false): Promise<QuoteResponse> {
 		return this.get0xQuote(request, skipValidation)
@@ -37,7 +39,7 @@ class ZeroExAggregator implements DEXAggregator {
 			// get quote from 0x
 			const apiUrl = `${getDexAggregatorUri()}?${qs.stringify(params)}`
 			console.debug('0x API request', apiUrl)
-			const result = await axios.get(apiUrl)
+			const result = await axios.get(apiUrl, { headers: { '0x-api-key': ZERO_EX_API_KEY } })
 			const { price, guaranteedPrice } = result.data
 			const value = BigNumber.from(result.data.value)
 			const gas = BigNumber.from(result.data.gas)
