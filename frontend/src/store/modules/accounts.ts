@@ -14,7 +14,7 @@ import {
 	Networks,
 	ARBITRUM_TESTNET,
 } from '@/utils/Networks'
-import Onboard, { OnboardAPI, WalletState } from '@web3-onboard/core'
+import Onboard, { OnboardAPI } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 // import ledgerModule from '@web3-onboard/ledger'

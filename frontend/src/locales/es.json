@@ -204,7 +204,7 @@
 		"gas-needed": {
 			"title": "Se está agotando el {crypto} para comisiones",
 			"phrase1": "Tu saldo actual de {balance} {crypto} es demasiado bajo para envolver.",
-			"phrase2": "{network} no necesita un montón de {crypto} para las comisiones por transacción, pero es mejor comprar al menos {minimumNeededForWrap} {crypto} y enviarlos a esta billetera."
+			"phrase2": "{network} no necesitas un montón de {crypto} para las comisiones por transacción, pero es mejor comprar al menos {minimumNeededForWrap} {crypto} y enviarlos a esta billetera."
 		},
 		"low-amount-to-wrap": {
 			"are-you-sure": "¿Estás seguro?",
@@ -245,7 +245,7 @@
 		"farm-deposit": {
 			"title": "Depósito de {amount} {symbol} en curso...",
 			"message": "¡Trabajando duro para procesar tu solicitud de suministro!",
-			"phrase1": "Puedes {0} directamente desde el DEX, o zócalo desde cualquier ficha de la piscina de liquidez y luego deposite sus fichas de piscina de liquidez en la granja."
+			"phrase1": "Puedes {0} directamente desde el DEX, o hacer zap desde cualquier token del pool de liquidez y luego depositar tus tokens LP en la granja."
 		},
 		"farm-withdraw": {
 			"title": "Retiro de {amount} {symbol} en progreso...",
