@@ -160,7 +160,7 @@ export default class FarmsPage extends Vue {
 		document.removeEventListener('web3-connection', this.onProviderChange)
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	private async findAsyncSequential<T>(array: T[], predicate: (t: T) => Promise<boolean>): Promise<T | undefined> {
 		for (const t of array) {
 			if (await predicate(t)) {

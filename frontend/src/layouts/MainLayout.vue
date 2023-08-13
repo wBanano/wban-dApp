@@ -169,7 +169,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import { copyToClipboard, Screen } from 'quasar'
+import { copyToClipboard, openURL, Screen } from 'quasar'
 import router from '@/router'
 import accounts from '@/store/modules/accounts'
 import ban from '@/store/modules/ban'
@@ -179,8 +179,7 @@ import plausible from '@/store/modules/plausible'
 import SettingsMenu from '@/components/SettingsMenu.vue'
 import BlockchainChooser from '@/components/BlockchainChooser.vue'
 import { blockchainAddressFilter } from '@/utils/filters'
-import QRCode from 'qrcode'
-import { openURL } from 'quasar'
+import { toDataURL } from 'qrcode'
 import { Network, POLYGON_MAINNET, ETHEREUM_TESTNET } from '@/utils/Networks'
 import Dialogs from '@/utils/Dialogs'
 
@@ -319,7 +318,7 @@ export default class MainLayout extends Vue {
 		}
 		*/
 		try {
-			const qrcode: string = await QRCode.toDataURL(this.banWalletForTips, {
+			const qrcode: string = await toDataURL(this.banWalletForTips, {
 				scale: 6,
 				color: {
 					dark: '2A2A2E',

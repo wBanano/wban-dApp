@@ -3,6 +3,7 @@ import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import router from '@/router'
 import store from '@/store'
+// eslint-disable-next-line import/no-named-as-default
 import Contracts from '@/store/modules/contracts'
 import Accounts from '@/store/modules/accounts'
 import plausible from '@/store/modules/plausible'
@@ -19,7 +20,6 @@ import { GaslessSettings } from '@/models/GaslessSettings'
 import { getBackendHost } from '@/config/constants/backend'
 import Dialogs from '@/utils/Dialogs'
 import ban from './ban'
-import accounts from '@/store/modules/accounts'
 import BackendUtils from '@/utils/BackendUtils'
 import { GaslessSwapRequest } from '@/models/GaslessSwapRequest'
 import SwapDialogs from '@/utils/SwapDialogs'
@@ -55,7 +55,7 @@ class BackendModule extends VuexModule {
 	private _errorMessage = ''
 	private _errorLink = ''
 	private _streamEventsSource: EventSource | null = null
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-unused-vars
 	private _web3listener: ((ev: Event) => any) | undefined = undefined
 
 	get online() {
@@ -179,7 +179,7 @@ class BackendModule extends VuexModule {
 	}
 
 	@Mutation
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-unused-vars
 	setWeb3Listener(listener: (ev: Event) => any) {
 		this._web3listener = listener
 	}
@@ -197,7 +197,7 @@ class BackendModule extends VuexModule {
 			this.context.commit('setBanWalletForDeposits', depositWalletAddress)
 			this.context.commit(
 				'setBanWalletForDepositsQRCode',
-				await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
+				await BackendUtils.getDepositsWalletQRCode(depositWalletAddress),
 			)
 
 			if (banWallet) {
@@ -213,7 +213,7 @@ class BackendModule extends VuexModule {
 					const { banWallet, withdrawal, balance, transaction } = JSON.parse(e.data)
 					if (transaction) {
 						console.log(
-							`Received banano withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN. Balance is: ${balance} BAN.`
+							`Received banano withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN. Balance is: ${balance} BAN.`,
 						)
 						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 						if (Contracts.wbanContract && Accounts.activeAccount) {
@@ -226,7 +226,7 @@ class BackendModule extends VuexModule {
 						BackendModule.trackEventInPlausible('Withdrawal: Pending')
 					} else {
 						console.log(
-							`Received banano pending withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN but this is put in a pending list`
+							`Received banano pending withdrawal event. Wallet "${banWallet}" withdrew ${withdrawal} BAN but this is put in a pending list`,
 						)
 						Dialogs.showPendingWithdrawal(withdrawal)
 					}
@@ -237,10 +237,10 @@ class BackendModule extends VuexModule {
 				this.context.commit('setBanWalletForDeposits', depositWalletAddress)
 				this.context.commit(
 					'setBanWalletForDepositsQRCode',
-					await BackendUtils.getDepositsWalletQRCode(depositWalletAddress)
+					await BackendUtils.getDepositsWalletQRCode(depositWalletAddress),
 				)
 
-				const bcAddress = accounts.activeAccount
+				const bcAddress = Accounts.activeAccount
 				if (bcAddress) {
 					const setupDone = await BackendUtils.checkIfSetupDone(banWallet, bcAddress)
 					this.context.commit('setSetupDone', setupDone)
@@ -270,7 +270,7 @@ class BackendModule extends VuexModule {
 						BackendModule.trackEventInPlausible('Deposit: Rejected')
 					} else {
 						console.log(
-							`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`
+							`Received banano deposit event. Wallet "${banWallet}" deposited ${deposit} BAN. Balance is: ${balance} BAN.`,
 						)
 						this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 						Dialogs.confirmUserDeposit(deposit)
@@ -326,7 +326,7 @@ class BackendModule extends VuexModule {
 				eventSource.addEventListener('swap-wban-to-ban', async (e: any) => {
 					const { banWallet, swapped, balance, wbanBalance } = JSON.parse(e.data)
 					console.log(
-						`Received swap wBAN to BAN event. Wallet "${banWallet}" swapped ${swapped} wBAN to BAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`
+						`Received swap wBAN to BAN event. Wallet "${banWallet}" swapped ${swapped} wBAN to BAN. Balance is: ${balance} BAN, ${wbanBalance} wBAN.`,
 					)
 					this.context.commit('setBanDeposited', ethers.utils.parseEther(balance))
 					Contracts.updateWBanBalance(ethers.utils.parseEther(wbanBalance))
@@ -375,7 +375,7 @@ class BackendModule extends VuexModule {
 			this.context.commit('setOnline', false)
 			this.context.commit(
 				'setErrorMessage',
-				'wBAN bridge is under maintenance. You can still use the farms while we work on this.'
+				'wBAN bridge is under maintenance. You can still use the farms while we work on this.',
 			)
 		}
 	}
@@ -465,7 +465,7 @@ class BackendModule extends VuexModule {
 						case 403:
 							this.context.commit(
 								'setErrorMessage',
-								`BAN address "${banAddress}" is blacklisted. Use another BAN address.`
+								`BAN address "${banAddress}" is blacklisted. Use another BAN address.`,
 							)
 							break
 						case 409:
@@ -484,7 +484,7 @@ class BackendModule extends VuexModule {
 
 	@Action
 	async checkSetupDone(banAddress: string): Promise<string | boolean> {
-		return BackendUtils.checkIfSetupDone(banAddress, accounts.activeAccount ?? '')
+		return BackendUtils.checkIfSetupDone(banAddress, Accounts.activeAccount ?? '')
 	}
 
 	@Action
@@ -638,7 +638,7 @@ class BackendModule extends VuexModule {
 								swap.timestamp = swap.timestamp / 1_000
 							}
 							return swap
-						})
+						}),
 					)
 					this.context.commit('setSwaps', swaps)
 				}

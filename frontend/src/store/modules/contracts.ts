@@ -76,7 +76,7 @@ class ContractsModule extends VuexModule {
 				const contract = WBANTokenWithPermit__factory.connect(TokensUtil.getWBANAddress(), provider.getSigner())
 				this.context.commit('setWBANToken', contract)
 
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 				const totalSupplyUpdateFn = async (_from: string, _to: string, _amount: BigNumber, _event: ethers.Event) => {
 					const totalSupply: BigNumber = await contract.totalSupply()
 					console.log(`Total Supply: ${ethers.utils.formatEther(totalSupply)} wBAN`)
@@ -85,12 +85,12 @@ class ContractsModule extends VuexModule {
 				// update total supply on mints
 				contract.on(
 					contract.filters.Transfer('0x0000000000000000000000000000000000000000', null, null),
-					totalSupplyUpdateFn
+					totalSupplyUpdateFn,
 				)
 				// update total supply on burns
 				contract.on(
 					contract.filters.Transfer(null, '0x0000000000000000000000000000000000000000', null),
-					totalSupplyUpdateFn
+					totalSupplyUpdateFn,
 				)
 			}
 			// at this point the contract should be initialized
@@ -175,7 +175,7 @@ class ContractsModule extends VuexModule {
 			provider.getSigner(),
 			spender,
 			amount,
-			deadline
+			deadline,
 		)
 	}
 }

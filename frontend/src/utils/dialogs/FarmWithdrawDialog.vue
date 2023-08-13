@@ -164,7 +164,7 @@ export default class FarmWithdrawDialog extends Vue {
 			this.token.symbol,
 			'from',
 			formatEther(amountIn),
-			await otherToken.symbol()
+			await otherToken.symbol(),
 		)
 
 		const nonce = await lpPair.nonces(this.account)
@@ -177,7 +177,7 @@ export default class FarmWithdrawDialog extends Vue {
 			zap.address,
 			amountToZap,
 			nonce,
-			deadline
+			deadline,
 		)
 
 		const tx = await zap.zapOutToTokenWithPermit(
@@ -187,7 +187,7 @@ export default class FarmWithdrawDialog extends Vue {
 			deadline,
 			sig.v,
 			sig.r,
-			sig.s
+			sig.s,
 		)
 		this.trackEventInPlausible('Farms: Zap out', {
 			to: this.token.address ? this.token.symbol : this.network.nativeCurrency,

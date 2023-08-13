@@ -22,6 +22,7 @@
 						<q-icon :name="getBlockchainIcon(scope.opt.network)" />
 					</q-item-section>
 					<q-item-section>
+						<!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
 						<q-item-label v-html="scope.opt.chainName" />
 					</q-item-section>
 				</q-item>

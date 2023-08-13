@@ -19,7 +19,7 @@ class BenisUtils {
 		pid: number,
 		wbanPriceUsd: BigNumber,
 		poolLiquidityUsd: BigNumber,
-		benis: Benis
+		benis: Benis,
 	): Promise<number> {
 		if (poolLiquidityUsd.isZero()) {
 			return 0
@@ -58,7 +58,7 @@ class BenisUtils {
 		lpAmount: string,
 		lpSymbol: string,
 		user: Signer,
-		benis: Benis
+		benis: Benis,
 	): Promise<string> {
 		// ask for LP permit nonce
 		const lpToken = UniswapV2Pair__factory.connect(lpAddress, user)
@@ -75,7 +75,7 @@ class BenisUtils {
 			benis.address,
 			liquidity,
 			nonce,
-			deadline
+			deadline,
 		)
 
 		const benisWithPermit = BenisWithPermit__factory.connect(benis.address, user)

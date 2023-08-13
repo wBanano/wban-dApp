@@ -8,7 +8,7 @@ class BEP20Utils {
 		const token: IBEP20 = await IBEP20__factory.connect(stakingToken, signer)
 		const txn = await token.approve(
 			getBenisAddress(),
-			BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+			BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
 		)
 		await txn.wait()
 	}
