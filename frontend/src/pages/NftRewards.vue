@@ -266,7 +266,7 @@ export default class NftRewardsPage extends Vue {
 		})
 		const levels = [0, 1, 2]
 		const claimableLevels = levels.filter(
-			(level) => balances.has(0 + level) && balances.has(10 + level) && balances.has(20 + level)
+			(level) => balances.has(0 + level) && balances.has(10 + level) && balances.has(20 + level),
 		)
 		if (claimableLevels.length > 0 && claimableLevels[0] !== undefined) {
 			return claimableLevels[0]
@@ -311,7 +311,7 @@ export default class NftRewardsPage extends Vue {
 					claim.nft,
 					claim.quantity,
 					'0x00',
-					claim.uuid
+					claim.uuid,
 				)
 				console.debug(`${claim.nft} consumed? ${consumed}`)
 				return !consumed

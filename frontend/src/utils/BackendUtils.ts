@@ -1,6 +1,6 @@
 import { getBackendHost } from '@/config/constants/backend'
 import axios, { AxiosResponse, AxiosError } from 'axios'
-import QRCode from 'qrcode'
+import { toDataURL } from 'qrcode'
 
 class BackendUtils {
 	static async checkIfSetupDone(banWallet: string, bcWallet: string): Promise<boolean | string> {
@@ -30,7 +30,7 @@ class BackendUtils {
 	static async getDepositsWalletQRCode(banWallet: string): Promise<string> {
 		try {
 			console.warn('BAN wallet for deposits', banWallet)
-			const qrcode: string = await QRCode.toDataURL(banWallet, {
+			const qrcode: string = await toDataURL(banWallet, {
 				scale: 6,
 				color: {
 					dark: '2A2A2E',

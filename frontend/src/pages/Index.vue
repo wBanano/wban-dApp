@@ -14,31 +14,51 @@
 				<h5>{{ $t('pages.index.available-on') }}</h5>
 				<div class="row items-top justify-center">
 					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
-						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('bsc')">
+						<q-card id="connectToBSC" flat class="selectable cursor-pointer" @click="connectWalletProvider('bsc')">
 							<img src="bsc-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>BSC</q-card-section>
 						</q-card>
 					</div>
 					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
-						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('polygon')">
+						<q-card
+							id="connectToPolygon"
+							flat
+							class="selectable cursor-pointer"
+							@click="connectWalletProvider('polygon')"
+						>
 							<img src="polygon-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>Polygon</q-card-section>
 						</q-card>
 					</div>
 					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
-						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('fantom')">
+						<q-card
+							id="connectToFantom"
+							flat
+							class="selectable cursor-pointer"
+							@click="connectWalletProvider('fantom')"
+						>
 							<img src="fantom-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>Fantom</q-card-section>
 						</q-card>
 					</div>
 					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
-						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('ethereum')">
+						<q-card
+							id="connectToEthereum"
+							flat
+							class="selectable cursor-pointer"
+							@click="connectWalletProvider('ethereum')"
+						>
 							<img src="ethereum-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>Ethereum</q-card-section>
 						</q-card>
 					</div>
 					<div class="col-3 col-md-2 col-sm-3 col-xs-4">
-						<q-card flat class="selectable cursor-pointer" @click="connectWalletProvider('arbitrum')">
+						<q-card
+							id="connectToArbitrum"
+							flat
+							class="selectable cursor-pointer"
+							@click="connectWalletProvider('arbitrum')"
+						>
 							<img src="arbitrum-home-logo.svg" width="80px" height="80px" />
 							<q-card-section>Arbitrum</q-card-section>
 						</q-card>
@@ -48,7 +68,14 @@
 					<br />
 				</div>
 				<br />
-				<q-btn @click="connectWalletProvider" size="xl" color="primary" text-color="secondary" :label="$t('connect')" />
+				<q-btn
+					id="connect"
+					@click="connectWalletProvider"
+					size="xl"
+					color="primary"
+					text-color="secondary"
+					:label="$t('connect')"
+				/>
 				<div v-if="!$q.platform.is.mobile">
 					<h4>{{ $t('pages.index.what-can-you-do') }}</h4>
 					<div class="use-cases row items-stretch q-col-gutter-md">

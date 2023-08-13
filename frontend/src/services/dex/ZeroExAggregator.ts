@@ -4,7 +4,7 @@ import { getDexAggregatorUri } from '@/config/constants/dex'
 import TokensUtil from '@/utils/TokensUtil'
 import { BigNumber, ethers } from 'ethers'
 import axios, { AxiosResponse, AxiosError } from 'axios'
-import qs from 'qs'
+import { stringify } from 'qs'
 
 const ZERO_EX_API_KEY = '4ded7f7b-e53c-4726-90fd-03f277466a43'
 
@@ -37,7 +37,7 @@ class ZeroExAggregator implements DEXAggregator {
 				params.gasPrice = ethers.utils.formatUnits(gasPrice, 'wei')
 			}
 			// get quote from 0x
-			const apiUrl = `${getDexAggregatorUri()}?${qs.stringify(params)}`
+			const apiUrl = `${getDexAggregatorUri()}?${stringify(params)}`
 			console.debug('0x API request', apiUrl)
 			const result = await axios.get(apiUrl, { headers: { '0x-api-key': ZERO_EX_API_KEY } })
 			const { price, guaranteedPrice } = result.data
@@ -66,7 +66,7 @@ class ZeroExAggregator implements DEXAggregator {
 					}
 					console.debug(`Swap ${fromToken?.symbol} -> ${toToken?.symbol} (${source})`)
 					return path
-				})
+				}),
 			)
 			console.log('Route:', route)
 			return {

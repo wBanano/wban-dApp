@@ -323,7 +323,7 @@ export default class Farm extends Vue {
 				ban.banPriceInUSD,
 				this.prices,
 				this.signer,
-				this.benis
+				this.benis,
 			)
 			this.emptyRewards = this.farmData.userPendingRewards.isZero()
 

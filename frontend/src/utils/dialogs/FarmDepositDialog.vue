@@ -148,7 +148,7 @@ export default class FarmDepositDialog extends Vue {
 				this.amount,
 				this.farm.lpSymbol,
 				this.signer,
-				this.benis
+				this.benis,
 			)
 		} else {
 			txnHash = await this.benisUtils.deposit(this.farm.pid, this.amount, this.farm.lpSymbol, this.benis)
@@ -205,7 +205,7 @@ export default class FarmDepositDialog extends Vue {
 					amountToZap,
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					nonce!,
-					deadline
+					deadline,
 				)
 				tx = await zap.zapInFromTokenWithPermit(
 					this.token.address,
@@ -214,7 +214,7 @@ export default class FarmDepositDialog extends Vue {
 					deadline,
 					sig.v,
 					sig.r,
-					sig.s
+					sig.s,
 				)
 			} else {
 				console.warn('no permit feature for', this.token.address)
@@ -349,7 +349,7 @@ export default class FarmDepositDialog extends Vue {
 		if (!this.balance.isZero()) {
 			this.amount = formatUnits(
 				this.balance,
-				await (await this.bep20.getBEP20Token(this.token.address, this.signer)).decimals()
+				await (await this.bep20.getBEP20Token(this.token.address, this.signer)).decimals(),
 			)
 		}
 	}

@@ -72,7 +72,7 @@ import ban from '@/store/modules/ban'
 import { copyToClipboard } from 'quasar'
 import { Component, Ref, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
-import QRCode from 'qrcode'
+import { toDataURL } from 'qrcode'
 
 const backendStore = namespace('backend')
 
@@ -117,7 +117,7 @@ export default class BANDepositDialog extends Vue {
 		this.banAddress = ban.banAddress
 
 		try {
-			const qrcode: string = await QRCode.toDataURL(this.banWalletForDeposits, {
+			const qrcode: string = await toDataURL(this.banWalletForDeposits, {
 				scale: 6,
 				color: {
 					dark: '2A2A2E',

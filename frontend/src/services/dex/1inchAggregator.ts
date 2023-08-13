@@ -4,8 +4,9 @@ import { getDexAggregatorUri } from '@/config/constants/dex'
 import TokensUtil from '../../utils/TokensUtil'
 import { BigNumber, ethers } from 'ethers'
 import axios, { AxiosResponse, AxiosError } from 'axios'
-import qs from 'qs'
+import { stringify } from 'qs'
 import { InsufficientLiquidityError } from './Errors'
+// eslint-disable-next-line import/no-named-as-default
 import Backend from '@/store/modules/backend'
 
 class OneInchAggregator implements DEXAggregator {
@@ -25,7 +26,7 @@ class OneInchAggregator implements DEXAggregator {
 				params.gasPrice = ethers.utils.formatUnits(gasPrice, 'wei')
 			}
 			// get quote from 1nch
-			const apiUrl = `${getDexAggregatorUri()}/quote?${qs.stringify(params)}`
+			const apiUrl = `${getDexAggregatorUri()}/quote?${stringify(params)}`
 			console.debug('1inch API request', apiUrl)
 			const result = await axios.get(apiUrl)
 			const gas = BigNumber.from(result.data.estimatedGas)
@@ -45,12 +46,12 @@ class OneInchAggregator implements DEXAggregator {
 							const fromToken = await TokensUtil.getToken(
 								order.fromTokenAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase()
 									? ''
-									: order.fromTokenAddress
+									: order.fromTokenAddress,
 							)
 							const toToken = await TokensUtil.getToken(
 								order.toTokenAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase()
 									? ''
-									: order.toTokenAddress
+									: order.toTokenAddress,
 							)
 							if (!fromToken || !toToken) {
 								throw Error("Can't find expected tokens")
@@ -64,7 +65,7 @@ class OneInchAggregator implements DEXAggregator {
 							return path
 						})
 					})
-				})
+				}),
 			)
 			console.log('Route:', route)
 			return {
@@ -111,7 +112,7 @@ class OneInchAggregator implements DEXAggregator {
 				params.gasPrice = ethers.utils.formatUnits(gasPrice, 'wei')
 			}
 			// get quote from 1nch
-			const apiUrl = `${getDexAggregatorUri()}/swap?${qs.stringify(params)}`
+			const apiUrl = `${getDexAggregatorUri()}/swap?${stringify(params)}`
 			console.debug('1inch API request', apiUrl)
 			const result = await axios.get(apiUrl)
 			const price = result.data.tx.gasPrice
@@ -137,12 +138,12 @@ class OneInchAggregator implements DEXAggregator {
 							const fromToken = await TokensUtil.getToken(
 								order.fromTokenAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase()
 									? ''
-									: order.fromTokenAddress
+									: order.fromTokenAddress,
 							)
 							const toToken = await TokensUtil.getToken(
 								order.toTokenAddress === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase()
 									? ''
-									: order.toTokenAddress
+									: order.toTokenAddress,
 							)
 							if (!fromToken || !toToken) {
 								throw Error("Can't find expected tokens")
@@ -157,7 +158,7 @@ class OneInchAggregator implements DEXAggregator {
 							return path
 						})
 					})
-				})
+				}),
 			)
 			console.log('Route:', route)
 			return {

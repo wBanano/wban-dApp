@@ -142,6 +142,7 @@ import { TransactionRequest } from '@ethersproject/providers'
 import { IERC20, IERC20__factory, WBANTokenWithPermit } from '@artifacts/typechain'
 import SwapDialogs from '@/utils/SwapDialogs'
 import Accounts from '@/store/modules/accounts'
+// eslint-disable-next-line import/no-named-as-default
 import Contracts from '@/store/modules/contracts'
 import backend from '@/store/modules/backend'
 import plausible from '@/store/modules/plausible'
@@ -320,7 +321,7 @@ export default class Swaps extends Vue {
 					console.error(
 						`Allowance is not high enough: ${ethers.utils.formatUnits(allowance, this.from.token.decimals)} ${
 							this.from.token.symbol
-						} but ${this.from.amount} ${this.from.token.symbol} required`
+						} but ${this.from.amount} ${this.from.token.symbol} required`,
 					)
 				}
 			}
@@ -340,7 +341,7 @@ export default class Swaps extends Vue {
 					slippagePercentage: this.slippagePercentage,
 					nativeCurrency: this.network.nativeCurrency.symbol,
 				},
-				skipValidation
+				skipValidation,
 			)
 			this.gas = this.quote.gas
 			this.gasPrice = this.quote.gasPrice
@@ -438,7 +439,7 @@ export default class Swaps extends Vue {
 				nativeCurrency: this.network.nativeCurrency.symbol,
 			},
 			this.isAmountEligibleForGaslessWrap,
-			this.isAmountEligibleForGaslessWrap
+			this.isAmountEligibleForGaslessWrap,
 		)
 		if (this.isAmountEligibleForGaslessWrap) {
 			await backend.gaslessSwap({
@@ -494,7 +495,7 @@ export default class Swaps extends Vue {
 		allowanceTarget: string,
 		owner: string,
 		token: IERC20,
-		amount: BigNumber
+		amount: BigNumber,
 	) {
 		if (this.from.token.address === '') {
 			throw new Error('No need to approve native crypto')
@@ -505,7 +506,7 @@ export default class Swaps extends Vue {
 			console.error(
 				`Allowance is not high enough: ${ethers.utils.formatUnits(allowance, this.from.token.decimals)} ${
 					this.from.token.symbol
-				} but ${this.from.amount} ${this.from.token.symbol} required`
+				} but ${this.from.amount} ${this.from.token.symbol} required`,
 			)
 			this.approveLabel = `Approve ${this.from.token.symbol}`
 		} else {

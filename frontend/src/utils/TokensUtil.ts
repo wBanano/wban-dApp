@@ -66,7 +66,7 @@ class TokensUtil {
 					logoURI: logoUrl,
 					chainId: POLYGON_MAINNET.chainId,
 				},
-				TokensUtil.getWBANAddress().toLowerCase()
+				TokensUtil.getWBANAddress().toLowerCase(),
 			)
 		}
 		db.close()
@@ -111,7 +111,7 @@ class TokensUtil {
 				a.symbol.localeCompare(b.symbol, undefined, {
 					numeric: true,
 					sensitivity: 'base',
-				})
+				}),
 			)
 		db.close()
 		return tokens

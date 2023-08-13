@@ -23,7 +23,7 @@ class FarmUtils {
 		banPriceInUSD: number,
 		prices: Map<string, number>,
 		signer: Signer,
-		benis: Benis
+		benis: Benis,
 	): Promise<FarmData> {
 		this.farmConfig = farmConfig
 		this.envName = envName
@@ -56,7 +56,7 @@ class FarmUtils {
 				.div(BN_ONE)
 			farmData.stakedValue = userValueToken0.add(userValueToken1)
 			farmData.totalValue = farmData.stakedValue.add(
-				farmData.userPendingRewards.mul(ethers.utils.parseEther(banPriceInUSD.toString())).div(BN_ONE)
+				farmData.userPendingRewards.mul(ethers.utils.parseEther(banPriceInUSD.toString())).div(BN_ONE),
 			)
 		}
 		return farmData
@@ -101,7 +101,7 @@ class FarmUtils {
 				this.account,
 				farmData.stakedBalance,
 				farmData.poolData.address[this.envName as keyof Address],
-				signer
+				signer,
 			)
 			farmData.poolData.priceToken0 = await this.getTokenPriceUsd(lpDetails.token0.address, signer, bep20)
 			farmData.poolData.priceToken1 = await this.getTokenPriceUsd(lpDetails.token1.address, signer, bep20)

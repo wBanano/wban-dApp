@@ -35,7 +35,14 @@
 			<q-card class="coming-from-card col-12 col-sm-5" flat bordered>
 				<div class="title">{{ $t('pages.setup.reconnect-bridge') }}</div>
 				<div class="subtitle">{{ $t('pages.setup.reconnect-bridge-description') }}</div>
-				<q-btn @click="relink" class="button" color="primary" text-color="black" :label="$t('pages.setup.continue')" />
+				<q-btn
+					id="relink"
+					@click="relink"
+					class="button"
+					color="primary"
+					text-color="black"
+					:label="$t('pages.setup.continue')"
+				/>
 			</q-card>
 			<q-card class="coming-from-card col-12 col-sm-5" flat bordered>
 				<div class="title">{{ $t('pages.setup.swaps-only') }}</div>
@@ -396,7 +403,7 @@ export default class SetupPage extends Vue {
 			},
 			{
 				withCredentials: true,
-			}
+			},
 		)
 		resp = await axios.get(`${getBackendHost()}/relink`, { withCredentials: true })
 		const banAddresses: Array<string> = resp.data.banAddresses

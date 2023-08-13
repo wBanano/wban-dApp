@@ -8,7 +8,7 @@ class PermitUtil {
 		owner: providers.JsonRpcSigner,
 		spender: string,
 		value: BigNumberish,
-		deadline: BigNumberish
+		deadline: BigNumberish,
 	): Promise<Signature> {
 		const sig = await PermitUtil.createPermitSignatureForToken(
 			'Wrapped Banano',
@@ -18,7 +18,7 @@ class PermitUtil {
 			spender,
 			value,
 			await wban.nonces(await owner.getAddress()),
-			deadline
+			deadline,
 		)
 		console.debug('Permit sig:', sig)
 		return sig
@@ -32,7 +32,7 @@ class PermitUtil {
 		spender: string,
 		value: BigNumberish,
 		nonce: BigNumber,
-		deadline: BigNumberish
+		deadline: BigNumberish,
 	): Promise<Signature> {
 		const chainId = await owner.getChainId()
 		const domain: TypedDataDomain = { name, version, chainId, verifyingContract }

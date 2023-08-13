@@ -95,7 +95,7 @@ class NftModule extends VuexModule {
 			const nftId = NftModule.NFT_IDS[index].toString()
 			const metadataUri = uriTemplate.replace(
 				'{id}',
-				ethers.utils.hexZeroPad(`0x${NftModule.NFT_IDS[index].toString(16)}`, 32).substring(2)
+				ethers.utils.hexZeroPad(`0x${NftModule.NFT_IDS[index].toString(16)}`, 32).substring(2),
 			)
 			//console.debug(`Metadata URI is: ${metadataUri}`)
 			const metadata = await fetchJson(metadataUri)
@@ -149,7 +149,7 @@ class NftModule extends VuexModule {
 							claim.uuid,
 							signature.v,
 							signature.r,
-							signature.s
+							signature.s,
 						)
 						await txn.wait()
 					} catch (err) {
