@@ -7,7 +7,9 @@
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
 		"test:unit": "vue-cli-service test:unit",
-		"test:e2e": "env-cmd -f .env.cypress cypress run --browser chrome --headed",
+		"test:e2e": "env-cmd -f .env.cypress cypress run --browser chrome --headed  --record",
+		"ci:run-server": "vue-cli-service serve --mode production --silent",
+		"test:ci": "start-server-and-test ci:run-server http://localhost:8080 test:e2e",
 		"synpress:watch": "env-cmd -f .env.cypress npx synpress open -cf cypress.config.js",
 		"audit:fix": "npm_config_yes=true npx yarn-audit-fix",
 		"i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
@@ -89,6 +91,7 @@
 		"node-sass": "^7.0.1",
 		"prettier": "^3.0.1",
 		"sass-loader": "^8.0.0",
+		"start-server-and-test": "^2.0.0",
 		"typescript": "4.5.5",
 		"vue-cli-plugin-i18n": "^2.3.1",
 		"vue-cli-plugin-quasar": "~3.0.2",

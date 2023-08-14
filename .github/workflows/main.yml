@@ -15,11 +15,12 @@ jobs:
     name: "Smart Contract"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: "16"
+          cache: npm
       - run: npm install -g yarn
       - name: Compile & Test
         run: |
@@ -35,11 +36,12 @@ jobs:
     env:
       working-directory: frontend
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: "16"
+          cache: npm
       - run: npm install -g yarn
         working-directory: ${{env.working-directory}}
       - name: Build Smart Contract artifacts
@@ -47,9 +49,48 @@ jobs:
           yarn
           yarn compile
         working-directory: "."
-      - name: Compile & Test
+      - name: Build
         run: |
           yarn
           yarn build
-        # yarn test:unit
+        working-directory: ${{env.working-directory}}
+  synpress:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      working-directory: frontend
+      # pass the Cypress Cloud record key as an environment variable
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      # pass GitHub token to allow accurately detecting a build vs a re-run build
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: npm
+      - name: Build Smart Contract artifacts
+        run: |
+          yarn
+          yarn compile
+        working-directory: "."
+      - name: Install linux deps
+        run: |
+          sudo apt-get install --no-install-recommends -y \
+          fluxbox \
+          xvfb
+      - name: Install dependencies
+        run: |
+          yarn
+        working-directory: ${{env.working-directory}}
+      - name: Run e2e tests (headful)
+        run: |
+          Xvfb :0 -screen 0 1024x768x24 -listen tcp -ac &
+          fluxbox &
+          yarn test:ci
+        env:
+          DISPLAY: :0.0
         working-directory: ${{env.working-directory}}
