@@ -7,11 +7,12 @@ jobs:
     name: "Smart Contract"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: "16"
+          cache: npm
       - run: npm install -g yarn
       - name: Compile & Test
         run: |
@@ -23,11 +24,12 @@ jobs:
     env:
       working-directory: frontend
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: "16"
+          cache: npm
       - run: npm install -g yarn
         working-directory: ${{env.working-directory}}
       - name: Build Smart Contract artifacts

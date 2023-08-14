@@ -26,11 +26,8 @@ module.exports = {
 				{ test: /node_modules[\\/]@metamask/, loader: 'babel-loader' },
 			],
 		}
-	}
-	/*
-	transpileDependencies: ['quasar'],
+	},
 	devServer: {
-    disableHostCheck: true
-  }
-	*/
+		progress: process.env.NODE_ENV !== 'production',
+	},
 }
