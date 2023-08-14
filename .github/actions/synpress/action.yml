@@ -1,0 +1,49 @@
+name: E2E Tests
+description: E2E Tests with Synpress
+inputs:
+  CYPRESS_RECORD_KEY:
+    required: true
+    description: Cypress record key
+  GITHUB_TOKEN:
+    required: true
+    description: GitHub token
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+        cache: yarn
+        cache-dependency-path: '**/yarn.lock'
+    - name: Install main dependencies
+      run: yarn install --frozen-lockfile
+      shell: bash
+    - name: Install frontend dependencies
+      run: yarn install --frozen-lockfile
+      working-directory: frontend
+      shell: bash
+    - name: Restore frontend artifacts
+      uses: actions/cache/restore@v3
+      with:
+        path: frontend/dist
+        key: frontend-artifacts
+    - name: Install linux deps
+      run: |
+        sudo apt-get install --no-install-recommends -y \
+        fluxbox \
+        xvfb
+      shell: bash
+    - name: Run e2e tests (headful)
+      run: |
+        Xvfb :0 -screen 0 1024x768x24 -listen tcp -ac &
+        fluxbox &
+        yarn test:ci
+      env:
+        DISPLAY: :0.0
+        CYPRESS_RECORD_KEY: ${{ inputs.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+      shell: bash
+      working-directory: frontend
