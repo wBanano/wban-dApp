@@ -1,0 +1,38 @@
+name: dApp
+description: Build dApp
+inputs:
+  environment:
+    description: Environment to build for
+    required: false
+    default: production
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+    - name: Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+        cache: yarn
+        cache-dependency-path: '**/yarn.lock'
+    - name: Restore Typechain artifacts
+      uses: actions/cache/restore@v3
+      with:
+        path: artifacts
+        key: typechain-artifacts
+    - name: Install main dependencies
+      run: yarn install --frozen-lockfile
+      shell: bash
+    - name: Install frontend dependencies
+      run: yarn install --frozen-lockfile
+      working-directory: frontend
+      shell: bash
+    - name: Build
+      run: yarn build --mode ${{ inputs.environment }}
+      working-directory: frontend
+      shell: bash
+    - name: Cache frontend artifacts
+      uses: actions/cache@v3
+      with:
+        path: frontend/dist
+        key: frontend-artifacts

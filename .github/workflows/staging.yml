@@ -3,47 +3,24 @@ on:
   release:
     types: [prereleased]
 jobs:
-  build-smart-contract:
-    name: "Smart Contract"
+  smart-contracts:
+    name: "Smart Contracts"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: npm
-      - run: npm install -g yarn
-      - name: Compile & Test
-        run: |
-          yarn
-          yarn test
-  build-and-deploy-frontend:
-    name: dAPP
+      - name: Build & Test
+        uses: ./.github/actions/smart-contracts
+  dApp:
+    name: dApp
     runs-on: ubuntu-latest
-    env:
-      working-directory: frontend
+    needs: smart-contracts
     steps:
       - uses: actions/checkout@v3
-      - name: Node.js
-        uses: actions/setup-node@v3
+      - name: Build dApp
+        uses: ./.github/actions/dapp
         with:
-          node-version: "16"
-          cache: npm
-      - run: npm install -g yarn
-        working-directory: ${{env.working-directory}}
-      - name: Build Smart Contract artifacts
-        run: |
-          yarn
-          yarn compile
-        working-directory: "."
-      - name: Compile & Test
-        run: |
-          yarn
-          yarn build --mode staging
-        #yarn test:unit
-        working-directory: ${{env.working-directory}}
-      - name: Deploy to wban-testing.netlify.app
+          environment: staging
+      - name: Deploy to wban-testing.banano.cc
         uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

@@ -1,0 +1,34 @@
+name: Smart-contracts
+description: Build Solidity contracts and test them
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+    - name: Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+        cache: yarn
+        cache-dependency-path: '**/yarn.lock'
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+      shell: bash
+    - name: Compile & Test
+      run: yarn test
+      shell: bash
+    - name: Checks
+      run: yarn lint
+      shell: bash
+    #yarn coverage
+    #- name: Archive Typechain artifacts
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: typechain
+    #    path: |
+    #      artifacts
+    #      node_modules
+    - name: Cache Typechain artifacts
+      uses: actions/cache@v3
+      with:
+        path: artifacts
+        key: typechain-artifacts
