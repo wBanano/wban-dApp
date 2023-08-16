@@ -74,6 +74,10 @@ class AccountsModule extends VuexModule {
 		return this._isInitialized
 	}
 
+	get onboard(): OnboardAPI | undefined {
+		return this._onboard
+	}
+
 	@Mutation
 	setActiveBalance(balance: BigNumber) {
 		this.activeBalance = balance
@@ -82,8 +86,6 @@ class AccountsModule extends VuexModule {
 	@Mutation
 	setIsConnected(isConnected: boolean) {
 		this.isConnected = isConnected
-		// add to persistent storage so that the user can be logged back in when revisiting website
-		localStorage.setItem('isConnected', isConnected.toString())
 	}
 
 	@Mutation
@@ -94,6 +96,11 @@ class AccountsModule extends VuexModule {
 	@Mutation
 	setNetwork(network: Network) {
 		this.network = network
+	}
+
+	@Mutation
+	setOnboard(onboard: OnboardAPI) {
+		this._onboard = onboard
 	}
 
 	@Mutation
@@ -128,6 +135,7 @@ class AccountsModule extends VuexModule {
 			if (this.activeAccount !== oldAccount || oldNetworkChainId !== chainId) {
 				document.dispatchEvent(new CustomEvent('web3-connection'))
 			}
+			this.isConnected = true
 		} else {
 			console.warn('No wallet selected')
 		}
@@ -136,9 +144,9 @@ class AccountsModule extends VuexModule {
 	@Mutation
 	async disconnectWallet() {
 		// disconnect the first wallet in the wallets array
-		if (this._onboard) {
-			const [primaryWallet] = this._onboard.state.get().wallets
-			await this._onboard.disconnectWallet({ label: primaryWallet.label })
+		if (this.onboard) {
+			const [primaryWallet] = this.onboard.state.get().wallets
+			await this.onboard.disconnectWallet({ label: primaryWallet.label })
 		}
 		this.activeAccount = null
 		this.activeBalance = BigNumber.from(0)
@@ -150,10 +158,11 @@ class AccountsModule extends VuexModule {
 
 	@Action
 	async initWalletProvider() {
-		console.debug('in initWalletProvider')
 		if (this._isInitialized && this._language === i18n.locale) {
 			return
 		}
+		console.debug('in initWalletProvider')
+
 		this.context.commit('setInitialized', true)
 
 		MulticallWrapper.setMulticallAddress(BSC_MAINNET.chainIdNumber, '0xcA11bde05977b3631167028862bE2a173976CA11')
@@ -271,10 +280,10 @@ class AccountsModule extends VuexModule {
 				translation = translationVI
 				break
 		}
-		if (this._onboard) {
+		if (this.onboard) {
 			this.disconnectWalletProvider()
 		}
-		this._onboard = Onboard({
+		const onboard = Onboard({
 			wallets: [injected, walletConnect, /*ledger,*/ coinbaseWalletSdk, enrkyptModule, frameModule],
 			chains: testnet ? [...mainnetChains, testnet] : mainnetChains,
 			connect: {
@@ -305,12 +314,15 @@ class AccountsModule extends VuexModule {
 				},
 			},
 		})
+		this.context.commit('setOnboard', onboard)
 		this.context.commit('setLanguage', i18n.locale)
 
-		const state = this._onboard.state.select()
+		const state = onboard.state.select()
 		const subscription = state.subscribe((update) => {
 			this.context.commit('updateNetworkData', update)
-			this.context.dispatch('fetchActiveBalance')
+			if (update.wallets.length > 0) {
+				this.context.dispatch('fetchActiveBalance')
+			}
 		})
 		this.context.commit('setSubscription', subscription)
 	}
@@ -319,16 +331,20 @@ class AccountsModule extends VuexModule {
 	async connectWalletProvider(wantedChain?: string) {
 		console.debug('in connectWalletProvider')
 
-		if (!this._onboard) {
-			throw new Error('Web3 provider not initialized')
+		if (!this.onboard) {
+			console.error('Web3 provider not initialized')
+			return
 		}
 
-		const wallets = await this._onboard.connectWallet()
+		const previouslyConnected = localStorage.getItem('onboard.js:last_connected_wallet')
+		const wallets = previouslyConnected
+			? await this.onboard.connectWallet({ autoSelect: previouslyConnected[0] })
+			: await this.onboard.connectWallet()
 		// check if the user is connected to a supported network
 		const chainId = wallets[0].chains[0].id
 		if (!new Networks().getSupportedNetworks().find((network) => network.chainId === chainId)) {
 			console.warn(`Unsupported blockchain network: ${chainId}. Asking for a switch to Polygon.`)
-			const switched = await this._onboard?.setChain({ chainId: POLYGON_MAINNET.chainId })
+			const switched = await this.onboard.setChain({ chainId: POLYGON_MAINNET.chainId })
 			if (!switched) {
 				await Dialogs.showUnsupportedNetwork(chainId)
 				await this.disconnectWalletProvider()
@@ -337,7 +353,7 @@ class AccountsModule extends VuexModule {
 		}
 		// check if the user is connected to the wanted network
 		if (wantedChain) {
-			const switched = await this._onboard?.setChain({ chainId: wantedChain ?? POLYGON_MAINNET.chainId })
+			const switched = await this.onboard.setChain({ chainId: wantedChain ?? POLYGON_MAINNET.chainId })
 			if (!switched) {
 				return
 			}
@@ -347,7 +363,7 @@ class AccountsModule extends VuexModule {
 
 	@Action
 	async switchBlockchain(network: Network) {
-		this._onboard?.setChain({
+		this.onboard?.setChain({
 			chainId: network.chainId,
 		})
 	}

@@ -26,10 +26,10 @@ runs:
       working-directory: frontend
       shell: bash
     - name: Restore frontend artifacts
-      uses: actions/cache/restore@v3
+      uses: actions/download-artifact@v3
       with:
+        name: frontend
         path: frontend/dist
-        key: frontend-artifacts
     - name: Install linux deps
       run: |
         sudo apt-get install --no-install-recommends -y \
