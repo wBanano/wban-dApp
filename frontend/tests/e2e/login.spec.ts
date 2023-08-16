@@ -1,9 +1,7 @@
 describe("Login Account", () => {
-	const browserSettings = {
-		onBeforeLoad(win: any) {
-			Object.defineProperty(win.navigator, 'language', { value: 'en-US' });
-		},
-	}
+	beforeEach(() => {
+		localStorage.setItem('locale', 'en');
+	});
 
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps();
@@ -11,7 +9,7 @@ describe("Login Account", () => {
   });
 
 	it("Should connect", () => {
-    cy.visit("/", browserSettings);
+    cy.visit("/");
 
 		cy.switchMetamaskAccount(1).should("be.true");
 
@@ -26,7 +24,7 @@ describe("Login Account", () => {
   });
 
   it("Should connect to Arbitrum network", () => {
-    cy.visit("/", browserSettings);
+    cy.visit("/");
 
 		cy.switchMetamaskAccount(1).should("be.true");
 

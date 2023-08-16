@@ -177,6 +177,7 @@ export default class PageIndex extends Vue {
 			wantedChain = ARBITRUM_MAINNET.chainId
 		}
 		console.warn('Wanted chain', wantedChain)
+		await accounts.initWalletProvider()
 		await accounts.connectWalletProvider(wantedChain)
 	}
 }
