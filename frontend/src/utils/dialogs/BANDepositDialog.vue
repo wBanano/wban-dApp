@@ -7,18 +7,18 @@
 				<q-btn icon="close" flat round dense v-close-popup color="white" />
 			</q-card-section>
 			<q-card-section class="q-gutter-sm">
-				<div class="row" v-if="$q.platform.is.desktop">
-					<div class="col-sm-9 col-xs-12">
+				<div class="row justify-between" v-if="$q.platform.is.desktop">
+					<div class="col-sm-7 col-xs-12">
 						<p>
 							<i18n path="dialogs.ban-deposit.phrase1">
-								<span class="banano-address gt-sm">{{ banAddress }}</span>
+								<span class="banano-address">{{ banAddress }}</span>
 							</i18n>
-							&nbsp;<strong class="banano-address gt-sm">{{ banWalletForDeposits }}</strong>
-							<a class="lt-md banano-address" :href="banWalletForDepositsLink">{{ banWalletForDeposits }}</a>
+							&nbsp;
+							<strong class="banano-address">{{ banWalletForDeposits }}</strong>
 						</p>
 						<p v-html="$t('dialogs.ban-deposit.phrase2')" />
 					</div>
-					<div class="col-sm-3 col-xs-12 text-right">
+					<div class="qrcode col-sm-4 col-xs-12 text-center">
 						<q-icon :name="banWalletForDepositsQRCode" size="200px" />
 					</div>
 				</div>
@@ -167,8 +167,13 @@ export default class BANDepositDialog extends Vue {
 .q-dialog-plugin
 	button
 		color: $primary
+.banano-address
+	overflow-wrap: break-word
+.qrcode
+	min-width: 220px !important
 
 @media (min-width: $breakpoint-sm-min)
-	.q-dialog-plugin
-		min-width: 500px
+	.q-card
+		min-width: 70%
+		max-width: 95%
 </style>
