@@ -22,7 +22,7 @@ class BANModule extends VuexModule {
 	}
 
 	get banAddressPicture() {
-		return `https://monkey.banano.cc/api/v1/monkey/${this.banAddress}?format=png`
+		return `https://monkey.banano.cc/api/v1/monkey/${this.banAddress}?format=png&svc=wBAN`
 	}
 
 	@Mutation
