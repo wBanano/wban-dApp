@@ -1,3 +1,8 @@
+# v2.6.9
+## Bugs
+- web3 wallet was not auto-reconnecting on page reload
+- deposit dialog layout issue on desktop #122
+
 # v2.6.8
 ## Improvements
 - Spanish translation
