@@ -16,10 +16,10 @@ runs:
         cache: yarn
         cache-dependency-path: '**/yarn.lock'
     - name: Restore Typechain artifacts
-      uses: actions/cache/restore@v3
+      uses: actions/download-artifact@v3
       with:
+        name: typechain
         path: artifacts
-        key: typechain-artifacts
     - name: Install main dependencies
       run: yarn install --frozen-lockfile
       shell: bash
