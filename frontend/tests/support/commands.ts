@@ -6,16 +6,20 @@
 
 import "@testing-library/cypress/add-commands";
 
+const apiEndpoint = 'https://ethereum-api.banano.cc';
+
 declare global {
   namespace Cypress {
     interface Chainable {
-			login(banAddy: string): void;
+			login(banAddy: string, network: Network): void;
       loginByBridgeRelink(banAddy: string): void;
     }
   }
 }
 
-Cypress.Commands.add('login', (banAddy: string) => {
+type Network = 'ethereum' | 'polygon';
+
+Cypress.Commands.add('login', (banAddy: string, network: Network) => {
 	Cypress.log({
 		name: 'login',
 		message: 'should login'
@@ -27,12 +31,20 @@ Cypress.Commands.add('login', (banAddy: string) => {
 	localStorage.setItem('onboard.js:last_connected_wallet', '["MetaMask"]');
 
 	// fake bridge setup done request
-	const apiEndpoint = 'https://ethereum-api.banano.cc';
+	const apiEndpoint = `https://${network}-api.banano.cc`;
 	cy.intercept('GET', `${apiEndpoint}/claim/**`, { statusCode: 200 }).as('checkBridgeSetup');
 
 	cy.visit("/");
-	cy.get('#connectToEthereum').click();
-	cy.acceptMetamaskAccess();
+	switch (network) {
+		case 'ethereum':
+			cy.get('#connectToEthereum').click();
+			cy.acceptMetamaskAccess();
+			break;
+		case 'polygon':
+			cy.get('#connectToPolygon').click();
+			cy.acceptMetamaskAccess();
+			cy.allowMetamaskToAddAndSwitchNetwork();
+	}
 
 	cy.wait(['@checkBridgeSetup']);
 });
@@ -57,8 +69,6 @@ Cypress.Commands.add('loginByBridgeRelink', (banAddy: string) => {
 
 	cy.findByText(/I'm new to wBAN/i).should('be.visible');
 	cy.findByText(/Ethereum/i).should('be.visible');
-
-	const apiEndpoint = 'https://ethereum-api.banano.cc';
 
 	// fake relink request
 	cy.intercept('GET', `${apiEndpoint}/relink`, {

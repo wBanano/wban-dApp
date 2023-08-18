@@ -7,7 +7,7 @@ describe("Auto Reconnect Web3 Wallet", () => {
 	});
 
 	it("Should automatically reconnect wallet when reloading main page", () => {
-		cy.login(banAddy);
+		cy.login(banAddy, 'ethereum');
 		// we should be on home page with wBAN statistics displayed
 		cy.contains('wBAN Statistics');
 
@@ -19,7 +19,7 @@ describe("Auto Reconnect Web3 Wallet", () => {
   });
 
 	it("Should automatically reconnect wallet when reloading farms page", () => {
-		cy.login(banAddy);
+		cy.login(banAddy, 'ethereum');
 		// we should be on home page with wBAN statistics displayed
 		cy.contains('wBAN Statistics');
 

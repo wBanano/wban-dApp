@@ -43,6 +43,7 @@
 				:balance="fromBalance"
 				:currency="fromCurrency"
 				editable
+				data-cy="from"
 			/>
 			<div id="swap-icon" class="text-center">
 				<q-icon @click="switchCurrencyInputs" name="swap_vert" class="cursor-pointer arrow-down text-center" />
@@ -53,9 +54,17 @@
 				:amount="amount"
 				:balance="toBalance"
 				:currency="toCurrency"
+				data-cy="to"
 			/>
 			<div class="text-right">
-				<q-btn :label="swapLabel" type="submit" :disable="!swapEnabled" color="primary" text-color="text-black" />
+				<q-btn
+					:label="swapLabel"
+					type="submit"
+					:disable="!swapEnabled"
+					color="primary"
+					text-color="text-black"
+					data-cy="wrap-button"
+				/>
 			</div>
 		</div>
 	</form>
