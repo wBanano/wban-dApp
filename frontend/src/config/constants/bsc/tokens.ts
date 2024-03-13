@@ -25,6 +25,16 @@ const tokens: TokensList = {
 		decimals: 18,
 		projectLink: 'https://www.paxos.com/busd/',
 	},
+	usdc: {
+		symbol: 'USDC',
+		address: {
+			dev: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+			staging: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+			production: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+		},
+		decimals: 6,
+		projectLink: 'https://www.circle.com',
+	},
 }
 
 export default tokens

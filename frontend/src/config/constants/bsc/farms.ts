@@ -68,6 +68,17 @@ export default class BSCFarms {
 				token: tokens.wban,
 				quoteToken: tokens.busd,
 			},
+			{
+				pid: 4,
+				lpSymbol: 'wBAN-USDC (PancakeSwap)',
+				lpAddresses: {
+					dev: '',
+					staging: '0x76B1aB2f84bE3C4a103ef1d2C2a74145414FFA49',
+					production: '0x76B1aB2f84bE3C4a103ef1d2C2a74145414FFA49',
+				},
+				token: tokens.usdc,
+				quoteToken: tokens.wban,
+			},
 		]
 	}
 }
