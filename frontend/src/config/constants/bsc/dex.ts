@@ -2,7 +2,7 @@ import { DEXAggregator } from '@/models/dex/SwapQuote'
 
 export default class DEX {
 	getDexUrl() {
-		return 'https://pancakeswap.finance'
+		return 'https://pancakeswap.finance/v2'
 	}
 	getDexAggregator(): DEXAggregator {
 		return '0x'

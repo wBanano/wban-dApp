@@ -1,4 +1,6 @@
 # v2.6.9
+## New Features
+- new PancakeSwap farm for wBAN-USDC
 ## Bugs
 - web3 wallet was not auto-reconnecting on page reload
 - deposit dialog layout issue on desktop #122
