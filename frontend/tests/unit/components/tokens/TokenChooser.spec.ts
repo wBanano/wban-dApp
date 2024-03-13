@@ -4,7 +4,7 @@ import TokenChooser from '@/components/tokens/TokenChooser.vue'
 import { QAvatar, QIcon, QItem } from 'quasar'
 import { Token } from '@/config/constants/dex'
 
-describe("TokenChooser", () => {
+describe('TokenChooser', () => {
 	let wrapper: Wrapper<any>
 	const token: Token = {
 		name: 'Wrapped Banano',
@@ -12,19 +12,21 @@ describe("TokenChooser", () => {
 		address: '',
 		logoURI: '',
 		decimals: 18,
-		chainId: 0
+		chainId: 0,
 	}
 
-  beforeEach(() => {
+	beforeEach(() => {
 		wrapper = mountQuasar(TokenChooser, {
 			quasar: {
-        components: {
-          QItem, QAvatar, QIcon
-        },
-      },
+				components: {
+					QItem,
+					QAvatar,
+					QIcon,
+				},
+			},
 			propsData: {
-				value: token
-			}
+				value: token,
+			},
 		})
 	})
 

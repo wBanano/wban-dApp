@@ -1,8 +1,5 @@
-const path = require('path');
-const synpressPath = path.join(
-  process.cwd(),
-  '/node_modules/@synthetixio/synpress',
-);
+const path = require('path')
+const synpressPath = path.join(process.cwd(), '/node_modules/@synthetixio/synpress')
 
 module.exports = {
 	root: true,
@@ -20,7 +17,7 @@ module.exports = {
 	],
 	parserOptions: {
 		ecmaVersion: 2020,
-		sourceType: "module",
+		sourceType: 'module',
 	},
 	rules: {
 		// 'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -32,13 +29,13 @@ module.exports = {
 		'import/no-unresolved': 'error',
 	},
 	settings: {
-		"import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      typescript: {
-        alwaysTryTypes: true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
-      }
-    }
-	}
+		'import/parsers': {
+			'@typescript-eslint/parser': ['.ts', '.tsx'],
+		},
+		'import/resolver': {
+			typescript: {
+				alwaysTryTypes: true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+			},
+		},
+	},
 }

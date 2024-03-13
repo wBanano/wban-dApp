@@ -1,5 +1,5 @@
-import * as All from 'quasar';
-import { VueConstructor } from 'vue';
+import * as All from 'quasar'
+import { VueConstructor } from 'vue'
 import { Vue } from 'vue-property-decorator'
 
 // No console.log() / setTimeout

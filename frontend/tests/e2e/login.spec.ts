@@ -1,42 +1,42 @@
-describe("Login Account", () => {
+describe('Login Account', () => {
 	beforeEach(() => {
-		localStorage.setItem('locale', 'en');
-	});
+		localStorage.setItem('locale', 'en')
+	})
 
-  afterEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps();
-    cy.resetMetamaskAccount();
-  });
+	afterEach(() => {
+		cy.disconnectMetamaskWalletFromAllDapps()
+		cy.resetMetamaskAccount()
+	})
 
-	it("Should connect", () => {
-    cy.visit("/");
+	it('Should connect', () => {
+		cy.visit('/')
 
-		cy.switchMetamaskAccount(1).should("be.true");
+		cy.switchMetamaskAccount(1).should('be.true')
 
-		cy.get("#connect").click();
+		cy.get('#connect').click()
 
-		const onboard = cy.get('onboard-v2').shadow();
-		onboard.findByText(/MetaMask/i).click();
-		cy.acceptMetamaskAccess();
+		const onboard = cy.get('onboard-v2').shadow()
+		onboard.findByText(/MetaMask/i).click()
+		cy.acceptMetamaskAccess()
 
-		cy.findByText(/I'm new to wBAN/i).should('be.visible');
-		cy.findByText(/Ethereum/i).should('be.visible');
-  });
+		cy.findByText(/I'm new to wBAN/i).should('be.visible')
+		cy.findByText(/Ethereum/i).should('be.visible')
+	})
 
-  it("Should connect to Arbitrum network", () => {
-    cy.visit("/");
+	it('Should connect to Arbitrum network', () => {
+		cy.visit('/')
 
-		cy.switchMetamaskAccount(1).should("be.true");
+		cy.switchMetamaskAccount(1).should('be.true')
 
-		cy.get('#connectToArbitrum').click();
+		cy.get('#connectToArbitrum').click()
 
-		const onboard = cy.get('onboard-v2').shadow();
-		onboard.findByText(/MetaMask/i).click();
-		cy.acceptMetamaskAccess();
-		cy.allowMetamaskToAddNetwork();
-		cy.allowMetamaskToSwitchNetwork();
+		const onboard = cy.get('onboard-v2').shadow()
+		onboard.findByText(/MetaMask/i).click()
+		cy.acceptMetamaskAccess()
+		cy.allowMetamaskToAddNetwork()
+		cy.allowMetamaskToSwitchNetwork()
 
-		cy.findByText(/I'm new to wBAN/i).should('be.visible');
-		cy.findByText(/Arbitrum/i).should('be.visible');
-  });
-});
+		cy.findByText(/I'm new to wBAN/i).should('be.visible')
+		cy.findByText(/Arbitrum/i).should('be.visible')
+	})
+})

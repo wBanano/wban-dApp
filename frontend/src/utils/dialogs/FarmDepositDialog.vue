@@ -243,7 +243,11 @@ export default class FarmDepositDialog extends Vue {
 		if (this.farm.quoteToken.address) {
 			const otherToken = this.farm.quoteToken.address[FarmDepositDialog.ENV_NAME as keyof Address]
 			if (getDexUrl() === 'https://app.sushi.com/legacy' || getDexUrl().startsWith('https://pancakeswap.finance')) {
-				openURL(`${getDexUrl()}/add/0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034/${otherToken}?chainId=${this.network.chainIdNumber}`)
+				openURL(
+					`${getDexUrl()}/add/0xe20B9e246db5a0d21BF9209E4858Bc9A3ff7A034/${otherToken}?chainId=${
+						this.network.chainIdNumber
+					}`,
+				)
 			} else if (getDexUrl() === 'https://app.uniswap.org') {
 				openURL(`${getDexUrl()}/#/add/v2/${this.wbanAddress}/${otherToken}`)
 			} else {

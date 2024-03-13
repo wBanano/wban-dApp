@@ -8,33 +8,35 @@ import axios from 'axios'
 import { sleep } from '@/utils/AsyncUtils'
 import { Vue } from 'vue-property-decorator'
 
-describe("Swaps", () => {
+describe('Swaps', () => {
 	let factory: any
 	const localVue = createLocalVue()
 	localVue.use(Vuex)
 
 	beforeAll(async () => {
-		const tokenList = (await axios.get('https://unpkg.com/@sushiswap/default-token-list@23.16.0/build/sushiswap-default.tokenlist.json')).data
+		const tokenList = (
+			await axios.get('https://unpkg.com/@sushiswap/default-token-list@23.16.0/build/sushiswap-default.tokenlist.json')
+		).data
 		nock('http://localhost:3000')
 			.defaultReplyHeaders({
 				'access-control-allow-origin': '*',
-				'access-control-allow-credentials': 'true'
+				'access-control-allow-credentials': 'true',
 			})
 			.get('/dex/tokens')
 			.reply(200, tokenList)
 	})
 
-  beforeEach(() => {
+	beforeEach(() => {
 		factory = mountFactory(Swaps, {
 			mount: {
 				localVue,
 				store: store,
-				type: 'full'
-			}
+				type: 'full',
+			},
 		})
 	})
 
-  it('should display by default a swap wBAN->USDC', async () => {
+	it('should display by default a swap wBAN->USDC', async () => {
 		const wrapper: Wrapper<Swaps> = factory()
 		await sleep(1_000)
 		expect(wrapper.is(Swaps)).toBeTruthy()
@@ -55,7 +57,7 @@ describe("Swaps", () => {
 		// expect swap button to be disabled
 		expect(wrapper.vm.$data.swapEnabled).toBeFalsy()
 		expect(wrapper.find('#btn-swap').element).toHaveProperty('disabled')
-  })
+	})
 
 	/*
 	it('should display an error when having a 0 input amount', async () => {

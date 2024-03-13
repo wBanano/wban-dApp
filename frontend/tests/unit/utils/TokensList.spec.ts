@@ -4,13 +4,14 @@ import nock from 'nock'
 import axios from 'axios'
 
 describe('TokensUtil', () => {
-
 	beforeEach(async () => {
-		const tokenList = (await axios.get('https://unpkg.com/@sushiswap/default-token-list@23.16.0/build/sushiswap-default.tokenlist.json')).data
+		const tokenList = (
+			await axios.get('https://unpkg.com/@sushiswap/default-token-list@23.16.0/build/sushiswap-default.tokenlist.json')
+		).data
 		nock('http://localhost:3000')
 			.defaultReplyHeaders({
 				'access-control-allow-origin': '*',
-				'access-control-allow-credentials': 'true'
+				'access-control-allow-credentials': 'true',
 			})
 			.get('/dex/tokens')
 			.reply(200, tokenList)
