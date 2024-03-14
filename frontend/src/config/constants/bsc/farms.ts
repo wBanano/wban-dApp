@@ -18,7 +18,8 @@ export default class BSCFarms {
 	}
 
 	getZapAddress(): string {
-		return '0xB8a5aF7461FeDED80d27f562A12b2Bc27389128d'
+		//return '0xB8a5aF7461FeDED80d27f562A12b2Bc27389128d'
+		return '0x3270d9720BCA7B611cc842AB0A6429C5Fc8BE938'
 	}
 
 	getFarms(): FarmConfig[] {
