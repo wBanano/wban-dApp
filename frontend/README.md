@@ -1,5 +1,7 @@
 # frontend
 
+In the parent directory, make sure to run `yarn install`, `yarn compile`, then `yarn postcompile`.
+
 ## Project setup
 ```
 yarn install

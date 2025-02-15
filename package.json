@@ -69,7 +69,7 @@
 	"scripts": {
 		"clean": "rimraf ./artifacts/ ./flatten/ ./coverage/ ./coverage.json ./cache/ ./dist",
 		"compile": "hardhat compile && yarn tsc",
-		"postcompile": "copyfiles -u 2 \"artifacts/typechain/**/*.d.ts\" dist",
+		"postcompile": "copyfiles -u 2 \"artifacts/typechain/**/*.d.ts\" dist && cp dist-package.json dist/package.json",
 		"pretest": "yarn compile",
 		"test": "hardhat test",
 		"prepublishOnly": "yarn test",

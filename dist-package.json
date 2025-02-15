@@ -1,0 +1,6 @@
+{
+  "name": "@artifacts/typechain",
+  "version": "local",
+  "main": "./index.js",
+  "types": "./index.d.ts"
+}

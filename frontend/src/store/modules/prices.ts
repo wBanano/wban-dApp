@@ -2,7 +2,7 @@ import { getModule, VuexModule, Module, Mutation, Action } from 'vuex-module-dec
 import { namespace } from 'vuex-class'
 import { BindingHelpers } from 'vuex-class/lib/bindings'
 import store from '@/store'
-import { getBackendHost } from '@/config/constants/backend'
+//import { getBackendHost } from '@/config/constants/backend'
 import axios from 'axios'
 
 @Module({
@@ -38,7 +38,8 @@ class PricesModule extends VuexModule {
 		console.debug('in loadPrices')
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
 			const resp = await axios.request({
-				url: `${getBackendHost()}/prices`,
+				//url: `${getBackendHost()}/prices`,
+				url: 'https://wban-prices.prussia.dev/prices',
 			})
 			const apiResponse = resp.data
 			const wbanPrice: number = apiResponse.ban

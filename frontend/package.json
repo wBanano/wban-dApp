@@ -100,7 +100,8 @@
 		"vue-cli-plugin-quasar": "~3.0.2",
 		"vue-cli-plugin-ts-paths": "~0.0.4",
 		"vue-jest": "^3.0.7",
-		"vue-template-compiler": "^2.7.14"
+		"vue-template-compiler": "^2.7.14",
+		"@artifacts/typechain": "file:../dist"
 	},
 	"alias": {
 		"web3": false
