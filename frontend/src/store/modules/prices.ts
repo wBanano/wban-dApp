@@ -39,7 +39,7 @@ class PricesModule extends VuexModule {
 		if (Date.now() > this._lastUpdateTimestamp + 5 * 60) {
 			const resp = await axios.request({
 				//url: `${getBackendHost()}/prices`,
-				url: 'https://wban-prices.prussia.dev/prices',
+				url: `${process.env.VUE_APP_PRICES_API}/prices`,
 			})
 			const apiResponse = resp.data
 			const wbanPrice: number = apiResponse.ban
