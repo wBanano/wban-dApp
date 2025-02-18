@@ -337,9 +337,10 @@ class AccountsModule extends VuexModule {
 		}
 
 		const previouslyConnected = localStorage.getItem('onboard.js:last_connected_wallet')
-		const wallets = previouslyConnected
-			? await this.onboard.connectWallet({ autoSelect: previouslyConnected[0] })
-			: await this.onboard.connectWallet()
+		const wallets =
+			previouslyConnected && typeof previouslyConnected != 'string'
+				? await this.onboard.connectWallet({ autoSelect: previouslyConnected[0] })
+				: await this.onboard.connectWallet()
 		// check if the user is connected to a supported network
 		const chainId = wallets[0].chains[0].id
 		if (!new Networks().getSupportedNetworks().find((network) => network.chainId === chainId)) {
