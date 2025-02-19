@@ -2311,10 +2311,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
-"@typechain/ethers-v5@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-10.1.0.tgz#068d7dc7014502354696dab59590a7841091e951"
-  integrity sha512-3LIb+eUpV3mNCrjUKT5oqp8PBsZYSnVrkfk6pY/ZM0boRs2mKxjFZ7bktx42vfDye8PPz3NxtW4DL5NsNsFqlg==
+"@typechain/ethers-v5@^11.1.2":
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-11.1.2.tgz#82510c1744f37a2f906b9e0532ac18c0b74ffe69"
+  integrity sha512-ID6pqWkao54EuUQa0P5RgjvfA3MYqxUQKpbGKERbsjBW5Ra7EIXvbMlPp2pcP5IAdUkyMCFYsP2SN5q7mPdLDQ==
   dependencies:
     lodash "^4.17.15"
     ts-essentials "^7.0.1"
@@ -2326,10 +2326,10 @@
   dependencies:
     ethers "^5.0.2"
 
-"@typechain/hardhat@^6.1.4":
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/@typechain/hardhat/-/hardhat-6.1.4.tgz#da930bf17bdae5e0996b86d37992c6c58b8a49c8"
-  integrity sha512-S8k5d1Rjc+plwKpkorlifmh72M7Ki0XNUOVVLtdbcA/vLaEkuqZSJFdddpBgS5QxiJP+6CbRa/yO6EVTE2+fMQ==
+"@typechain/hardhat@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@typechain/hardhat/-/hardhat-7.0.0.tgz#ffa7465328150e793007fee616ae7b76ed20784d"
+  integrity sha512-XB79i5ewg9Met7gMVGfgVkmypicbnI25T5clJBEooMoW2161p4zvKFpoS2O+lBppQyMrPIZkdvl2M3LMDayVcA==
   dependencies:
     fs-extra "^9.1.0"
 
@@ -2415,10 +2415,12 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.19.14.tgz#59e5029a3c2aea34f68b717955381692fd47cafb"
   integrity sha512-2U9uLN46+7dv9PiS8VQJcHhuoOjiDPZOLAt0WuA1EanEknIMae+2QbMhayF7cgGqjvRVIfNpt+6jLPczJZFiRw==
 
-"@types/node@^16.18.7":
-  version "16.18.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.7.tgz#9e34404dba546a6f0851439ebba142680ae56fe0"
-  integrity sha512-SghuoXv8ghvkrKjTyvhRTeNzivPzGQ8pe09PPGdyqsExiKvBYV/6E3imvjsaJuW8ca61qQN2+SoSzyEHS9r2LA==
+"@types/node@^20.15.0":
+  version "20.17.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.17.19.tgz#0f2869555719bef266ca6e1827fcdca903c1a697"
+  integrity sha512-LEwC7o1ifqg/6r2gn9Dns0f1rhK+fPFDoMiceTJ6kWmVk6bgXBI/9IOWfVan4WiAavK9pIVWdX0/e3J+eEUh5A==
+  dependencies:
+    undici-types "~6.19.2"
 
 "@types/pbkdf2@^3.0.0":
   version "3.1.0"
@@ -10353,6 +10355,11 @@ underscore@1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
   integrity sha512-5/4etnCkd9c8gwgowi5/om/mYO5ajCaOgdzj/oW+0eQV9WxKBDZw5+ycmKmeaTXjInS/W0BzpGLo2xR2aBwZdg==
+
+undici-types@~6.19.2:
+  version "6.19.8"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
+  integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
 undici@^5.14.0:
   version "5.28.5"
