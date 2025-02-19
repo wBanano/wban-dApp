@@ -21,7 +21,7 @@
 		"dist"
 	],
 	"engines": {
-		"node": ">=16"
+		"node": ">=20"
 	},
 	"devDependencies": {
 		"@ethersproject/abi": "^5.7.0",
