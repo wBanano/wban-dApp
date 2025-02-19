@@ -2,6 +2,9 @@ name: Deploy to prod env
 on:
   release:
     types: [released]
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROD_PROJECT_ID }}
 jobs:
   smart-contracts:
     name: "Smart Contracts"
@@ -20,11 +23,19 @@ jobs:
         uses: ./.github/actions/dapp
         with:
           environment: production
-      - name: Deploy to wrap.banano.cc
-        uses: jsmrcaga/action-netlify-deploy@v1.1.0
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_UNIVERSAL_DAPP_SITE_ID }}
-          NETLIFY_DEPLOY_MESSAGE: "Prod deploy v${{ github.ref }}"
-          NETLIFY_DEPLOY_TO_PROD: true
-          build_directory: frontend/dist
+          
+      # Install the latest Vercel CLI.
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Pull the Vercel environment variables for production.
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Build your project artifacts for production.
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Deploy the prebuilt artifacts to Vercel.
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
