@@ -15,9 +15,9 @@ runs:
     - name: Node.js
       uses: actions/setup-node@v3
       with:
-        node-version-file: '.nvmrc'
+        node-version-file: ".nvmrc"
         cache: yarn
-        cache-dependency-path: '**/yarn.lock'
+        cache-dependency-path: "**/yarn.lock"
     - name: Install main dependencies
       run: yarn install --frozen-lockfile
       shell: bash
@@ -26,7 +26,7 @@ runs:
       working-directory: frontend
       shell: bash
     - name: Restore frontend artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: frontend
         path: frontend/dist
