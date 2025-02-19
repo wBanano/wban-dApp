@@ -14,19 +14,11 @@ runs:
       run: yarn install --frozen-lockfile
       shell: bash
 
-    ###################################
-    ##### DONT TEST FOR NOW
-    #- name: Compile & Test
-    #  run: yarn test
-    #  shell: bash
-    #- name: Checks
-    #  run: yarn lint
-    #  shell: bash
-    ##### DONT TEST FOR NOW
-    ###################################
-
-    - name: Compile
-      run: yarn compile
+    - name: Compile & Test
+      run: yarn test
+      shell: bash
+    - name: Checks
+      run: yarn lint
       shell: bash
 
     #yarn coverage
