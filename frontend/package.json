@@ -59,7 +59,7 @@
 		"@types/humanize-duration": "^3.18.1",
 		"@types/jest": "^28.1.1",
 		"@types/mocha": "^10.0.1",
-		"@types/node": "^17.0.17",
+		"@types/node": "^20.15.0",
 		"@types/numeral": "^2.0.2",
 		"@types/qrcode": "^1.4.2",
 		"@typescript-eslint/eslint-plugin": "^6.3.0",
@@ -109,6 +109,7 @@
 		"handlebars": "^4.7.7",
 		"underscore": "^1.12.1",
 		"node-fetch": "^2.6.1",
-		"ethers": "5.7.2"
+		"ethers": "5.7.2",
+		"@achrinza/node-ipc": "^10.0.0"
 	}
 }
