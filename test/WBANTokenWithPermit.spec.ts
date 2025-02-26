@@ -10,7 +10,7 @@ import PermitUtil from "./PermitUtil";
 chai.use(solidity);
 const { expect } = chai;
 
-describe('WBANToken', () => {
+describe('WBANTokenWithPermit', () => {
 	let token: WBANTokenWithPermit;
 	let owner: SignerWithAddress;
 	let user1: SignerWithAddress;
@@ -41,7 +41,7 @@ describe('WBANToken', () => {
 		await oldToken.connect(user1).approve(user2.address, wBanToMint);
 		expect(await oldToken.allowance(user1.address, user2.address)).to.equal(wBanToMint);
 
-		// upgrade to WBANTokenFactory
+		// upgrade to WBANTokenWithPermit
 		const wBANTokenFactoryWithPermit = await ethers.getContractFactory("WBANTokenWithPermit", owner);
 		const token = await upgrades.upgradeProxy(oldToken.address, wBANTokenFactoryWithPermit, { call: "initializeWithPermit" }) as WBANTokenWithPermit;
 
